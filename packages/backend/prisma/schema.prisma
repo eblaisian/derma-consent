@@ -1,0 +1,353 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ──
+
+enum UserRole {
+  ADMIN
+  ARZT
+  EMPFANG
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+}
+
+enum AuditAction {
+  CONSENT_CREATED
+  CONSENT_SUBMITTED
+  CONSENT_REVOKED
+  CONSENT_VIEWED
+  VAULT_UNLOCKED
+  VAULT_LOCKED
+  PATIENT_CREATED
+  PATIENT_VIEWED
+  TEAM_MEMBER_INVITED
+  TEAM_MEMBER_REMOVED
+  TEAM_MEMBER_ROLE_CHANGED
+  PRACTICE_SETTINGS_UPDATED
+  SUBSCRIPTION_CREATED
+  SUBSCRIPTION_CANCELLED
+  DATA_EXPORTED
+  DATA_DELETED
+  PHOTO_UPLOADED
+  PHOTO_VIEWED
+  PHOTO_DELETED
+  TREATMENT_PLAN_CREATED
+  TREATMENT_PLAN_UPDATED
+  TREATMENT_PLAN_VIEWED
+}
+
+enum BodyRegion {
+  FOREHEAD
+  GLABELLA
+  PERIORBITAL
+  CHEEKS
+  NASOLABIAL
+  LIPS
+  CHIN
+  JAWLINE
+  NECK
+  DECOLLETE
+  HANDS
+  SCALP
+  OTHER
+}
+
+enum PhotoType {
+  BEFORE
+  AFTER
+}
+
+enum SubscriptionPlan {
+  FREE_TRIAL
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+}
+
+// ── Models ──
+
+model Practice {
+  id               String   @id @default(uuid())
+  name             String
+  dsgvoContact     String   @map("dsgvo_contact")
+  stripeConnectId  String?  @map("stripe_connect_id")
+  publicKey        Json     @map("public_key") // JWK format
+  encryptedPrivKey Json     @map("encrypted_priv_key") // { salt, iv, ciphertext }
+  gdtSenderId      String   @default("DERMACONSENT") @map("gdt_sender_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  consentForms       ConsentForm[]
+  patients           Patient[]
+  users              User[]
+  invites            Invite[]
+  subscription       Subscription?
+  auditLogs          AuditLog[]
+  settings           PracticeSettings?
+  treatmentPhotos    TreatmentPhoto[]
+  treatmentPlans     TreatmentPlan[]
+  treatmentTemplates TreatmentTemplate[]
+
+  @@map("practices")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String?
+  image        String?
+  passwordHash String?  @map("password_hash")
+  practiceId   String?  @map("practice_id")
+  role         UserRole @default(ADMIN)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  practice  Practice?  @relation(fields: [practiceId], references: [id])
+  accounts  Account[]
+  auditLogs AuditLog[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String  @map("user_id")
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  accessToken       String? @map("access_token")
+  refreshToken      String? @map("refresh_token")
+  expiresAt         Int?    @map("expires_at")
+  tokenType         String? @map("token_type")
+  scope             String?
+  idToken           String? @map("id_token")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Invite {
+  id         String       @id @default(uuid())
+  practiceId String       @map("practice_id")
+  email      String
+  role       UserRole
+  token      String       @unique @default(uuid())
+  status     InviteStatus @default(PENDING)
+  expiresAt  DateTime     @map("expires_at")
+  createdAt  DateTime     @default(now()) @map("created_at")
+
+  practice Practice @relation(fields: [practiceId], references: [id])
+
+  @@map("invites")
+}
+
+model Subscription {
+  id                   String             @id @default(uuid())
+  practiceId           String             @unique @map("practice_id")
+  plan                 SubscriptionPlan   @default(FREE_TRIAL)
+  status               SubscriptionStatus @default(TRIALING)
+  stripeCustomerId     String?            @map("stripe_customer_id")
+  stripeSubscriptionId String?            @map("stripe_subscription_id")
+  trialEndsAt          DateTime?          @map("trial_ends_at")
+  currentPeriodEnd     DateTime?          @map("current_period_end")
+  createdAt            DateTime           @default(now()) @map("created_at")
+  updatedAt            DateTime           @updatedAt @map("updated_at")
+
+  practice Practice @relation(fields: [practiceId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model AuditLog {
+  id         String      @id @default(uuid())
+  practiceId String      @map("practice_id")
+  userId     String?     @map("user_id")
+  action     AuditAction
+  entityType String?     @map("entity_type")
+  entityId   String?     @map("entity_id")
+  metadata   Json?
+  ipAddress  String?     @map("ip_address")
+  createdAt  DateTime    @default(now()) @map("created_at")
+
+  practice Practice @relation(fields: [practiceId], references: [id])
+  user     User?    @relation(fields: [userId], references: [id])
+
+  @@index([practiceId, createdAt])
+  @@map("audit_logs")
+}
+
+model PracticeSettings {
+  id                  String   @id @default(uuid())
+  practiceId          String   @unique @map("practice_id")
+  logoUrl             String?  @map("logo_url")
+  defaultConsentExpiry Int     @default(7) @map("default_consent_expiry")
+  enabledConsentTypes  Json    @default("[\"BOTOX\",\"FILLER\",\"LASER\",\"CHEMICAL_PEEL\",\"MICRONEEDLING\",\"PRP\"]") @map("enabled_consent_types")
+  brandColor          String?  @map("brand_color")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  practice Practice @relation(fields: [practiceId], references: [id])
+
+  @@map("practice_settings")
+}
+
+model Patient {
+  id            String   @id @default(uuid())
+  practiceId    String   @map("practice_id")
+  encryptedName String   @map("encrypted_name") // AES-GCM encrypted
+  encryptedDob  String?  @map("encrypted_dob")
+  encryptedEmail String? @map("encrypted_email")
+  lookupHash    String   @map("lookup_hash") // SHA-256 for de-duplication
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  practice        Practice          @relation(fields: [practiceId], references: [id])
+  consentForms    ConsentForm[]
+  treatmentPhotos TreatmentPhoto[]
+  treatmentPlans  TreatmentPlan[]
+
+  @@unique([practiceId, lookupHash])
+  @@map("patients")
+}
+
+enum ConsentType {
+  BOTOX
+  FILLER
+  LASER
+  CHEMICAL_PEEL
+  MICRONEEDLING
+  PRP
+}
+
+enum ConsentStatus {
+  PENDING
+  FILLED
+  SIGNED
+  PAID
+  COMPLETED
+  EXPIRED
+  REVOKED
+}
+
+model ConsentForm {
+  id                  String        @id @default(uuid())
+  practiceId          String        @map("practice_id")
+  patientId           String?       @map("patient_id")
+  type                ConsentType
+  status              ConsentStatus @default(PENDING)
+  token               String        @unique @default(uuid()) // unique link for patient
+  encryptedResponses  Json?         @map("encrypted_responses") // { encryptedSessionKey, iv, ciphertext }
+  encryptedSessionKey String?       @map("encrypted_session_key")
+  signatureIp         String?       @map("signature_ip")
+  signatureTimestamp  DateTime?     @map("signature_timestamp")
+  signatureUserAgent  String?       @map("signature_user_agent")
+  stripeSessionId     String?       @map("stripe_session_id")
+  stripePaymentIntent String?       @map("stripe_payment_intent")
+  pdfStoragePath      String?       @map("pdf_storage_path")
+  expiresAt           DateTime      @map("expires_at")
+  revokedAt           DateTime?     @map("revoked_at")
+  createdAt           DateTime      @default(now()) @map("created_at")
+  updatedAt           DateTime      @updatedAt @map("updated_at")
+
+  practice        Practice         @relation(fields: [practiceId], references: [id])
+  patient         Patient?         @relation(fields: [patientId], references: [id])
+  treatmentPhotos TreatmentPhoto[]
+  treatmentPlans  TreatmentPlan[]
+
+  @@index([token])
+  @@index([practiceId, status])
+  @@map("consent_forms")
+}
+
+// ── Treatment Photos ──
+
+model TreatmentPhoto {
+  id                  String     @id @default(uuid())
+  practiceId          String     @map("practice_id")
+  patientId           String     @map("patient_id")
+  consentFormId       String?    @map("consent_form_id")
+  treatmentPlanId     String?    @map("treatment_plan_id")
+  type                PhotoType
+  bodyRegion          BodyRegion @map("body_region")
+  encryptedSessionKey String     @map("encrypted_session_key")
+  storagePath         String     @map("storage_path")
+  encryptedMetadata   Json?      @map("encrypted_metadata") // { iv, ciphertext }
+  photoConsentGranted Boolean    @default(false) @map("photo_consent_granted")
+  takenAt             DateTime   @map("taken_at")
+  createdAt           DateTime   @default(now()) @map("created_at")
+  updatedAt           DateTime   @updatedAt @map("updated_at")
+
+  practice      Practice       @relation(fields: [practiceId], references: [id])
+  patient       Patient        @relation(fields: [patientId], references: [id])
+  consentForm   ConsentForm?   @relation(fields: [consentFormId], references: [id])
+  treatmentPlan TreatmentPlan? @relation(fields: [treatmentPlanId], references: [id])
+
+  @@index([practiceId, patientId])
+  @@index([patientId, type, bodyRegion])
+  @@map("treatment_photos")
+}
+
+// ── Treatment Plans ──
+
+model TreatmentPlan {
+  id                  String      @id @default(uuid())
+  practiceId          String      @map("practice_id")
+  patientId           String      @map("patient_id")
+  consentFormId       String?     @map("consent_form_id")
+  templateId          String?     @map("template_id")
+  type                ConsentType
+  encryptedSessionKey String      @map("encrypted_session_key")
+  encryptedData       Json        @map("encrypted_data") // { iv, ciphertext }
+  encryptedSummary    Json?       @map("encrypted_summary") // { iv, ciphertext }
+  performedAt         DateTime?   @map("performed_at")
+  createdAt           DateTime    @default(now()) @map("created_at")
+  updatedAt           DateTime    @updatedAt @map("updated_at")
+
+  practice        Practice            @relation(fields: [practiceId], references: [id])
+  patient         Patient             @relation(fields: [patientId], references: [id])
+  consentForm     ConsentForm?        @relation(fields: [consentFormId], references: [id])
+  template        TreatmentTemplate?  @relation(fields: [templateId], references: [id])
+  treatmentPhotos TreatmentPhoto[]
+
+  @@index([practiceId, patientId])
+  @@index([patientId, type])
+  @@map("treatment_plans")
+}
+
+// ── Treatment Templates ──
+
+model TreatmentTemplate {
+  id           String      @id @default(uuid())
+  practiceId   String      @map("practice_id")
+  name         String
+  type         ConsentType
+  bodyRegion   BodyRegion  @map("body_region")
+  templateData Json        @map("template_data") // default injection points/units/products
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  practice       Practice        @relation(fields: [practiceId], references: [id])
+  treatmentPlans TreatmentPlan[]
+
+  @@index([practiceId, type])
+  @@map("treatment_templates")
+}

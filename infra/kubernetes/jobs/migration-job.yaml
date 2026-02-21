@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prisma-migrate
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 120
+  template:
+    spec:
+      nodeSelector:
+        arch: arm64
+      imagePullSecrets:
+        - name: ocir-secret
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: OCIR_BACKEND_IMAGE # Replaced by sed in deploy script
+          command: ["npx", "prisma", "db", "push", "--accept-data-loss"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DATABASE_URL
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

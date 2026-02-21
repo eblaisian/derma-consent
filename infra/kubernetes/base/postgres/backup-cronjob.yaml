@@ -1,0 +1,64 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+spec:
+  schedule: "0 2 * * *" # Daily at 2 AM UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      template:
+        spec:
+          nodeSelector:
+            arch: arm64
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: postgres:16-alpine
+              env:
+                - name: PGHOST
+                  value: postgres
+                - name: PGPORT
+                  value: "5432"
+                - name: PGDATABASE
+                  value: dermaconsent
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-secret
+                      key: POSTGRES_USER
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-secret
+                      key: POSTGRES_PASSWORD
+                - name: BACKUP_PAR_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: app-secrets
+                      key: BACKUP_PAR_URL
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+                  FILENAME="dermaconsent-$(date +%Y%m%d-%H%M%S).sql.gz"
+                  echo "Starting backup: $FILENAME"
+                  pg_dump | gzip > "/tmp/$FILENAME"
+                  echo "Uploading to Object Storage..."
+                  wget --method=PUT --header="Content-Type: application/gzip" \
+                    --body-file="/tmp/$FILENAME" \
+                    "${BACKUP_PAR_URL}${FILENAME}" -q -O /dev/null
+                  echo "Backup complete: $FILENAME ($(du -h /tmp/$FILENAME | cut -f1))"
+                  rm -f "/tmp/$FILENAME"
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi

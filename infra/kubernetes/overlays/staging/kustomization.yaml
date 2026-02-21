@@ -1,0 +1,86 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: derma-staging
+
+resources:
+  - ../../base
+
+patches:
+  # Backend: 1 replica, lower resources
+  - target:
+      kind: Deployment
+      name: backend
+    patch: |
+      - op: replace
+        path: /spec/replicas
+        value: 1
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+
+  # Frontend: 1 replica, lower resources
+  - target:
+      kind: Deployment
+      name: frontend
+    patch: |
+      - op: replace
+        path: /spec/replicas
+        value: 1
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 128m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+
+  # PostgreSQL: lower resources
+  - target:
+      kind: StatefulSet
+      name: postgres
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 250m
+            memory: 1Gi
+          limits:
+            cpu: 500m
+            memory: 2Gi
+
+  # PVC: 20Gi instead of 50Gi
+  - target:
+      kind: PersistentVolumeClaim
+      name: postgres-data
+    patch: |
+      - op: replace
+        path: /spec/resources/requests/storage
+        value: 20Gi
+
+  # Backup CronJob: suspended in staging
+  - target:
+      kind: CronJob
+      name: postgres-backup
+    patch: |
+      - op: add
+        path: /spec/suspend
+        value: true
+
+  # Ingress: add host for staging routing isolation
+  - target:
+      kind: Ingress
+      name: derma-consent-ingress
+    patch: |
+      - op: add
+        path: /spec/rules/0/host
+        value: INGRESS_HOST_PLACEHOLDER

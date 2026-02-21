@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: derma
+      POSTGRES_PASSWORD: derma_local_pwd
+      POSTGRES_DB: dermaconsent
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U derma -d dermaconsent"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:

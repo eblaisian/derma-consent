@@ -1,0 +1,33 @@
+{
+  "name": "derma-consent",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k -p \"[{name}]\" -n \"BE,FE\" -c \"blue,green\" \"pnpm dev:backend\" \"pnpm dev:frontend\"",
+    "dev:backend": "pnpm --filter @derma-consent/backend dev",
+    "dev:frontend": "pnpm --filter @derma-consent/frontend dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "docs": "pnpm --filter @derma-consent/docs dev",
+    "docs:build": "pnpm --filter @derma-consent/docs build",
+    "docs:preview": "pnpm --filter @derma-consent/docs preview"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/client",
+      "@prisma/engines",
+      "bcrypt",
+      "esbuild",
+      "prisma",
+      "sharp",
+      "unrs-resolver"
+    ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

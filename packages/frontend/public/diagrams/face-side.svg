@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" fill="none" stroke="#94a3b8" stroke-width="1.5">
+  <!-- Head outline - side profile -->
+  <path d="M250 50 C180 45 140 80 120 120 C105 150 100 180 100 200 C100 230 102 250 105 270 C110 300 120 330 140 360 C155 380 175 400 200 415 L210 420 C225 418 240 405 255 385 C275 355 285 320 290 290 L295 250 C300 220 300 190 295 160 C290 120 280 80 250 50Z" stroke-width="2"/>
+
+  <!-- Forehead -->
+  <path data-region="FOREHEAD" d="M145 90 C160 75 190 60 230 55 L250 50 C260 65 268 85 272 110 L265 130 C240 120 200 115 170 118 L145 125Z" fill="transparent" stroke="none" cursor="pointer"/>
+
+  <!-- Glabella -->
+  <path data-region="GLABELLA" d="M135 130 L170 118 L165 148 L130 155Z" fill="transparent" stroke="none" cursor="pointer"/>
+
+  <!-- Periorbital -->
+  <path data-region="PERIORBITAL" d="M115 155 L160 150 L165 185 L118 188Z" fill="transparent" stroke="none" cursor="pointer"/>
+
+  <!-- Eye -->
+  <path d="M125 172 C135 165 150 163 160 167 C165 170 162 178 155 182 C145 185 130 182 125 178Z" stroke-width="1.5"/>
+  <circle cx="145" cy="174" r="5" fill="#94a3b8" opacity="0.3"/>
+
+  <!-- Eyebrow -->
+  <path d="M118 155 C135 148 155 147 168 152" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Nose -->
+  <path d="M130 160 L115 200 L105 225 L100 235 C102 240 108 242 115 240 L120 238" stroke-width="1.5"/>
+
+  <!-- Cheek -->
+  <path data-region="CHEEKS" d="M120 195 L170 190 C180 220 185 250 180 270 L130 275 C115 255 110 230 112 205Z" fill="transparent" stroke="none" cursor="pointer"/>
+
+  <!-- Nasolabial -->
+  <path data-region="NASOLABIAL" d="M118 240 L140 240 L145 290 L125 295Z" fill="transparent" stroke="none" cursor="pointer"/>
+  <path d="M120 242 C125 260 130 280 132 300" stroke-width="1" opacity="0.4"/>
+
+  <!-- Lips -->
+  <path data-region="LIPS" d="M110 295 L145 292 L148 320 L115 322Z" fill="transparent" stroke="none" cursor="pointer"/>
+  <path d="M112 300 C120 296 132 294 140 296" stroke-width="1.5"/>
+  <path d="M112 305 C120 312 132 315 140 310" stroke-width="1.5"/>
+
+  <!-- Chin -->
+  <path data-region="CHIN" d="M115 325 L148 322 C155 345 160 365 170 380 L145 385 C130 370 120 350 115 330Z" fill="transparent" stroke="none" cursor="pointer"/>
+
+  <!-- Jawline -->
+  <path data-region="JAWLINE" d="M170 380 C195 400 220 410 240 405 L270 370 C280 345 288 315 292 285 L260 280 C255 310 245 340 230 365Z" fill="transparent" stroke="none" cursor="pointer"/>
+  <path d="M170 382 C200 405 235 412 265 375 C282 348 290 310 295 275" stroke-width="1" opacity="0.4"/>
+
+  <!-- Ear -->
+  <path d="M275 145 C295 150 305 170 305 195 C305 215 300 230 290 240 C285 244 278 242 275 235 L272 210" stroke-width="1.5"/>
+
+  <!-- Neck line -->
+  <path d="M200 420 L195 470 M260 390 L275 460" stroke-width="1" opacity="0.3"/>
+
+  <!-- Labels -->
+  <text x="210" y="90" text-anchor="middle" font-size="11" fill="#64748b" font-family="system-ui" class="region-label" data-for="FOREHEAD">Forehead</text>
+  <text x="148" y="140" text-anchor="middle" font-size="9" fill="#64748b" font-family="system-ui" class="region-label" data-for="GLABELLA">Glabella</text>
+  <text x="135" y="175" text-anchor="middle" font-size="9" fill="#64748b" font-family="system-ui" class="region-label" data-for="PERIORBITAL">Periorbital</text>
+  <text x="155" y="240" text-anchor="middle" font-size="10" fill="#64748b" font-family="system-ui" class="region-label" data-for="CHEEKS">Cheek</text>
+  <text x="128" y="270" text-anchor="middle" font-size="9" fill="#64748b" font-family="system-ui" class="region-label" data-for="NASOLABIAL">NL</text>
+  <text x="128" y="310" text-anchor="middle" font-size="10" fill="#64748b" font-family="system-ui" class="region-label" data-for="LIPS">Lips</text>
+  <text x="145" y="355" text-anchor="middle" font-size="10" fill="#64748b" font-family="system-ui" class="region-label" data-for="CHIN">Chin</text>
+  <text x="255" y="340" text-anchor="middle" font-size="9" fill="#64748b" font-family="system-ui" class="region-label" data-for="JAWLINE">Jawline</text>
+</svg>

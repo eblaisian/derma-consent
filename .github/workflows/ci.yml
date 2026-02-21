@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: dermaconsent_test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: packages/backend
+
+      - run: pnpm prisma generate
+        working-directory: packages/backend
+
+      - run: pnpm build
+        working-directory: packages/backend
+
+      - run: pnpm test
+        working-directory: packages/backend
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/dermaconsent_test
+          AUTH_SECRET: ci-test-secret
+          STRIPE_SECRET_KEY: sk_test_dummy
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: packages/frontend
+
+      - run: pnpm lint
+        working-directory: packages/frontend
+
+      - run: pnpm build
+        working-directory: packages/frontend
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3001
+
+      - run: pnpm test
+        working-directory: packages/frontend
