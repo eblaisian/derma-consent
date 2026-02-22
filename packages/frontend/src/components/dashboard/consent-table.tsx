@@ -112,12 +112,12 @@ export function ConsentTable({ consents, isVaultUnlocked, onRefresh, onCreateCon
             <TableHead className="text-xs font-semibold text-foreground-secondary">{t('status')}</TableHead>
             <TableHead className="text-xs font-semibold text-foreground-secondary">{t('createdAt')}</TableHead>
             <TableHead className="text-xs font-semibold text-foreground-secondary">{t('validUntil')}</TableHead>
-            <TableHead className="text-xs font-semibold text-foreground-secondary text-right">{t('actions')}</TableHead>
+            <TableHead className="text-xs font-semibold text-foreground-secondary text-end">{t('actions')}</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody className="stagger-children">
           {consents.map((consent) => (
-            <TableRow key={consent.id} className="border-border-subtle transition-default">
+            <TableRow key={consent.id} className="border-border-subtle transition-default animate-fade-in-up">
               <TableCell className="font-medium">
                 {tTypes.has(consent.type as ConsentType) ? tTypes(consent.type as ConsentType) : consent.type}
               </TableCell>
@@ -139,7 +139,7 @@ export function ConsentTable({ consents, isVaultUnlocked, onRefresh, onCreateCon
               >
                 {format.dateTime(new Date(consent.expiresAt), { dateStyle: 'medium', timeZone: 'Europe/Berlin' })}
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell className="text-end">
                 <div className="flex justify-end gap-1">
                   <Button
                     variant="ghost"

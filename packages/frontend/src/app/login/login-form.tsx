@@ -91,10 +91,15 @@ export function LoginForm({ enabledProviders }: Props) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="relative flex min-h-screen items-center justify-center p-4">
+      {/* Decorative background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.02]" aria-hidden="true" />
+      <div className="absolute top-1/4 -start-20 h-56 w-56 rounded-full bg-primary/5 blur-3xl" aria-hidden="true" />
+      <div className="absolute bottom-1/4 -end-20 h-40 w-40 rounded-full bg-primary/3 blur-3xl" aria-hidden="true" />
+
+      <Card className="relative w-full max-w-md shadow-[var(--shadow-lg)] animate-scale-in">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">{t('title')}</CardTitle>
+          <CardTitle className="text-2xl tracking-tight">{t('title')}</CardTitle>
           <CardDescription>
             {t('description')}
           </CardDescription>
@@ -120,6 +125,7 @@ export function LoginForm({ enabledProviders }: Props) {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
                   required
+                  aria-describedby={error ? 'login-error' : undefined}
                 />
               </div>
               <div className="space-y-1.5">
@@ -130,10 +136,11 @@ export function LoginForm({ enabledProviders }: Props) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  aria-describedby={error ? 'login-error' : undefined}
                 />
               </div>
               {error && (
-                <p className="text-sm text-destructive">{error}</p>
+                <p id="login-error" className="text-sm text-destructive" role="alert">{error}</p>
               )}
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? t('signingIn') : t('signIn')}
@@ -161,10 +168,11 @@ export function LoginForm({ enabledProviders }: Props) {
                   className="font-mono text-center text-lg tracking-widest"
                   autoFocus
                   required
+                  aria-describedby={error ? '2fa-error' : undefined}
                 />
               </div>
               {error && (
-                <p className="text-sm text-destructive">{error}</p>
+                <p id="2fa-error" className="text-sm text-destructive" role="alert">{error}</p>
               )}
               <Button type="submit" className="w-full" disabled={loading || twoFactorCode.length !== 6}>
                 {loading ? t('verifying') : t('verify')}
@@ -265,7 +273,7 @@ export function LoginForm({ enabledProviders }: Props) {
 
 function GoogleIcon() {
   return (
-    <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+    <svg className="me-2 h-4 w-4" viewBox="0 0 24 24">
       <path
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
         fill="#4285F4"
@@ -288,7 +296,7 @@ function GoogleIcon() {
 
 function MicrosoftIcon() {
   return (
-    <svg className="mr-2 h-4 w-4" viewBox="0 0 23 23">
+    <svg className="me-2 h-4 w-4" viewBox="0 0 23 23">
       <path fill="#f35325" d="M1 1h10v10H1z" />
       <path fill="#81bc06" d="M12 1h10v10H12z" />
       <path fill="#05a6f0" d="M1 12h10v10H1z" />

@@ -82,28 +82,32 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* Page header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-[28px] font-semibold leading-tight tracking-tight">
-            {t('title')}
-          </h1>
-          <p className="mt-1 text-sm text-foreground-secondary">
-            {t('welcomeBack', { name: userName })}
-          </p>
+      {/* Welcome banner with subtle gradient */}
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/5 via-background to-primary/[0.02] p-6 sm:p-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-page-title">
+              {t('title')}
+            </h1>
+            <p className="mt-1 text-sm text-foreground-secondary leading-relaxed">
+              {t('welcomeBack', { name: userName })}
+            </p>
+          </div>
+          <NewConsentDialog onCreated={() => refreshConsents()} />
         </div>
-        <NewConsentDialog onCreated={() => refreshConsents()} />
+        {/* Decorative gradient accent */}
+        <div className="absolute -top-12 -end-12 h-32 w-32 rounded-full bg-primary/5 blur-3xl" aria-hidden="true" />
       </div>
 
-      {/* Stat cards */}
+      {/* Stat cards with stagger animation */}
       {consentsLoading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
-            <Skeleton key={i} className="h-[100px] rounded-xl" />
+            <Skeleton key={i} className="h-[110px] rounded-xl" />
           ))}
         </div>
       ) : stats && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-children">
           <StatCard
             title={t('statTotal')}
             value={stats.total}
@@ -134,10 +138,10 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* Consent table */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">{t('recentConsents')}</h2>
+      {/* Consent table in a raised surface */}
+      <div className="surface-raised p-6">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-section-head">{t('recentConsents')}</h2>
         </div>
         {consentsLoading ? (
           <div className="space-y-3">

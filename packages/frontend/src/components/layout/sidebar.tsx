@@ -64,7 +64,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-2">
+      <nav className="flex-1 overflow-y-auto py-2" aria-label="Main navigation">
         {sections.map((section) => {
           const items = itemsBySection(section);
           if (items.length === 0) return null;
@@ -80,13 +80,18 @@ export function Sidebar() {
                     <Link
                       key={item.href}
                       href={item.href}
+                      aria-current={isActive ? 'page' : undefined}
                       className={cn(
-                        'flex items-center gap-2.5 rounded-md h-9 px-3 text-sm font-medium transition-default',
+                        'relative flex items-center gap-2.5 rounded-md h-9 px-3 text-sm font-medium transition-default',
                         isActive
                           ? 'bg-sidebar-accent text-sidebar-primary'
                           : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
                       )}
                     >
+                      {/* Active indicator bar */}
+                      {isActive && (
+                        <span className="absolute inset-y-1.5 start-0 w-0.5 rounded-full bg-sidebar-primary" />
+                      )}
                       <item.icon className={cn('h-5 w-5 shrink-0', isActive ? 'text-sidebar-primary' : 'text-muted-foreground')} />
                       {t(item.labelKey)}
                     </Link>
@@ -133,7 +138,7 @@ export function Sidebar() {
           <button
             onClick={() => signOut({ callbackUrl: '/login' })}
             className="text-muted-foreground hover:text-foreground transition-default shrink-0"
-            title={tSidebar('signOut')}
+            aria-label={tSidebar('signOut')}
           >
             <LogOut className="h-4 w-4" />
           </button>

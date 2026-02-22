@@ -6,11 +6,31 @@ import { Sidebar } from './sidebar';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
-import { useState } from 'react';
+import {
+  Menu,
+  X,
+  LayoutDashboard,
+  User,
+  BarChart3,
+  Users,
+  ScrollText,
+  CreditCard,
+  Settings,
+} from 'lucide-react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+
+const mobileNavItems = [
+  { href: '/dashboard', labelKey: 'dashboard' as const, icon: LayoutDashboard },
+  { href: '/patients', labelKey: 'patients' as const, icon: User },
+  { href: '/analytics', labelKey: 'analytics' as const, icon: BarChart3 },
+  { href: '/team', labelKey: 'team' as const, icon: Users },
+  { href: '/billing', labelKey: 'billing' as const, icon: CreditCard },
+  { href: '/settings', labelKey: 'settings' as const, icon: Settings },
+  { href: '/audit', labelKey: 'audit' as const, icon: ScrollText },
+];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const tNav = useTranslations('nav');
@@ -18,18 +38,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const mobileNavItems = [
-    { href: '/dashboard', labelKey: 'dashboard' as const },
-    { href: '/patients', labelKey: 'patients' as const },
-    { href: '/analytics', labelKey: 'analytics' as const },
-    { href: '/team', labelKey: 'team' as const },
-    { href: '/billing', labelKey: 'billing' as const },
-    { href: '/settings', labelKey: 'settings' as const },
-    { href: '/audit', labelKey: 'audit' as const },
-  ];
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   return (
     <div className="flex h-screen">
+      {/* Skip to content link */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:start-2 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:text-sm focus:font-medium focus:shadow-lg"
+      >
+        Skip to content
+      </a>
+
       <Sidebar />
 
       <div className="flex flex-1 flex-col overflow-hidden">
@@ -41,8 +64,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               size="icon"
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-nav"
             >
-              <Menu className="h-5 w-5" />
+              {mobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </Button>
             <span className="text-sm font-medium text-foreground md:hidden">DermaConsent</span>
           </div>
@@ -53,32 +83,54 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        {/* Mobile navigation */}
+        {/* Mobile navigation with backdrop and slide animation */}
         {mobileMenuOpen && (
-          <nav className="border-b bg-background p-2 md:hidden">
-            <div className="flex flex-wrap gap-1">
-              {mobileNavItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    'rounded-md px-3 py-1.5 text-sm',
-                    pathname.startsWith(item.href)
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:bg-muted',
-                  )}
-                >
-                  {tNav(item.labelKey)}
-                </Link>
-              ))}
-            </div>
-          </nav>
+          <>
+            {/* Backdrop overlay */}
+            <div
+              className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm md:hidden animate-fade-in"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-hidden="true"
+            />
+            {/* Nav panel */}
+            <nav
+              id="mobile-nav"
+              className="fixed top-14 inset-x-0 z-50 border-b bg-card shadow-[var(--shadow-lg)] p-3 md:hidden animate-slide-in-down"
+              role="navigation"
+              aria-label="Mobile navigation"
+            >
+              <div className="flex flex-col gap-0.5">
+                {mobileNavItems.map((item) => {
+                  const isActive = pathname.startsWith(item.href);
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-default',
+                        isActive
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-foreground hover:bg-muted',
+                      )}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" />
+                      {tNav(item.labelKey)}
+                    </Link>
+                  );
+                })}
+              </div>
+            </nav>
+          </>
         )}
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          {children}
+        <main id="main-content" className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="animate-fade-in-up">
+            {children}
+          </div>
         </main>
       </div>
     </div>

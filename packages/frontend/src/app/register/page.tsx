@@ -78,10 +78,15 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="relative flex min-h-screen items-center justify-center p-4">
+      {/* Decorative background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.02]" aria-hidden="true" />
+      <div className="absolute top-1/4 -start-20 h-56 w-56 rounded-full bg-primary/5 blur-3xl" aria-hidden="true" />
+      <div className="absolute bottom-1/4 -end-20 h-40 w-40 rounded-full bg-primary/3 blur-3xl" aria-hidden="true" />
+
+      <Card className="relative w-full max-w-md shadow-[var(--shadow-lg)] animate-scale-in">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">{t('title')}</CardTitle>
+          <CardTitle className="text-2xl tracking-tight">{t('title')}</CardTitle>
           <CardDescription>{t('description')}</CardDescription>
         </CardHeader>
         <CardContent>
@@ -131,7 +136,7 @@ export default function RegisterPage() {
               />
             </div>
             {error && (
-              <p className="text-sm text-destructive">{error}</p>
+              <p id="register-error" className="text-sm text-destructive" role="alert">{error}</p>
             )}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? t('submitting') : t('submit')}

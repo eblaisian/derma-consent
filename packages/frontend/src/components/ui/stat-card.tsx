@@ -13,10 +13,10 @@ interface StatCardProps {
 
 export function StatCard({ title, value, subtitle, trend, icon, className }: StatCardProps) {
   return (
-    <Card className={cn('relative overflow-hidden', className)}>
+    <Card className={cn('relative overflow-hidden animate-fade-in-up', className)}>
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-foreground-secondary">{title}</span>
+          <span className="text-label text-foreground-secondary">{title}</span>
           {trend && (
             <span className={cn(
               'inline-flex items-center gap-0.5 text-xs font-medium rounded-full px-1.5 py-0.5',
@@ -32,7 +32,9 @@ export function StatCard({ title, value, subtitle, trend, icon, className }: Sta
             <span className="text-muted-foreground">{icon}</span>
           )}
         </div>
-        <div className="mt-2 text-[28px] font-bold leading-tight tracking-tight">{value}</div>
+        <div className="mt-2 text-3xl sm:text-4xl font-bold leading-tight tracking-tight tabular-nums">
+          {value}
+        </div>
         {subtitle && <div className="mt-1 text-xs text-muted-foreground">{subtitle}</div>}
       </CardContent>
     </Card>
