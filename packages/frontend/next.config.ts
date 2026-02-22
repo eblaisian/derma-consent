@@ -5,14 +5,14 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const cspDirectives = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
+  "script-src 'self' 'unsafe-inline' https://js.stripe.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.supabase.co",
   "font-src 'self'",
   "connect-src 'self' https://api.stripe.com " +
     (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"),
   "frame-src https://js.stripe.com",
-  "worker-src 'self' blob:",
+  "worker-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -21,15 +21,6 @@ const cspDirectives = [
 const nextConfig: NextConfig = {
   output: "standalone",
   headers: async () => [
-    {
-      source: "/models/(.*)",
-      headers: [
-        {
-          key: "Cache-Control",
-          value: "public, max-age=31536000, immutable",
-        },
-      ],
-    },
     {
       source: "/(.*)",
       headers: [

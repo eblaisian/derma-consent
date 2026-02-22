@@ -1,14 +1,8 @@
 'use client';
 
-import { lazy, Suspense, useMemo, Component, type ReactNode } from 'react';
-import { useTranslations } from 'next-intl';
-import { detectWebGL } from './webgl-support';
-import { AnatomicalDiagramLegacy } from './anatomical-diagram-legacy';
+import { useCallback, useRef, useState, useEffect } from 'react';
+import { InjectionPointMarker } from './injection-point-marker';
 import type { InjectionPoint, DiagramType } from '@/lib/types';
-
-const AnatomicalDiagram3D = lazy(() =>
-  import('./anatomical-diagram-3d').then((m) => ({ default: m.AnatomicalDiagram3D })),
-);
 
 interface Props {
   diagramType: DiagramType;
@@ -19,65 +13,79 @@ interface Props {
   readOnly?: boolean;
 }
 
-function LoadingSkeleton() {
-  const t = useTranslations('treatmentPlan');
-  return (
-    <div className="w-full flex items-center justify-center bg-muted/30 rounded-lg" style={{ height: '450px' }}>
-      <div className="text-center space-y-2">
-        <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto" />
-        <p className="text-sm text-muted-foreground">{t('loading3D')}</p>
-      </div>
-    </div>
+export function AnatomicalDiagram({
+  diagramType,
+  points,
+  onPointAdd,
+  onPointUpdate,
+  onPointRemove,
+  readOnly = false,
+}: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [svgContent, setSvgContent] = useState<string>('');
+
+  useEffect(() => {
+    fetch(`/diagrams/${diagramType}.svg`)
+      .then((res) => res.text())
+      .then((text) => {
+        // Remove the outer <svg> wrapper so we can embed in our own
+        const inner = text
+          .replace(/<svg[^>]*>/, '')
+          .replace(/<\/svg>/, '');
+        setSvgContent(inner);
+      });
+  }, [diagramType]);
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent<SVGSVGElement>) => {
+      if (readOnly || !onPointAdd) return;
+
+      const svg = e.currentTarget;
+      const rect = svg.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+      // Don't add points if clicking on existing markers
+      const target = e.target as SVGElement;
+      if (target.tagName === 'circle' || target.closest('foreignObject')) return;
+
+      const point: InjectionPoint = {
+        id: crypto.randomUUID(),
+        x: Math.round(x * 10) / 10,
+        y: Math.round(y * 10) / 10,
+        product: 'Botox',
+        units: 4,
+        batchNumber: '',
+        technique: 'bolus',
+        notes: '',
+      };
+
+      onPointAdd(point);
+    },
+    [readOnly, onPointAdd],
   );
-}
-
-interface ErrorBoundaryProps {
-  fallback: ReactNode;
-  children: ReactNode;
-}
-
-interface ErrorBoundaryState {
-  hasError: boolean;
-}
-
-class WebGLErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(): ErrorBoundaryState {
-    return { hasError: true };
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-    return this.props.children;
-  }
-}
-
-export function AnatomicalDiagram(props: Props) {
-  const t = useTranslations('treatmentPlan');
-  const supportsWebGL = useMemo(() => detectWebGL(), []);
-
-  if (!supportsWebGL) {
-    return (
-      <div>
-        <p className="text-xs text-muted-foreground mb-2">{t('webglUnsupported')}</p>
-        <AnatomicalDiagramLegacy {...props} />
-      </div>
-    );
-  }
-
-  const legacyFallback = <AnatomicalDiagramLegacy {...props} />;
 
   return (
-    <WebGLErrorBoundary fallback={legacyFallback}>
-      <Suspense fallback={<LoadingSkeleton />}>
-        <AnatomicalDiagram3D {...props} />
-      </Suspense>
-    </WebGLErrorBoundary>
+    <div ref={containerRef} className="relative w-full">
+      <svg
+        viewBox={diagramType === 'body-front' ? '0 0 400 600' : '0 0 400 500'}
+        className="w-full h-auto cursor-crosshair"
+        onClick={handleClick}
+      >
+        {/* Diagram background */}
+        <g dangerouslySetInnerHTML={{ __html: svgContent }} />
+
+        {/* Injection points overlay */}
+        {points.map((point) => (
+          <InjectionPointMarker
+            key={point.id}
+            point={point}
+            readOnly={readOnly}
+            onUpdate={onPointUpdate}
+            onRemove={() => onPointRemove?.(point.id)}
+          />
+        ))}
+      </svg>
+    </div>
   );
 }
