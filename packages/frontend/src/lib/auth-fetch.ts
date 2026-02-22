@@ -1,7 +1,8 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useCallback } from 'react';
+import { toast } from 'sonner';
 import { API_URL } from './api';
 
 export function useAuthFetch() {
@@ -21,6 +22,12 @@ export function useAuthFetch() {
         ...options,
         headers,
       });
+
+      if (res.status === 401) {
+        toast.error('Session expired. Please log in again.');
+        await signOut({ redirectTo: '/login' });
+        throw new Error('Session expired');
+      }
 
       if (!res.ok) {
         const error = await res.json().catch(() => ({ message: 'Request failed' }));

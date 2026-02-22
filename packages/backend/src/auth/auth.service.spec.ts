@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
+import { TwoFactorService } from './two-factor.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -16,11 +17,14 @@ describe('AuthService', () => {
     practiceId: 'practice-1',
     role: 'ADMIN',
     passwordHash: null as string | null,
+    twoFactorEnabled: false,
+    twoFactorSecret: null as string | null,
   };
 
   const mockPrisma = {
     user: {
       findUnique: jest.fn(),
+      findUniqueOrThrow: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
     },
@@ -31,6 +35,16 @@ describe('AuthService', () => {
 
   const mockJwt = {
     sign: jest.fn().mockReturnValue('mock-jwt-token'),
+    verify: jest.fn(),
+  };
+
+  const mockTwoFactor = {
+    createTempToken: jest.fn().mockReturnValue('temp-2fa-token'),
+    verifyTempToken: jest.fn().mockReturnValue('user-1'),
+    verifyToken: jest.fn().mockReturnValue(true),
+    generateSetupSecret: jest.fn(),
+    enableTwoFactor: jest.fn(),
+    disableTwoFactor: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -39,6 +53,7 @@ describe('AuthService', () => {
         AuthService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: JwtService, useValue: mockJwt },
+        { provide: TwoFactorService, useValue: mockTwoFactor },
       ],
     }).compile();
 
@@ -88,11 +103,12 @@ describe('AuthService', () => {
   });
 
   describe('loginWithCredentials()', () => {
-    it('should return JWT token for valid credentials', async () => {
+    it('should return JWT token for valid credentials without 2FA', async () => {
       const hash = await bcrypt.hash('CorrectPassword', 12);
       mockPrisma.user.findUnique.mockResolvedValue({
         ...mockUser,
         passwordHash: hash,
+        twoFactorEnabled: false,
       });
 
       const result = await service.loginWithCredentials({
@@ -100,14 +116,27 @@ describe('AuthService', () => {
         password: 'CorrectPassword',
       });
 
-      expect(result.accessToken).toBe('mock-jwt-token');
-      expect(result.user.id).toBe('user-1');
-      expect(mockJwt.sign).toHaveBeenCalledWith(
-        expect.objectContaining({
-          sub: 'user-1',
-          email: 'test@example.com',
-        }),
-      );
+      expect(result).toHaveProperty('accessToken', 'mock-jwt-token');
+      expect(result).toHaveProperty('user');
+      expect((result as { user: { id: string } }).user.id).toBe('user-1');
+    });
+
+    it('should return requires2FA when 2FA is enabled', async () => {
+      const hash = await bcrypt.hash('CorrectPassword', 12);
+      mockPrisma.user.findUnique.mockResolvedValue({
+        ...mockUser,
+        passwordHash: hash,
+        twoFactorEnabled: true,
+        twoFactorSecret: 'some-secret',
+      });
+
+      const result = await service.loginWithCredentials({
+        email: 'test@example.com',
+        password: 'CorrectPassword',
+      });
+
+      expect(result).toHaveProperty('requires2FA', true);
+      expect(result).toHaveProperty('tempToken', 'temp-2fa-token');
     });
 
     it('should throw UnauthorizedException for wrong password', async () => {
@@ -147,6 +176,37 @@ describe('AuthService', () => {
           email: 'test@example.com',
           password: 'AnyPassword',
         }),
+      ).rejects.toThrow(UnauthorizedException);
+    });
+  });
+
+  describe('verifyTwoFactorLogin()', () => {
+    it('should return JWT after valid 2FA verification', async () => {
+      mockTwoFactor.verifyTempToken.mockReturnValue('user-1');
+      mockTwoFactor.verifyToken.mockReturnValue(true);
+      mockPrisma.user.findUniqueOrThrow.mockResolvedValue({
+        ...mockUser,
+        twoFactorEnabled: true,
+        twoFactorSecret: 'some-secret',
+      });
+
+      const result = await service.verifyTwoFactorLogin('temp-token', '123456');
+
+      expect(result.accessToken).toBe('mock-jwt-token');
+      expect(result.user.id).toBe('user-1');
+    });
+
+    it('should throw UnauthorizedException for invalid 2FA code', async () => {
+      mockTwoFactor.verifyTempToken.mockReturnValue('user-1');
+      mockTwoFactor.verifyToken.mockReturnValue(false);
+      mockPrisma.user.findUniqueOrThrow.mockResolvedValue({
+        ...mockUser,
+        twoFactorEnabled: true,
+        twoFactorSecret: 'some-secret',
+      });
+
+      await expect(
+        service.verifyTwoFactorLogin('temp-token', '000000'),
       ).rejects.toThrow(UnauthorizedException);
     });
   });

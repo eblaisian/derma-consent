@@ -1,4 +1,4 @@
-.PHONY: dev setup install db db-stop migrate migrate-deploy generate test test-backend test-frontend build clean seed kill-ports help docs docs-build docs-preview
+.PHONY: dev setup install db db-stop migrate migrate-deploy generate test test-backend test-frontend load-test build clean seed kill-ports help docs docs-build docs-preview
 
 # Helper: source .env then run a command
 # Usage: $(call dotenv,my_command)
@@ -69,6 +69,9 @@ test-backend: node_modules ## Run backend tests (GDT service)
 
 test-frontend: node_modules ## Run frontend tests (crypto)
 	cd packages/frontend && npx vitest run
+
+load-test: ## Run k6 load tests against backend
+	k6 run tests/load/consent-submit.js
 
 # ── Build ───────────────────────────────────────────────────────────
 

@@ -18,12 +18,10 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
-import {
-  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger,
-} from '@/components/ui/dialog';
 import { VaultPanel } from '@/components/dashboard/vault-panel';
+import { CreatePatientDialog } from '@/components/patients/create-patient-dialog';
 import { toast } from 'sonner';
-import { Search, UserPlus, Eye } from 'lucide-react';
+import { Search, Eye } from 'lucide-react';
 import Link from 'next/link';
 
 interface Patient {
@@ -50,7 +48,6 @@ export default function PatientsPage() {
   const { isUnlocked, decryptForm } = useVault();
   const { practice } = usePractice();
   const [searchQuery, setSearchQuery] = useState('');
-  const [newOpen, setNewOpen] = useState(false);
   const [decryptedNames, setDecryptedNames] = useState<Record<string, string>>({});
 
   const { data: patientsData, mutate } = useSWR<PatientsResponse>(
@@ -98,30 +95,12 @@ export default function PatientsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold">{t('title')}</h1>
+          <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
           <p className="text-sm text-muted-foreground">
             {t('description')}
           </p>
         </div>
-        <Dialog open={newOpen} onOpenChange={setNewOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <UserPlus className="mr-2 h-4 w-4" />
-              {t('newPatient')}
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t('newPatientTitle')}</DialogTitle>
-              <DialogDescription>
-                {t('newPatientDescription')}
-              </DialogDescription>
-            </DialogHeader>
-            <p className="text-sm text-muted-foreground">
-              {t('newPatientNote')}
-            </p>
-          </DialogContent>
-        </Dialog>
+        <CreatePatientDialog onCreated={() => mutate()} />
       </div>
 
       {!isUnlocked && practice?.encryptedPrivKey && (

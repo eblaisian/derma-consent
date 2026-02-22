@@ -68,7 +68,7 @@ describe('Vault crypto operations', () => {
     };
 
     const encrypted = await encryptFormData(formData, publicKey);
-    expect(encrypted.encryptedData).toBeTruthy();
+    expect(encrypted.ciphertext).toBeTruthy();
     expect(encrypted.encryptedSessionKey).toBeTruthy();
     expect(encrypted.iv).toBeTruthy();
 

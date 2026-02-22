@@ -114,9 +114,11 @@ model User {
   email        String   @unique
   name         String?
   image        String?
-  passwordHash String?  @map("password_hash")
-  practiceId   String?  @map("practice_id")
-  role         UserRole @default(ADMIN)
+  passwordHash     String?  @map("password_hash")
+  twoFactorSecret  String?  @map("two_factor_secret")
+  twoFactorEnabled Boolean  @default(false) @map("two_factor_enabled")
+  practiceId       String?  @map("practice_id")
+  role             UserRole @default(ADMIN)
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
@@ -202,6 +204,7 @@ model PracticeSettings {
   defaultConsentExpiry Int     @default(7) @map("default_consent_expiry")
   enabledConsentTypes  Json    @default("[\"BOTOX\",\"FILLER\",\"LASER\",\"CHEMICAL_PEEL\",\"MICRONEEDLING\",\"PRP\"]") @map("enabled_consent_types")
   brandColor          String?  @map("brand_color")
+  educationVideos     Json?    @map("education_videos")
   createdAt           DateTime @default(now()) @map("created_at")
   updatedAt           DateTime @updatedAt @map("updated_at")
 
@@ -262,6 +265,8 @@ model ConsentForm {
   signatureUserAgent  String?       @map("signature_user_agent")
   stripeSessionId     String?       @map("stripe_session_id")
   stripePaymentIntent String?       @map("stripe_payment_intent")
+  comprehensionScore    Float?    @map("comprehension_score")
+  comprehensionAnswers  Json?     @map("comprehension_answers")
   pdfStoragePath      String?       @map("pdf_storage_path")
   expiresAt           DateTime      @map("expires_at")
   revokedAt           DateTime?     @map("revoked_at")

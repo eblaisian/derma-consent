@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsInt, Min, Max, IsArray } from 'class-validator';
+import { IsString, IsOptional, IsInt, Min, Max, IsArray, IsObject } from 'class-validator';
 
 export class UpdateSettingsDto {
   @IsOptional()
@@ -18,4 +18,8 @@ export class UpdateSettingsDto {
   @IsOptional()
   @IsString()
   brandColor?: string;
+
+  @IsOptional()
+  @IsObject()
+  educationVideos?: Record<string, string>;
 }

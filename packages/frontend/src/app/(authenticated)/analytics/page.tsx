@@ -46,6 +46,12 @@ interface Conversion {
   conversionRate: number;
 }
 
+interface Revenue {
+  totalRevenue: number;
+  transactionCount: number;
+  averageTransaction: number;
+}
+
 export default function AnalyticsPage() {
   const t = useTranslations('analytics');
   const tTypes = useTranslations('consentTypes');
@@ -74,6 +80,11 @@ export default function AnalyticsPage() {
     authFetcher,
   );
 
+  const { data: revenue } = useSWR<Revenue>(
+    session?.accessToken ? `${API_URL}/api/analytics/revenue` : null,
+    authFetcher,
+  );
+
   const typeData = byType?.map((item) => ({
     name: tTypes.has(item.type as Parameters<typeof tTypes>[0]) ? tTypes(item.type as Parameters<typeof tTypes>[0]) : item.type,
     value: item.count,
@@ -82,7 +93,7 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold">{t('title')}</h1>
+        <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
         <p className="text-sm text-muted-foreground">
           {t('description')}
         </p>
@@ -115,6 +126,22 @@ export default function AnalyticsPage() {
           </CardHeader>
         </Card>
       </div>
+
+      {/* Revenue */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('revenue')}</CardTitle>
+          <CardDescription>{t('revenueDescription')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-3xl font-bold">
+            EUR {revenue?.totalRevenue?.toFixed(2) ?? '0.00'}
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {revenue?.transactionCount ?? 0} {t('transactions')} | {t('avg')} EUR {revenue?.averageTransaction?.toFixed(2) ?? '0.00'}
+          </p>
+        </CardContent>
+      </Card>
 
       {/* Conversion */}
       {conversion && (

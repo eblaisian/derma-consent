@@ -9,4 +9,8 @@ module.exports = {
   collectCoverageFrom: ['**/*.ts', '!**/*.spec.ts', '!**/*.module.ts', '!main.ts'],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
+  moduleNameMapper: {
+    '^otplib$': '<rootDir>/../test/__mocks__/otplib.ts',
+    '^qrcode$': '<rootDir>/../test/__mocks__/qrcode.ts',
+  },
 };

@@ -2,17 +2,21 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { useVault } from '@/hooks/use-vault';
 import {
   LayoutDashboard,
+  FileSignature,
+  User,
   Users,
+  ScrollText,
   BarChart3,
-  UserCog,
   CreditCard,
   Settings,
-  ClipboardList,
-  Stethoscope,
+  Lock,
+  Shield,
+  LogOut,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -21,55 +25,120 @@ interface NavItem {
   labelKey: 'dashboard' | 'patients' | 'analytics' | 'team' | 'billing' | 'settings' | 'audit';
   icon: React.ComponentType<{ className?: string }>;
   roles: string[];
+  section: 'overview' | 'management' | 'system';
 }
 
 const navItems: NavItem[] = [
-  { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard, roles: ['ADMIN', 'ARZT', 'EMPFANG'] },
-  { href: '/patients', labelKey: 'patients', icon: Stethoscope, roles: ['ADMIN', 'ARZT'] },
-  { href: '/analytics', labelKey: 'analytics', icon: BarChart3, roles: ['ADMIN', 'ARZT'] },
-  { href: '/team', labelKey: 'team', icon: Users, roles: ['ADMIN'] },
-  { href: '/billing', labelKey: 'billing', icon: CreditCard, roles: ['ADMIN'] },
-  { href: '/settings', labelKey: 'settings', icon: Settings, roles: ['ADMIN'] },
-  { href: '/audit', labelKey: 'audit', icon: ClipboardList, roles: ['ADMIN'] },
+  { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard, roles: ['ADMIN', 'ARZT', 'EMPFANG'], section: 'overview' },
+  { href: '/patients', labelKey: 'patients', icon: User, roles: ['ADMIN', 'ARZT'], section: 'overview' },
+  { href: '/analytics', labelKey: 'analytics', icon: BarChart3, roles: ['ADMIN', 'ARZT'], section: 'management' },
+  { href: '/team', labelKey: 'team', icon: Users, roles: ['ADMIN'], section: 'management' },
+  { href: '/audit', labelKey: 'audit', icon: ScrollText, roles: ['ADMIN'], section: 'management' },
+  { href: '/billing', labelKey: 'billing', icon: CreditCard, roles: ['ADMIN'], section: 'system' },
+  { href: '/settings', labelKey: 'settings', icon: Settings, roles: ['ADMIN'], section: 'system' },
 ];
+
+const sections = ['overview', 'management', 'system'] as const;
 
 export function Sidebar() {
   const t = useTranslations('nav');
+  const tSidebar = useTranslations('sidebar');
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { isUnlocked } = useVault();
   const userRole = session?.user?.role || 'EMPFANG';
 
   const filteredItems = navItems.filter((item) => item.roles.includes(userRole));
 
+  const itemsBySection = (section: string) =>
+    filteredItems.filter((item) => item.section === section);
+
   return (
-    <aside className="hidden md:flex md:w-64 md:flex-col border-r bg-muted/30">
-      <div className="flex h-14 items-center border-b px-4">
-        <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-          <UserCog className="h-5 w-5" />
+    <aside className="hidden md:flex md:w-[260px] md:flex-col border-r bg-sidebar">
+      {/* Logo */}
+      <div className="flex h-14 items-center border-b border-sidebar-border px-5">
+        <Link href="/dashboard" className="flex items-center gap-2.5 font-semibold text-sidebar-foreground">
+          <FileSignature className="h-5 w-5 text-sidebar-primary" />
           <span>DermaConsent</span>
         </Link>
       </div>
 
-      <nav className="flex-1 space-y-1 p-3">
-        {filteredItems.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto py-2">
+        {sections.map((section) => {
+          const items = itemsBySection(section);
+          if (items.length === 0) return null;
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
-                isActive
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {t(item.labelKey)}
-            </Link>
+            <div key={section}>
+              <div className="px-5 pt-5 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+                {tSidebar(section)}
+              </div>
+              <div className="space-y-0.5 px-2">
+                {items.map((item) => {
+                  const isActive = pathname.startsWith(item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        'flex items-center gap-2.5 rounded-md h-9 px-3 text-sm font-medium transition-default',
+                        isActive
+                          ? 'bg-sidebar-accent text-sidebar-primary'
+                          : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+                      )}
+                    >
+                      <item.icon className={cn('h-5 w-5 shrink-0', isActive ? 'text-sidebar-primary' : 'text-muted-foreground')} />
+                      {t(item.labelKey)}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           );
         })}
       </nav>
+
+      {/* Vault status footer */}
+      <div className="border-t border-sidebar-border px-4 py-3">
+        {isUnlocked ? (
+          <div className="flex items-center gap-2.5">
+            <Shield className="h-4 w-4 text-success shrink-0" />
+            <div className="min-w-0">
+              <div className="text-xs font-medium text-sidebar-foreground">{tSidebar('vaultActive')}</div>
+              <div className="text-[11px] text-muted-foreground">{tSidebar('vaultActiveHint')}</div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2.5">
+            <Lock className="h-4 w-4 text-warning shrink-0" />
+            <div className="min-w-0">
+              <div className="text-xs font-medium text-sidebar-foreground">{tSidebar('vaultLocked')}</div>
+              <div className="text-[11px] text-muted-foreground">{tSidebar('vaultLockedHint')}</div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* User profile footer */}
+      {session?.user && (
+        <div className="border-t border-sidebar-border px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-xs font-medium text-primary">
+              {(session.user.name || session.user.email || '?')[0].toUpperCase()}
+            </div>
+            <span className="text-sm text-sidebar-foreground truncate">
+              {session.user.name || session.user.email}
+            </span>
+          </div>
+          <button
+            onClick={() => signOut({ callbackUrl: '/login' })}
+            className="text-muted-foreground hover:text-foreground transition-default shrink-0"
+            title={tSidebar('signOut')}
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
+        </div>
+      )}
     </aside>
   );
 }

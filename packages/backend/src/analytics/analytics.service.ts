@@ -1,9 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
+import Stripe from 'stripe';
 
 @Injectable()
 export class AnalyticsService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly stripe: Stripe | null;
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+  ) {
+    const stripeKey = this.configService.get<string>('STRIPE_SECRET_KEY');
+    this.stripe = stripeKey ? new Stripe(stripeKey) : null;
+  }
 
   async getOverview(practiceId: string) {
     const [total, pending, signed, completed, revoked] = await Promise.all([
@@ -100,12 +110,36 @@ export class AnalyticsService {
       orderBy: { createdAt: 'asc' },
     });
 
+    let totalRevenue = 0;
+    const transactions: { date: string; amount: number; paymentIntent: string }[] = [];
+
+    if (this.stripe && paid.length > 0) {
+      for (const consent of paid) {
+        try {
+          const pi = await this.stripe.paymentIntents.retrieve(consent.stripePaymentIntent!);
+          const amount = pi.amount / 100;
+          totalRevenue += amount;
+          transactions.push({
+            date: consent.createdAt.toISOString().split('T')[0],
+            amount,
+            paymentIntent: consent.stripePaymentIntent!,
+          });
+        } catch {
+          // Skip failed lookups (e.g. test payment intents)
+          transactions.push({
+            date: consent.createdAt.toISOString().split('T')[0],
+            amount: 0,
+            paymentIntent: consent.stripePaymentIntent!,
+          });
+        }
+      }
+    }
+
     return {
-      totalPaid: paid.length,
-      transactions: paid.map((p) => ({
-        date: p.createdAt.toISOString().split('T')[0],
-        paymentIntent: p.stripePaymentIntent,
-      })),
+      totalRevenue,
+      transactionCount: paid.length,
+      averageTransaction: paid.length > 0 ? totalRevenue / paid.length : 0,
+      transactions,
     };
   }
 }

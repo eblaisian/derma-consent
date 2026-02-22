@@ -16,6 +16,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { EncryptionBadge } from '@/components/ui/encryption-badge';
 
 interface DecryptedFormViewerProps {
   token: string;
@@ -99,8 +100,9 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
           <DialogTitle>
             {consentType && tTypes.has(consentType) ? tTypes(consentType) : consentType || ''} - {t('title')}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="flex items-center gap-2">
             {t('description')}
+            <EncryptionBadge />
           </DialogDescription>
         </DialogHeader>
 

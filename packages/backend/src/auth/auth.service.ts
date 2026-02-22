@@ -8,12 +8,14 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { SyncUserDto } from './auth.dto';
 import { RegisterDto, LoginDto } from './credentials.dto';
+import { TwoFactorService } from './two-factor.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly twoFactorService: TwoFactorService,
   ) {}
 
   async syncUser(dto: SyncUserDto) {
@@ -103,6 +105,34 @@ export class AuthService {
     const valid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!valid) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (user.twoFactorEnabled) {
+      const tempToken = this.twoFactorService.createTempToken(user.id);
+      return { requires2FA: true, tempToken };
+    }
+
+    return this.signAndReturn(user);
+  }
+
+  async verifyTwoFactorLogin(tempToken: string, token: string) {
+    const userId = this.twoFactorService.verifyTempToken(tempToken);
+
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+
+    if (!user.twoFactorSecret || !user.twoFactorEnabled) {
+      throw new UnauthorizedException('2FA is not enabled for this user');
+    }
+
+    const isValid = this.twoFactorService.verifyToken(
+      user.twoFactorSecret,
+      token,
+    );
+
+    if (!isValid) {
+      throw new UnauthorizedException('Invalid 2FA code');
     }
 
     return this.signAndReturn(user);

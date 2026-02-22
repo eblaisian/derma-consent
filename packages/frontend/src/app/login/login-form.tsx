@@ -31,6 +31,9 @@ export function LoginForm({ enabledProviders }: Props) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [twoFactorStep, setTwoFactorStep] = useState(false);
+  const [tempToken, setTempToken] = useState('');
+  const [twoFactorCode, setTwoFactorCode] = useState('');
 
   const anyOAuthEnabled = enabledProviders.google || enabledProviders['microsoft-entra-id'] || enabledProviders.apple;
   const anyEnabled = anyOAuthEnabled || enabledProviders.credentials;
@@ -46,12 +49,42 @@ export function LoginForm({ enabledProviders }: Props) {
         redirect: false,
       });
       if (result?.error) {
-        setError(t('invalidCredentials'));
+        // Check if the error indicates 2FA is required
+        if (result.error.includes('2FA_REQUIRED')) {
+          const token = result.error.split('2FA_REQUIRED:')[1];
+          setTempToken(token);
+          setTwoFactorStep(true);
+          setError('');
+        } else {
+          setError(t('invalidCredentials'));
+        }
       } else if (result?.ok) {
         window.location.href = '/dashboard';
       }
     } catch {
       setError(t('invalidCredentials'));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleTwoFactorVerify(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      const result = await signIn('credentials', {
+        tempToken,
+        twoFactorCode,
+        redirect: false,
+      });
+      if (result?.error) {
+        setError(t('invalid2FACode'));
+      } else if (result?.ok) {
+        window.location.href = '/dashboard';
+      }
+    } catch {
+      setError(t('invalid2FACode'));
     } finally {
       setLoading(false);
     }
@@ -76,7 +109,7 @@ export function LoginForm({ enabledProviders }: Props) {
             </Alert>
           )}
 
-          {enabledProviders.credentials && (
+          {enabledProviders.credentials && !twoFactorStep && (
             <form onSubmit={handleCredentialsLogin} className="space-y-3">
               <div className="space-y-1.5">
                 <Label htmlFor="email">{t('email')}</Label>
@@ -111,6 +144,44 @@ export function LoginForm({ enabledProviders }: Props) {
                   {t('createAccount')}
                 </Link>
               </p>
+            </form>
+          )}
+
+          {twoFactorStep && (
+            <form onSubmit={handleTwoFactorVerify} className="space-y-3">
+              <p className="text-sm text-muted-foreground">{t('enter2FACode')}</p>
+              <div className="space-y-1.5">
+                <Label htmlFor="twoFactorCode">{t('verificationCode')}</Label>
+                <Input
+                  id="twoFactorCode"
+                  value={twoFactorCode}
+                  onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="000000"
+                  maxLength={6}
+                  className="font-mono text-center text-lg tracking-widest"
+                  autoFocus
+                  required
+                />
+              </div>
+              {error && (
+                <p className="text-sm text-destructive">{error}</p>
+              )}
+              <Button type="submit" className="w-full" disabled={loading || twoFactorCode.length !== 6}>
+                {loading ? t('verifying') : t('verify')}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="w-full"
+                onClick={() => {
+                  setTwoFactorStep(false);
+                  setTempToken('');
+                  setTwoFactorCode('');
+                  setError('');
+                }}
+              >
+                {t('backToLogin')}
+              </Button>
             </form>
           )}
 

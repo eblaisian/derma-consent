@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import {
   generateRsaKeyPair,
   exportPublicKey,
@@ -28,6 +29,7 @@ interface GenerateKeysResult {
 }
 
 export function useVault() {
+  const { data: session } = useSession();
   const [state, setState] = useState<VaultState>({
     isUnlocked: false,
     isLoading: false,
@@ -36,6 +38,14 @@ export function useVault() {
 
   // Store private key in ref to avoid React DevTools exposure
   const privateKeyRef = useRef<CryptoKey | null>(null);
+
+  // Auto-lock vault when session expires
+  useEffect(() => {
+    if (!session && privateKeyRef.current) {
+      privateKeyRef.current = null;
+      setState({ isUnlocked: false, isLoading: false, error: null });
+    }
+  }, [session]);
 
   const generatePracticeKeys = useCallback(
     async (masterPassword: string): Promise<GenerateKeysResult> => {

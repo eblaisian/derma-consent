@@ -102,7 +102,7 @@ export default function AuditPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold">{t('title')}</h1>
+          <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
           <p className="text-sm text-muted-foreground">
             {t('description')}
           </p>

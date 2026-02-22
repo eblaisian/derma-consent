@@ -67,7 +67,7 @@ export default function BillingPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold">{t('title')}</h1>
+        <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
         <p className="text-sm text-muted-foreground">
           {t('description')}
         </p>
@@ -177,8 +177,10 @@ export default function BillingPage() {
               <li>{tPlans('enterpriseFeature3')}</li>
               <li>{tPlans('enterpriseFeature4')}</li>
             </ul>
-            <Button className="w-full" variant="outline">
-              {t('contactUs')}
+            <Button className="w-full" variant="outline" asChild>
+              <a href="mailto:enterprise@dermaconsent.de?subject=Enterprise%20Plan%20Inquiry">
+                {t('contactUs')}
+              </a>
             </Button>
           </CardContent>
         </Card>

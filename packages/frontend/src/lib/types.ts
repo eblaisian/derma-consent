@@ -74,10 +74,19 @@ export interface TreatmentPhotoSummary {
 
 // --- Treatment Plans ---
 
+export interface Vec3 {
+  x: number;
+  y: number;
+  z: number;
+}
+
 export interface InjectionPoint {
   id: string;
   x: number; // 0-100% on diagram
   y: number; // 0-100% on diagram
+  position3D?: Vec3;         // World-space position on model surface
+  normal3D?: Vec3;           // Surface normal at the point
+  coordinateVersion?: number; // absent/1 = legacy 2D, 2 = native 3D
   product: string;
   units: number;
   batchNumber: string;

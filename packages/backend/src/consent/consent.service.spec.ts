@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { ConsentService } from './consent.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
+import { SmsService } from '../sms/sms.service';
 import { ConsentType } from './consent.dto';
 
 describe('ConsentService', () => {
@@ -17,9 +19,14 @@ describe('ConsentService', () => {
       update: jest.fn(),
       count: jest.fn(),
     },
+    practiceSettings: {
+      findUnique: jest.fn().mockResolvedValue({ brandColor: null, logoUrl: null }),
+    },
   };
 
   const mockAudit = { log: jest.fn() };
+  const mockConfig = { get: jest.fn().mockReturnValue('http://localhost:3000') };
+  const mockSms = { sendConsentLink: jest.fn() };
 
   const mockPractice = { id: 'practice-1', name: 'Test Practice' };
 
@@ -39,6 +46,8 @@ describe('ConsentService', () => {
       providers: [
         ConsentService,
         { provide: PrismaService, useValue: mockPrisma },
+        { provide: ConfigService, useValue: mockConfig },
+        { provide: SmsService, useValue: mockSms },
         { provide: AuditService, useValue: mockAudit },
       ],
     }).compile();
@@ -106,7 +115,7 @@ describe('ConsentService', () => {
 
       const result = await service.findByToken('abc-123-token');
 
-      expect(result).toEqual(mockConsent);
+      expect(result).toEqual({ ...mockConsent, brandColor: null, logoUrl: null, videoUrl: null });
     });
 
     it('should throw NotFoundException for non-existent token', async () => {

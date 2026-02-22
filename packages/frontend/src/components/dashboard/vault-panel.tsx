@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Shield, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface VaultPanelProps {
@@ -39,10 +40,10 @@ export function VaultPanel({ encryptedPrivKey }: VaultPanelProps) {
 
   if (isUnlocked) {
     return (
-      <Card>
+      <Card className="border-l-4 border-l-success">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-green-500" />
+            <Shield className="h-4 w-4 text-success" />
             {t('unlockedTitle')}
           </CardTitle>
           <CardDescription>
@@ -59,10 +60,10 @@ export function VaultPanel({ encryptedPrivKey }: VaultPanelProps) {
   }
 
   return (
-    <Card>
+    <Card className="border-l-4 border-l-warning">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full bg-amber-500" />
+          <Lock className="h-4 w-4 text-warning" />
           {t('lockedTitle')}
         </CardTitle>
         <CardDescription>

@@ -1,7 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import useSWR from 'swr';
+import { API_URL, createAuthFetcher } from '@/lib/api';
 import { useAuthFetch } from '@/lib/auth-fetch';
 import type { ConsentType } from '@/components/consent-form/form-fields';
 import { Button } from '@/components/ui/button';
@@ -24,7 +27,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 
-const consentTypes: ConsentType[] = ['BOTOX', 'FILLER', 'LASER', 'CHEMICAL_PEEL', 'MICRONEEDLING', 'PRP'];
+const allConsentTypes: ConsentType[] = ['BOTOX', 'FILLER', 'LASER', 'CHEMICAL_PEEL', 'MICRONEEDLING', 'PRP'];
 
 interface NewConsentDialogProps {
   onCreated: () => void;
@@ -33,10 +36,22 @@ interface NewConsentDialogProps {
 export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
   const t = useTranslations('newConsent');
   const tTypes = useTranslations('consentTypes');
+  const { data: session } = useSession();
   const authFetch = useAuthFetch();
+
+  const { data: settings } = useSWR<{ enabledConsentTypes: string[] }>(
+    session?.accessToken ? `${API_URL}/api/settings` : null,
+    createAuthFetcher(session?.accessToken),
+  );
+
+  const consentTypes = settings?.enabledConsentTypes?.length
+    ? allConsentTypes.filter((t) => settings.enabledConsentTypes.includes(t))
+    : allConsentTypes;
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<ConsentType | ''>('');
+  const [deliveryChannel, setDeliveryChannel] = useState<'email' | 'sms' | 'whatsapp'>('email');
   const [patientEmail, setPatientEmail] = useState('');
+  const [patientPhone, setPatientPhone] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [consentLink, setConsentLink] = useState<string | null>(null);
 
@@ -49,7 +64,9 @@ export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
         method: 'POST',
         body: JSON.stringify({
           type,
+          deliveryChannel,
           ...(patientEmail.trim() && { patientEmail: patientEmail.trim() }),
+          ...(patientPhone.trim() && { patientPhone: patientPhone.trim() }),
         }),
       });
 
@@ -74,7 +91,9 @@ export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
     setOpen(isOpen);
     if (!isOpen) {
       setType('');
+      setDeliveryChannel('email');
       setPatientEmail('');
+      setPatientPhone('');
       setConsentLink(null);
     }
   };
@@ -129,17 +148,48 @@ export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label>{t('patientEmail')}</Label>
-              <Input
-                type="email"
-                value={patientEmail}
-                onChange={(e) => setPatientEmail(e.target.value)}
-                placeholder={t('patientEmailPlaceholder')}
-              />
-              <p className="text-xs text-muted-foreground">
-                {t('patientEmailInfo')}
-              </p>
+              <Label>{t('deliveryChannel')}</Label>
+              <Select value={deliveryChannel} onValueChange={(v) => setDeliveryChannel(v as 'email' | 'sms' | 'whatsapp')}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="email">{t('channelEmail')}</SelectItem>
+                  <SelectItem value="sms">{t('channelSms')}</SelectItem>
+                  <SelectItem value="whatsapp">{t('channelWhatsApp')}</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+
+            {deliveryChannel === 'email' && (
+              <div className="space-y-2">
+                <Label>{t('patientEmail')}</Label>
+                <Input
+                  type="email"
+                  value={patientEmail}
+                  onChange={(e) => setPatientEmail(e.target.value)}
+                  placeholder={t('patientEmailPlaceholder')}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {t('patientEmailInfo')}
+                </p>
+              </div>
+            )}
+
+            {(deliveryChannel === 'sms' || deliveryChannel === 'whatsapp') && (
+              <div className="space-y-2">
+                <Label>{t('patientPhone')}</Label>
+                <Input
+                  type="tel"
+                  value={patientPhone}
+                  onChange={(e) => setPatientPhone(e.target.value)}
+                  placeholder={t('patientPhonePlaceholder')}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {t('patientPhoneInfo')}
+                </p>
+              </div>
+            )}
 
             <Button className="w-full" onClick={handleCreate} disabled={!type || isCreating}>
               {isCreating ? (

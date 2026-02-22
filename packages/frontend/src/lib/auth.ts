@@ -42,8 +42,34 @@ providers.push(
     credentials: {
       email: {},
       password: {},
+      tempToken: {},
+      twoFactorCode: {},
     },
     async authorize(credentials) {
+      // 2FA verification flow — called after initial login returned requires2FA
+      if (credentials.tempToken && credentials.twoFactorCode) {
+        const res = await fetch(`${API_URL}/api/auth/2fa/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tempToken: credentials.tempToken,
+            token: credentials.twoFactorCode,
+          }),
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        return {
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.name,
+          image: data.user.image,
+          accessToken: data.accessToken,
+          practiceId: data.user.practiceId,
+          role: data.user.role,
+        };
+      }
+
+      // Standard login flow
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -54,6 +80,12 @@ providers.push(
       });
       if (!res.ok) return null;
       const data = await res.json();
+
+      // If 2FA is required, throw a special error that the login form can catch
+      if (data.requires2FA) {
+        throw new Error(`2FA_REQUIRED:${data.tempToken}`);
+      }
+
       return {
         id: data.user.id,
         email: data.user.email,

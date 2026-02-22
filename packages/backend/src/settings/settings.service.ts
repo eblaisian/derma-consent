@@ -28,6 +28,7 @@ export class SettingsService {
         ...(dto.defaultConsentExpiry !== undefined && { defaultConsentExpiry: dto.defaultConsentExpiry }),
         ...(dto.enabledConsentTypes !== undefined && { enabledConsentTypes: dto.enabledConsentTypes }),
         ...(dto.brandColor !== undefined && { brandColor: dto.brandColor }),
+        ...(dto.educationVideos !== undefined && { educationVideos: dto.educationVideos }),
       },
       create: {
         practiceId,
@@ -35,6 +36,7 @@ export class SettingsService {
         ...(dto.defaultConsentExpiry && { defaultConsentExpiry: dto.defaultConsentExpiry }),
         ...(dto.enabledConsentTypes && { enabledConsentTypes: dto.enabledConsentTypes }),
         ...(dto.brandColor && { brandColor: dto.brandColor }),
+        ...(dto.educationVideos && { educationVideos: dto.educationVideos }),
       },
     });
   }

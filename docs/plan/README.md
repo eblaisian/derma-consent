@@ -27,55 +27,55 @@ Each phase contains numbered tasks with unique IDs (e.g., `T-0.1`). Each task in
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| T-0.1 | Versioned database migrations | `pending` | — |
-| T-0.2 | Health check endpoints | `pending` | — |
-| T-0.3 | Global exception filter + structured logging | `pending` | — |
-| T-0.4 | HSTS header | `pending` | — |
-| T-0.5 | Content Security Policy header | `pending` | — |
-| T-0.6 | Fix CI/CD: tests before deploy | `pending` | — |
-| T-0.7 | Non-root user in backend Dockerfile | `pending` | — |
-| T-0.8 | Add LICENSE file | `pending` | — |
-| T-0.9 | Pagination limit enforcement | `pending` | — |
+| T-0.1 | Versioned database migrations | `done` | Claude |
+| T-0.2 | Health check endpoints | `done` | Claude |
+| T-0.3 | Global exception filter + structured logging | `done` | Claude |
+| T-0.4 | HSTS header | `done` | Claude |
+| T-0.5 | Content Security Policy header | `done` | Claude |
+| T-0.6 | Fix CI/CD: tests before deploy | `done` | Claude |
+| T-0.7 | Non-root user in backend Dockerfile | `done` | Claude |
+| T-0.8 | Add LICENSE file | `skipped` | — |
+| T-0.9 | Pagination limit enforcement | `done` | Claude |
 
 ### Phase 1 — Stability & Testing (Week 2)
 > Production confidence through tests, error handling, and monitoring.
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| T-1.1 | Backend auth tests | `pending` | — |
-| T-1.2 | Backend consent tests | `pending` | — |
-| T-1.3 | Backend patient tests | `pending` | — |
-| T-1.4 | Backend billing tests | `pending` | — |
-| T-1.5 | Frontend component tests | `pending` | — |
-| T-1.6 | React Error Boundaries | `pending` | — |
-| T-1.7 | Session expiry handling | `pending` | — |
-| T-1.8 | Custom 404 and error pages | `pending` | — |
+| T-1.1 | Backend auth tests | `done` | Claude |
+| T-1.2 | Backend consent tests | `done` | Claude |
+| T-1.3 | Backend patient tests | `done` | Claude |
+| T-1.4 | Backend billing tests | `done` | Claude |
+| T-1.5 | Frontend component tests | `done` | Claude |
+| T-1.6 | React Error Boundaries | `done` | Claude |
+| T-1.7 | Session expiry handling | `done` | Claude |
+| T-1.8 | Custom 404 and error pages | `done` | Claude |
 
 ### Phase 2 — Feature Polish (Week 3)
 > Complete partially-implemented features and add must-have UX.
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| T-2.1 | Practice info editable in settings | `pending` | — |
-| T-2.2 | Brand color on consent forms | `pending` | — |
-| T-2.3 | Manual patient creation | `pending` | — |
-| T-2.4 | Enabled consent types in settings UI | `pending` | — |
-| T-2.5 | Enterprise contact button | `pending` | — |
-| T-2.6 | Revenue analytics with Stripe amounts | `pending` | — |
-| T-2.7 | Landing page | `pending` | — |
-| T-2.8 | Onboarding flow | `pending` | — |
+| T-2.1 | Practice info editable in settings | `done` | Claude |
+| T-2.2 | Brand color on consent forms | `done` | Claude |
+| T-2.3 | Manual patient creation | `done` | Claude |
+| T-2.4 | Enabled consent types in settings UI | `done` | Claude |
+| T-2.5 | Enterprise contact button | `done` | Claude |
+| T-2.6 | Revenue analytics with Stripe amounts | `done` | Claude |
+| T-2.7 | Landing page | `done` | Claude |
+| T-2.8 | Onboarding flow | `done` | Claude |
 
 ### Phase 3 — Launch Readiness (Week 4)
 > Final hardening, verification, and go-live.
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| T-3.1 | Production environment setup | `pending` | — |
-| T-3.2 | Load testing | `pending` | — |
-| T-3.3 | OAuth provider production testing | `pending` | — |
-| T-3.4 | Stripe production testing | `pending` | — |
-| T-3.5 | Email delivery production testing | `pending` | — |
-| T-3.6 | Smoke test full user journey | `pending` | — |
+| T-3.1 | Production environment setup | `done` | Claude |
+| T-3.2 | Load testing | `done` | Claude |
+| T-3.3 | OAuth provider production testing | `manual` | — |
+| T-3.4 | Stripe production testing | `manual` | — |
+| T-3.5 | Email delivery production testing | `manual` | — |
+| T-3.6 | Smoke test full user journey | `manual` | — |
 
 ### Phase 4 — Post-Launch Enhancements
 > Nice-to-have features for competitive advantage.
@@ -96,19 +96,19 @@ Each phase contains numbered tasks with unique IDs (e.g., `T-0.1`). Each task in
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| T-5.1 | Design token foundation (globals.css) | `pending` | — |
-| T-5.2 | Sidebar redesign | `pending` | — |
-| T-5.3 | Status badge system | `pending` | — |
-| T-5.4 | Card system upgrade (stat cards) | `pending` | — |
-| T-5.5 | Table system upgrade | `pending` | — |
-| T-5.6 | Consent form (patient-facing) redesign | `pending` | — |
-| T-5.7 | Empty states & loading skeletons | `pending` | — |
-| T-5.8 | Trust & security visual language | `pending` | — |
-| T-5.9 | Animation & micro-interactions | `pending` | — |
-| T-5.10 | Dark mode implementation | `pending` | — |
-| T-5.11 | Dashboard page redesign | `pending` | — |
-| T-5.12 | Icon consistency & Lucide config | `pending` | — |
-| T-5.13 | Typography & spacing audit | `pending` | — |
+| T-5.1 | Design token foundation (globals.css) | `done` | Claude |
+| T-5.2 | Sidebar redesign | `done` | Claude |
+| T-5.3 | Status badge system | `done` | Claude |
+| T-5.4 | Card system upgrade (stat cards) | `done` | Claude |
+| T-5.5 | Table system upgrade | `done` | Claude |
+| T-5.6 | Consent form (patient-facing) redesign | `done` | Claude |
+| T-5.7 | Empty states & loading skeletons | `done` | Claude |
+| T-5.8 | Trust & security visual language | `done` | Claude |
+| T-5.9 | Animation & micro-interactions | `done` | Claude |
+| T-5.10 | Dark mode implementation | `done` | Claude |
+| T-5.11 | Dashboard page redesign | `done` | Claude |
+| T-5.12 | Icon consistency & Lucide config | `done` | Claude |
+| T-5.13 | Typography & spacing audit | `done` | Claude |
 
 ---
 

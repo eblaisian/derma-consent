@@ -1,22 +1,20 @@
 'use client';
 
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { useVault } from '@/hooks/use-vault';
 import { Sidebar } from './sidebar';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
-import { LogOut, Lock, Unlock, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const t = useTranslations('header');
   const tNav = useTranslations('nav');
   const { data: session } = useSession();
-  const { isUnlocked } = useVault();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -46,42 +44,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               <Menu className="h-5 w-5" />
             </Button>
-            <span className="text-sm text-muted-foreground md:hidden">{t('appName')}</span>
+            <span className="text-sm font-medium text-foreground md:hidden">DermaConsent</span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             <LanguageSwitcher />
-
-            {/* Vault status */}
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              {isUnlocked ? (
-                <>
-                  <Unlock className="h-3.5 w-3.5 text-green-500" />
-                  <span className="hidden sm:inline">{t('vaultOpen')}</span>
-                </>
-              ) : (
-                <>
-                  <Lock className="h-3.5 w-3.5 text-amber-500" />
-                  <span className="hidden sm:inline">{t('vaultLocked')}</span>
-                </>
-              )}
-            </div>
-
-            {/* User info */}
-            {session?.user && (
-              <span className="hidden text-sm text-muted-foreground sm:inline">
-                {session.user.name || session.user.email}
-              </span>
-            )}
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => signOut({ callbackUrl: '/login' })}
-              title={t('signOut')}
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
           </div>
         </header>
 

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePracticeDto } from './practice.dto';
+import { UpdatePracticeDto } from './update-practice.dto';
 
 @Injectable()
 export class PracticeService {
@@ -44,6 +45,24 @@ export class PracticeService {
     });
 
     return practice;
+  }
+
+  async update(practiceId: string, dto: UpdatePracticeDto) {
+    const practice = await this.prisma.practice.findUnique({
+      where: { id: practiceId },
+    });
+
+    if (!practice) {
+      throw new NotFoundException('Practice not found');
+    }
+
+    return this.prisma.practice.update({
+      where: { id: practiceId },
+      data: {
+        ...(dto.name && { name: dto.name }),
+        ...(dto.dsgvoContact && { dsgvoContact: dto.dsgvoContact }),
+      },
+    });
   }
 
   async findById(id: string) {

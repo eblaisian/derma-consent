@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException, BadRequestException, Optional } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
+import { SmsService } from '../sms/sms.service';
 import { CreateConsentDto, SubmitConsentDto } from './consent.dto';
 import { ConsentStatus } from '@prisma/client';
 
@@ -8,6 +10,8 @@ import { ConsentStatus } from '@prisma/client';
 export class ConsentService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+    private readonly smsService: SmsService,
     @Optional() private readonly auditService?: AuditService,
   ) {}
 
@@ -48,6 +52,17 @@ export class ConsentService {
       entityId: consent.id,
     });
 
+    // Deliver consent link via chosen channel
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    const link = `${frontendUrl}/consent/${consent.token}`;
+
+    if (dto.deliveryChannel === 'sms' && dto.patientPhone) {
+      await this.smsService.sendConsentLink(dto.patientPhone, 'sms', link, practice.name);
+    } else if (dto.deliveryChannel === 'whatsapp' && dto.patientPhone) {
+      await this.smsService.sendConsentLink(dto.patientPhone, 'whatsapp', link, practice.name);
+    }
+    // Email delivery is handled by the controller/email service separately
+
     return consent;
   }
 
@@ -77,7 +92,15 @@ export class ConsentService {
       throw new BadRequestException('Consent has been revoked');
     }
 
-    return consent;
+    const settings = await this.prisma.practiceSettings.findUnique({
+      where: { practiceId: consent.practiceId },
+      select: { brandColor: true, logoUrl: true, educationVideos: true },
+    });
+
+    const educationVideos = (settings?.educationVideos as Record<string, string> | null) ?? null;
+    const videoUrl = educationVideos?.[consent.type] ?? null;
+
+    return { ...consent, brandColor: settings?.brandColor ?? null, logoUrl: settings?.logoUrl ?? null, videoUrl };
   }
 
   async submit(token: string, dto: SubmitConsentDto, ip: string, userAgent: string) {
@@ -104,6 +127,8 @@ export class ConsentService {
         signatureIp: ip,
         signatureTimestamp: now,
         signatureUserAgent: userAgent,
+        ...(dto.comprehensionScore !== undefined && { comprehensionScore: dto.comprehensionScore }),
+        ...(dto.comprehensionAnswers && { comprehensionAnswers: dto.comprehensionAnswers as object }),
       },
       select: {
         id: true,
