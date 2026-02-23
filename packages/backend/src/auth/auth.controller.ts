@@ -12,7 +12,7 @@ import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { TwoFactorService } from './two-factor.service';
 import { SyncUserDto } from './auth.dto';
-import { RegisterDto, LoginDto } from './credentials.dto';
+import { RegisterDto, LoginDto, ForgotPasswordDto, ResetPasswordDto, VerifyEmailDto } from './credentials.dto';
 import { TwoFactorTokenDto, TwoFactorVerifyLoginDto } from './two-factor.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CurrentUser, CurrentUserPayload } from './current-user.decorator';
@@ -48,6 +48,30 @@ export class AuthController {
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   async login(@Body() dto: LoginDto) {
     return this.authService.loginWithCredentials(dto);
+  }
+
+  @Post('forgot-password')
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto.email);
+  }
+
+  @Post('reset-password')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto.token, dto.newPassword);
+  }
+
+  @Post('verify-email')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  async verifyEmail(@Body() dto: VerifyEmailDto) {
+    return this.authService.verifyEmail(dto.token);
+  }
+
+  @Post('resend-verification')
+  @Throttle({ default: { limit: 2, ttl: 60000 } })
+  async resendVerification(@Body() dto: ForgotPasswordDto) {
+    return this.authService.resendVerification(dto.email);
   }
 
   @Get('2fa/status')

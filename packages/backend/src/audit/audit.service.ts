@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AuditAction } from '@prisma/client';
 
 interface AuditLogParams {
-  practiceId: string;
+  practiceId?: string;
   userId?: string;
   action: AuditAction;
   entityType?: string;
@@ -75,16 +75,38 @@ export class AuditService {
     };
   }
 
-  async exportCsv(practiceId: string) {
+  async exportCsv(
+    practiceId: string,
+    options: { startDate?: Date; endDate?: Date; locale?: string } = {},
+  ) {
+    const { startDate, endDate, locale = 'de' } = options;
+    const maxRows = 10000;
+
+    const where: Record<string, unknown> = { practiceId };
+    if (startDate || endDate) {
+      where.createdAt = {
+        ...(startDate && { gte: startDate }),
+        ...(endDate && { lte: endDate }),
+      };
+    }
+
     const logs = await this.prisma.auditLog.findMany({
-      where: { practiceId },
+      where,
       orderBy: { createdAt: 'desc' },
+      take: maxRows,
       include: {
         user: { select: { name: true, email: true } },
       },
     });
 
-    const header = 'Zeitstempel,Aktion,Benutzer,E-Mail,Entitaet,IP-Adresse\n';
+    const headers: Record<string, string> = {
+      de: 'Zeitstempel,Aktion,Benutzer,E-Mail,Entitaet,IP-Adresse',
+      en: 'Timestamp,Action,User,Email,Entity,IP Address',
+      es: 'Marca de tiempo,Accion,Usuario,Correo,Entidad,Direccion IP',
+      fr: 'Horodatage,Action,Utilisateur,E-mail,Entite,Adresse IP',
+    };
+
+    const header = (headers[locale] || headers.de) + '\n';
     const rows = logs.map((log) =>
       [
         log.createdAt.toISOString(),

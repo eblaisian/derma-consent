@@ -6,14 +6,11 @@ import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import useSWR from 'swr';
 import { usePractice } from '@/hooks/use-practice';
-import { useVault } from '@/hooks/use-vault';
 import { API_URL, createAuthFetcher } from '@/lib/api';
 import type { ConsentFormSummary } from '@/lib/types';
-import type { EncryptedPrivateKey } from '@/lib/crypto';
 import { NewConsentDialog } from '@/components/dashboard/new-consent-dialog';
 import { OnboardingModal } from '@/components/dashboard/onboarding-modal';
 import { ConsentTable } from '@/components/dashboard/consent-table';
-import { VaultPanel } from '@/components/dashboard/vault-panel';
 import { StatCard } from '@/components/ui/stat-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FileSignature, Clock, CheckCircle, User } from 'lucide-react';
@@ -23,7 +20,6 @@ export default function DashboardPage() {
   const router = useRouter();
   const { data: session } = useSession();
   const { practiceId, practice, isLoading: practiceLoading } = usePractice();
-  const { isUnlocked } = useVault();
   const [showNewConsent, setShowNewConsent] = useState(false);
 
   const {
@@ -38,13 +34,23 @@ export default function DashboardPage() {
   );
   const consents = consentsData?.items;
 
-  // If user doesn't have a practice yet, redirect to setup
-  const needsSetup = !practiceLoading && !practiceId && !!session;
+  const { data: patientsData } = useSWR<{ total: number }>(
+    practiceId && session?.accessToken
+      ? `${API_URL}/api/patients?page=1&limit=1`
+      : null,
+    createAuthFetcher(session?.accessToken),
+  );
+
+  // If user doesn't have a practice yet, redirect to setup (unless platform admin)
+  const isPlatformAdmin = session?.user?.role === 'PLATFORM_ADMIN';
+  const needsSetup = !practiceLoading && !practiceId && !!session && !isPlatformAdmin;
   useEffect(() => {
-    if (needsSetup) {
+    if (isPlatformAdmin) {
+      router.push('/admin');
+    } else if (needsSetup) {
       router.push('/setup');
     }
-  }, [needsSetup, router]);
+  }, [needsSetup, isPlatformAdmin, router]);
 
   const showOnboarding =
     !consentsLoading &&
@@ -125,17 +131,10 @@ export default function DashboardPage() {
           />
           <StatCard
             title={t('statPatients')}
-            value="—"
+            value={patientsData?.total ?? 0}
             icon={<User className="h-4 w-4" />}
           />
         </div>
-      )}
-
-      {/* Vault panel — show only if locked and encryption key exists */}
-      {!isUnlocked && practice?.encryptedPrivKey && (
-        <VaultPanel
-          encryptedPrivKey={practice.encryptedPrivKey as unknown as EncryptedPrivateKey}
-        />
       )}
 
       {/* Consent table in a raised surface */}
@@ -152,7 +151,6 @@ export default function DashboardPage() {
         ) : (
           <ConsentTable
             consents={consents || []}
-            isVaultUnlocked={isUnlocked}
             onRefresh={() => refreshConsents()}
             onCreateConsent={() => setShowNewConsent(true)}
           />

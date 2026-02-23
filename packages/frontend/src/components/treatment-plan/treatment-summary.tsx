@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useVault } from '@/hooks/use-vault';
 import { AnatomicalDiagram } from './anatomical-diagram';
+import { PhotoAnnotationCanvas } from './photo-annotation-canvas';
+import { TreatmentAreasSummary } from './treatment-areas-summary';
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
@@ -63,13 +65,34 @@ export function TreatmentSummary({ plan }: Props) {
     );
   }
 
+  // Treatment Areas mode — full-width card summary
+  if (data.diagramType === 'treatment-areas') {
+    return (
+      <div className="space-y-3">
+        <TreatmentAreasSummary points={data.points} />
+        {data.overallNotes && (
+          <p className="text-sm text-muted-foreground">{data.overallNotes}</p>
+        )}
+      </div>
+    );
+  }
+
+  // Photo or SVG diagram modes — two-column layout
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <AnatomicalDiagram
-        diagramType={data.diagramType}
-        points={data.points}
-        readOnly
-      />
+      {data.diagramType === 'patient-photo' && data.photoDataUrl ? (
+        <PhotoAnnotationCanvas
+          photoDataUrl={data.photoDataUrl}
+          points={data.points}
+          readOnly
+        />
+      ) : (
+        <AnatomicalDiagram
+          diagramType={data.diagramType}
+          points={data.points}
+          readOnly
+        />
+      )}
       <div className="space-y-3">
         <Table>
           <TableHeader>
@@ -86,7 +109,7 @@ export function TreatmentSummary({ plan }: Props) {
                 <TableCell className="text-sm">{point.product}</TableCell>
                 <TableCell className="text-sm">{point.units}</TableCell>
                 <TableCell className="text-sm">{tTech(point.technique as keyof IntlMessages['techniques'])}</TableCell>
-                <TableCell className="text-sm">{point.batchNumber || '—'}</TableCell>
+                <TableCell className="text-sm">{point.batchNumber || '\u2014'}</TableCell>
               </TableRow>
             ))}
           </TableBody>

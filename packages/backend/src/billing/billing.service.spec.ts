@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { BillingService } from './billing.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import Stripe from 'stripe';
 
 describe('BillingService', () => {
@@ -28,12 +29,29 @@ describe('BillingService', () => {
     }),
   };
 
+  const mockPlatformConfig = {
+    get: jest.fn((key: string) => {
+      const map: Record<string, string> = {
+        'stripe.secretKey': 'sk_test_dummy',
+        'stripe.starterMonthlyPriceId': 'price_starter_monthly',
+        'stripe.starterYearlyPriceId': 'price_starter_yearly',
+        'stripe.professionalMonthlyPriceId': 'price_pro_monthly',
+        'stripe.professionalYearlyPriceId': 'price_pro_yearly',
+        'stripe.enterpriseMonthlyPriceId': 'price_enterprise_monthly',
+        'stripe.enterpriseYearlyPriceId': 'price_enterprise_yearly',
+        'stripe.subscriptionWebhookSecret': 'whsec_test',
+      };
+      return Promise.resolve(map[key]);
+    }),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BillingService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: ConfigService, useValue: mockConfig },
+        { provide: PlatformConfigService, useValue: mockPlatformConfig },
       ],
     }).compile();
 

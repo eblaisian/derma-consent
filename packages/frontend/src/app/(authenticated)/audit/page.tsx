@@ -17,6 +17,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { Download } from 'lucide-react';
 
@@ -73,7 +74,7 @@ export default function AuditPage() {
   if (startDate) queryParams.set('startDate', startDate);
   if (endDate) queryParams.set('endDate', endDate);
 
-  const { data } = useSWR<AuditResponse>(
+  const { data, isLoading } = useSWR<AuditResponse>(
     session?.accessToken ? `${API_URL}/api/audit?${queryParams}` : null,
     createAuthFetcher(session?.accessToken),
   );
@@ -169,6 +170,15 @@ export default function AuditPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {isLoading && Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={`skeleton-${i}`}>
+                  <TableCell><Skeleton className="h-4 w-28" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-36" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                </TableRow>
+              ))}
               {data?.items.map((entry) => (
                 <TableRow key={entry.id}>
                   <TableCell className="text-sm">

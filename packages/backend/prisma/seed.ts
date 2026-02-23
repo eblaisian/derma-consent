@@ -396,14 +396,19 @@ async function main() {
   await prisma.consentForm.deleteMany(where);
   await prisma.patient.deleteMany(where);
   await prisma.auditLog.deleteMany(where);
+  await prisma.auditLog.deleteMany({ where: { practiceId: null } });
   await prisma.subscription.deleteMany(where);
   await prisma.practiceSettings.deleteMany(where);
   await prisma.account.deleteMany({
     where: { user: { practiceId: { in: practiceIds } } },
   });
   await prisma.user.deleteMany({ where: { practiceId: { in: practiceIds } } });
+  // Clean platform admin user
+  await prisma.user.deleteMany({ where: { email: 'admin@dermaconsent.de' } });
   await prisma.invite.deleteMany(where);
   await prisma.practice.deleteMany({ where: { id: { in: practiceIds } } });
+  // Clean platform config
+  await prisma.platformConfig.deleteMany({});
 
   // ── Step 4: Create practices ──
   console.log('Creating practices...');
@@ -461,6 +466,7 @@ async function main() {
         name: u.name,
         role: u.role,
         passwordHash,
+        emailVerified: true,
         practiceId: practices[u.practiceIdx].id,
         createdAt: daysAgo(u.createdDaysAgo),
       },
@@ -848,6 +854,36 @@ async function main() {
     });
   }
 
+  // ── Step 14: Create platform admin user ──
+  console.log('Creating platform admin user...');
+  const platformAdminHash = await bcrypt.hash('AdminTest1234!', BCRYPT_ROUNDS);
+  await prisma.user.create({
+    data: {
+      email: 'admin@dermaconsent.de',
+      name: 'Platform Admin',
+      role: UserRole.PLATFORM_ADMIN,
+      passwordHash: platformAdminHash,
+      emailVerified: true,
+      practiceId: null,
+    },
+  });
+
+  // ── Step 15: Create default platform config entries ──
+  console.log('Creating default platform config entries...');
+  const defaultConfigs = [
+    { key: 'plans.freeTrialLimit', value: '25', isSecret: false, category: 'plans', description: 'Free Trial Monthly Consent Limit' },
+    { key: 'plans.starterLimit', value: '100', isSecret: false, category: 'plans', description: 'Starter Plan Monthly Consent Limit' },
+    { key: 'plans.professionalLimit', value: '-1', isSecret: false, category: 'plans', description: 'Professional Plan Monthly Consent Limit (-1 = unlimited)' },
+    { key: 'plans.enterpriseLimit', value: '-1', isSecret: false, category: 'plans', description: 'Enterprise Plan Monthly Consent Limit (-1 = unlimited)' },
+    { key: 'stripe.platformFeePercent', value: '5', isSecret: false, category: 'stripe', description: 'Platform Fee Percentage' },
+    { key: 'email.fromAddress', value: 'noreply@dermaconsent.de', isSecret: false, category: 'email', description: 'Sender Email Address' },
+    { key: 'email.fromName', value: 'DermaConsent', isSecret: false, category: 'email', description: 'Sender Name' },
+  ];
+
+  for (const config of defaultConfigs) {
+    await prisma.platformConfig.create({ data: config });
+  }
+
   // ── Done! Print summary ──
 
   console.log('\n============================================================');
@@ -858,6 +894,9 @@ async function main() {
   console.log(`  ${PRACTICE_1_ID}  Dermatologie Praxis Dr. Mueller (Berlin)`);
   console.log(`  ${PRACTICE_2_ID}  Hautklinik Dr. Schmidt (Munich)`);
   console.log(`  Master Password:  ${MASTER_PASSWORD}`);
+
+  console.log('\n--- Platform Admin (password: AdminTest1234!) ---');
+  console.log('  admin@dermaconsent.de               PLATFORM_ADMIN');
 
   console.log('\n--- User Accounts (password: Test1234!) ---');
   for (const u of USER_DEFS) {

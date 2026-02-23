@@ -13,6 +13,7 @@ const protectedPaths = [
   '/audit',
   '/billing',
   '/setup',
+  '/admin',
 ];
 
 function isProtectedPath(pathname: string) {
@@ -78,6 +79,7 @@ export const config = {
     '/audit/:path*',
     '/billing/:path*',
     '/setup/:path*',
+    '/admin/:path*',
     // Also match public paths for locale cookie auto-detection
     '/',
     '/login',

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useTranslations, useFormatter } from 'next-intl';
@@ -8,6 +8,8 @@ import useSWR from 'swr';
 import { API_URL, createAuthFetcher } from '@/lib/api';
 import { useAuthFetch } from '@/lib/auth-fetch';
 import { usePractice } from '@/hooks/use-practice';
+import { useVault } from '@/hooks/use-vault';
+import { VaultLockedPlaceholder } from '@/components/vault/vault-locked-placeholder';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -65,11 +67,16 @@ export default function PatientDetailPage() {
   const authFetch = useAuthFetch();
   const router = useRouter();
 
+  const { isUnlocked, decryptForm } = useVault();
+
   const [uploadOpen, setUploadOpen] = useState(false);
   const [comparisonOpen, setComparisonOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
   const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<TreatmentTemplateSummary | null>(null);
+  const [decryptedName, setDecryptedName] = useState<string | null>(null);
+  const [decryptedDob, setDecryptedDob] = useState<string | null>(null);
+  const [decryptedEmail, setDecryptedEmail] = useState<string | null>(null);
 
   const fetcher = createAuthFetcher(session?.accessToken);
 
@@ -92,6 +99,50 @@ export default function PatientDetailPage() {
     session?.accessToken ? `${API_URL}/api/treatment-templates` : null,
     fetcher,
   );
+
+  // Auto-decrypt patient fields when vault is unlocked
+  const decryptPatientFields = useCallback(async () => {
+    if (!isUnlocked || !patient) return;
+
+    try {
+      const namePayload = JSON.parse(patient.encryptedName);
+      const name = await decryptForm(namePayload);
+      setDecryptedName(typeof name === 'string' ? name : JSON.stringify(name));
+    } catch {
+      setDecryptedName(tPatients('decryptionFailed'));
+    }
+
+    if (patient.encryptedDob) {
+      try {
+        const dobPayload = JSON.parse(patient.encryptedDob);
+        const dob = await decryptForm(dobPayload);
+        setDecryptedDob(typeof dob === 'string' ? dob : JSON.stringify(dob));
+      } catch {
+        setDecryptedDob(null);
+      }
+    }
+
+    if (patient.encryptedEmail) {
+      try {
+        const emailPayload = JSON.parse(patient.encryptedEmail);
+        const email = await decryptForm(emailPayload);
+        setDecryptedEmail(typeof email === 'string' ? email : JSON.stringify(email));
+      } catch {
+        setDecryptedEmail(null);
+      }
+    }
+  }, [isUnlocked, patient, decryptForm, tPatients]);
+
+  useEffect(() => {
+    if (isUnlocked && patient) {
+      decryptPatientFields();
+    }
+    if (!isUnlocked) {
+      setDecryptedName(null);
+      setDecryptedDob(null);
+      setDecryptedEmail(null);
+    }
+  }, [isUnlocked, patient, decryptPatientFields]);
 
   const handleDelete = async () => {
     if (!confirm(t('deleteConfirm'))) return;
@@ -145,8 +196,26 @@ export default function PatientDetailPage() {
         <CardContent className="space-y-2">
           <div>
             <span className="text-sm text-muted-foreground">{t('nameLabel')}</span>
-            <span className="text-sm">{tPatients('encrypted')}</span>
+            {decryptedName ? (
+              <span className="text-sm">{decryptedName}</span>
+            ) : isUnlocked ? (
+              <span className="inline-block h-4 w-24 animate-pulse rounded bg-muted align-middle" />
+            ) : (
+              <VaultLockedPlaceholder size="sm" className="inline-flex h-6 w-auto px-2 text-xs" />
+            )}
           </div>
+          {decryptedDob && (
+            <div>
+              <span className="text-sm text-muted-foreground">{tPatients('dateOfBirth')}: </span>
+              <span className="text-sm">{decryptedDob}</span>
+            </div>
+          )}
+          {decryptedEmail && (
+            <div>
+              <span className="text-sm text-muted-foreground">{tPatients('email')}: </span>
+              <span className="text-sm">{decryptedEmail}</span>
+            </div>
+          )}
           <div>
             <span className="text-sm text-muted-foreground">{t('createdLabel')}</span>
             <span className="text-sm">

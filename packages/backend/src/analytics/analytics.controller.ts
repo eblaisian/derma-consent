@@ -27,10 +27,14 @@ export class AnalyticsController {
   getByPeriod(
     @CurrentUser() user: CurrentUserPayload,
     @Query('days') days?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
   ) {
     return this.analyticsService.getByPeriod(
       user.practiceId!,
       days ? parseInt(days, 10) : undefined,
+      startDate ? new Date(startDate) : undefined,
+      endDate ? new Date(endDate) : undefined,
     );
   }
 
@@ -42,7 +46,15 @@ export class AnalyticsController {
 
   @Get('revenue')
   @Roles('ADMIN')
-  getRevenue(@CurrentUser() user: CurrentUserPayload) {
-    return this.analyticsService.getRevenue(user.practiceId!);
+  getRevenue(
+    @CurrentUser() user: CurrentUserPayload,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    return this.analyticsService.getRevenue(
+      user.practiceId!,
+      startDate ? new Date(startDate) : undefined,
+      endDate ? new Date(endDate) : undefined,
+    );
   }
 }

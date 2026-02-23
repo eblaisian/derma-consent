@@ -1,0 +1,331 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" fill="none">
+  <defs>
+    <style>
+      .muscle { cursor: pointer; transition: opacity 0.2s ease; }
+      .muscle:hover { opacity: 0.85; }
+      .feat { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .fiber { fill: none; stroke-linecap: round; }
+      .inj { fill: none; stroke-width: 0.7; }
+    </style>
+
+    <!-- Skin base gradient -->
+    <radialGradient id="skinBase" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#faf6f2"/>
+      <stop offset="40%" stop-color="#f3ece4"/>
+      <stop offset="75%" stop-color="#e8ddd2"/>
+      <stop offset="100%" stop-color="#ddd0c2"/>
+    </radialGradient>
+
+    <!-- Soft shadow filter -->
+    <filter id="softShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.08"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Cheekbone highlight -->
+    <radialGradient id="cheekHighlightL" cx="38%" cy="42%" r="18%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cheekHighlightR" cx="62%" cy="42%" r="18%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Brow ridge shadow -->
+    <linearGradient id="browShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c4b5a5" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#c4b5a5" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Warm muscle fill gradients -->
+    <linearGradient id="muscleFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4a878" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#c89060" stop-opacity="0.14"/>
+    </linearGradient>
+    <linearGradient id="muscleDeep" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c8906a" stop-opacity="0.26"/>
+      <stop offset="100%" stop-color="#b8805a" stop-opacity="0.16"/>
+    </linearGradient>
+    <linearGradient id="muscleLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4a878" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#c89060" stop-opacity="0.10"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ============ FACE BASE ============ -->
+
+  <!-- Face outline with depth -->
+  <path filter="url(#softShadow)" d="
+    M200 35
+    C148 35 112 62 96 100
+    C82 132 76 168 75 200
+    C73 234 75 264 82 290
+    C90 318 102 342 118 362
+    C134 382 156 400 176 412
+    C188 418 194 420 200 422
+    C206 420 212 418 224 412
+    C244 400 266 382 282 362
+    C298 342 310 318 318 290
+    C325 264 327 234 325 200
+    C324 168 318 132 304 100
+    C288 62 252 35 200 35Z"
+    fill="url(#skinBase)" stroke="#d4c4b4" stroke-width="1"/>
+
+  <!-- Brow ridge shadow -->
+  <ellipse cx="200" cy="148" rx="90" ry="14" fill="url(#browShadow)"/>
+
+  <!-- Cheekbone highlights -->
+  <ellipse cx="138" cy="210" rx="40" ry="28" fill="url(#cheekHighlightL)"/>
+  <ellipse cx="262" cy="210" rx="40" ry="28" fill="url(#cheekHighlightR)"/>
+
+  <!-- Jaw shadow -->
+  <path d="M118 362 C148 394 176 414 200 422 C224 414 252 394 282 362
+    L282 386 C252 418 224 434 200 438 C176 434 148 418 118 386Z"
+    fill="#c4b5a5" opacity="0.05"/>
+
+  <!-- ============ ANATOMICAL FEATURES ============ -->
+
+  <!-- Ears -->
+  <path class="feat" stroke="#9a8e82" stroke-width="1"
+    d="M76 162 C62 170 55 192 55 212 C54 232 58 246 66 254 C70 258 74 254 76 248 L78 236"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.6" opacity="0.4"
+    d="M72 178 C66 188 64 204 65 220 C66 230 68 238 70 244"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="1"
+    d="M324 162 C338 170 345 192 345 212 C346 232 342 246 334 254 C330 258 326 254 324 248 L322 236"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.6" opacity="0.4"
+    d="M328 178 C334 188 336 204 335 220 C334 230 332 238 330 244"/>
+
+  <!-- Eyebrows -->
+  <path class="feat" stroke="#7d7168" stroke-width="2"
+    d="M118 150 C128 140 148 137 164 140 C170 142 174 146 172 149"/>
+  <path class="feat" stroke="#7d7168" stroke-width="0.8" opacity="0.5"
+    d="M172 149 C174 150 175 152 174 153"/>
+  <path class="feat" stroke="#7d7168" stroke-width="2"
+    d="M282 150 C272 140 252 137 236 140 C230 142 226 146 228 149"/>
+  <path class="feat" stroke="#7d7168" stroke-width="0.8" opacity="0.5"
+    d="M228 149 C226 150 225 152 226 153"/>
+
+  <!-- Left eye -->
+  <path class="feat" stroke="#7d7168" stroke-width="1.2"
+    d="M122 175 C130 164 148 158 160 161 C170 164 176 172 176 178"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.8"
+    d="M176 178 C176 186 168 192 158 194 C146 196 130 190 122 180"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.6" opacity="0.35"
+    d="M122 175 C126 178 130 180 122 180"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.5" opacity="0.3"
+    d="M126 168 C136 160 152 156 164 158 C170 160 174 164 174 168"/>
+  <ellipse cx="148" cy="178" rx="10" ry="9" fill="#8a7a6a" fill-opacity="0.06" stroke="#9a8e82" stroke-width="0.5" opacity="0.5"/>
+  <circle cx="148" cy="178" r="4" fill="#7d7168" opacity="0.12"/>
+
+  <!-- Right eye -->
+  <path class="feat" stroke="#7d7168" stroke-width="1.2"
+    d="M278 175 C270 164 252 158 240 161 C230 164 224 172 224 178"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.8"
+    d="M224 178 C224 186 232 192 242 194 C254 196 270 190 278 180"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.6" opacity="0.35"
+    d="M278 175 C274 178 270 180 278 180"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.5" opacity="0.3"
+    d="M274 168 C264 160 248 156 236 158 C230 160 226 164 226 168"/>
+  <ellipse cx="252" cy="178" rx="10" ry="9" fill="#8a7a6a" fill-opacity="0.06" stroke="#9a8e82" stroke-width="0.5" opacity="0.5"/>
+  <circle cx="252" cy="178" r="4" fill="#7d7168" opacity="0.12"/>
+
+  <!-- Nose -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.5" opacity="0.25"
+    d="M195 172 L192 210 L190 224"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.5" opacity="0.25"
+    d="M205 172 L208 210 L210 224"/>
+  <path class="feat" stroke="#7d7168" stroke-width="1"
+    d="M190 226 C186 232 180 236 176 234 C174 232 175 228 178 225"/>
+  <path class="feat" stroke="#7d7168" stroke-width="1"
+    d="M210 226 C214 232 220 236 224 234 C226 232 225 228 222 225"/>
+  <path class="feat" stroke="#7d7168" stroke-width="0.9"
+    d="M186 230 C192 235 196 237 200 238 C204 237 208 235 214 230"/>
+
+  <!-- Nasolabial fold lines -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.6" opacity="0.25"
+    d="M176 240 C174 266 172 294 170 318"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.6" opacity="0.25"
+    d="M224 240 C226 266 228 294 230 318"/>
+
+  <!-- Philtrum -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.5" opacity="0.3"
+    d="M194 240 L193 282 M206 240 L207 282"/>
+
+  <!-- Lips -->
+  <path class="feat" stroke="#7d7168" stroke-width="1.2"
+    d="M170 304 C178 296 188 290 194 288 L200 284 L206 288 C212 290 222 296 230 304"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.8"
+    d="M194 290 C197 286 199 284 200 283 C201 284 203 286 206 290"/>
+  <path class="feat" stroke="#7d7168" stroke-width="1.2"
+    d="M172 308 C180 320 190 328 200 330 C210 328 220 320 228 308"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.6" opacity="0.45"
+    d="M172 306 C182 310 192 312 200 312 C208 312 218 310 228 306"/>
+
+  <!-- Chin dimple hint -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.5" opacity="0.15"
+    d="M196 376 C198 380 200 382 202 380 C204 378 204 376 202 374"/>
+
+  <!-- Neck lines -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.8" opacity="0.2"
+    d="M172 416 L166 472"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.8" opacity="0.2"
+    d="M228 416 L234 472"/>
+
+  <!-- Hairline hint -->
+  <path class="feat" stroke="#c4b5a5" stroke-width="0.7" stroke-dasharray="3 5" opacity="0.35"
+    d="M110 108 C122 82 146 62 168 52 C180 46 192 42 200 40
+      C208 42 220 46 232 52 C254 62 278 82 290 108"/>
+
+  <!-- ============ MUSCLE ZONES ============ -->
+
+  <!-- Frontalis — large forehead muscle from hairline to brow ridge -->
+  <path data-muscle="frontalis" class="muscle"
+    d="M132 100 C150 76 176 58 200 54 C224 58 250 76 268 100
+    C272 116 274 130 274 142
+    C252 134 228 130 200 130 C172 130 148 134 126 142
+    C126 130 128 116 132 100Z"
+    fill="url(#muscleFill)" stroke="#c4a888" stroke-width="0.6" opacity="0.75"/>
+  <!-- Frontalis fiber lines (vertical) -->
+  <path class="fiber" d="M155 70 L153 132" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M175 62 L174 130" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M200 56 L200 130" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M225 62 L226 130" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M245 70 L247 132" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+
+  <!-- Procerus — small diamond between brows (glabella) -->
+  <path data-muscle="procerus" class="muscle"
+    d="M190 140 L210 140 L207 164 C204 162 202 161 200 161 C198 161 196 162 193 164Z"
+    fill="url(#muscleDeep)" stroke="#c4a888" stroke-width="0.5" opacity="0.7"/>
+  <!-- Procerus fiber lines (vertical) -->
+  <path class="fiber" d="M198 142 L197 162" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M202 142 L203 162" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+
+  <!-- Corrugator left — from brow inward toward glabella -->
+  <path data-muscle="corrugator" class="muscle"
+    d="M158 138 C164 140 174 142 188 142 L192 158 C180 154 168 148 160 144Z"
+    fill="url(#muscleFill)" stroke="#c4a888" stroke-width="0.5" opacity="0.7"/>
+  <!-- Corrugator left fiber lines (diagonal inward) -->
+  <path class="fiber" d="M162 140 L188 150" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M166 142 L190 154" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+
+  <!-- Corrugator right — from brow inward toward glabella -->
+  <path data-muscle="corrugator" class="muscle"
+    d="M242 138 C236 140 226 142 212 142 L208 158 C220 154 232 148 240 144Z"
+    fill="url(#muscleFill)" stroke="#c4a888" stroke-width="0.5" opacity="0.7"/>
+  <!-- Corrugator right fiber lines (diagonal inward) -->
+  <path class="fiber" d="M238 140 L212 150" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M234 142 L210 154" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+
+  <!-- Orbicularis Oculi left — around the eye area (crow's feet zone) -->
+  <path data-muscle="orbicularisOculi" class="muscle"
+    d="M106 158 C114 150 128 144 154 146 L160 156
+    C162 168 164 178 162 190
+    L158 198
+    C136 194 116 186 108 176Z"
+    fill="url(#muscleLight)" stroke="#c4a888" stroke-width="0.5" opacity="0.65"/>
+  <!-- Orbicularis oculi left fiber lines (concentric arcs) -->
+  <path class="fiber" d="M110 162 C118 158 132 154 150 154" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M110 174 C120 170 134 168 152 168" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M112 186 C124 184 138 182 154 184" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+
+  <!-- Orbicularis Oculi right — around the eye area (crow's feet zone) -->
+  <path data-muscle="orbicularisOculi" class="muscle"
+    d="M294 158 C286 150 272 144 246 146 L240 156
+    C238 168 236 178 238 190
+    L242 198
+    C264 194 284 186 292 176Z"
+    fill="url(#muscleLight)" stroke="#c4a888" stroke-width="0.5" opacity="0.65"/>
+  <!-- Orbicularis oculi right fiber lines (concentric arcs) -->
+  <path class="fiber" d="M290 162 C282 158 268 154 250 154" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M290 174 C280 170 266 168 248 168" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M288 186 C276 184 262 182 246 184" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+
+  <!-- Nasalis — small zone on nose bridge -->
+  <path data-muscle="nasalis" class="muscle"
+    d="M188 204 C192 196 196 192 200 190 C204 192 208 196 212 204
+    L210 220 C206 218 204 216 200 216 C196 216 194 218 190 220Z"
+    fill="url(#muscleLight)" stroke="#c4a888" stroke-width="0.4" opacity="0.55"/>
+  <!-- Nasalis fiber lines (diagonal spreading) -->
+  <path class="fiber" d="M196 196 L192 216" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M204 196 L208 216" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+
+  <!-- Orbicularis Oris — around the lips -->
+  <path data-muscle="orbicularisOris" class="muscle"
+    d="M170 300 C178 290 190 282 200 280 C210 282 222 290 230 300
+    C230 316 218 330 200 332 C182 330 170 316 170 300Z"
+    fill="url(#muscleLight)" stroke="#c4a888" stroke-width="0.5" opacity="0.6"/>
+  <!-- Orbicularis oris fiber lines (concentric around lips) -->
+  <path class="fiber" d="M174 298 C182 290 192 286 200 284 C208 286 218 290 226 298" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M176 314 C184 322 192 326 200 328 C208 326 216 322 224 314" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+
+  <!-- Masseter left — jaw muscle area -->
+  <path data-muscle="masseter" class="muscle"
+    d="M84 270 C86 252 92 236 104 224
+    L118 228
+    C110 246 104 268 102 290
+    L92 302
+    C88 294 86 284 84 270Z"
+    fill="url(#muscleFill)" stroke="#c4a888" stroke-width="0.5" opacity="0.65"/>
+  <!-- Masseter left fiber lines (vertical) -->
+  <path class="fiber" d="M106 232 L98 288" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M112 230 L104 284" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M100 240 L94 292" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+
+  <!-- Masseter right — jaw muscle area -->
+  <path data-muscle="masseter" class="muscle"
+    d="M316 270 C314 252 308 236 296 224
+    L282 228
+    C290 246 296 268 298 290
+    L308 302
+    C312 294 314 284 316 270Z"
+    fill="url(#muscleFill)" stroke="#c4a888" stroke-width="0.5" opacity="0.65"/>
+  <!-- Masseter right fiber lines (vertical) -->
+  <path class="fiber" d="M294 232 L302 288" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M288 230 L296 284" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+  <path class="fiber" d="M300 240 L306 292" stroke="#b89870" stroke-width="0.35" opacity="0.2"/>
+
+  <!-- ============ INJECTION SITES ============ -->
+
+  <!-- Frontalis: 5 across upper forehead -->
+  <circle class="inj" cx="150" cy="88" r="3.5" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="175" cy="80" r="3.5" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="200" cy="76" r="3.5" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="225" cy="80" r="3.5" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="250" cy="88" r="3.5" stroke="#8c7b6b" opacity="0.4"/>
+  <!-- Frontalis: 3 across lower forehead -->
+  <circle class="inj" cx="162" cy="112" r="3" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="200" cy="106" r="3" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="238" cy="112" r="3" stroke="#8c7b6b" opacity="0.4"/>
+
+  <!-- Glabellar complex (procerus + corrugator): 5 points -->
+  <circle class="inj" cx="200" cy="150" r="3" stroke="#8c7b6b" opacity="0.45"/>
+  <circle class="inj" cx="180" cy="146" r="3" stroke="#8c7b6b" opacity="0.45"/>
+  <circle class="inj" cx="220" cy="146" r="3" stroke="#8c7b6b" opacity="0.45"/>
+  <circle class="inj" cx="166" cy="140" r="2.5" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="234" cy="140" r="2.5" stroke="#8c7b6b" opacity="0.4"/>
+
+  <!-- Crow's feet left (orbicularis oculi): 3 points -->
+  <circle class="inj" cx="100" cy="162" r="2.5" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="98" cy="174" r="2.5" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="100" cy="186" r="2.5" stroke="#8c7b6b" opacity="0.4"/>
+  <!-- Crow's feet right (orbicularis oculi): 3 points -->
+  <circle class="inj" cx="300" cy="162" r="2.5" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="302" cy="174" r="2.5" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="300" cy="186" r="2.5" stroke="#8c7b6b" opacity="0.4"/>
+
+  <!-- Bunny lines (nasalis): 2 points -->
+  <circle class="inj" cx="190" cy="210" r="2.5" stroke="#8c7b6b" opacity="0.35"/>
+  <circle class="inj" cx="210" cy="210" r="2.5" stroke="#8c7b6b" opacity="0.35"/>
+
+  <!-- Masseter left: 3 points -->
+  <circle class="inj" cx="100" cy="252" r="3" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="104" cy="270" r="3" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="100" cy="288" r="3" stroke="#8c7b6b" opacity="0.4"/>
+  <!-- Masseter right: 3 points -->
+  <circle class="inj" cx="300" cy="252" r="3" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="296" cy="270" r="3" stroke="#8c7b6b" opacity="0.4"/>
+  <circle class="inj" cx="300" cy="288" r="3" stroke="#8c7b6b" opacity="0.4"/>
+</svg>

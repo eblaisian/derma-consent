@@ -30,8 +30,8 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
 
-    if (password.length < 8) {
-      setError(t('passwordTooShort'));
+    if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+      setError(t('passwordRequirements'));
       return;
     }
 
@@ -123,6 +123,35 @@ export default function RegisterPage() {
                 required
                 minLength={8}
               />
+              {password.length > 0 && (
+                <div className="space-y-1.5">
+                  <div className="flex gap-1">
+                    {Array.from({ length: 3 }).map((_, i) => {
+                      const checks = [
+                        password.length >= 8,
+                        /[A-Z]/.test(password),
+                        /[0-9]/.test(password),
+                      ];
+                      const passed = checks.filter(Boolean).length;
+                      return (
+                        <div
+                          key={i}
+                          className={`h-1 flex-1 rounded-full transition-colors ${
+                            i < passed
+                              ? passed <= 1 ? 'bg-destructive' : passed === 2 ? 'bg-yellow-500' : 'bg-green-500'
+                              : 'bg-muted'
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                  <ul className="text-xs text-muted-foreground space-y-0.5">
+                    <li className={password.length >= 8 ? 'text-green-600' : ''}>{t('minLength')}</li>
+                    <li className={/[A-Z]/.test(password) ? 'text-green-600' : ''}>{t('uppercase')}</li>
+                    <li className={/[0-9]/.test(password) ? 'text-green-600' : ''}>{t('number')}</li>
+                  </ul>
+                </div>
+              )}
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>

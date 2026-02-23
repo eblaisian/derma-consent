@@ -1,17 +1,23 @@
-import { Injectable, NotFoundException, BadRequestException, Optional } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, BadRequestException, ForbiddenException, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 import { SmsService } from '../sms/sms.service';
+import { PdfService } from '../pdf/pdf.service';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { CreateConsentDto, SubmitConsentDto } from './consent.dto';
 import { ConsentStatus } from '@prisma/client';
 
 @Injectable()
 export class ConsentService {
+  private readonly logger = new Logger(ConsentService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
     private readonly smsService: SmsService,
+    private readonly pdfService: PdfService,
+    private readonly platformConfig: PlatformConfigService,
     @Optional() private readonly auditService?: AuditService,
   ) {}
 
@@ -22,6 +28,40 @@ export class ConsentService {
 
     if (!practice) {
       throw new NotFoundException('Practice not found');
+    }
+
+    // Enforce subscription consent limits
+    const subscription = await this.prisma.subscription.findUnique({
+      where: { practiceId: dto.practiceId },
+    });
+
+    if (subscription) {
+      const plan = subscription.plan;
+      let monthlyLimit: number | null = null;
+
+      const limitKey = `plans.${plan === 'FREE_TRIAL' ? 'freeTrialLimit' : plan === 'STARTER' ? 'starterLimit' : plan === 'PROFESSIONAL' ? 'professionalLimit' : 'enterpriseLimit'}`;
+      const limitValue = parseInt((await this.platformConfig.get(limitKey)) || '-1', 10);
+      if (limitValue > 0) {
+        monthlyLimit = limitValue;
+      }
+      // -1 = unlimited (null)
+
+      if (monthlyLimit !== null) {
+        const now = new Date();
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        const monthlyCount = await this.prisma.consentForm.count({
+          where: {
+            practiceId: dto.practiceId,
+            createdAt: { gte: monthStart },
+          },
+        });
+
+        if (monthlyCount >= monthlyLimit) {
+          throw new ForbiddenException(
+            `Monthly consent limit reached (${monthlyLimit}). Please upgrade your plan.`,
+          );
+        }
+      }
     }
 
     // Consent link expires in 7 days
@@ -45,25 +85,27 @@ export class ConsentService {
       },
     });
 
+    const result = { ...consent, practiceName: practice.name };
+
     await this.auditService?.log({
       practiceId: dto.practiceId!,
       action: 'CONSENT_CREATED',
       entityType: 'ConsentForm',
-      entityId: consent.id,
+      entityId: result.id,
     });
 
     // Deliver consent link via chosen channel
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
-    const link = `${frontendUrl}/consent/${consent.token}`;
+    const link = `${frontendUrl}/consent/${result.token}`;
 
     if (dto.deliveryChannel === 'sms' && dto.patientPhone) {
       await this.smsService.sendConsentLink(dto.patientPhone, 'sms', link, practice.name);
     } else if (dto.deliveryChannel === 'whatsapp' && dto.patientPhone) {
       await this.smsService.sendConsentLink(dto.patientPhone, 'whatsapp', link, practice.name);
     }
-    // Email delivery is handled by the controller/email service separately
+    // Email delivery is handled by the controller
 
-    return consent;
+    return result;
   }
 
   async findByToken(token: string) {
@@ -146,6 +188,21 @@ export class ConsentService {
       entityId: updated.id,
       ipAddress: ip,
     });
+
+    // Generate PDF immediately if no payment is required
+    const practice = await this.prisma.practice.findUnique({
+      where: { id: updated.practiceId },
+      select: { stripeConnectId: true },
+    });
+
+    const hasPayment = !!practice?.stripeConnectId;
+    if (!hasPayment) {
+      // No payment flow — generate PDF and complete immediately
+      this.pdfService.generateConsentPdf(updated.id).catch((err) => {
+        this.logger.error(`PDF generation failed for ${updated.id}: ${err.message}`);
+      });
+    }
+    // If payment is required, PDF generation happens after Stripe webhook
 
     return updated;
   }

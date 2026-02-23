@@ -14,7 +14,7 @@ make build            # Production build of both packages
 make migrate          # Run Prisma migrations (prisma migrate dev)
 make migrate-deploy   # Run Prisma migrations for production (prisma migrate deploy)
 make generate         # Regenerate Prisma client after schema changes
-make seed             # Seed DB with test data (password: Test1234!)
+make seed             # Seed DB with test data (see Test Credentials below)
 make clean            # Remove node_modules, dist, .next, Docker volumes
 pnpm lint             # Lint all packages
 ```
@@ -33,20 +33,20 @@ Backend runs on port 3001, frontend on port 3000. PostgreSQL via Docker Compose.
 
 ### Frontend
 
-- **Routing**: Next.js App Router. Protected routes under `src/app/(authenticated)/` guarded by middleware (`src/middleware.ts`). Public routes: `/consent/[token]`, `/invite/[token]`, `/login`, `/register`.
+- **Routing**: Next.js App Router. Protected routes under `src/app/(authenticated)/` guarded by middleware (`src/middleware.ts`). Platform admin routes under `src/app/(platform-admin)/admin/`. Public routes: `/consent/[token]`, `/invite/[token]`, `/login`, `/register`.
 - **Auth**: NextAuth 5 (beta) with OAuth (Google, Microsoft Entra, Apple) + credentials. Session stores a JWT `accessToken` from the backend. Config in `src/lib/auth.ts`.
 - **Data fetching**: SWR with authenticated fetch wrapper (`src/lib/auth-fetch.ts`). API base URL via `NEXT_PUBLIC_API_URL`.
 - **Forms**: react-hook-form + Zod validation schemas.
-- **i18n**: next-intl with 4 locales (de, en, es, fr). Messages in `src/i18n/messages/`. Locale detected from browser and stored in cookie.
+- **i18n**: next-intl with 8 locales (de, en, es, fr, ar, tr, pl, ru). Messages in `src/i18n/messages/`. Locale detected from browser and stored in cookie.
 - **UI**: shadcn/ui components in `src/components/ui/`, feature components organized by domain (patients, team, billing, analytics, etc.).
 - **Testing**: Vitest, tests in `src/lib/__tests__/`.
 
 ### Backend
 
 - **Module structure**: Standard NestJS modules — each feature has a `*.module.ts`, `*.controller.ts`, `*.service.ts`, and DTOs validated with class-validator.
-- **Auth**: JWT strategy (`src/auth/jwt.strategy.ts`), guards (`JwtAuthGuard`, `RolesGuard`), `@CurrentUser()` decorator. Three roles: `ADMIN`, `ARZT`, `EMPFANG`.
+- **Auth**: JWT strategy (`src/auth/jwt.strategy.ts`), guards (`JwtAuthGuard`, `RolesGuard`, `PlatformAdminGuard`), `@CurrentUser()` decorator. Four roles: `ADMIN`, `ARZT`, `EMPFANG`, `PLATFORM_ADMIN`.
 - **Database**: Prisma ORM. Schema at `packages/backend/prisma/schema.prisma`. Column names use snake_case via `@@map`. After schema changes, run `make migrate && make generate`.
-- **Key modules**: auth, consent, patient, practice, team, billing, stripe, email, pdf, audit, analytics, gdt (German medical data format), settings.
+- **Key modules**: auth, consent, patient, practice, team, billing, stripe, email, pdf, audit, analytics, gdt (German medical data format), settings, admin, platform-config.
 - **Testing**: Jest, spec files alongside source (`*.spec.ts`).
 
 ### Zero-Knowledge Encryption
@@ -67,6 +67,31 @@ Stripe Connect model — practices are connected accounts. Webhook handler at `s
 
 `PENDING` → `FILLED` → `SIGNED` → `PAID` → `COMPLETED` (or `EXPIRED`/`REVOKED`). Public form accessed via unique token URL (`/consent/[token]`). Includes signature canvas and client-side encryption before submission. PDFs generated with PDFKit, stored in Supabase.
 
+### Platform Admin
+
+Cross-practice administration layer accessible at `/admin`. Requires `PLATFORM_ADMIN` role.
+
+- **Routes**: `/admin` (dashboard), `/admin/practices` (list/manage), `/admin/practices/[id]` (detail with tabs), `/admin/config` (configuration UI).
+- **PlatformConfigService** (`src/platform-config/`): Global service for managing integration config (Stripe, Resend, Twilio, Supabase, plan limits). DB → env var → default fallback chain. Secrets encrypted with AES-256-GCM using `PLATFORM_ENCRYPTION_KEY`. 60s in-memory cache.
+- **AdminModule** (`src/admin/`): Three controllers — dashboard stats, practice management (suspend/activate/override subscription), config CRUD + connection testing. All endpoints guarded with `JwtAuthGuard` + `PlatformAdminGuard`.
+- **Practice suspension**: `isSuspended` flag on Practice model. `SubscriptionGuard` blocks API access for suspended practices.
+
+## Test Credentials
+
+After running `make seed`:
+
+| Account | Email | Password | Role | Notes |
+|---|---|---|---|---|
+| **Platform Admin** | `admin@dermaconsent.de` | `AdminTest1234!` | `PLATFORM_ADMIN` | No practice. Login → redirected to `/admin` |
+| Practice 1 Admin | `admin@praxis-mueller.de` | `Test1234!` | `ADMIN` | Dermatologie Praxis Dr. Mueller |
+| Practice 1 Doctor | `dr.mueller@praxis-mueller.de` | `Test1234!` | `ARZT` | |
+| Practice 1 Reception | `empfang@praxis-mueller.de` | `Test1234!` | `EMPFANG` | |
+| Practice 2 Admin | `admin@hautklinik-schmidt.de` | `Test1234!` | `ADMIN` | Hautklinik Dr. Schmidt |
+| Practice 2 Doctor | `dr.schmidt@hautklinik-schmidt.de` | `Test1234!` | `ARZT` | |
+| Practice 2 Reception | `empfang@hautklinik-schmidt.de` | `Test1234!` | `EMPFANG` | |
+
+**Master password** (vault unlock, all practices): `Test1234!`
+
 ## Key Environment Variables
 
-Backend requires: `DATABASE_URL`, `AUTH_SECRET`, `FRONTEND_URL`. Optional: Stripe keys, `RESEND_API_KEY`, Supabase credentials. Frontend requires: `NEXT_PUBLIC_API_URL`. OAuth provider keys are optional (providers auto-register when env vars present). See `.env.example` for full list.
+Backend requires: `DATABASE_URL`, `AUTH_SECRET`, `FRONTEND_URL`. Optional: Stripe keys, `RESEND_API_KEY`, Supabase credentials, `PLATFORM_ENCRYPTION_KEY` (for encrypting secrets in PlatformConfig DB). Frontend requires: `NEXT_PUBLIC_API_URL`. OAuth provider keys are optional (providers auto-register when env vars present). See `.env.example` for full list.

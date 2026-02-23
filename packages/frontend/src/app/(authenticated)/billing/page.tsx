@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useTranslations, useFormatter } from 'next-intl';
 import useSWR from 'swr';
@@ -10,6 +11,8 @@ import { Badge } from '@/components/ui/badge';
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { StripeConnectSetup } from '@/components/billing/stripe-connect-setup';
 import { toast } from 'sonner';
 
 const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
@@ -35,8 +38,9 @@ export default function BillingPage() {
   const format = useFormatter();
   const { data: session } = useSession();
   const authFetch = useAuthFetch();
+  const [billingInterval, setBillingInterval] = useState<'monthly' | 'yearly'>('monthly');
 
-  const { data: subscription } = useSWR<Subscription>(
+  const { data: subscription, isLoading } = useSWR<Subscription>(
     session?.accessToken ? `${API_URL}/api/billing/subscription` : null,
     createAuthFetcher(session?.accessToken),
   );
@@ -62,6 +66,14 @@ export default function BillingPage() {
     }
   };
 
+  const starterPriceId = billingInterval === 'monthly'
+    ? process.env.NEXT_PUBLIC_STRIPE_STARTER_MONTHLY_PRICE_ID || ''
+    : process.env.NEXT_PUBLIC_STRIPE_STARTER_YEARLY_PRICE_ID || '';
+
+  const professionalPriceId = billingInterval === 'monthly'
+    ? process.env.NEXT_PUBLIC_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || ''
+    : process.env.NEXT_PUBLIC_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || '';
+
   const statusKey = subscription?.status as keyof IntlMessages['subscriptionStatus'] | undefined;
 
   return (
@@ -77,11 +89,13 @@ export default function BillingPage() {
         <CardHeader>
           <CardTitle>{t('currentPlan')}</CardTitle>
           <CardDescription>
-            {subscription
-              ? (tPlans.has(subscription.plan as keyof IntlMessages['subscriptionPlans'])
-                  ? tPlans(subscription.plan as keyof IntlMessages['subscriptionPlans'])
-                  : subscription.plan)
-              : t('loading')}
+            {isLoading ? (
+              <Skeleton className="h-4 w-32 mt-1" />
+            ) : subscription ? (
+              tPlans.has(subscription.plan as keyof IntlMessages['subscriptionPlans'])
+                ? tPlans(subscription.plan as keyof IntlMessages['subscriptionPlans'])
+                : subscription.plan
+            ) : t('loading')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -116,6 +130,35 @@ export default function BillingPage() {
         </CardContent>
       </Card>
 
+      <StripeConnectSetup />
+
+      {/* Billing Interval Toggle */}
+      <div className="flex items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={() => setBillingInterval('monthly')}
+          className={`px-4 py-2 text-sm font-medium rounded-l-lg border ${
+            billingInterval === 'monthly'
+              ? 'bg-primary text-primary-foreground border-primary'
+              : 'bg-background text-muted-foreground border-border hover:bg-muted'
+          }`}
+        >
+          {t('monthly')}
+        </button>
+        <button
+          type="button"
+          onClick={() => setBillingInterval('yearly')}
+          className={`px-4 py-2 text-sm font-medium rounded-r-lg border ${
+            billingInterval === 'yearly'
+              ? 'bg-primary text-primary-foreground border-primary'
+              : 'bg-background text-muted-foreground border-border hover:bg-muted'
+          }`}
+        >
+          {t('yearly')}
+          <span className="ml-1 text-xs opacity-75">{t('yearlySavings')}</span>
+        </button>
+      </div>
+
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader>
@@ -123,7 +166,9 @@ export default function BillingPage() {
             <CardDescription>{tPlans('starterDescription')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-2xl font-bold">{t('starterPrice')}</p>
+            <p className="text-2xl font-bold">
+              {billingInterval === 'monthly' ? t('starterPrice') : t('starterYearlyPrice')}
+            </p>
             <ul className="space-y-1 text-sm text-muted-foreground">
               <li>{tPlans('starterFeature1')}</li>
               <li>{tPlans('starterFeature2')}</li>
@@ -133,7 +178,7 @@ export default function BillingPage() {
               className="w-full"
               variant={subscription?.plan === 'STARTER' ? 'secondary' : 'default'}
               disabled={subscription?.plan === 'STARTER'}
-              onClick={() => handleCheckout(process.env.NEXT_PUBLIC_STRIPE_STARTER_MONTHLY_PRICE_ID || '')}
+              onClick={() => handleCheckout(starterPriceId)}
             >
               {subscription?.plan === 'STARTER' ? t('currentPlanBadge') : t('select')}
             </Button>
@@ -146,7 +191,9 @@ export default function BillingPage() {
             <CardDescription>{tPlans('professionalDescription')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-2xl font-bold">{t('professionalPrice')}</p>
+            <p className="text-2xl font-bold">
+              {billingInterval === 'monthly' ? t('professionalPrice') : t('professionalYearlyPrice')}
+            </p>
             <ul className="space-y-1 text-sm text-muted-foreground">
               <li>{tPlans('professionalFeature1')}</li>
               <li>{tPlans('professionalFeature2')}</li>
@@ -157,7 +204,7 @@ export default function BillingPage() {
               className="w-full"
               variant={subscription?.plan === 'PROFESSIONAL' ? 'secondary' : 'default'}
               disabled={subscription?.plan === 'PROFESSIONAL'}
-              onClick={() => handleCheckout(process.env.NEXT_PUBLIC_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || '')}
+              onClick={() => handleCheckout(professionalPriceId)}
             >
               {subscription?.plan === 'PROFESSIONAL' ? t('currentPlanBadge') : t('select')}
             </Button>

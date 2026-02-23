@@ -11,6 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
@@ -36,6 +37,19 @@ export class PhotoController {
     @Body() dto: UploadPhotoDto,
     @CurrentUser() user: CurrentUserPayload,
   ) {
+    const maxSize = 10 * 1024 * 1024; // 10 MB
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+
+    if (!file) {
+      throw new BadRequestException('No file provided');
+    }
+    if (file.size > maxSize) {
+      throw new BadRequestException('File size exceeds 10 MB limit');
+    }
+    if (!allowedMimes.includes(file.mimetype)) {
+      throw new BadRequestException('Invalid file type. Allowed: JPEG, PNG, WebP, HEIC');
+    }
+
     return this.photoService.upload(
       user.practiceId!,
       user.userId,

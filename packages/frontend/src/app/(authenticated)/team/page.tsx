@@ -22,6 +22,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { Trash2, UserPlus } from 'lucide-react';
 
@@ -44,7 +45,7 @@ export default function TeamPage() {
   const [inviteRole, setInviteRole] = useState('ARZT');
   const [isInviting, setIsInviting] = useState(false);
 
-  const { data: members, mutate } = useSWR<TeamMember[]>(
+  const { data: members, isLoading, mutate } = useSWR<TeamMember[]>(
     session?.accessToken ? `${API_URL}/api/team/members` : null,
     createAuthFetcher(session?.accessToken),
   );
@@ -161,6 +162,14 @@ export default function TeamPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {isLoading && Array.from({ length: 3 }).map((_, i) => (
+                <TableRow key={`skeleton-${i}`}>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+                  <TableCell><Skeleton className="h-8 w-32" /></TableCell>
+                  <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                </TableRow>
+              ))}
               {members?.map((member) => (
                 <TableRow key={member.id}>
                   <TableCell className="font-medium">

@@ -20,8 +20,32 @@ const geistMono = Geist_Mono({
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("metadata");
   return {
-    title: "DermaConsent",
+    title: {
+      default: "DermaConsent — DSGVO-konforme digitale Einwilligungen",
+      template: "%s | DermaConsent",
+    },
     description: t("description"),
+    keywords: ["DermaConsent", "Einwilligung", "DSGVO", "Dermatologie", "digital", "consent", "Praxis"],
+    authors: [{ name: "DermaConsent" }],
+    openGraph: {
+      title: "DermaConsent — DSGVO-konforme digitale Einwilligungen",
+      description: t("description"),
+      url: "https://dermaconsent.de",
+      siteName: "DermaConsent",
+      locale: "de_DE",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "DermaConsent",
+      description: t("description"),
+    },
+    manifest: "/manifest.json",
+    metadataBase: new URL("https://dermaconsent.de"),
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 
@@ -36,6 +60,11 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={rtlLocales.includes(locale as Locale) ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <head>
+        <meta name="theme-color" content="#0f172a" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="DermaConsent" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,

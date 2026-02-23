@@ -45,8 +45,12 @@ export function Sidebar() {
   const tSidebar = useTranslations('sidebar');
   const pathname = usePathname();
   const { data: session } = useSession();
-  const { isUnlocked } = useVault();
+  const { isUnlocked, autoLockRemaining, requestUnlock, lock } = useVault();
   const userRole = session?.user?.role || 'EMPFANG';
+
+  const handleLock = () => {
+    lock();
+  };
 
   const filteredItems = navItems.filter((item) => item.roles.includes(userRole));
 
@@ -106,21 +110,37 @@ export function Sidebar() {
       {/* Vault status footer */}
       <div className="border-t border-sidebar-border px-4 py-3">
         {isUnlocked ? (
-          <div className="flex items-center gap-2.5">
-            <Shield className="h-4 w-4 text-success shrink-0" />
-            <div className="min-w-0">
-              <div className="text-xs font-medium text-sidebar-foreground">{tSidebar('vaultActive')}</div>
-              <div className="text-[11px] text-muted-foreground">{tSidebar('vaultActiveHint')}</div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <Shield className="h-4 w-4 text-success shrink-0" />
+              <div className="min-w-0">
+                <div className="text-xs font-medium text-sidebar-foreground">{tSidebar('vaultActive')}</div>
+                <div className="text-[11px] text-muted-foreground">
+                  {autoLockRemaining != null
+                    ? tSidebar('autoLockIn', { minutes: Math.ceil(autoLockRemaining / 60) })
+                    : tSidebar('vaultActiveHint')}
+                </div>
+              </div>
             </div>
+            <button
+              onClick={handleLock}
+              className="text-muted-foreground hover:text-foreground transition-default shrink-0"
+              aria-label={tSidebar('lockVault')}
+            >
+              <Lock className="h-4 w-4" />
+            </button>
           </div>
         ) : (
-          <div className="flex items-center gap-2.5">
+          <button
+            onClick={requestUnlock}
+            className="flex w-full items-center gap-2.5 rounded-md p-0 text-left transition-default hover:opacity-80"
+          >
             <Lock className="h-4 w-4 text-warning shrink-0" />
             <div className="min-w-0">
               <div className="text-xs font-medium text-sidebar-foreground">{tSidebar('vaultLocked')}</div>
               <div className="text-[11px] text-muted-foreground">{tSidebar('vaultLockedHint')}</div>
             </div>
-          </div>
+          </button>
         )}
       </div>
 

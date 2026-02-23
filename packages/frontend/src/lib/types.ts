@@ -83,15 +83,44 @@ export interface InjectionPoint {
   batchNumber: string;
   technique: string;
   notes: string;
+  muscle?: string; // Target muscle (Botox) or zone (Filler)
 }
 
-export type DiagramType = 'face-front' | 'face-side' | 'body-front';
+export type DiagramType =
+  | 'face-front'
+  | 'face-side'
+  | 'body-front'
+  | 'botox-face-front'
+  | 'botox-face-side'
+  | 'filler-face-front'
+  | 'patient-photo'
+  | 'treatment-areas';
+
+export interface PresetInjectionSite {
+  x: number;
+  y: number;
+  muscle: string;
+  units: number;
+  product: string;
+  technique: string;
+}
+
+export interface TreatmentPreset {
+  id: string;
+  nameKey: string; // i18n key under treatmentPresets.*
+  consentType: ConsentType;
+  diagramType: DiagramType;
+  totalUnits: number;
+  sites: PresetInjectionSite[];
+}
 
 export interface TreatmentPlanData {
   diagramType: DiagramType;
   points: InjectionPoint[];
   totalUnits: number;
   overallNotes: string;
+  photoDataUrl?: string;     // base64 JPEG embedded in encrypted blob
+  photoAspectRatio?: number; // width/height for layout
 }
 
 export interface TreatmentPlanSummary {

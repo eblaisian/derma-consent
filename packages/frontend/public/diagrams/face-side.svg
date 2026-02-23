@@ -1,58 +1,176 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" fill="none" stroke="#94a3b8" stroke-width="1.5">
-  <!-- Head outline - side profile -->
-  <path d="M250 50 C180 45 140 80 120 120 C105 150 100 180 100 200 C100 230 102 250 105 270 C110 300 120 330 140 360 C155 380 175 400 200 415 L210 420 C225 418 240 405 255 385 C275 355 285 320 290 290 L295 250 C300 220 300 190 295 160 C290 120 280 80 250 50Z" stroke-width="2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" fill="none">
+  <defs>
+    <style>
+      .zone { cursor: pointer; transition: opacity 0.2s ease; }
+      .zone:hover { opacity: 0.8; }
+      .feat { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+    <radialGradient id="skinBase" cx="42%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#faf6f2"/>
+      <stop offset="40%" stop-color="#f3ece4"/>
+      <stop offset="75%" stop-color="#e8ddd2"/>
+      <stop offset="100%" stop-color="#ddd0c2"/>
+    </radialGradient>
+    <filter id="softShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.08"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Head outline — left-facing side profile -->
+  <path filter="url(#softShadow)" d="
+    M 260 35
+    C 230 30, 195 32, 170 45
+    C 148 58, 132 78, 122 100
+    C 112 122, 106 146, 104 165
+    C 100 190, 96 215, 95 238
+    C 94 255, 96 268, 100 280
+    C 102 288, 105 296, 106 304
+    C 106 310, 104 318, 100 326
+    C 96 336, 94 348, 96 360
+    C 98 372, 104 384, 114 396
+    C 126 412, 148 420, 170 418
+    L 195 412
+    C 212 408, 228 396, 242 380
+    C 258 360, 270 336, 278 310
+    C 286 284, 290 258, 292 232
+    C 294 210, 294 188, 292 168
+    C 290 140, 286 115, 280 94
+    C 274 68, 268 48, 260 35 Z"
+    fill="url(#skinBase)" stroke="#c4b5a5" stroke-width="1"/>
+
+  <!-- Cranium shading -->
+  <ellipse cx="230" cy="60" rx="50" ry="20" fill="#ddd0c2" opacity="0.08"/>
+  <ellipse cx="270" cy="130" rx="20" ry="30" fill="#ddd0c2" opacity="0.06"/>
+
+  <!-- === CLICKABLE ZONES === -->
 
   <!-- Forehead -->
-  <path data-region="FOREHEAD" d="M145 90 C160 75 190 60 230 55 L250 50 C260 65 268 85 272 110 L265 130 C240 120 200 115 170 118 L145 125Z" fill="transparent" stroke="none" cursor="pointer"/>
+  <path data-region="FOREHEAD" class="zone"
+    d="M 145 70 C 158 52, 190 36, 230 34 L 260 36 C 270 52, 278 78, 282 100 L 270 120
+       C 245 112, 215 108, 185 110 L 148 118 C 140 100, 138 85, 145 70 Z"
+    fill="#d0dce6" fill-opacity="0.12" stroke="#d0dce6" stroke-width="0.5" stroke-opacity="0.15"/>
 
   <!-- Glabella -->
-  <path data-region="GLABELLA" d="M135 130 L170 118 L165 148 L130 155Z" fill="transparent" stroke="none" cursor="pointer"/>
+  <path data-region="GLABELLA" class="zone"
+    d="M 130 118 L 185 110 L 178 145 L 122 152 Z"
+    fill="#e0d0d8" fill-opacity="0.12" stroke="#e0d0d8" stroke-width="0.5" stroke-opacity="0.15"/>
 
   <!-- Periorbital -->
-  <path data-region="PERIORBITAL" d="M115 155 L160 150 L165 185 L118 188Z" fill="transparent" stroke="none" cursor="pointer"/>
+  <path data-region="PERIORBITAL" class="zone"
+    d="M 115 152 L 175 146 L 176 192 L 116 196 Z"
+    fill="#d0dce6" fill-opacity="0.14" stroke="#d0dce6" stroke-width="0.5" stroke-opacity="0.15"/>
 
-  <!-- Eye -->
-  <path d="M125 172 C135 165 150 163 160 167 C165 170 162 178 155 182 C145 185 130 182 125 178Z" stroke-width="1.5"/>
-  <circle cx="145" cy="174" r="5" fill="#94a3b8" opacity="0.3"/>
-
-  <!-- Eyebrow -->
-  <path d="M118 155 C135 148 155 147 168 152" stroke-width="2" stroke-linecap="round"/>
-
-  <!-- Nose -->
-  <path d="M130 160 L115 200 L105 225 L100 235 C102 240 108 242 115 240 L120 238" stroke-width="1.5"/>
-
-  <!-- Cheek -->
-  <path data-region="CHEEKS" d="M120 195 L170 190 C180 220 185 250 180 270 L130 275 C115 255 110 230 112 205Z" fill="transparent" stroke="none" cursor="pointer"/>
+  <!-- Cheeks -->
+  <path data-region="CHEEKS" class="zone"
+    d="M 118 200 L 180 196 C 188 226, 192 256, 188 280
+       L 130 284 C 116 262, 110 236, 112 212 Z"
+    fill="#e4dcd4" fill-opacity="0.12" stroke="#e4dcd4" stroke-width="0.5" stroke-opacity="0.15"/>
 
   <!-- Nasolabial -->
-  <path data-region="NASOLABIAL" d="M118 240 L140 240 L145 290 L125 295Z" fill="transparent" stroke="none" cursor="pointer"/>
-  <path d="M120 242 C125 260 130 280 132 300" stroke-width="1" opacity="0.4"/>
+  <path data-region="NASOLABIAL" class="zone"
+    d="M 108 252 L 134 250 L 138 302 L 114 306 Z"
+    fill="#e0d0d8" fill-opacity="0.14" stroke="#e0d0d8" stroke-width="0.5" stroke-opacity="0.15"/>
 
   <!-- Lips -->
-  <path data-region="LIPS" d="M110 295 L145 292 L148 320 L115 322Z" fill="transparent" stroke="none" cursor="pointer"/>
-  <path d="M112 300 C120 296 132 294 140 296" stroke-width="1.5"/>
-  <path d="M112 305 C120 312 132 315 140 310" stroke-width="1.5"/>
+  <path data-region="LIPS" class="zone"
+    d="M 100 304 L 140 298 L 146 338 L 108 340 Z"
+    fill="#e0d0d8" fill-opacity="0.15" stroke="#e0d0d8" stroke-width="0.5" stroke-opacity="0.15"/>
 
   <!-- Chin -->
-  <path data-region="CHIN" d="M115 325 L148 322 C155 345 160 365 170 380 L145 385 C130 370 120 350 115 330Z" fill="transparent" stroke="none" cursor="pointer"/>
+  <path data-region="CHIN" class="zone"
+    d="M 108 342 L 148 338 C 156 358, 164 378, 180 396
+       L 152 402 C 134 386, 118 366, 112 348 Z"
+    fill="#d0dce6" fill-opacity="0.1" stroke="#d0dce6" stroke-width="0.5" stroke-opacity="0.15"/>
 
   <!-- Jawline -->
-  <path data-region="JAWLINE" d="M170 380 C195 400 220 410 240 405 L270 370 C280 345 288 315 292 285 L260 280 C255 310 245 340 230 365Z" fill="transparent" stroke="none" cursor="pointer"/>
-  <path d="M170 382 C200 405 235 412 265 375 C282 348 290 310 295 275" stroke-width="1" opacity="0.4"/>
+  <path data-region="JAWLINE" class="zone"
+    d="M 180 396 C 200 414, 224 420, 248 412 L 276 382
+       C 284 354, 290 324, 294 292 L 264 288
+       C 260 318, 250 350, 236 376 Z"
+    fill="#e4dcd4" fill-opacity="0.1" stroke="#e4dcd4" stroke-width="0.5" stroke-opacity="0.15"/>
 
-  <!-- Ear -->
-  <path d="M275 145 C295 150 305 170 305 195 C305 215 300 230 290 240 C285 244 278 242 275 235 L272 210" stroke-width="1.5"/>
+  <!-- === ANATOMICAL FEATURES === -->
 
-  <!-- Neck line -->
-  <path d="M200 420 L195 470 M260 390 L275 460" stroke-width="1" opacity="0.3"/>
+  <!-- Temporal hollow shading -->
+  <ellipse cx="272" cy="122" rx="16" ry="26" fill="#d4c4b0" opacity="0.06"/>
 
-  <!-- Labels -->
-  <text x="210" y="90" text-anchor="middle" font-size="11" fill="#64748b" font-family="system-ui" class="region-label" data-for="FOREHEAD">Forehead</text>
-  <text x="148" y="140" text-anchor="middle" font-size="9" fill="#64748b" font-family="system-ui" class="region-label" data-for="GLABELLA">Glabella</text>
-  <text x="135" y="175" text-anchor="middle" font-size="9" fill="#64748b" font-family="system-ui" class="region-label" data-for="PERIORBITAL">Periorbital</text>
-  <text x="155" y="240" text-anchor="middle" font-size="10" fill="#64748b" font-family="system-ui" class="region-label" data-for="CHEEKS">Cheek</text>
-  <text x="128" y="270" text-anchor="middle" font-size="9" fill="#64748b" font-family="system-ui" class="region-label" data-for="NASOLABIAL">NL</text>
-  <text x="128" y="310" text-anchor="middle" font-size="10" fill="#64748b" font-family="system-ui" class="region-label" data-for="LIPS">Lips</text>
-  <text x="145" y="355" text-anchor="middle" font-size="10" fill="#64748b" font-family="system-ui" class="region-label" data-for="CHIN">Chin</text>
-  <text x="255" y="340" text-anchor="middle" font-size="9" fill="#64748b" font-family="system-ui" class="region-label" data-for="JAWLINE">Jawline</text>
+  <!-- Eyebrow -->
+  <path class="feat" stroke="#7d7168" stroke-width="2"
+    d="M 118 148 C 132 138, 152 136, 168 140 C 174 142, 176 146, 174 149"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.6" opacity="0.35"
+    d="M 114 144 C 128 134, 150 131, 172 136"/>
+
+  <!-- Eye — profile almond -->
+  <path class="feat" stroke="#7d7168" stroke-width="1.2"
+    d="M 122 174 C 130 164, 148 160, 162 163 C 170 166, 174 172, 172 178
+       C 168 186, 154 190, 142 188 C 130 186, 122 180, 122 174 Z"/>
+  <!-- Iris -->
+  <ellipse cx="146" cy="176" rx="8" ry="7" fill="none" stroke="#8a7e72" stroke-width="0.7" opacity="0.45"/>
+  <circle cx="146" cy="176" r="3.8" fill="#7d7168" opacity="0.12"/>
+  <!-- Upper lid crease -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.6" opacity="0.4"
+    d="M 124 168 C 136 158, 154 155, 170 160"/>
+
+  <!-- Nose — prominent profile -->
+  <path class="feat" stroke="#7d7168" stroke-width="1.3"
+    d="M 126 152 L 120 174 L 110 204 L 102 230 L 98 244"/>
+  <path class="feat" stroke="#7d7168" stroke-width="1.2"
+    d="M 98 244 C 96 250, 98 254, 102 256 C 107 258, 114 256, 118 250 L 120 244"/>
+  <!-- Nostril detail -->
+  <path class="feat" stroke="#7d7168" stroke-width="0.9"
+    d="M 118 250 C 120 254, 122 256, 120 258 C 117 260, 112 258, 110 254"/>
+  <!-- Nasion bridge -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.5" opacity="0.3"
+    d="M 128 150 C 126 156, 124 162, 122 170"/>
+
+  <!-- Nasolabial fold -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.7" opacity="0.25"
+    d="M 118 254 C 120 270, 124 290, 128 310"/>
+
+  <!-- Philtrum -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.4" opacity="0.2"
+    d="M 110 258 L 108 278"/>
+
+  <!-- Lips — profile -->
+  <path class="feat" stroke="#7d7168" stroke-width="1.2"
+    d="M 106 300 C 110 294, 116 290, 124 288 L 130 292"/>
+  <path class="feat" stroke="#7d7168" stroke-width="1.2"
+    d="M 106 308 C 110 316, 120 322, 132 320 L 136 314"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.7" opacity="0.45"
+    d="M 106 304 C 114 306, 124 308, 134 304"/>
+
+  <!-- Chin contour -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.6" opacity="0.2"
+    d="M 112 340 C 120 356, 132 372, 148 386"/>
+
+  <!-- Jawline definition -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.7" opacity="0.2"
+    d="M 148 390 C 178 412, 214 422, 248 412 C 268 402, 284 372, 294 336 L 296 294"/>
+
+  <!-- Cheekbone highlight -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.4" opacity="0.18"
+    d="M 124 198 C 145 192, 168 190, 190 195"/>
+
+  <!-- Ear — detailed profile -->
+  <path class="feat" stroke="#7d7168" stroke-width="1.2"
+    d="M 282 142 C 300 150, 314 168, 316 195 C 318 222, 314 242, 306 256
+       C 300 264, 294 260, 290 252 L 286 237 C 284 226, 283 218, 285 210 L 288 195"/>
+  <!-- Antihelix -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.6" opacity="0.4"
+    d="M 292 158 C 306 168, 310 186, 310 206 C 310 222, 306 236, 300 248"/>
+  <!-- Tragus -->
+  <path class="feat" stroke="#9a8e82" stroke-width="0.7" opacity="0.45"
+    d="M 283 195 C 280 200, 280 208, 283 213"/>
+  <!-- Lobe -->
+  <path class="feat" stroke="#7d7168" stroke-width="0.9"
+    d="M 290 252 C 288 260, 286 264, 283 262 C 280 260, 280 254, 283 250"/>
+
+  <!-- Neck lines -->
+  <path class="feat" stroke="#9a8e82" stroke-width="1" opacity="0.2"
+    d="M 196 418 L 190 472 M 252 406 L 268 470"/>
+  <path class="feat" stroke="#9a8e82" stroke-width="0.5" opacity="0.12"
+    d="M 198 420 C 192 442, 184 460, 174 478"/>
 </svg>

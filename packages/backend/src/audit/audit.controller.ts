@@ -44,8 +44,15 @@ export class AuditController {
   async exportCsv(
     @CurrentUser() user: CurrentUserPayload,
     @Res() res: Response,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+    @Query('locale') locale?: string,
   ) {
-    const csv = await this.auditService.exportCsv(user.practiceId!);
+    const csv = await this.auditService.exportCsv(user.practiceId!, {
+      startDate: startDate ? new Date(startDate) : undefined,
+      endDate: endDate ? new Date(endDate) : undefined,
+      locale,
+    });
 
     res.set({
       'Content-Type': 'text/csv; charset=utf-8',

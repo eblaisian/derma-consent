@@ -1,58 +1,200 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" fill="none" stroke="#94a3b8" stroke-width="1.5">
-  <!-- Head (simplified) -->
-  <ellipse cx="200" cy="60" rx="40" ry="50" stroke-width="2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" fill="none">
+  <defs>
+    <style>
+      .zone { cursor: pointer; transition: opacity 0.2s ease; }
+      .zone:hover { opacity: 0.8; }
+      .body { stroke: #9a8e82; stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+      .feat { fill: none; stroke: #a89888; stroke-linecap: round; stroke-linejoin: round; }
+      .contour { fill: none; stroke: #c4b4a0; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+
+    <radialGradient id="bodyFill" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#faf6f2"/>
+      <stop offset="40%" stop-color="#f3ece4"/>
+      <stop offset="75%" stop-color="#e8ddd2"/>
+      <stop offset="100%" stop-color="#ddd0c2"/>
+    </radialGradient>
+
+    <linearGradient id="zoneTint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d0dce6" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#c0ccd6" stop-opacity="0.08"/>
+    </linearGradient>
+
+    <filter id="softShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="1.5"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.06"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ============ BODY SILHOUETTE ============ -->
+  <!-- Left leg -->
+  <path class="body" filter="url(#softShadow)" fill="url(#bodyFill)"
+    d="M152 378 C148 390 140 410 136 434 C132 458 130 482 130 506
+    C130 530 132 552 134 568 L132 578 C130 584 126 592 122 598
+    L118 604 C116 608 118 612 124 612 C130 612 134 608 136 604
+    L140 596 L146 584 L150 570
+    C154 550 158 526 160 502 C162 478 162 454 160 434
+    C158 414 156 398 154 388Z"/>
+
+  <!-- Right leg -->
+  <path class="body" filter="url(#softShadow)" fill="url(#bodyFill)"
+    d="M248 378 C252 390 260 410 264 434 C268 458 270 482 270 506
+    C270 530 268 552 266 568 L268 578 C270 584 274 592 278 598
+    L282 604 C284 608 282 612 276 612 C270 612 266 608 264 604
+    L260 596 L254 584 L250 570
+    C246 550 242 526 240 502 C238 478 238 454 240 434
+    C242 414 244 398 246 388Z"/>
+
+  <!-- Left arm -->
+  <path class="body" filter="url(#softShadow)" fill="url(#bodyFill)"
+    d="M108 110 C98 118 88 132 80 150 C72 168 66 190 62 214
+    C58 238 54 264 50 290 C47 310 44 328 42 344
+    L40 358 L36 372 L32 384 L30 392
+    C28 398 26 404 28 408 C30 412 34 412 38 410
+    C42 408 46 402 48 396 L52 384 L56 370
+    L62 352 C66 334 70 314 76 292
+    C82 268 86 248 92 228 C96 214 100 198 104 182
+    C108 164 110 146 110 132Z"/>
+
+  <!-- Right arm -->
+  <path class="body" filter="url(#softShadow)" fill="url(#bodyFill)"
+    d="M292 110 C302 118 312 132 320 150 C328 168 334 190 338 214
+    C342 238 346 264 350 290 C353 310 356 328 358 344
+    L360 358 L364 372 L368 384 L370 392
+    C372 398 374 404 372 408 C370 412 366 412 362 410
+    C358 408 354 402 352 396 L348 384 L344 370
+    L338 352 C334 334 330 314 324 292
+    C318 268 314 248 308 228 C304 214 300 198 296 182
+    C292 164 290 146 290 132Z"/>
+
+  <!-- Torso -->
+  <path class="body" filter="url(#softShadow)" fill="url(#bodyFill)"
+    d="M186 70 C178 72 164 78 148 88 C132 98 118 108 108 118
+    L108 110 C108 110 104 140 104 170
+    C104 200 108 232 112 260 C116 288 122 316 130 340
+    C138 360 146 374 156 384
+    C164 392 176 396 188 398 L200 400 L212 398
+    C224 396 236 392 244 384
+    C254 374 262 360 270 340
+    C278 316 284 288 288 260 C292 232 296 200 296 170
+    C296 140 292 110 292 110
+    L292 118 C282 108 268 98 252 88
+    C236 78 222 72 214 70Z"/>
 
   <!-- Neck -->
-  <path data-region="NECK" d="M180 108 L180 155 L220 155 L220 108" fill="transparent" stroke="none" cursor="pointer"/>
-  <line x1="180" y1="108" x2="180" y2="155" stroke-width="1.5"/>
-  <line x1="220" y1="108" x2="220" y2="155" stroke-width="1.5"/>
+  <path class="body" fill="url(#bodyFill)"
+    d="M186 60 L186 78 C190 80 196 82 200 82 C204 82 210 80 214 78 L214 60Z"/>
 
-  <!-- Shoulders -->
-  <path d="M180 155 C160 155 120 160 80 180" stroke-width="2"/>
-  <path d="M220 155 C240 155 280 160 320 180" stroke-width="2"/>
+  <!-- ============ HEAD ============ -->
+  <path class="body" filter="url(#softShadow)" fill="url(#bodyFill)"
+    d="M200 10 C180 10 164 18 156 30 C148 42 146 54 148 62
+    C150 68 154 72 160 74 L168 76 C174 78 182 80 186 78
+    L186 60 C186 44 190 32 200 28 C210 32 214 44 214 60
+    L214 78 C218 80 226 78 232 76 L240 74
+    C246 72 250 68 252 62 C254 54 252 42 244 30
+    C236 18 220 10 200 10Z"/>
 
-  <!-- Decollete area -->
-  <path data-region="DECOLLETE" d="M120 170 C140 162 170 158 200 157 C230 158 260 162 280 170 L285 250 C260 255 230 258 200 258 C170 258 140 255 115 250Z" fill="transparent" stroke="none" cursor="pointer"/>
+  <!-- Ear hints -->
+  <path class="feat" stroke-width="0.8" opacity="0.3"
+    d="M156 38 C150 42 148 50 148 56 C148 62 150 66 154 68"/>
+  <path class="feat" stroke-width="0.8" opacity="0.3"
+    d="M244 38 C250 42 252 50 252 56 C252 62 250 66 246 68"/>
 
-  <!-- Chest outline -->
-  <path d="M80 180 L75 300 C75 320 80 350 90 380" stroke-width="2"/>
-  <path d="M320 180 L325 300 C325 320 320 350 310 380" stroke-width="2"/>
+  <!-- Eyebrows -->
+  <path class="feat" stroke-width="1.2" opacity="0.5"
+    d="M174 32 C178 29 184 28 190 29 C193 30 194 31 194 32"/>
+  <path class="feat" stroke-width="1.2" opacity="0.5"
+    d="M226 32 C222 29 216 28 210 29 C207 30 206 31 206 32"/>
 
-  <!-- Collarbone -->
-  <path d="M140 165 C160 160 180 158 200 157 C220 158 240 160 260 165" stroke-width="1" opacity="0.5"/>
+  <!-- Eyes -->
+  <path class="feat" stroke-width="0.9" opacity="0.45"
+    d="M176 38 C180 35 186 34 190 35 C194 36 196 38 194 40 C192 42 186 43 182 42 C178 41 176 40 176 38Z"/>
+  <path class="feat" stroke-width="0.9" opacity="0.45"
+    d="M224 38 C220 35 214 34 210 35 C206 36 204 38 206 40 C208 42 214 43 218 42 C222 41 224 40 224 38Z"/>
+  <!-- Iris hints -->
+  <circle cx="185" cy="38" r="2" fill="#8a7a6a" opacity="0.12"/>
+  <circle cx="215" cy="38" r="2" fill="#8a7a6a" opacity="0.12"/>
 
-  <!-- Neckline V -->
-  <path d="M170 160 L200 195 L230 160" stroke-width="1" opacity="0.3"/>
+  <!-- Nose -->
+  <path class="feat" stroke-width="0.7" opacity="0.35"
+    d="M198 34 L196 46 C194 48 193 50 194 51 L198 52 L200 53 L202 52 L206 51 C207 50 206 48 204 46 L202 34"/>
 
-  <!-- Torso midline -->
-  <line x1="200" y1="195" x2="200" y2="450" stroke-width="1" opacity="0.2"/>
+  <!-- Lips -->
+  <path class="feat" stroke-width="0.8" opacity="0.4"
+    d="M192 56 C195 54 198 53 200 53 C202 53 205 54 208 56"/>
+  <path class="feat" stroke-width="0.7" opacity="0.35"
+    d="M193 57 C196 59 198 60 200 60 C202 60 204 59 207 57"/>
 
-  <!-- Arms -->
-  <path d="M80 180 C65 210 55 260 50 310 C48 340 50 370 55 400" stroke-width="2"/>
-  <path d="M320 180 C335 210 345 260 350 310 C352 340 350 370 345 400" stroke-width="2"/>
+  <!-- Jawline contour -->
+  <path class="contour" stroke-width="0.5" opacity="0.2"
+    d="M162 62 C170 68 180 72 186 72 M238 62 C230 68 220 72 214 72"/>
 
-  <!-- Hands -->
-  <path data-region="HANDS" d="M40 395 C35 410 30 430 32 445 C34 455 40 460 48 458 L55 450 L58 458 C62 462 68 460 70 455 L72 445 L75 455 C78 460 84 458 85 452 L84 440 L88 448 C92 452 96 448 95 442 L88 410 C82 400 72 395 60 394Z" fill="transparent" stroke="none" cursor="pointer"/>
-  <path d="M42 400 C38 415 35 435 37 448 C39 455 44 458 50 455 L55 448" stroke-width="1.5"/>
-  <path d="M55 448 L58 456 C62 460 66 458 67 453" stroke-width="1.5"/>
-  <path d="M67 445 L70 454 C73 458 78 456 78 450" stroke-width="1.5"/>
-  <path d="M78 440 L82 448 C85 452 90 448 88 442 L82 415" stroke-width="1.5"/>
+  <!-- ============ BODY CONTOUR DETAILS ============ -->
+  <!-- Center line -->
+  <path class="contour" stroke-width="0.3" opacity="0.12"
+    d="M200 82 L200 398"/>
 
-  <path data-region="HANDS" d="M360 395 C365 410 370 430 368 445 C366 455 360 460 352 458 L345 450 L342 458 C338 462 332 460 330 455 L328 445 L325 455 C322 460 316 458 315 452 L316 440 L312 448 C308 452 304 448 305 442 L312 410 C318 400 328 395 340 394Z" fill="transparent" stroke="none" cursor="pointer"/>
-  <path d="M358 400 C362 415 365 435 363 448 C361 455 356 458 350 455 L345 448" stroke-width="1.5"/>
-  <path d="M345 448 L342 456 C338 460 334 458 333 453" stroke-width="1.5"/>
-  <path d="M333 445 L330 454 C327 458 322 456 322 450" stroke-width="1.5"/>
-  <path d="M322 440 L318 448 C315 452 310 448 312 442 L318 415" stroke-width="1.5"/>
+  <!-- Collarbones -->
+  <path class="contour" stroke-width="0.6" opacity="0.2"
+    d="M166 92 C172 88 184 86 200 86 C216 86 228 88 234 92"/>
+  <path class="contour" stroke-width="0.5" opacity="0.15"
+    d="M134 102 C148 94 168 90 188 88 M266 102 C252 94 232 90 212 88"/>
 
-  <!-- Waist -->
-  <path d="M90 380 C120 395 160 400 200 402 C240 400 280 395 310 380" stroke-width="1" opacity="0.3"/>
+  <!-- Pectoral contours -->
+  <path class="contour" stroke-width="0.4" opacity="0.12"
+    d="M148 118 C160 130 176 138 200 140 C224 138 240 130 252 118"/>
 
-  <!-- Lower torso -->
-  <path d="M90 380 L95 450 C100 470 130 480 200 485 C270 480 300 470 305 450 L310 380" stroke-width="2"/>
+  <!-- Navel -->
+  <ellipse cx="200" cy="296" rx="3" ry="4" fill="none" stroke="#c4b4a0" stroke-width="0.5" opacity="0.25"/>
 
-  <!-- Labels -->
-  <text x="200" y="140" text-anchor="middle" font-size="11" fill="#64748b" font-family="system-ui" class="region-label" data-for="NECK">Neck</text>
-  <text x="200" y="220" text-anchor="middle" font-size="11" fill="#64748b" font-family="system-ui" class="region-label" data-for="DECOLLETE">Decollete</text>
-  <text x="55" y="435" text-anchor="middle" font-size="10" fill="#64748b" font-family="system-ui" class="region-label" data-for="HANDS">Hand</text>
-  <text x="345" y="435" text-anchor="middle" font-size="10" fill="#64748b" font-family="system-ui" class="region-label" data-for="HANDS">Hand</text>
+  <!-- Hip creases -->
+  <path class="contour" stroke-width="0.4" opacity="0.1"
+    d="M158 370 C168 376 182 380 200 382 C218 380 232 376 242 370"/>
+
+  <!-- ============ CLICKABLE ZONES ============ -->
+
+  <!-- NECK zone -->
+  <path data-region="NECK" class="zone"
+    d="M184 64 C184 72 188 78 194 80 L200 82 L206 80 C212 78 216 72 216 64
+    L216 78 C212 82 206 86 200 86 C194 86 188 82 184 78Z
+    M184 78 C178 80 168 86 158 92 L166 92 C172 88 184 84 200 84
+    C216 84 228 88 234 92 L242 92 C232 86 222 80 216 78Z"
+    fill="url(#zoneTint)" stroke="#b0c0cc" stroke-width="0.5" stroke-dasharray="2 2" opacity="0.6"/>
+
+  <!-- DECOLLETE zone -->
+  <path data-region="DECOLLETE" class="zone"
+    d="M148 96 C160 90 178 86 200 86 C222 86 240 90 252 96
+    L252 110 C246 120 234 130 218 136 C210 138 204 140 200 140
+    C196 140 190 138 182 136 C166 130 154 120 148 110Z"
+    fill="url(#zoneTint)" stroke="#b0c0cc" stroke-width="0.5" stroke-dasharray="2 2" opacity="0.6"/>
+
+  <!-- Left HAND zone -->
+  <path data-region="HANDS" class="zone"
+    d="M44 328 C42 340 40 352 38 362 L34 374 L30 386 L28 394
+    C26 400 26 406 28 410 C32 414 36 412 40 408
+    C44 404 48 398 50 392 L54 380 L58 366
+    L64 346 C60 336 56 330 52 328Z"
+    fill="url(#zoneTint)" stroke="#b0c0cc" stroke-width="0.5" stroke-dasharray="2 2" opacity="0.6"/>
+
+  <!-- Right HAND zone -->
+  <path data-region="HANDS" class="zone"
+    d="M356 328 C358 340 360 352 362 362 L366 374 L370 386 L372 394
+    C374 400 374 406 372 410 C368 414 364 412 360 408
+    C356 404 352 398 350 392 L346 380 L342 366
+    L336 346 C340 336 344 330 348 328Z"
+    fill="url(#zoneTint)" stroke="#b0c0cc" stroke-width="0.5" stroke-dasharray="2 2" opacity="0.6"/>
+
+  <!-- ============ HAND DETAILS ============ -->
+  <!-- Left hand fingers hint -->
+  <path class="feat" stroke-width="0.5" opacity="0.2"
+    d="M34 394 L30 400 M32 396 L28 404 M30 398 L28 406 M36 400 L34 408"/>
+  <!-- Right hand fingers hint -->
+  <path class="feat" stroke-width="0.5" opacity="0.2"
+    d="M366 394 L370 400 M368 396 L372 404 M370 398 L372 406 M364 400 L366 408"/>
+
+  <!-- Knee hints -->
+  <path class="contour" stroke-width="0.4" opacity="0.1"
+    d="M138 500 C142 506 148 510 152 508 M262 500 C258 506 252 510 248 508"/>
 </svg>

@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /analytics
+Disallow: /billing
+Disallow: /team
+Disallow: /audit
+Disallow: /patients
+Disallow: /settings
+Disallow: /api/
+
+Sitemap: https://dermaconsent.de/sitemap.xml

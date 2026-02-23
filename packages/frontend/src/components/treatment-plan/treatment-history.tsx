@@ -5,6 +5,7 @@ import { useTranslations, useFormatter } from 'next-intl';
 import { useVault } from '@/hooks/use-vault';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { VaultLockedPlaceholder } from '@/components/vault/vault-locked-placeholder';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { TreatmentSummary } from './treatment-summary';
 import type { TreatmentPlanSummary } from '@/lib/types';
@@ -58,8 +59,8 @@ export function TreatmentHistory({ plans }: Props) {
               </div>
             )}
             {isExpanded && !isUnlocked && (
-              <div className="border-t p-3 text-sm text-muted-foreground text-center">
-                {t('vaultLocked')}
+              <div className="border-t p-3">
+                <VaultLockedPlaceholder size="lg" />
               </div>
             )}
           </div>

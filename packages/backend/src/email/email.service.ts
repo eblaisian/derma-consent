@@ -1,26 +1,31 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { Resend } from 'resend';
-import { consentLinkTemplate } from './templates/consent-link.template';
-import { inviteTemplate } from './templates/invite.template';
-import { welcomeTemplate } from './templates/welcome.template';
-import { subscriptionTemplate } from './templates/subscription.template';
+import { consentLinkTemplate, getConsentLinkSubject } from './templates/consent-link.template';
+import { inviteTemplate, getInviteSubject } from './templates/invite.template';
+import { welcomeTemplate, getWelcomeSubject } from './templates/welcome.template';
+import { subscriptionTemplate, getSubscriptionSubject } from './templates/subscription.template';
+import { passwordResetTemplate, getPasswordResetSubject } from './templates/password-reset.template';
+import { emailVerificationTemplate, getEmailVerificationSubject } from './templates/email-verification.template';
+
+type Locale = 'de' | 'en' | 'es' | 'fr';
 
 @Injectable()
-export class EmailService {
+export class EmailService implements OnModuleInit {
   private readonly logger = new Logger(EmailService.name);
-  private readonly resend: Resend | null;
-  private readonly fromEmail: string;
+  private resend: Resend | null = null;
+  private fromEmail: string = 'noreply@dermaconsent.de';
 
-  constructor(private readonly configService: ConfigService) {
-    const apiKey = this.configService.get<string>('RESEND_API_KEY');
-    this.fromEmail = this.configService.get<string>('RESEND_FROM_EMAIL') || 'noreply@dermaconsent.de';
+  constructor(private readonly platformConfig: PlatformConfigService) {}
+
+  async onModuleInit() {
+    const apiKey = await this.platformConfig.get('email.resendApiKey');
+    this.fromEmail = (await this.platformConfig.get('email.fromAddress')) || 'noreply@dermaconsent.de';
 
     if (apiKey) {
       this.resend = new Resend(apiKey);
     } else {
-      this.resend = null;
-      this.logger.warn('RESEND_API_KEY not set — emails will be no-oped');
+      this.logger.warn('Resend API key not set — emails will be no-oped');
     }
   }
 
@@ -43,35 +48,51 @@ export class EmailService {
     }
   }
 
-  async sendConsentLink(to: string, practiceName: string, consentLink: string, expiryDays: number) {
+  async sendConsentLink(to: string, practiceName: string, consentLink: string, expiryDays: number, locale: Locale = 'de') {
     await this.send(
       to,
-      `Einwilligungsformular von ${practiceName}`,
-      consentLinkTemplate(practiceName, consentLink, expiryDays),
+      getConsentLinkSubject(practiceName, locale),
+      consentLinkTemplate(practiceName, consentLink, expiryDays, locale),
     );
   }
 
-  async sendInvite(to: string, practiceName: string, role: string, inviteLink: string) {
+  async sendInvite(to: string, practiceName: string, role: string, inviteLink: string, locale: Locale = 'de') {
     await this.send(
       to,
-      `Einladung zu ${practiceName} — DermaConsent`,
-      inviteTemplate(practiceName, role, inviteLink),
+      getInviteSubject(practiceName, locale),
+      inviteTemplate(practiceName, role, inviteLink, locale),
     );
   }
 
-  async sendWelcome(to: string, userName: string) {
+  async sendWelcome(to: string, userName: string, locale: Locale = 'de') {
     await this.send(
       to,
-      'Willkommen bei DermaConsent',
-      welcomeTemplate(userName),
+      getWelcomeSubject(locale),
+      welcomeTemplate(userName, locale),
     );
   }
 
-  async sendSubscriptionNotice(to: string, type: 'trial_expiring' | 'payment_failed', practiceName: string) {
-    const subject = type === 'trial_expiring'
-      ? `Testphase laeuft bald ab — ${practiceName}`
-      : `Zahlungsproblem — ${practiceName}`;
+  async sendSubscriptionNotice(to: string, type: 'trial_expiring' | 'payment_failed', practiceName: string, locale: Locale = 'de') {
+    await this.send(
+      to,
+      getSubscriptionSubject(type, practiceName, locale),
+      subscriptionTemplate(type, practiceName, locale),
+    );
+  }
 
-    await this.send(to, subject, subscriptionTemplate(type, practiceName));
+  async sendPasswordReset(to: string, resetLink: string, locale: Locale = 'de') {
+    await this.send(
+      to,
+      getPasswordResetSubject(locale),
+      passwordResetTemplate(resetLink, locale),
+    );
+  }
+
+  async sendEmailVerification(to: string, verifyLink: string, locale: Locale = 'de') {
+    await this.send(
+      to,
+      getEmailVerificationSubject(locale),
+      emailVerificationTemplate(verifyLink, locale),
+    );
   }
 }

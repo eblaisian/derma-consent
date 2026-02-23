@@ -138,7 +138,70 @@ export async function decryptPrivateKey(
     'pkcs8',
     decrypted,
     { name: 'RSA-OAEP', hash: 'SHA-256' },
+    true,
+    ['decrypt'],
+  );
+}
+
+// --- Session Persistence Helpers ---
+
+export interface SessionWrappedKey {
+  wrappedKey: string; // base64
+  ephemeralKey: string; // base64
+  iv: string; // base64
+}
+
+export async function exportKeyForSession(
+  privateKey: CryptoKey,
+): Promise<SessionWrappedKey> {
+  const exported = await crypto.subtle.exportKey('pkcs8', privateKey);
+
+  // Generate ephemeral AES-256 key for wrapping
+  const ephemeralKey = await crypto.subtle.generateKey(
+    { name: 'AES-GCM', length: AES_KEY_LENGTH },
+    true,
+    ['encrypt', 'decrypt'],
+  );
+
+  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+  const wrapped = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv: iv as BufferSource },
+    ephemeralKey,
+    exported,
+  );
+
+  const rawEphemeral = await crypto.subtle.exportKey('raw', ephemeralKey);
+
+  return {
+    wrappedKey: arrayBufferToBase64(wrapped),
+    ephemeralKey: arrayBufferToBase64(rawEphemeral),
+    iv: arrayBufferToBase64(iv.buffer as ArrayBuffer),
+  };
+}
+
+export async function importKeyFromSession(
+  data: SessionWrappedKey,
+): Promise<CryptoKey> {
+  const ephemeralKey = await crypto.subtle.importKey(
+    'raw',
+    base64ToArrayBuffer(data.ephemeralKey),
+    { name: 'AES-GCM', length: AES_KEY_LENGTH },
     false,
+    ['decrypt'],
+  );
+
+  const iv = new Uint8Array(base64ToArrayBuffer(data.iv));
+  const unwrapped = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv: iv as BufferSource },
+    ephemeralKey,
+    base64ToArrayBuffer(data.wrappedKey),
+  );
+
+  return crypto.subtle.importKey(
+    'pkcs8',
+    unwrapped,
+    { name: 'RSA-OAEP', hash: 'SHA-256' },
+    true,
     ['decrypt'],
   );
 }

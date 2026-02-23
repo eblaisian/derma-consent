@@ -7,7 +7,6 @@ dist/
 .turbo/
 coverage/
 .prisma/
-prisma/migrations/
 *.tsbuildinfo
 docs/.vitepress/dist/
 docs/.vitepress/cache/

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useTranslations, useFormatter } from 'next-intl';
 import useSWR from 'swr';
@@ -8,7 +8,6 @@ import { API_URL, createAuthFetcher } from '@/lib/api';
 import { useAuthFetch } from '@/lib/auth-fetch';
 import { useVault } from '@/hooks/use-vault';
 import { usePractice } from '@/hooks/use-practice';
-import type { EncryptedPrivateKey } from '@/lib/crypto';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,8 +17,9 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
-import { VaultPanel } from '@/components/dashboard/vault-panel';
+import { VaultLockedPlaceholder } from '@/components/vault/vault-locked-placeholder';
 import { CreatePatientDialog } from '@/components/patients/create-patient-dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { Search, Eye } from 'lucide-react';
 import Link from 'next/link';
@@ -49,30 +49,47 @@ export default function PatientsPage() {
   const { practice } = usePractice();
   const [searchQuery, setSearchQuery] = useState('');
   const [decryptedNames, setDecryptedNames] = useState<Record<string, string>>({});
+  const [isDecrypting, setIsDecrypting] = useState(false);
+  const decryptedForRef = useRef<string | null>(null);
 
-  const { data: patientsData, mutate } = useSWR<PatientsResponse>(
+  const { data: patientsData, isLoading, mutate } = useSWR<PatientsResponse>(
     session?.accessToken ? `${API_URL}/api/patients` : null,
     createAuthFetcher(session?.accessToken),
   );
 
-  const handleDecryptAll = async () => {
+  const handleDecryptAll = useCallback(async () => {
     if (!isUnlocked || !patientsData?.items) return;
 
+    // Avoid re-decrypting the same data
+    const dataKey = patientsData.items.map(p => p.id).join(',');
+    if (decryptedForRef.current === dataKey) return;
+
+    setIsDecrypting(true);
     const names: Record<string, string> = {};
     for (const patient of patientsData.items) {
       try {
-        const decrypted = await decryptForm({
-          encryptedSessionKey: '',
-          iv: '',
-          ciphertext: patient.encryptedName,
-        });
+        const payload = JSON.parse(patient.encryptedName);
+        const decrypted = await decryptForm(payload);
         names[patient.id] = typeof decrypted === 'string' ? decrypted : JSON.stringify(decrypted);
       } catch {
         names[patient.id] = t('decryptionFailed');
       }
     }
     setDecryptedNames(names);
-  };
+    decryptedForRef.current = dataKey;
+    setIsDecrypting(false);
+  }, [isUnlocked, patientsData?.items, decryptForm, t]);
+
+  // Auto-decrypt when vault is unlocked
+  useEffect(() => {
+    if (isUnlocked && patientsData?.items) {
+      handleDecryptAll();
+    }
+    if (!isUnlocked) {
+      setDecryptedNames({});
+      decryptedForRef.current = null;
+    }
+  }, [isUnlocked, handleDecryptAll, patientsData?.items]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -103,14 +120,6 @@ export default function PatientsPage() {
         <CreatePatientDialog onCreated={() => mutate()} />
       </div>
 
-      {!isUnlocked && practice?.encryptedPrivKey && (
-        <Card>
-          <CardContent className="pt-6">
-            <VaultPanel encryptedPrivKey={practice.encryptedPrivKey as unknown as EncryptedPrivateKey} />
-          </CardContent>
-        </Card>
-      )}
-
       <Card>
         <CardContent className="pt-6">
           <div className="flex gap-2">
@@ -126,11 +135,6 @@ export default function PatientsPage() {
             <Button variant="outline" onClick={handleSearch}>
               <Search className="h-4 w-4" />
             </Button>
-            {isUnlocked && (
-              <Button variant="outline" onClick={handleDecryptAll}>
-                {t('decryptNames')}
-              </Button>
-            )}
           </div>
         </CardContent>
       </Card>
@@ -150,10 +154,21 @@ export default function PatientsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {isLoading && Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={`skeleton-${i}`}>
+                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell className="text-right"><Skeleton className="h-8 w-20 ml-auto" /></TableCell>
+                </TableRow>
+              ))}
               {patientsData?.items.map((patient) => (
                 <TableRow key={patient.id}>
                   <TableCell className="font-medium">
-                    {decryptedNames[patient.id] || (
+                    {decryptedNames[patient.id] ? (
+                      decryptedNames[patient.id]
+                    ) : isDecrypting ? (
+                      <span className="inline-block h-4 w-32 animate-pulse rounded bg-muted" />
+                    ) : (
                       <span className="text-muted-foreground">{t('encrypted')}</span>
                     )}
                   </TableCell>

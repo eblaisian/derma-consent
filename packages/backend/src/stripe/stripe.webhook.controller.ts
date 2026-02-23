@@ -40,7 +40,7 @@ export class StripeWebhookController {
       throw new BadRequestException('Missing raw body');
     }
 
-    const event = this.stripeService.constructWebhookEvent(rawBody, signature);
+    const event = await this.stripeService.constructWebhookEvent(rawBody, signature);
 
     switch (event.type) {
       case 'checkout.session.completed': {
@@ -52,19 +52,32 @@ export class StripeWebhookController {
           break;
         }
 
+        const paymentIntentId =
+          typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : null;
+
+        let paymentAmountCents: number | null = null;
+        if (paymentIntentId) {
+          try {
+            const pi = await this.stripeService.retrievePaymentIntent(paymentIntentId);
+            paymentAmountCents = pi.amount ?? null;
+          } catch (err) {
+            this.logger.warn(`Failed to retrieve payment intent ${paymentIntentId}: ${err}`);
+          }
+        }
+
         await this.prisma.consentForm.update({
           where: { id: consentId },
           data: {
             status: ConsentStatus.PAID,
             stripeSessionId: session.id,
-            stripePaymentIntent:
-              typeof session.payment_intent === 'string'
-                ? session.payment_intent
-                : null,
+            stripePaymentIntent: paymentIntentId,
+            paymentAmountCents,
           },
         });
 
-        this.logger.log(`Consent ${consentId} marked as PAID`);
+        this.logger.log(`Consent ${consentId} marked as PAID (amount: ${paymentAmountCents})`);
 
         // Async PDF generation
         this.pdfService.generateConsentPdf(consentId).catch((err) => {

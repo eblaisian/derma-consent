@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTranslations, useFormatter, useNow } from 'next-intl';
 import { useAuthFetch } from '@/lib/auth-fetch';
+import { useVault } from '@/hooks/use-vault';
 import type { ConsentFormSummary, ConsentStatus } from '@/lib/types';
 import type { ConsentType } from '@/components/consent-form/form-fields';
 import { Button } from '@/components/ui/button';
@@ -29,17 +30,17 @@ import { FileSignature, Link as LinkIcon, Eye, Ban } from 'lucide-react';
 
 interface ConsentTableProps {
   consents: ConsentFormSummary[];
-  isVaultUnlocked: boolean;
   onRefresh: () => void;
   onCreateConsent?: () => void;
 }
 
-export function ConsentTable({ consents, isVaultUnlocked, onRefresh, onCreateConsent }: ConsentTableProps) {
+export function ConsentTable({ consents, onRefresh, onCreateConsent }: ConsentTableProps) {
   const t = useTranslations('consentTable');
   const tStatus = useTranslations('consentStatus');
   const tTypes = useTranslations('consentTypes');
   const format = useFormatter();
   const authFetch = useAuthFetch();
+  const { isUnlocked: isVaultUnlocked, requestUnlock } = useVault();
   const [revokeToken, setRevokeToken] = useState<string | null>(null);
   const [isRevoking, setIsRevoking] = useState(false);
   const [decryptToken, setDecryptToken] = useState<string | null>(null);
@@ -72,9 +73,8 @@ export function ConsentTable({ consents, isVaultUnlocked, onRefresh, onCreateCon
   const canRevoke = (status: ConsentStatus) =>
     status === 'SIGNED' || status === 'COMPLETED' || status === 'PAID';
 
-  const canDecrypt = (status: ConsentStatus) =>
-    isVaultUnlocked &&
-    (status === 'SIGNED' || status === 'PAID' || status === 'COMPLETED');
+  const hasDecryptableData = (status: ConsentStatus) =>
+    status === 'SIGNED' || status === 'PAID' || status === 'COMPLETED';
 
   const formatRelativeDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -150,11 +150,17 @@ export function ConsentTable({ consents, isVaultUnlocked, onRefresh, onCreateCon
                     <LinkIcon className="h-3.5 w-3.5" />
                   </Button>
 
-                  {canDecrypt(consent.status) && (
+                  {hasDecryptableData(consent.status) && (
                     <Button
                       variant="ghost"
                       size="icon-xs"
-                      onClick={() => setDecryptToken(consent.token)}
+                      onClick={() => {
+                        if (isVaultUnlocked) {
+                          setDecryptToken(consent.token);
+                        } else {
+                          requestUnlock();
+                        }
+                      }}
                       title={t('decrypt')}
                     >
                       <Eye className="h-3.5 w-3.5" />

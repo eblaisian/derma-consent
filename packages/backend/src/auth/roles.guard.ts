@@ -17,6 +17,12 @@ export class RolesGuard implements CanActivate {
     }
 
     const { user } = context.switchToHttp().getRequest();
+
+    // Platform admins bypass all role checks
+    if (user?.role === 'PLATFORM_ADMIN') {
+      return true;
+    }
+
     return requiredRoles.includes(user?.role);
   }
 }

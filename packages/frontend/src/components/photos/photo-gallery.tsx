@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useFormatter } from 'next-intl';
 import { useVault } from '@/hooks/use-vault';
 import { Badge } from '@/components/ui/badge';
+import { VaultLockedPlaceholder } from '@/components/vault/vault-locked-placeholder';
 import { EncryptedPhotoViewer } from './encrypted-photo-viewer';
 import type { TreatmentPhotoSummary, BodyRegion } from '@/lib/types';
 
@@ -50,9 +51,7 @@ export function PhotoGallery({ photos, onPhotoClick }: Props) {
                 {isUnlocked ? (
                   <EncryptedPhotoViewer photo={photo} className="h-32 w-full" />
                 ) : (
-                  <div className="h-32 w-full bg-muted rounded flex items-center justify-center text-xs text-muted-foreground">
-                    {t('locked')}
-                  </div>
+                  <VaultLockedPlaceholder size="sm" className="h-32 w-full" />
                 )}
                 <div className="mt-1 flex items-center gap-1">
                   <Badge variant="outline" className="text-[10px]">

@@ -13,6 +13,7 @@ enum UserRole {
   ADMIN
   ARZT
   EMPFANG
+  PLATFORM_ADMIN
 }
 
 enum InviteStatus {
@@ -44,6 +45,10 @@ enum AuditAction {
   TREATMENT_PLAN_CREATED
   TREATMENT_PLAN_UPDATED
   TREATMENT_PLAN_VIEWED
+  PLATFORM_CONFIG_UPDATED
+  PRACTICE_SUSPENDED
+  PRACTICE_ACTIVATED
+  PRACTICE_SUBSCRIPTION_OVERRIDDEN
 }
 
 enum BodyRegion {
@@ -92,6 +97,8 @@ model Practice {
   publicKey        Json     @map("public_key") // JWK format
   encryptedPrivKey Json     @map("encrypted_priv_key") // { salt, iv, ciphertext }
   gdtSenderId      String   @default("DERMACONSENT") @map("gdt_sender_id")
+  isSuspended      Boolean  @default(false) @map("is_suspended")
+  suspendedAt      DateTime? @map("suspended_at")
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
@@ -115,6 +122,7 @@ model User {
   name         String?
   image        String?
   passwordHash     String?  @map("password_hash")
+  emailVerified    Boolean  @default(false) @map("email_verified")
   twoFactorSecret  String?  @map("two_factor_secret")
   twoFactorEnabled Boolean  @default(false) @map("two_factor_enabled")
   practiceId       String?  @map("practice_id")
@@ -126,6 +134,7 @@ model User {
   accounts  Account[]
   auditLogs AuditLog[]
 
+  @@index([practiceId])
   @@map("users")
 }
 
@@ -159,6 +168,7 @@ model Invite {
 
   practice Practice @relation(fields: [practiceId], references: [id])
 
+  @@index([practiceId, status])
   @@map("invites")
 }
 
@@ -181,7 +191,7 @@ model Subscription {
 
 model AuditLog {
   id         String      @id @default(uuid())
-  practiceId String      @map("practice_id")
+  practiceId String?     @map("practice_id")
   userId     String?     @map("user_id")
   action     AuditAction
   entityType String?     @map("entity_type")
@@ -190,8 +200,8 @@ model AuditLog {
   ipAddress  String?     @map("ip_address")
   createdAt  DateTime    @default(now()) @map("created_at")
 
-  practice Practice @relation(fields: [practiceId], references: [id])
-  user     User?    @relation(fields: [userId], references: [id])
+  practice Practice? @relation(fields: [practiceId], references: [id])
+  user     User?     @relation(fields: [userId], references: [id])
 
   @@index([practiceId, createdAt])
   @@map("audit_logs")
@@ -265,6 +275,7 @@ model ConsentForm {
   signatureUserAgent  String?       @map("signature_user_agent")
   stripeSessionId     String?       @map("stripe_session_id")
   stripePaymentIntent String?       @map("stripe_payment_intent")
+  paymentAmountCents  Int?          @map("payment_amount_cents")
   comprehensionScore    Float?    @map("comprehension_score")
   comprehensionAnswers  Json?     @map("comprehension_answers")
   pdfStoragePath      String?       @map("pdf_storage_path")
@@ -280,6 +291,8 @@ model ConsentForm {
 
   @@index([token])
   @@index([practiceId, status])
+  @@index([patientId])
+  @@index([expiresAt])
   @@map("consent_forms")
 }
 
@@ -355,4 +368,19 @@ model TreatmentTemplate {
 
   @@index([practiceId, type])
   @@map("treatment_templates")
+}
+
+// ── Platform Admin ──
+
+model PlatformConfig {
+  id          String   @id @default(uuid())
+  key         String   @unique @map("key")
+  value       String   @map("value")
+  isSecret    Boolean  @default(false) @map("is_secret")
+  description String?  @map("description")
+  category    String   @map("category")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("platform_config")
 }

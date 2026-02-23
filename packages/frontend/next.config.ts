@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
@@ -9,7 +10,7 @@ const cspDirectives = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.supabase.co",
   "font-src 'self'",
-  "connect-src 'self' https://api.stripe.com " +
+  "connect-src 'self' https://api.stripe.com https://*.ingest.sentry.io " +
     (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"),
   "frame-src https://js.stripe.com",
   "worker-src 'self'",
@@ -42,7 +43,7 @@ const nextConfig: NextConfig = {
         },
         {
           key: "Permissions-Policy",
-          value: "camera=(), microphone=(), geolocation=()",
+          value: "camera=(self), microphone=(), geolocation=()",
         },
         {
           key: "Strict-Transport-Security",
@@ -57,4 +58,9 @@ const nextConfig: NextConfig = {
   ],
 };
 
-export default withNextIntl(nextConfig);
+const configWithIntl = withNextIntl(nextConfig);
+
+export default withSentryConfig(configWithIntl, {
+  silent: true,
+  disableLogger: true,
+});

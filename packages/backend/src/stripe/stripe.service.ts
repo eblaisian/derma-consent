@@ -1,19 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import Stripe from 'stripe';
 
 @Injectable()
-export class StripeService {
-  private readonly stripe: Stripe | null;
-  private readonly platformFeePercent: number;
+export class StripeService implements OnModuleInit {
+  private stripe: Stripe | null = null;
 
-  constructor(private readonly config: ConfigService) {
-    const stripeKey = this.config.get<string>('STRIPE_SECRET_KEY');
+  constructor(
+    private readonly config: ConfigService,
+    private readonly platformConfig: PlatformConfigService,
+  ) {}
+
+  async onModuleInit() {
+    const stripeKey = await this.platformConfig.get('stripe.secretKey');
     this.stripe = stripeKey ? new Stripe(stripeKey) : null;
-    this.platformFeePercent = parseInt(
-      this.config.get('STRIPE_PLATFORM_FEE_PERCENT', '5'),
-      10,
-    );
   }
 
   private getStripe(): Stripe {
@@ -34,8 +35,13 @@ export class StripeService {
     const frontendUrl =
       this.config.get('FRONTEND_URL') || 'http://localhost:3000';
 
+    const platformFeePercent = parseInt(
+      (await this.platformConfig.get('stripe.platformFeePercent')) || '5',
+      10,
+    );
+
     const applicationFee = Math.round(
-      params.amountCents * (this.platformFeePercent / 100),
+      params.amountCents * (platformFeePercent / 100),
     );
 
     return this.getStripe().checkout.sessions.create({
@@ -68,11 +74,18 @@ export class StripeService {
     });
   }
 
-  constructWebhookEvent(
+  async retrievePaymentIntent(paymentIntentId: string): Promise<Stripe.PaymentIntent> {
+    return this.getStripe().paymentIntents.retrieve(paymentIntentId);
+  }
+
+  async constructWebhookEvent(
     payload: Buffer,
     signature: string,
-  ): Stripe.Event {
-    const webhookSecret = this.config.getOrThrow('STRIPE_WEBHOOK_SECRET');
+  ): Promise<Stripe.Event> {
+    const webhookSecret = await this.platformConfig.get('stripe.webhookSecret');
+    if (!webhookSecret) {
+      throw new Error('Stripe webhook secret not configured');
+    }
     return this.getStripe().webhooks.constructEvent(
       payload,
       signature,

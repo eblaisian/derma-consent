@@ -8,6 +8,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SettingsService } from './settings.service';
@@ -47,6 +48,19 @@ export class SettingsController {
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser() user: CurrentUserPayload,
   ) {
+    const maxSize = 10 * 1024 * 1024; // 10 MB
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'];
+
+    if (!file) {
+      throw new BadRequestException('No file provided');
+    }
+    if (file.size > maxSize) {
+      throw new BadRequestException('File size exceeds 10 MB limit');
+    }
+    if (!allowedMimes.includes(file.mimetype)) {
+      throw new BadRequestException('Invalid file type. Allowed: JPEG, PNG, WebP, SVG');
+    }
+
     const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
     const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_KEY');
 

@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState, useEffect } from 'react';
 import { InjectionPointMarker } from './injection-point-marker';
-import type { InjectionPoint, DiagramType } from '@/lib/types';
+import type { InjectionPoint, DiagramType, ConsentType } from '@/lib/types';
 
 interface Props {
   diagramType: DiagramType;
@@ -11,6 +11,7 @@ interface Props {
   onPointUpdate?: (point: InjectionPoint) => void;
   onPointRemove?: (id: string) => void;
   readOnly?: boolean;
+  consentType?: ConsentType;
 }
 
 export function AnatomicalDiagram({
@@ -20,6 +21,7 @@ export function AnatomicalDiagram({
   onPointUpdate,
   onPointRemove,
   readOnly = false,
+  consentType,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [svgContent, setSvgContent] = useState<string>('');
@@ -49,20 +51,22 @@ export function AnatomicalDiagram({
       const target = e.target as SVGElement;
       if (target.tagName === 'circle' || target.closest('foreignObject')) return;
 
+      // Context-aware defaults based on consent type
+      const isFiller = consentType === 'FILLER';
       const point: InjectionPoint = {
         id: crypto.randomUUID(),
         x: Math.round(x * 10) / 10,
         y: Math.round(y * 10) / 10,
-        product: 'Botox',
-        units: 4,
+        product: isFiller ? 'Juvederm Ultra' : 'Botox',
+        units: isFiller ? 0.1 : 4,
         batchNumber: '',
-        technique: 'bolus',
+        technique: isFiller ? 'linear_threading' : 'bolus',
         notes: '',
       };
 
       onPointAdd(point);
     },
-    [readOnly, onPointAdd],
+    [readOnly, onPointAdd, consentType],
   );
 
   return (

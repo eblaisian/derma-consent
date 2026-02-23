@@ -1,19 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
-import Stripe from 'stripe';
 
 @Injectable()
 export class AnalyticsService {
-  private readonly stripe: Stripe | null;
-
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
-  ) {
-    const stripeKey = this.configService.get<string>('STRIPE_SECRET_KEY');
-    this.stripe = stripeKey ? new Stripe(stripeKey) : null;
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
   async getOverview(practiceId: string) {
     const [total, pending, signed, completed, revoked] = await Promise.all([
@@ -42,14 +32,18 @@ export class AnalyticsService {
     }));
   }
 
-  async getByPeriod(practiceId: string, days = 30) {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
+  async getByPeriod(practiceId: string, days = 30, explicitStartDate?: Date, explicitEndDate?: Date) {
+    const startDate = explicitStartDate ?? new Date();
+    if (!explicitStartDate) startDate.setDate(startDate.getDate() - days);
+    const endDate = explicitEndDate;
 
     const consents = await this.prisma.consentForm.findMany({
       where: {
         practiceId,
-        createdAt: { gte: startDate },
+        createdAt: {
+          gte: startDate,
+          ...(endDate && { lte: endDate }),
+        },
       },
       select: { createdAt: true, status: true },
       orderBy: { createdAt: 'asc' },
@@ -96,50 +90,33 @@ export class AnalyticsService {
     };
   }
 
-  async getRevenue(practiceId: string) {
-    const paid = await this.prisma.consentForm.findMany({
+  async getRevenue(practiceId: string, startDate?: Date, endDate?: Date) {
+    const dateFilter: Record<string, unknown> = {};
+    if (startDate || endDate) {
+      dateFilter.createdAt = {
+        ...(startDate && { gte: startDate }),
+        ...(endDate && { lte: endDate }),
+      };
+    }
+
+    const result = await this.prisma.consentForm.aggregate({
       where: {
         practiceId,
-        status: { in: ['PAID', 'COMPLETED'] },
-        stripePaymentIntent: { not: null },
+        paymentAmountCents: { not: null },
+        ...dateFilter,
       },
-      select: {
-        createdAt: true,
-        stripePaymentIntent: true,
-      },
-      orderBy: { createdAt: 'asc' },
+      _sum: { paymentAmountCents: true },
+      _count: { id: true },
     });
 
-    let totalRevenue = 0;
-    const transactions: { date: string; amount: number; paymentIntent: string }[] = [];
-
-    if (this.stripe && paid.length > 0) {
-      for (const consent of paid) {
-        try {
-          const pi = await this.stripe.paymentIntents.retrieve(consent.stripePaymentIntent!);
-          const amount = pi.amount / 100;
-          totalRevenue += amount;
-          transactions.push({
-            date: consent.createdAt.toISOString().split('T')[0],
-            amount,
-            paymentIntent: consent.stripePaymentIntent!,
-          });
-        } catch {
-          // Skip failed lookups (e.g. test payment intents)
-          transactions.push({
-            date: consent.createdAt.toISOString().split('T')[0],
-            amount: 0,
-            paymentIntent: consent.stripePaymentIntent!,
-          });
-        }
-      }
-    }
+    const totalCents = result._sum.paymentAmountCents ?? 0;
+    const count = result._count.id;
+    const totalRevenue = totalCents / 100;
 
     return {
       totalRevenue,
-      transactionCount: paid.length,
-      averageTransaction: paid.length > 0 ? totalRevenue / paid.length : 0,
-      transactions,
+      transactionCount: count,
+      averageTransaction: count > 0 ? totalRevenue / count : 0,
     };
   }
 }

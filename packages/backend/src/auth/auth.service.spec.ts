@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
 import { TwoFactorService } from './two-factor.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { EmailService } from '../email/email.service';
 import { JwtService } from '@nestjs/jwt';
 
 describe('AuthService', () => {
@@ -19,6 +21,7 @@ describe('AuthService', () => {
     passwordHash: null as string | null,
     twoFactorEnabled: false,
     twoFactorSecret: null as string | null,
+    emailVerified: true,
   };
 
   const mockPrisma = {
@@ -47,6 +50,9 @@ describe('AuthService', () => {
     disableTwoFactor: jest.fn(),
   };
 
+  const mockConfig = { get: jest.fn().mockReturnValue('http://localhost:3000') };
+  const mockEmail = { sendEmailVerification: jest.fn(), sendWelcome: jest.fn() };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -54,6 +60,8 @@ describe('AuthService', () => {
         { provide: PrismaService, useValue: mockPrisma },
         { provide: JwtService, useValue: mockJwt },
         { provide: TwoFactorService, useValue: mockTwoFactor },
+        { provide: ConfigService, useValue: mockConfig },
+        { provide: EmailService, useValue: mockEmail },
       ],
     }).compile();
 

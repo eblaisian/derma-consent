@@ -81,6 +81,11 @@ providers.push(
       if (!res.ok) return null;
       const data = await res.json();
 
+      // If email is not verified, throw a special error that the login form can catch
+      if (data.emailNotVerified) {
+        throw new Error(`EMAIL_NOT_VERIFIED:${data.email}`);
+      }
+
       // If 2FA is required, throw a special error that the login form can catch
       if (data.requires2FA) {
         throw new Error(`2FA_REQUIRED:${data.tempToken}`);

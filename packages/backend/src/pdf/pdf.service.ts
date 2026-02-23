@@ -1,22 +1,24 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { ConsentStatus } from '@prisma/client';
 import { createClient } from '@supabase/supabase-js';
 import PDFDocument from 'pdfkit';
 import * as crypto from 'crypto';
 
 @Injectable()
-export class PdfService {
+export class PdfService implements OnModuleInit {
   private readonly logger = new Logger(PdfService.name);
-  private readonly supabase;
+  private supabase: ReturnType<typeof createClient> | null = null;
 
   constructor(
-    private readonly config: ConfigService,
     private readonly prisma: PrismaService,
-  ) {
-    const supabaseUrl = this.config.get('SUPABASE_URL');
-    const supabaseKey = this.config.get('SUPABASE_SERVICE_KEY');
+    private readonly platformConfig: PlatformConfigService,
+  ) {}
+
+  async onModuleInit() {
+    const supabaseUrl = await this.platformConfig.get('storage.supabaseUrl');
+    const supabaseKey = await this.platformConfig.get('storage.supabaseServiceKey');
     if (supabaseUrl && supabaseKey) {
       this.supabase = createClient(supabaseUrl, supabaseKey);
     }
@@ -125,8 +127,9 @@ export class PdfService {
     const storagePath = `consents/${consent.practiceId}/${consent.id}.pdf`;
 
     if (this.supabase) {
+      const bucket = (await this.platformConfig.get('storage.supabaseBucket')) || 'consent-pdfs';
       const { error } = await this.supabase.storage
-        .from('consent-pdfs')
+        .from(bucket)
         .upload(storagePath, pdfBuffer, {
           contentType: 'application/pdf',
           upsert: true,
@@ -149,5 +152,31 @@ export class PdfService {
 
     this.logger.log(`PDF generated for consent ${consentId}: ${storagePath}`);
     return storagePath;
+  }
+
+  async downloadPdf(consentId: string, practiceId: string): Promise<{ signedUrl: string }> {
+    const consent = await this.prisma.consentForm.findFirst({
+      where: { id: consentId, practiceId },
+      select: { pdfStoragePath: true },
+    });
+
+    if (!consent?.pdfStoragePath) {
+      throw new Error('PDF not found for this consent');
+    }
+
+    if (!this.supabase) {
+      throw new Error('Storage is not configured');
+    }
+
+    const bucket = (await this.platformConfig.get('storage.supabaseBucket')) || 'consent-pdfs';
+    const { data, error } = await this.supabase.storage
+      .from(bucket)
+      .createSignedUrl(consent.pdfStoragePath, 3600); // 1 hour expiry
+
+    if (error) {
+      throw error;
+    }
+
+    return { signedUrl: data.signedUrl };
   }
 }

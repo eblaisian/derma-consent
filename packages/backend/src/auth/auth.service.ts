@@ -2,6 +2,7 @@ import {
   Injectable,
   ConflictException,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -9,6 +10,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { SyncUserDto } from './auth.dto';
 import { RegisterDto, LoginDto } from './credentials.dto';
 import { TwoFactorService } from './two-factor.service';
+import { ConfigService } from '@nestjs/config';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +19,8 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly twoFactorService: TwoFactorService,
+    private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
   ) {}
 
   async syncUser(dto: SyncUserDto) {
@@ -87,8 +92,18 @@ export class AuthService {
         email: dto.email,
         name: dto.name,
         passwordHash,
+        emailVerified: false,
       },
     });
+
+    // Send verification email
+    const verifyToken = this.jwtService.sign(
+      { sub: user.id, type: 'email-verify' },
+      { expiresIn: '24h' },
+    );
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    const verifyLink = `${frontendUrl}/verify-email?token=${verifyToken}`;
+    await this.emailService.sendEmailVerification(user.email, verifyLink);
 
     return this.signAndReturn(user);
   }
@@ -105,6 +120,10 @@ export class AuthService {
     const valid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!valid) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (!user.emailVerified) {
+      return { emailNotVerified: true, email: user.email };
     }
 
     if (user.twoFactorEnabled) {
@@ -136,6 +155,89 @@ export class AuthService {
     }
 
     return this.signAndReturn(user);
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    // Always return success to prevent email enumeration
+    if (!user || !user.passwordHash) {
+      return { message: 'If an account exists, a reset link has been sent.' };
+    }
+
+    const resetToken = this.jwtService.sign(
+      { sub: user.id, type: 'password-reset' },
+      { expiresIn: '1h' },
+    );
+
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    const resetLink = `${frontendUrl}/reset-password?token=${resetToken}`;
+    await this.emailService.sendPasswordReset(user.email, resetLink);
+
+    return { message: 'If an account exists, a reset link has been sent.' };
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    let payload: { sub: string; type: string };
+    try {
+      payload = this.jwtService.verify(token);
+    } catch {
+      throw new BadRequestException('Invalid or expired reset token');
+    }
+
+    if (payload.type !== 'password-reset') {
+      throw new BadRequestException('Invalid token type');
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await this.prisma.user.update({
+      where: { id: payload.sub },
+      data: { passwordHash },
+    });
+
+    return { message: 'Password has been reset successfully.' };
+  }
+
+  async verifyEmail(token: string) {
+    let payload: { sub: string; type: string };
+    try {
+      payload = this.jwtService.verify(token);
+    } catch {
+      throw new BadRequestException('Invalid or expired verification token');
+    }
+
+    if (payload.type !== 'email-verify') {
+      throw new BadRequestException('Invalid token type');
+    }
+
+    await this.prisma.user.update({
+      where: { id: payload.sub },
+      data: { emailVerified: true },
+    });
+
+    return { message: 'Email verified successfully.' };
+  }
+
+  async resendVerification(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user || user.emailVerified) {
+      return { message: 'If applicable, a verification email has been sent.' };
+    }
+
+    const verifyToken = this.jwtService.sign(
+      { sub: user.id, type: 'email-verify' },
+      { expiresIn: '24h' },
+    );
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    const verifyLink = `${frontendUrl}/verify-email?token=${verifyToken}`;
+    await this.emailService.sendEmailVerification(user.email, verifyLink);
+
+    return { message: 'If applicable, a verification email has been sent.' };
   }
 
   private signAndReturn(user: {

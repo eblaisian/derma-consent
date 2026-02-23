@@ -8,6 +8,9 @@ describe('SubscriptionGuard', () => {
   let guard: SubscriptionGuard;
 
   const mockPrisma = {
+    practice: {
+      findUnique: jest.fn().mockResolvedValue({ isSuspended: false }),
+    },
     subscription: {
       findUnique: jest.fn(),
     },

@@ -3,14 +3,19 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  Optional,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuditService } from '../audit/audit.service';
 import { InviteDto, ChangeRoleDto } from './team.dto';
 import { UserRole } from '@prisma/client';
 
 @Injectable()
 export class TeamService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly auditService?: AuditService,
+  ) {}
 
   async listMembers(practiceId: string) {
     return this.prisma.user.findMany({
@@ -27,7 +32,7 @@ export class TeamService {
     });
   }
 
-  async createInvite(practiceId: string, dto: InviteDto) {
+  async createInvite(practiceId: string, dto: InviteDto, userId?: string) {
     // Check if user already in practice
     const existing = await this.prisma.user.findUnique({
       where: { email: dto.email },
@@ -53,7 +58,7 @@ export class TeamService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
-    return this.prisma.invite.create({
+    const invite = await this.prisma.invite.create({
       data: {
         practiceId,
         email: dto.email,
@@ -70,6 +75,17 @@ export class TeamService {
         createdAt: true,
       },
     });
+
+    await this.auditService?.log({
+      practiceId,
+      userId,
+      action: 'TEAM_MEMBER_INVITED',
+      entityType: 'Invite',
+      entityId: invite.id,
+      metadata: { email: dto.email, role: dto.role },
+    });
+
+    return invite;
   }
 
   async removeMember(practiceId: string, userId: string, currentUserId: string) {
@@ -88,6 +104,15 @@ export class TeamService {
     await this.prisma.user.update({
       where: { id: userId },
       data: { practiceId: null, role: 'ADMIN' },
+    });
+
+    await this.auditService?.log({
+      practiceId,
+      userId: currentUserId,
+      action: 'TEAM_MEMBER_REMOVED',
+      entityType: 'User',
+      entityId: userId,
+      metadata: { removedEmail: user.email },
     });
 
     return { success: true };
@@ -121,7 +146,8 @@ export class TeamService {
       }
     }
 
-    return this.prisma.user.update({
+    const oldRole = user.role;
+    const updated = await this.prisma.user.update({
       where: { id: userId },
       data: { role: dto.role },
       select: {
@@ -131,6 +157,17 @@ export class TeamService {
         role: true,
       },
     });
+
+    await this.auditService?.log({
+      practiceId,
+      userId: currentUserId,
+      action: 'TEAM_MEMBER_ROLE_CHANGED',
+      entityType: 'User',
+      entityId: userId,
+      metadata: { email: updated.email, oldRole, newRole: dto.role },
+    });
+
+    return updated;
   }
 
   async getInviteByToken(token: string) {

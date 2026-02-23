@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import { API_URL } from '@/lib/api';
 import {
   Card,
   CardContent,
@@ -34,6 +35,8 @@ export function LoginForm({ enabledProviders }: Props) {
   const [twoFactorStep, setTwoFactorStep] = useState(false);
   const [tempToken, setTempToken] = useState('');
   const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [emailNotVerified, setEmailNotVerified] = useState(false);
+  const [resendingVerification, setResendingVerification] = useState(false);
 
   const anyOAuthEnabled = enabledProviders.google || enabledProviders['microsoft-entra-id'] || enabledProviders.apple;
   const anyEnabled = anyOAuthEnabled || enabledProviders.credentials;
@@ -49,8 +52,11 @@ export function LoginForm({ enabledProviders }: Props) {
         redirect: false,
       });
       if (result?.error) {
-        // Check if the error indicates 2FA is required
-        if (result.error.includes('2FA_REQUIRED')) {
+        // Check if the error indicates email not verified or 2FA is required
+        if (result.error.includes('EMAIL_NOT_VERIFIED')) {
+          setError(t('emailNotVerified'));
+          setEmailNotVerified(true);
+        } else if (result.error.includes('2FA_REQUIRED')) {
           const token = result.error.split('2FA_REQUIRED:')[1];
           setTempToken(token);
           setTwoFactorStep(true);
@@ -59,7 +65,10 @@ export function LoginForm({ enabledProviders }: Props) {
           setError(t('invalidCredentials'));
         }
       } else if (result?.ok) {
-        window.location.href = '/dashboard';
+        // Fetch session to check role for redirect
+        const sessionRes = await fetch('/api/auth/session');
+        const session = await sessionRes.json();
+        window.location.href = session?.user?.role === 'PLATFORM_ADMIN' ? '/admin' : '/dashboard';
       }
     } catch {
       setError(t('invalidCredentials'));
@@ -81,7 +90,9 @@ export function LoginForm({ enabledProviders }: Props) {
       if (result?.error) {
         setError(t('invalid2FACode'));
       } else if (result?.ok) {
-        window.location.href = '/dashboard';
+        const sessionRes = await fetch('/api/auth/session');
+        const session = await sessionRes.json();
+        window.location.href = session?.user?.role === 'PLATFORM_ADMIN' ? '/admin' : '/dashboard';
       }
     } catch {
       setError(t('invalid2FACode'));
@@ -139,8 +150,43 @@ export function LoginForm({ enabledProviders }: Props) {
                   aria-describedby={error ? 'login-error' : undefined}
                 />
               </div>
+              <div className="text-end">
+                <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-primary underline underline-offset-4">
+                  {t('forgotPassword')}
+                </Link>
+              </div>
               {error && (
                 <p id="login-error" className="text-sm text-destructive" role="alert">{error}</p>
+              )}
+              {emailNotVerified && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  disabled={resendingVerification}
+                  onClick={async () => {
+                    setResendingVerification(true);
+                    try {
+                      const res = await fetch(`${API_URL}/api/auth/resend-verification`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email }),
+                      });
+                      if (res.ok) {
+                        setError(t('verificationResent'));
+                        setEmailNotVerified(false);
+                      } else {
+                        setError(t('verificationResendFailed'));
+                      }
+                    } catch {
+                      setError(t('verificationResendFailed'));
+                    } finally {
+                      setResendingVerification(false);
+                    }
+                  }}
+                >
+                  {resendingVerification ? t('resending') : t('resendVerification')}
+                </Button>
               )}
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? t('signingIn') : t('signIn')}
@@ -210,57 +256,36 @@ export function LoginForm({ enabledProviders }: Props) {
             <Button
               className="w-full"
               variant="outline"
-              onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+              onClick={() => signIn('google', { callbackUrl: '/dashboard' /* OAuth users are always practice users */ })}
             >
               <GoogleIcon />
               {t('signInWithGoogle')}
             </Button>
-          ) : (
-            <Button className="w-full" variant="outline" disabled>
-              <GoogleIcon />
-              <span className="text-muted-foreground">
-                {t('googleNotConfigured')}
-              </span>
-            </Button>
-          )}
+          ) : null}
 
           {enabledProviders['microsoft-entra-id'] ? (
             <Button
               className="w-full"
               variant="outline"
               onClick={() =>
-                signIn('microsoft-entra-id', { callbackUrl: '/dashboard' })
+                signIn('microsoft-entra-id', { callbackUrl: '/dashboard' /* OAuth users are always practice users */ })
               }
             >
               <MicrosoftIcon />
               {t('signInWithMicrosoft')}
             </Button>
-          ) : (
-            <Button className="w-full" variant="outline" disabled>
-              <MicrosoftIcon />
-              <span className="text-muted-foreground">
-                {t('microsoftNotConfigured')}
-              </span>
-            </Button>
-          )}
+          ) : null}
 
           {enabledProviders.apple ? (
             <Button
               className="w-full"
               variant="outline"
-              onClick={() => signIn('apple', { callbackUrl: '/dashboard' })}
+              onClick={() => signIn('apple', { callbackUrl: '/dashboard' /* OAuth users are always practice users */ })}
             >
               <AppleIcon />
               {t('signInWithApple')}
             </Button>
-          ) : (
-            <Button className="w-full" variant="outline" disabled>
-              <AppleIcon />
-              <span className="text-muted-foreground">
-                {t('appleNotConfigured')}
-              </span>
-            </Button>
-          )}
+          ) : null}
 
           <p className="pt-4 text-center text-xs text-muted-foreground">
             {t('privacyNotice')}

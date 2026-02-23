@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useTranslations, useLocale, useFormatter } from 'next-intl';
 import useSWR from 'swr';
 import { API_URL, createAuthFetcher } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   XAxis,
   YAxis,
@@ -17,6 +19,7 @@ import {
   LineChart,
   Line,
 } from 'recharts';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
@@ -52,6 +55,8 @@ interface Revenue {
   averageTransaction: number;
 }
 
+type DateRange = '7d' | '30d' | '90d';
+
 export default function AnalyticsPage() {
   const t = useTranslations('analytics');
   const tTypes = useTranslations('consentTypes');
@@ -59,6 +64,10 @@ export default function AnalyticsPage() {
   const format = useFormatter();
   const { data: session } = useSession();
   const authFetcher = createAuthFetcher(session?.accessToken);
+  const [dateRange, setDateRange] = useState<DateRange>('30d');
+
+  const daysMap: Record<DateRange, number> = { '7d': 7, '30d': 30, '90d': 90 };
+  const days = daysMap[dateRange];
 
   const { data: overview } = useSWR<Overview>(
     session?.accessToken ? `${API_URL}/api/analytics/overview` : null,
@@ -71,7 +80,7 @@ export default function AnalyticsPage() {
   );
 
   const { data: byPeriod } = useSWR<ByPeriod[]>(
-    session?.accessToken ? `${API_URL}/api/analytics/by-period?days=30` : null,
+    session?.accessToken ? `${API_URL}/api/analytics/by-period?days=${days}` : null,
     authFetcher,
   );
 
@@ -80,10 +89,12 @@ export default function AnalyticsPage() {
     authFetcher,
   );
 
-  const { data: revenue } = useSWR<Revenue>(
+  const { data: revenue, isLoading: revenueLoading } = useSWR<Revenue>(
     session?.accessToken ? `${API_URL}/api/analytics/revenue` : null,
     authFetcher,
   );
+
+  const isLoading = !overview && !byType && !byPeriod && !conversion && !revenue;
 
   const typeData = byType?.map((item) => ({
     name: tTypes.has(item.type as Parameters<typeof tTypes>[0]) ? tTypes(item.type as Parameters<typeof tTypes>[0]) : item.type,
@@ -92,39 +103,68 @@ export default function AnalyticsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
-        <p className="text-sm text-muted-foreground">
-          {t('description')}
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
+          <p className="text-sm text-muted-foreground">
+            {t('description')}
+          </p>
+        </div>
+        <div className="flex items-center gap-1">
+          {(['7d', '30d', '90d'] as const).map((range) => (
+            <Button
+              key={range}
+              variant={dateRange === range ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setDateRange(range)}
+            >
+              {range === '7d' ? t('last7Days') : range === '30d' ? t('last30Days') : t('last90Days')}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {/* Overview Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t('total')}</CardDescription>
-            <CardTitle className="text-3xl">{overview?.total ?? '—'}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t('pending')}</CardDescription>
-            <CardTitle className="text-3xl">{overview?.pending ?? '—'}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t('signed')}</CardDescription>
-            <CardTitle className="text-3xl">{overview?.signed ?? '—'}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t('patients')}</CardDescription>
-            <CardTitle className="text-3xl">{overview?.patients ?? '—'}</CardTitle>
-          </CardHeader>
-        </Card>
+        {isLoading ? (
+          <>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i}>
+                <CardHeader className="pb-2">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-9 w-16 mt-1" />
+                </CardHeader>
+              </Card>
+            ))}
+          </>
+        ) : (
+          <>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardDescription>{t('total')}</CardDescription>
+                <CardTitle className="text-3xl">{overview?.total ?? '—'}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardDescription>{t('pending')}</CardDescription>
+                <CardTitle className="text-3xl">{overview?.pending ?? '—'}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardDescription>{t('signed')}</CardDescription>
+                <CardTitle className="text-3xl">{overview?.signed ?? '—'}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardDescription>{t('patients')}</CardDescription>
+                <CardTitle className="text-3xl">{overview?.patients ?? '—'}</CardTitle>
+              </CardHeader>
+            </Card>
+          </>
+        )}
       </div>
 
       {/* Revenue */}
@@ -134,12 +174,21 @@ export default function AnalyticsPage() {
           <CardDescription>{t('revenueDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold">
-            EUR {revenue?.totalRevenue?.toFixed(2) ?? '0.00'}
-          </p>
-          <p className="text-sm text-muted-foreground mt-1">
-            {revenue?.transactionCount ?? 0} {t('transactions')} | {t('avg')} EUR {revenue?.averageTransaction?.toFixed(2) ?? '0.00'}
-          </p>
+          {revenueLoading ? (
+            <>
+              <Skeleton className="h-9 w-40" />
+              <Skeleton className="h-4 w-56 mt-2" />
+            </>
+          ) : (
+            <>
+              <p className="text-3xl font-bold">
+                EUR {revenue?.totalRevenue?.toFixed(2) ?? '0.00'}
+              </p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {revenue?.transactionCount ?? 0} {t('transactions')} | {t('avg')} EUR {revenue?.averageTransaction?.toFixed(2) ?? '0.00'}
+              </p>
+            </>
+          )}
         </CardContent>
       </Card>
 

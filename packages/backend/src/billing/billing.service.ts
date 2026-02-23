@@ -1,17 +1,22 @@
-import { Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, ServiceUnavailableException, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import Stripe from 'stripe';
 
 @Injectable()
-export class BillingService {
-  private readonly stripe: Stripe | null;
+export class BillingService implements OnModuleInit {
+  private readonly logger = new Logger(BillingService.name);
+  private stripe: Stripe | null = null;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
-  ) {
-    const stripeKey = this.configService.get<string>('STRIPE_SECRET_KEY');
+    private readonly platformConfig: PlatformConfigService,
+  ) {}
+
+  async onModuleInit() {
+    const stripeKey = await this.platformConfig.get('stripe.secretKey');
     this.stripe = stripeKey ? new Stripe(stripeKey) : null;
   }
 
@@ -71,6 +76,9 @@ export class BillingService {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${frontendUrl}/billing?success=true`,
       cancel_url: `${frontendUrl}/billing?cancelled=true`,
+      subscription_data: {
+        metadata: { practiceId },
+      },
       metadata: { practiceId },
     });
 
@@ -104,7 +112,7 @@ export class BillingService {
         const practiceId = sub.metadata.practiceId;
         if (!practiceId) break;
 
-        const plan = this.mapPriceToplan(
+        const plan = await this.mapPriceToplan(
           (sub.items.data[0]?.price.id) ?? '',
         );
 
@@ -159,19 +167,24 @@ export class BillingService {
     }
   }
 
-  private mapPriceToplan(priceId: string): 'STARTER' | 'PROFESSIONAL' | 'ENTERPRISE' {
-    const starterMonthly = this.configService.get<string>('STRIPE_STARTER_MONTHLY_PRICE_ID');
-    const starterYearly = this.configService.get<string>('STRIPE_STARTER_YEARLY_PRICE_ID');
-    const proMonthly = this.configService.get<string>('STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID');
-    const proYearly = this.configService.get<string>('STRIPE_PROFESSIONAL_YEARLY_PRICE_ID');
+  private async mapPriceToplan(priceId: string): Promise<'STARTER' | 'PROFESSIONAL' | 'ENTERPRISE'> {
+    const starterMonthly = await this.platformConfig.get('stripe.starterMonthlyPriceId');
+    const starterYearly = await this.platformConfig.get('stripe.starterYearlyPriceId');
+    const proMonthly = await this.platformConfig.get('stripe.professionalMonthlyPriceId');
+    const proYearly = await this.platformConfig.get('stripe.professionalYearlyPriceId');
+    const enterpriseMonthly = await this.platformConfig.get('stripe.enterpriseMonthlyPriceId');
+    const enterpriseYearly = await this.platformConfig.get('stripe.enterpriseYearlyPriceId');
 
     if (priceId === starterMonthly || priceId === starterYearly) return 'STARTER';
     if (priceId === proMonthly || priceId === proYearly) return 'PROFESSIONAL';
+    if (priceId === enterpriseMonthly || priceId === enterpriseYearly) return 'ENTERPRISE';
+
+    this.logger.warn(`Unknown Stripe price ID: ${priceId} — defaulting to PROFESSIONAL`);
     return 'PROFESSIONAL';
   }
 
-  constructWebhookEvent(payload: Buffer, signature: string): Stripe.Event {
-    const secret = this.configService.get<string>('STRIPE_SUBSCRIPTION_WEBHOOK_SECRET');
+  async constructWebhookEvent(payload: Buffer, signature: string): Promise<Stripe.Event> {
+    const secret = await this.platformConfig.get('stripe.subscriptionWebhookSecret');
     if (!secret) {
       throw new ServiceUnavailableException(
         'Billing webhooks are not configured. Set STRIPE_SUBSCRIPTION_WEBHOOK_SECRET in .env',

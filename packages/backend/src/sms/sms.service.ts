@@ -1,16 +1,18 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 
 @Injectable()
-export class SmsService {
+export class SmsService implements OnModuleInit {
   private readonly logger = new Logger(SmsService.name);
   private client: import('twilio').Twilio | null = null;
-  private readonly phoneNumber: string | undefined;
+  private phoneNumber: string | undefined;
 
-  constructor(private readonly configService: ConfigService) {
-    const accountSid = this.configService.get<string>('TWILIO_ACCOUNT_SID');
-    const authToken = this.configService.get<string>('TWILIO_AUTH_TOKEN');
-    this.phoneNumber = this.configService.get<string>('TWILIO_PHONE_NUMBER');
+  constructor(private readonly platformConfig: PlatformConfigService) {}
+
+  async onModuleInit() {
+    const accountSid = await this.platformConfig.get('sms.twilioAccountSid');
+    const authToken = await this.platformConfig.get('sms.twilioAuthToken');
+    this.phoneNumber = await this.platformConfig.get('sms.twilioPhoneNumber');
 
     if (accountSid && authToken) {
       // Dynamic import to avoid errors when Twilio is not configured

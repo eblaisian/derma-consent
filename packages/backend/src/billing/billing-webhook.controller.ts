@@ -33,7 +33,7 @@ export class BillingWebhookController {
       throw new BadRequestException('Missing raw body');
     }
 
-    const event = this.billingService.constructWebhookEvent(rawBody, signature);
+    const event = await this.billingService.constructWebhookEvent(rawBody, signature);
     this.logger.log(`Billing webhook: ${event.type}`);
 
     await this.billingService.handleWebhookEvent(event);

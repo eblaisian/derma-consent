@@ -2,6 +2,9 @@
 
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { VaultProvider } from '@/contexts/vault-context';
+import { VaultUnlockModal } from '@/components/vault/vault-unlock-modal';
+import { VaultStatusButton } from '@/components/vault/vault-status-button';
 import { Sidebar } from './sidebar';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -44,6 +47,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return (
+    <VaultProvider>
     <div className="flex h-screen">
       {/* Skip to content link */}
       <a
@@ -78,6 +82,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-2">
+            <VaultStatusButton />
             <ThemeToggle />
             <LanguageSwitcher />
           </div>
@@ -133,6 +138,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </main>
       </div>
+
+      <VaultUnlockModal />
     </div>
+    </VaultProvider>
   );
 }

@@ -146,6 +146,56 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Product Preview — device mockups */}
+      <section className="py-24 bg-muted/30">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-4">
+              {t('previewTitle')}
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              {t('previewSubtitle')}
+            </p>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-3 stagger-children">
+            {([
+              { label: 'Dashboard', icon: BarChart3, gradient: 'from-blue-500/20 via-blue-400/10 to-cyan-500/20' },
+              { label: 'Consent Form', icon: FileCheck, gradient: 'from-emerald-500/20 via-green-400/10 to-teal-500/20' },
+              { label: 'Patient Management', icon: ClipboardList, gradient: 'from-violet-500/20 via-purple-400/10 to-indigo-500/20' },
+            ] as const).map((mockup) => {
+              const Icon = mockup.icon;
+              return (
+                <div key={mockup.label} className="animate-fade-in-up">
+                  {/* Laptop frame */}
+                  <div className="rounded-xl border bg-background shadow-sm overflow-hidden">
+                    {/* Title bar */}
+                    <div className="flex items-center gap-1.5 px-3 py-2 border-b bg-muted/50">
+                      <div className="h-2.5 w-2.5 rounded-full bg-red-400/60" />
+                      <div className="h-2.5 w-2.5 rounded-full bg-yellow-400/60" />
+                      <div className="h-2.5 w-2.5 rounded-full bg-green-400/60" />
+                      <span className="ml-2 text-[10px] text-muted-foreground font-mono">dermaconsent.de</span>
+                    </div>
+                    {/* Screen content placeholder */}
+                    <div className={`relative h-48 bg-gradient-to-br ${mockup.gradient} flex items-center justify-center`}>
+                      <div className="text-center">
+                        <Icon className="h-10 w-10 mx-auto mb-2 text-muted-foreground/40" />
+                        <div className="space-y-1.5 px-6">
+                          <div className="h-2 w-32 mx-auto rounded-full bg-foreground/10" />
+                          <div className="h-2 w-24 mx-auto rounded-full bg-foreground/8" />
+                          <div className="h-2 w-28 mx-auto rounded-full bg-foreground/6" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="mt-3 text-center text-sm font-medium text-muted-foreground">{mockup.label}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* Security — subtle gradient border card instead of full bg-primary block */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

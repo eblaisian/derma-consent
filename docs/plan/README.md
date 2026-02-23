@@ -82,12 +82,12 @@ Each phase contains numbered tasks with unique IDs (e.g., `T-0.1`). Each task in
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| T-4.1 | Two-factor authentication (2FA) | `pending` | — |
+| T-4.1 | Two-factor authentication (2FA) | `done` | Claude |
 | T-4.2 | Dark mode | `superseded by T-5.10` | — |
-| T-4.3 | Additional languages (TR, AR, RU, PL) | `pending` | — |
-| T-4.4 | SMS/WhatsApp consent delivery | `pending` | — |
-| T-4.5 | Patient comprehension verification | `pending` | — |
-| T-4.6 | Video patient education embeds | `pending` | — |
+| T-4.3 | Additional languages (TR, AR, RU, PL) | `done` | Claude |
+| T-4.4 | SMS/WhatsApp consent delivery | `done` | Claude |
+| T-4.5 | Patient comprehension verification | `done` | Claude |
+| T-4.6 | Video patient education embeds | `done` | Claude |
 
 ### Phase 5 — UI/UX Redesign (Parallel with Phases 0–2)
 > Transform the visual identity from default shadcn/ui to a premium, branded design.

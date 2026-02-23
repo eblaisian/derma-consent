@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useVault } from '@/hooks/use-vault';
+import { VaultLockedPlaceholder } from '@/components/vault/vault-locked-placeholder';
 import { API_URL } from '@/lib/api';
 import type { TreatmentPhotoSummary } from '@/lib/types';
 
@@ -53,11 +54,7 @@ export function EncryptedPhotoViewer({ photo, className }: Props) {
   }, [isUnlocked, session?.accessToken, photo.id, photo.encryptedSessionKey, photo.encryptedMetadata?.iv, decryptPhoto]);
 
   if (!isUnlocked) {
-    return (
-      <div className={`flex items-center justify-center bg-muted rounded text-xs text-muted-foreground ${className ?? 'h-40'}`}>
-        Vault locked
-      </div>
-    );
+    return <VaultLockedPlaceholder size="sm" className={className ?? 'h-40'} />;
   }
 
   if (loading) {

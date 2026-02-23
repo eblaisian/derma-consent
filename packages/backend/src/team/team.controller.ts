@@ -33,7 +33,7 @@ export class TeamController {
     @Body() dto: InviteDto,
     @CurrentUser() user: CurrentUserPayload,
   ) {
-    return this.teamService.createInvite(user.practiceId!, dto);
+    return this.teamService.createInvite(user.practiceId!, dto, user.userId);
   }
 
   @Delete('members/:userId')

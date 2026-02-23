@@ -21,6 +21,8 @@ import { TreatmentPlanModule } from './treatment-plan/treatment-plan.module';
 import { PiiSanitizerInterceptor } from './common/pii-sanitizer.interceptor';
 import { HealthModule } from './health/health.module';
 import { RequestIdMiddleware } from './common/request-id.middleware';
+import { PlatformConfigModule } from './platform-config/platform-config.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -33,6 +35,7 @@ import { RequestIdMiddleware } from './common/request-id.middleware';
       { name: 'long', ttl: 60000, limit: 100 },
     ]),
     PrismaModule,
+    PlatformConfigModule,
     HealthModule,
     AuthModule,
     GdtModule,
@@ -49,6 +52,7 @@ import { RequestIdMiddleware } from './common/request-id.middleware';
     AnalyticsModule,
     PhotoModule,
     TreatmentPlanModule,
+    AdminModule,
   ],
   providers: [
     {

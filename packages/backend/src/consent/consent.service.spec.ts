@@ -5,6 +5,8 @@ import { ConsentService } from './consent.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 import { SmsService } from '../sms/sms.service';
+import { PdfService } from '../pdf/pdf.service';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { ConsentType } from './consent.dto';
 
 describe('ConsentService', () => {
@@ -22,11 +24,16 @@ describe('ConsentService', () => {
     practiceSettings: {
       findUnique: jest.fn().mockResolvedValue({ brandColor: null, logoUrl: null }),
     },
+    subscription: {
+      findUnique: jest.fn().mockResolvedValue({ plan: 'PROFESSIONAL', consentLimit: 1000 }),
+    },
   };
 
   const mockAudit = { log: jest.fn() };
   const mockConfig = { get: jest.fn().mockReturnValue('http://localhost:3000') };
   const mockSms = { sendConsentLink: jest.fn() };
+  const mockPdf = { generateConsentPdf: jest.fn().mockResolvedValue(undefined) };
+  const mockPlatformConfig = { get: jest.fn().mockResolvedValue('-1') };
 
   const mockPractice = { id: 'practice-1', name: 'Test Practice' };
 
@@ -49,6 +56,8 @@ describe('ConsentService', () => {
         { provide: ConfigService, useValue: mockConfig },
         { provide: SmsService, useValue: mockSms },
         { provide: AuditService, useValue: mockAudit },
+        { provide: PdfService, useValue: mockPdf },
+        { provide: PlatformConfigService, useValue: mockPlatformConfig },
       ],
     }).compile();
 
@@ -66,7 +75,7 @@ describe('ConsentService', () => {
         type: ConsentType.BOTOX,
       });
 
-      expect(result).toEqual(mockConsent);
+      expect(result).toEqual({ ...mockConsent, practiceName: 'Test Practice' });
       expect(mockPrisma.consentForm.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
