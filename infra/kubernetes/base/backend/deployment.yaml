@@ -17,13 +17,11 @@ spec:
       labels:
         app: backend
     spec:
-      nodeSelector:
-        arch: arm64
       imagePullSecrets:
-        - name: ocir-secret
+        - name: registry-derma-consent
       containers:
         - name: backend
-          image: OCIR_BACKEND_IMAGE # Replaced by kustomize set image
+          image: BACKEND_IMAGE
           ports:
             - containerPort: 3001
           env:
@@ -66,11 +64,11 @@ spec:
                   optional: true
           resources:
             requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
               cpu: 500m
               memory: 512Mi
-            limits:
-              cpu: "1"
-              memory: 1Gi
           livenessProbe:
             httpGet:
               path: /api/health

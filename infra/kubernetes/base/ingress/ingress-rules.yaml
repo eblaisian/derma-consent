@@ -6,20 +6,29 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - consent.eblaisian.com
+        - api.consent.eblaisian.com
+      secretName: derma-consent-tls
   rules:
-    - http:
+    - host: api.consent.eblaisian.com
+      http:
         paths:
-          # Route /api/* to backend
-          - path: /api
+          - path: /
             pathType: Prefix
             backend:
               service:
                 name: backend
                 port:
                   number: 3001
-          # Route everything else to frontend
+    - host: consent.eblaisian.com
+      http:
+        paths:
           - path: /
             pathType: Prefix
             backend:

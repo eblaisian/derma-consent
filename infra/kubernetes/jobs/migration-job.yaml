@@ -7,15 +7,13 @@ spec:
   activeDeadlineSeconds: 120
   template:
     spec:
-      nodeSelector:
-        arch: arm64
       imagePullSecrets:
-        - name: ocir-secret
+        - name: registry-derma-consent
       restartPolicy: Never
       containers:
         - name: migrate
-          image: OCIR_BACKEND_IMAGE # Replaced by sed in deploy script
-          command: ["npx", "prisma", "db", "push", "--accept-data-loss"]
+          image: BACKEND_IMAGE
+          command: ["npx", "prisma", "migrate", "deploy"]
           env:
             - name: DATABASE_URL
               valueFrom:

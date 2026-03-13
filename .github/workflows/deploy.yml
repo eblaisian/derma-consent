@@ -4,15 +4,16 @@ on:
   push:
     branches: [master]
     paths-ignore:
-      - "infra/terraform/**"
       - "**.md"
+      - "docs/**"
 
 env:
-  OCI_REGION: ${{ secrets.OCI_REGION }}
-  OCIR_URL: ${{ secrets.OCI_REGION }}.ocir.io
-  OCIR_NAMESPACE: ${{ secrets.OCI_OCIR_NAMESPACE }}
-  BACKEND_IMAGE: ${{ secrets.OCI_REGION }}.ocir.io/${{ secrets.OCI_OCIR_NAMESPACE }}/derma-consent/backend
-  FRONTEND_IMAGE: ${{ secrets.OCI_REGION }}.ocir.io/${{ secrets.OCI_OCIR_NAMESPACE }}/derma-consent/frontend
+  REGISTRY: registry.digitalocean.com
+  REGISTRY_NAME: derma-consent
+  BACKEND_IMAGE: registry.digitalocean.com/derma-consent/backend
+  FRONTEND_IMAGE: registry.digitalocean.com/derma-consent/frontend
+  CLUSTER_NAME: derma-consent-k8s-project
+  NAMESPACE: derma-consent
 
 jobs:
   test-backend:
@@ -76,32 +77,28 @@ jobs:
         working-directory: packages/frontend
 
   build:
-    name: Build Images
+    name: Build & Push Images
     needs: [test-backend, test-frontend]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
         with:
-          platforms: arm64
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Log in to DOCR
+        run: doctl registry login --expiry-seconds 1200
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Log in to OCIR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.OCIR_URL }}
-          username: ${{ secrets.OCI_OCIR_USERNAME }}
-          password: ${{ secrets.OCI_OCIR_TOKEN }}
 
       - name: Build and push backend
         uses: docker/build-push-action@v6
         with:
           context: ./packages/backend
-          platforms: linux/arm64
+          platforms: linux/amd64
           push: true
           cache-from: type=registry,ref=${{ env.BACKEND_IMAGE }}:buildcache
           cache-to: type=registry,ref=${{ env.BACKEND_IMAGE }}:buildcache,mode=max
@@ -113,239 +110,85 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./packages/frontend
-          platforms: linux/arm64
+          platforms: linux/amd64
           push: true
           build-args: |
-            NEXT_PUBLIC_API_URL=
+            NEXT_PUBLIC_API_URL=https://api.consent.eblaisian.com
           cache-from: type=registry,ref=${{ env.FRONTEND_IMAGE }}:buildcache
           cache-to: type=registry,ref=${{ env.FRONTEND_IMAGE }}:buildcache,mode=max
           tags: |
             ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
             ${{ env.FRONTEND_IMAGE }}:latest
 
-  setup-cluster:
-    name: Setup Shared Infra
+  deploy:
+    name: Deploy to Production
     needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install OCI CLI
-        run: |
-          curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh | bash -s -- --accept-all-defaults
-          echo "$HOME/bin" >> $GITHUB_PATH
-
-      - name: Configure OCI CLI
-        run: |
-          mkdir -p ~/.oci
-          cat > ~/.oci/config <<EOF
-          [DEFAULT]
-          user=${{ secrets.OCI_USER_OCID }}
-          fingerprint=${{ secrets.OCI_FINGERPRINT }}
-          tenancy=${{ secrets.OCI_TENANCY_OCID }}
-          region=${{ secrets.OCI_REGION }}
-          key_file=~/.oci/key.pem
-          EOF
-          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.oci/key.pem
-          chmod 600 ~/.oci/key.pem ~/.oci/config
-
-      - name: Configure kubectl
-        run: |
-          mkdir -p ~/.kube
-          oci ce cluster create-kubeconfig \
-            --cluster-id ${{ secrets.OKE_CLUSTER_OCID }} \
-            --region ${{ secrets.OCI_REGION }} \
-            --file ~/.kube/config \
-            --token-version 2.0.0
-
-      - name: Install Nginx Ingress Controller
-        run: |
-          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.3/deploy/static/provider/cloud/deploy.yaml
-
-          # Patch for OCI free-tier load balancer (flexible shape, 10Mbps)
-          kubectl patch svc ingress-nginx-controller -n ingress-nginx --type merge -p '{
-            "metadata": {
-              "annotations": {
-                "oci.oraclecloud.com/load-balancer-type": "lb",
-                "service.beta.kubernetes.io/oci-load-balancer-shape": "flexible",
-                "service.beta.kubernetes.io/oci-load-balancer-shape-flex-min": "10",
-                "service.beta.kubernetes.io/oci-load-balancer-shape-flex-max": "10"
-              }
-            }
-          }'
-
-          echo "Waiting for ingress controller..."
-          kubectl rollout status deployment/ingress-nginx-controller -n ingress-nginx --timeout=180s
-
-  deploy-staging:
-    name: Deploy Staging
-    needs: [build, setup-cluster]
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install OCI CLI
-        run: |
-          curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh | bash -s -- --accept-all-defaults
-          echo "$HOME/bin" >> $GITHUB_PATH
-
-      - name: Configure OCI CLI
-        run: |
-          mkdir -p ~/.oci
-          cat > ~/.oci/config <<EOF
-          [DEFAULT]
-          user=${{ secrets.OCI_USER_OCID }}
-          fingerprint=${{ secrets.OCI_FINGERPRINT }}
-          tenancy=${{ secrets.OCI_TENANCY_OCID }}
-          region=${{ secrets.OCI_REGION }}
-          key_file=~/.oci/key.pem
-          EOF
-          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.oci/key.pem
-          chmod 600 ~/.oci/key.pem ~/.oci/config
-
-      - name: Configure kubectl
-        run: |
-          mkdir -p ~/.kube
-          oci ce cluster create-kubeconfig \
-            --cluster-id ${{ secrets.OKE_CLUSTER_OCID }} \
-            --region ${{ secrets.OCI_REGION }} \
-            --file ~/.kube/config \
-            --token-version 2.0.0
-
-      - name: Install kustomize
-        run: |
-          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
-          sudo mv kustomize /usr/local/bin/
-
-      - name: Create namespace
-        run: |
-          kubectl create namespace derma-staging --dry-run=client -o yaml | kubectl apply -f -
-
-      - name: Create/update K8s secrets
-        run: |
-          # OCIR pull secret
-          kubectl create secret docker-registry ocir-secret \
-            --namespace=derma-staging \
-            --docker-server=${{ env.OCIR_URL }} \
-            --docker-username="${{ secrets.OCI_OCIR_USERNAME }}" \
-            --docker-password="${{ secrets.OCI_OCIR_TOKEN }}" \
-            --dry-run=client -o yaml | kubectl apply -f -
-
-          # PostgreSQL secret
-          kubectl create secret generic postgres-secret \
-            --namespace=derma-staging \
-            --from-literal=POSTGRES_USER=dermaconsent \
-            --from-literal=POSTGRES_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-            --dry-run=client -o yaml | kubectl apply -f -
-
-          # App secrets
-          kubectl create secret generic app-secrets \
-            --namespace=derma-staging \
-            --from-literal=DATABASE_URL="postgresql://dermaconsent:${{ secrets.DB_PASSWORD }}@postgres:5432/dermaconsent" \
-            --from-literal=AUTH_SECRET="${{ secrets.AUTH_SECRET }}" \
-            --from-literal=FRONTEND_URL="${{ secrets.FRONTEND_URL }}" \
-            --from-literal=STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY }}" \
-            --from-literal=STRIPE_WEBHOOK_SECRET="${{ secrets.STRIPE_WEBHOOK_SECRET }}" \
-            --from-literal=RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
-            --from-literal=BACKUP_PAR_URL="${{ secrets.BACKUP_PAR_URL }}" \
-            --dry-run=client -o yaml | kubectl apply -f -
-
-      - name: Deploy to staging
-        run: |
-          chmod +x infra/scripts/deploy-env.sh
-          infra/scripts/deploy-env.sh \
-            --namespace derma-staging \
-            --overlay staging \
-            --backend-image "${{ env.BACKEND_IMAGE }}:${{ github.sha }}" \
-            --frontend-image "${{ env.FRONTEND_IMAGE }}:${{ github.sha }}" \
-            --ingress-host "${{ secrets.INGRESS_HOST }}"
-
-  deploy-production:
-    name: Deploy Production
-    needs: [build, setup-cluster, deploy-staging]
     runs-on: ubuntu-latest
     environment: production
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install OCI CLI
-        run: |
-          curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh | bash -s -- --accept-all-defaults
-          echo "$HOME/bin" >> $GITHUB_PATH
-
-      - name: Configure OCI CLI
-        run: |
-          mkdir -p ~/.oci
-          cat > ~/.oci/config <<EOF
-          [DEFAULT]
-          user=${{ secrets.OCI_USER_OCID }}
-          fingerprint=${{ secrets.OCI_FINGERPRINT }}
-          tenancy=${{ secrets.OCI_TENANCY_OCID }}
-          region=${{ secrets.OCI_REGION }}
-          key_file=~/.oci/key.pem
-          EOF
-          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.oci/key.pem
-          chmod 600 ~/.oci/key.pem ~/.oci/config
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
       - name: Configure kubectl
-        run: |
-          mkdir -p ~/.kube
-          oci ce cluster create-kubeconfig \
-            --cluster-id ${{ secrets.OKE_CLUSTER_OCID }} \
-            --region ${{ secrets.OCI_REGION }} \
-            --file ~/.kube/config \
-            --token-version 2.0.0
+        run: doctl kubernetes cluster kubeconfig save ${{ env.CLUSTER_NAME }}
 
       - name: Install kustomize
         run: |
           curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           sudo mv kustomize /usr/local/bin/
 
+      - name: Install nginx ingress controller
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.3/deploy/static/provider/do/deploy.yaml
+          echo "Waiting for ingress controller..."
+          kubectl rollout status deployment/ingress-nginx-controller -n ingress-nginx --timeout=180s || true
+
+      - name: Install cert-manager
+        run: |
+          kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.yaml
+          echo "Waiting for cert-manager..."
+          kubectl rollout status deployment/cert-manager -n cert-manager --timeout=120s || true
+          kubectl rollout status deployment/cert-manager-webhook -n cert-manager --timeout=120s || true
+
       - name: Create namespace
+        run: kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Create DOCR pull secret
         run: |
-          kubectl create namespace derma-prod --dry-run=client -o yaml | kubectl apply -f -
+          doctl registry kubernetes-manifest --namespace ${{ env.NAMESPACE }} | kubectl apply -f -
 
-      - name: Create/update K8s secrets
+      - name: Create app secrets
         run: |
-          # OCIR pull secret
-          kubectl create secret docker-registry ocir-secret \
-            --namespace=derma-prod \
-            --docker-server=${{ env.OCIR_URL }} \
-            --docker-username="${{ secrets.OCI_OCIR_USERNAME }}" \
-            --docker-password="${{ secrets.OCI_OCIR_TOKEN }}" \
-            --dry-run=client -o yaml | kubectl apply -f -
-
-          # PostgreSQL secret
-          kubectl create secret generic postgres-secret \
-            --namespace=derma-prod \
-            --from-literal=POSTGRES_USER=dermaconsent \
-            --from-literal=POSTGRES_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-            --dry-run=client -o yaml | kubectl apply -f -
-
-          # App secrets
           kubectl create secret generic app-secrets \
-            --namespace=derma-prod \
-            --from-literal=DATABASE_URL="postgresql://dermaconsent:${{ secrets.DB_PASSWORD }}@postgres:5432/dermaconsent" \
+            --namespace=${{ env.NAMESPACE }} \
+            --from-literal=DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             --from-literal=AUTH_SECRET="${{ secrets.AUTH_SECRET }}" \
-            --from-literal=FRONTEND_URL="${{ secrets.FRONTEND_URL }}" \
+            --from-literal=FRONTEND_URL="https://consent.eblaisian.com" \
             --from-literal=STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY }}" \
             --from-literal=STRIPE_WEBHOOK_SECRET="${{ secrets.STRIPE_WEBHOOK_SECRET }}" \
             --from-literal=RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
-            --from-literal=BACKUP_PAR_URL="${{ secrets.BACKUP_PAR_URL }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Deploy to production
+      - name: Deploy
         run: |
           chmod +x infra/scripts/deploy-env.sh
           infra/scripts/deploy-env.sh \
-            --namespace derma-prod \
+            --namespace ${{ env.NAMESPACE }} \
             --overlay prod \
             --backend-image "${{ env.BACKEND_IMAGE }}:${{ github.sha }}" \
             --frontend-image "${{ env.FRONTEND_IMAGE }}:${{ github.sha }}"
 
-      - name: Show Load Balancer IP
+      - name: Show load balancer IP
         run: |
           echo "=== Load Balancer ==="
-          kubectl get svc -n ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+          kubectl get svc -n ingress-nginx ingress-nginx-controller \
+            -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
           echo ""
+          echo ""
+          echo "Point these DNS records to the IP above:"
+          echo "  consent.eblaisian.com     → A record"
+          echo "  api.consent.eblaisian.com → A record"

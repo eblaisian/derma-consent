@@ -17,13 +17,11 @@ spec:
       labels:
         app: frontend
     spec:
-      nodeSelector:
-        arch: arm64
       imagePullSecrets:
-        - name: ocir-secret
+        - name: registry-derma-consent
       containers:
         - name: frontend
-          image: OCIR_FRONTEND_IMAGE # Replaced by kustomize set image
+          image: FRONTEND_IMAGE
           ports:
             - containerPort: 3000
           env:
@@ -33,11 +31,11 @@ spec:
               value: "0.0.0.0"
           resources:
             requests:
+              cpu: 128m
+              memory: 128Mi
+            limits:
               cpu: 250m
               memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
           livenessProbe:
             httpGet:
               path: /
