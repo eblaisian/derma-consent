@@ -4,5 +4,11 @@ dist
 .env
 .env.*
 .git
-*.md
 .github
+.digitalocean
+.claude
+docs
+tests
+infra
+coverage
+*.log

@@ -95,7 +95,8 @@ jobs:
       - name: Build and push backend
         uses: docker/build-push-action@v6
         with:
-          context: ./packages/backend
+          context: .
+          file: ./packages/backend/Dockerfile
           platforms: linux/amd64
           push: true
           cache-from: type=registry,ref=${{ env.BACKEND_IMAGE }}:buildcache
@@ -107,7 +108,8 @@ jobs:
       - name: Build and push frontend
         uses: docker/build-push-action@v6
         with:
-          context: ./packages/frontend
+          context: .
+          file: ./packages/frontend/Dockerfile
           platforms: linux/amd64
           push: true
           build-args: |
