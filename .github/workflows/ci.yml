@@ -36,7 +36,6 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
-        working-directory: packages/backend
 
       - run: pnpm prisma generate
         working-directory: packages/backend
@@ -65,7 +64,6 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
-        working-directory: packages/frontend
 
       - run: pnpm lint
         working-directory: packages/frontend
