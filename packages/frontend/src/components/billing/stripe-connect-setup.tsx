@@ -26,7 +26,7 @@ export function StripeConnectSetup() {
   const { data: session } = useSession();
   const authFetch = useAuthFetch();
 
-  const { data: connectStatus, isLoading, mutate } = useSWR<ConnectStatus>(
+  const { data: connectStatus, isLoading } = useSWR<ConnectStatus>(
     session?.accessToken ? `${API_URL}/api/stripe/connect/status` : null,
     createAuthFetcher(session?.accessToken),
   );

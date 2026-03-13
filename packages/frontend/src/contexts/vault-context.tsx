@@ -9,7 +9,6 @@ import {
   type ReactNode,
 } from 'react';
 import { useSession } from 'next-auth/react';
-import { usePractice } from '@/hooks/use-practice';
 import {
   generateRsaKeyPair,
   exportPublicKey,
@@ -60,7 +59,6 @@ export const VaultContext = createContext<VaultContextValue | null>(null);
 
 export function VaultProvider({ children }: { children: ReactNode }) {
   const { data: session } = useSession();
-  const { practice } = usePractice();
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

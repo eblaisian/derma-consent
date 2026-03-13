@@ -78,7 +78,7 @@ export function selectedAreasToPoints(areas: SelectedTreatmentArea[]): Injection
     const def = getAreaDefinition(area.definitionId);
     if (!def) return [];
     const unitsPerSite = area.totalUnits / area.siteCount;
-    return Array.from({ length: area.siteCount }, (_, i) => ({
+    return Array.from({ length: area.siteCount }, () => ({
       id: crypto.randomUUID(),
       x: 0,
       y: 0,

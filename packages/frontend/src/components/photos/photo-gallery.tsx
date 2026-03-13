@@ -6,7 +6,7 @@ import { useVault } from '@/hooks/use-vault';
 import { Badge } from '@/components/ui/badge';
 import { VaultLockedPlaceholder } from '@/components/vault/vault-locked-placeholder';
 import { EncryptedPhotoViewer } from './encrypted-photo-viewer';
-import type { TreatmentPhotoSummary, BodyRegion } from '@/lib/types';
+import type { TreatmentPhotoSummary } from '@/lib/types';
 
 interface Props {
   photos: TreatmentPhotoSummary[];

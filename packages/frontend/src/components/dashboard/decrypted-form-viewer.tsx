@@ -50,6 +50,7 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
       return;
     }
 
+    let cancelled = false;
     setIsDecrypting(true);
     decryptForm({
       encryptedSessionKey: sessionKey,
@@ -57,14 +58,15 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
       ciphertext: encrypted.ciphertext,
     })
       .then((data) => {
-        setDecryptedData(data as Record<string, unknown>);
+        if (!cancelled) setDecryptedData(data as Record<string, unknown>);
       })
       .catch(() => {
-        setDecryptError(t('decryptionFailed'));
+        if (!cancelled) setDecryptError(t('decryptionFailed'));
       })
       .finally(() => {
-        setIsDecrypting(false);
+        if (!cancelled) setIsDecrypting(false);
       });
+    return () => { cancelled = true; };
   }, [consent, isUnlocked, decryptForm, decryptedData, isDecrypting, t]);
 
   const consentType = consent?.type as ConsentType | undefined;

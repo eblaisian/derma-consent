@@ -29,17 +29,19 @@ function VerifyEmailContent() {
       return;
     }
 
+    let cancelled = false;
     fetch(`${API_URL}/api/auth/verify-email`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token }),
     })
       .then((res) => {
-        setStatus(res.ok ? 'success' : 'error');
+        if (!cancelled) setStatus(res.ok ? 'success' : 'error');
       })
       .catch(() => {
-        setStatus('error');
+        if (!cancelled) setStatus('error');
       });
+    return () => { cancelled = true; };
   }, [token]);
 
   return (

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useTranslations, useLocale, useFormatter } from 'next-intl';
+import { useTranslations, useFormatter } from 'next-intl';
 import useSWR from 'swr';
 import { API_URL, createAuthFetcher } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -60,7 +60,6 @@ type DateRange = '7d' | '30d' | '90d';
 export default function AnalyticsPage() {
   const t = useTranslations('analytics');
   const tTypes = useTranslations('consentTypes');
-  const locale = useLocale();
   const format = useFormatter();
   const { data: session } = useSession();
   const authFetcher = createAuthFetcher(session?.accessToken);

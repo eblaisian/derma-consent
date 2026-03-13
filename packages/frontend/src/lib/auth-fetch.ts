@@ -8,11 +8,13 @@ import { API_URL } from './api';
 export function useAuthFetch() {
   const { data: session } = useSession();
 
+  const accessToken = session?.accessToken;
+
   const authFetch = useCallback(
     async (path: string, options: RequestInit = {}) => {
       const headers = new Headers(options.headers);
-      if (session?.accessToken) {
-        headers.set('Authorization', `Bearer ${session.accessToken}`);
+      if (accessToken) {
+        headers.set('Authorization', `Bearer ${accessToken}`);
       }
       if (!headers.has('Content-Type') && options.body && typeof options.body === 'string') {
         headers.set('Content-Type', 'application/json');
@@ -36,7 +38,7 @@ export function useAuthFetch() {
 
       return res.json();
     },
-    [session?.accessToken],
+    [accessToken],
   );
 
   return authFetch;

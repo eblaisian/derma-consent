@@ -4,15 +4,14 @@ import { useState, useEffect, useCallback } from 'react';
 
 type Theme = 'light' | 'dark' | 'system';
 
-export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>('system');
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') return 'system';
+  const stored = localStorage.getItem('theme') as Theme | null;
+  return stored && ['light', 'dark', 'system'].includes(stored) ? stored : 'system';
+}
 
-  useEffect(() => {
-    const stored = localStorage.getItem('theme') as Theme | null;
-    if (stored && ['light', 'dark', 'system'].includes(stored)) {
-      setThemeState(stored);
-    }
-  }, []);
+export function useTheme() {
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
     const root = document.documentElement;

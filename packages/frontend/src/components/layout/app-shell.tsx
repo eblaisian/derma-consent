@@ -37,11 +37,10 @@ const mobileNavItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const tNav = useTranslations('nav');
-  const { data: session } = useSession();
+  useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);

@@ -75,7 +75,7 @@ export default function AdminConfigPage() {
       } else {
         toast.error(t('testFailed') + ': ' + result.message);
       }
-    } catch (error) {
+    } catch {
       toast.error(t('testFailed'));
     } finally {
       setTestingCategory(null);

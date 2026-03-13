@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
@@ -19,8 +19,7 @@ export default function DashboardPage() {
   const t = useTranslations('dashboard');
   const router = useRouter();
   const { data: session } = useSession();
-  const { practiceId, practice, isLoading: practiceLoading } = usePractice();
-  const [showNewConsent, setShowNewConsent] = useState(false);
+  const { practiceId, isLoading: practiceLoading } = usePractice();
 
   const {
     data: consentsData,

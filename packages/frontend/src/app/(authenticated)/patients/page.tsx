@@ -7,7 +7,6 @@ import useSWR from 'swr';
 import { API_URL, createAuthFetcher } from '@/lib/api';
 import { useAuthFetch } from '@/lib/auth-fetch';
 import { useVault } from '@/hooks/use-vault';
-import { usePractice } from '@/hooks/use-practice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,7 +16,6 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
-import { VaultLockedPlaceholder } from '@/components/vault/vault-locked-placeholder';
 import { CreatePatientDialog } from '@/components/patients/create-patient-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
@@ -46,7 +44,6 @@ export default function PatientsPage() {
   const { data: session } = useSession();
   const authFetch = useAuthFetch();
   const { isUnlocked, decryptForm } = useVault();
-  const { practice } = usePractice();
   const [searchQuery, setSearchQuery] = useState('');
   const [decryptedNames, setDecryptedNames] = useState<Record<string, string>>({});
   const [isDecrypting, setIsDecrypting] = useState(false);
@@ -57,16 +54,18 @@ export default function PatientsPage() {
     createAuthFetcher(session?.accessToken),
   );
 
+  const patientItems = patientsData?.items;
+
   const handleDecryptAll = useCallback(async () => {
-    if (!isUnlocked || !patientsData?.items) return;
+    if (!isUnlocked || !patientItems) return;
 
     // Avoid re-decrypting the same data
-    const dataKey = patientsData.items.map(p => p.id).join(',');
+    const dataKey = patientItems.map(p => p.id).join(',');
     if (decryptedForRef.current === dataKey) return;
 
     setIsDecrypting(true);
     const names: Record<string, string> = {};
-    for (const patient of patientsData.items) {
+    for (const patient of patientItems) {
       try {
         const payload = JSON.parse(patient.encryptedName);
         const decrypted = await decryptForm(payload);
@@ -78,18 +77,17 @@ export default function PatientsPage() {
     setDecryptedNames(names);
     decryptedForRef.current = dataKey;
     setIsDecrypting(false);
-  }, [isUnlocked, patientsData?.items, decryptForm, t]);
+  }, [isUnlocked, patientItems, decryptForm, t]);
 
-  // Auto-decrypt when vault is unlocked
   useEffect(() => {
-    if (isUnlocked && patientsData?.items) {
+    if (isUnlocked && patientItems) {
       handleDecryptAll();
     }
     if (!isUnlocked) {
       setDecryptedNames({});
       decryptedForRef.current = null;
     }
-  }, [isUnlocked, handleDecryptAll, patientsData?.items]);
+  }, [isUnlocked, handleDecryptAll, patientItems]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;

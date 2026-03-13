@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations, useFormatter, useNow } from 'next-intl';
+import { useTranslations, useFormatter } from 'next-intl';
 import { useAuthFetch } from '@/lib/auth-fetch';
 import { useVault } from '@/hooks/use-vault';
 import type { ConsentFormSummary, ConsentStatus } from '@/lib/types';
