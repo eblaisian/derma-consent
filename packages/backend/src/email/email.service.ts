@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
-import { Resend } from 'resend';
+import { createTransport, Transporter } from 'nodemailer';
 import { consentLinkTemplate, getConsentLinkSubject } from './templates/consent-link.template';
 import { inviteTemplate, getInviteSubject } from './templates/invite.template';
 import { welcomeTemplate, getWelcomeSubject } from './templates/welcome.template';
@@ -13,31 +13,41 @@ type Locale = 'de' | 'en' | 'es' | 'fr';
 @Injectable()
 export class EmailService implements OnModuleInit {
   private readonly logger = new Logger(EmailService.name);
-  private resend: Resend | null = null;
-  private fromEmail: string = 'noreply@dermaconsent.de';
+  private transporter: Transporter | null = null;
+  private fromEmail: string = 'noreply@eblaisian.com';
 
   constructor(private readonly platformConfig: PlatformConfigService) {}
 
   async onModuleInit() {
-    const apiKey = await this.platformConfig.get('email.resendApiKey');
-    this.fromEmail = (await this.platformConfig.get('email.fromAddress')) || 'noreply@dermaconsent.de';
+    const smtpUser = await this.platformConfig.get('email.smtpUser');
+    const smtpPass = await this.platformConfig.get('email.smtpPass');
+    this.fromEmail = (await this.platformConfig.get('email.fromAddress')) || smtpUser || 'noreply@eblaisian.com';
 
-    if (apiKey) {
-      this.resend = new Resend(apiKey);
+    if (smtpUser && smtpPass) {
+      this.transporter = createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: smtpUser,
+          pass: smtpPass,
+        },
+      });
+      this.logger.log(`SMTP configured via ${smtpUser}`);
     } else {
-      this.logger.warn('Resend API key not set — emails will be no-oped');
+      this.logger.warn('SMTP credentials not set — emails will be no-oped');
     }
   }
 
   private async send(to: string, subject: string, html: string) {
-    if (!this.resend) {
+    if (!this.transporter) {
       this.logger.log(`[NO-OP] Email to ${to}: ${subject}`);
       return;
     }
 
     try {
-      await this.resend.emails.send({
-        from: this.fromEmail,
+      await this.transporter.sendMail({
+        from: `DermaConsent <${this.fromEmail}>`,
         to,
         subject,
         html,

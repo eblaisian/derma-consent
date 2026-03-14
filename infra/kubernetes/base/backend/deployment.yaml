@@ -56,11 +56,17 @@ spec:
                   name: app-secrets
                   key: STRIPE_WEBHOOK_SECRET
                   optional: true
-            - name: RESEND_API_KEY
+            - name: SMTP_USER
               valueFrom:
                 secretKeyRef:
                   name: app-secrets
-                  key: RESEND_API_KEY
+                  key: SMTP_USER
+                  optional: true
+            - name: SMTP_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: SMTP_PASS
                   optional: true
           resources:
             requests:

@@ -30,8 +30,9 @@ const ENV_VAR_MAP: Record<string, string> = {
   'stripe.enterpriseYearlyPriceId': 'STRIPE_ENTERPRISE_YEARLY_PRICE_ID',
   'stripe.platformFeePercent': 'STRIPE_PLATFORM_FEE_PERCENT',
   'stripe.subscriptionWebhookSecret': 'STRIPE_SUBSCRIPTION_WEBHOOK_SECRET',
-  'email.resendApiKey': 'RESEND_API_KEY',
-  'email.fromAddress': 'RESEND_FROM_EMAIL',
+  'email.smtpUser': 'SMTP_USER',
+  'email.smtpPass': 'SMTP_PASS',
+  'email.fromAddress': 'SMTP_FROM_EMAIL',
   'email.fromName': 'EMAIL_FROM_NAME',
   'sms.twilioAccountSid': 'TWILIO_ACCOUNT_SID',
   'sms.twilioAuthToken': 'TWILIO_AUTH_TOKEN',
@@ -44,7 +45,7 @@ const ENV_VAR_MAP: Record<string, string> = {
 // Default values for config keys
 const DEFAULTS: Record<string, string> = {
   'stripe.platformFeePercent': '5',
-  'email.fromAddress': 'noreply@dermaconsent.de',
+  'email.fromAddress': 'noreply@eblaisian.com',
   'email.fromName': 'DermaConsent',
   'storage.supabaseBucket': 'consent-pdfs',
   'plans.freeTrialLimit': '25',
@@ -59,7 +60,7 @@ const SECRET_KEYS = new Set([
   'stripe.webhookSecret',
   'stripe.connectWebhookSecret',
   'stripe.subscriptionWebhookSecret',
-  'email.resendApiKey',
+  'email.smtpPass',
   'sms.twilioAccountSid',
   'sms.twilioAuthToken',
   'storage.supabaseServiceKey',
@@ -78,7 +79,8 @@ const CONFIG_METADATA: Record<string, { category: string; description: string; i
   'stripe.enterpriseMonthlyPriceId': { category: 'stripe', description: 'Enterprise Plan Monthly Price ID', isSecret: false },
   'stripe.enterpriseYearlyPriceId': { category: 'stripe', description: 'Enterprise Plan Yearly Price ID', isSecret: false },
   'stripe.platformFeePercent': { category: 'stripe', description: 'Platform Fee Percentage', isSecret: false },
-  'email.resendApiKey': { category: 'email', description: 'Resend API Key', isSecret: true },
+  'email.smtpUser': { category: 'email', description: 'SMTP Username (Gmail address)', isSecret: false },
+  'email.smtpPass': { category: 'email', description: 'SMTP Password (App Password)', isSecret: true },
   'email.fromAddress': { category: 'email', description: 'Sender Email Address', isSecret: false },
   'email.fromName': { category: 'email', description: 'Sender Name', isSecret: false },
   'sms.twilioAccountSid': { category: 'sms', description: 'Twilio Account SID', isSecret: true },
@@ -330,14 +332,20 @@ export class PlatformConfigService {
 
   private async testEmail(): Promise<{ success: boolean; message: string }> {
     try {
-      const apiKey = await this.get('email.resendApiKey');
-      if (!apiKey) return { success: false, message: 'Resend API key not configured' };
-      const { Resend } = await import('resend');
-      const resend = new Resend(apiKey);
-      await resend.domains.list();
-      return { success: true, message: 'Resend connection successful' };
+      const smtpUser = await this.get('email.smtpUser');
+      const smtpPass = await this.get('email.smtpPass');
+      if (!smtpUser || !smtpPass) return { success: false, message: 'SMTP credentials not configured' };
+      const { createTransport } = await import('nodemailer');
+      const transporter = createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: { user: smtpUser, pass: smtpPass },
+      });
+      await transporter.verify();
+      return { success: true, message: 'SMTP connection successful' };
     } catch (error) {
-      return { success: false, message: `Resend connection failed: ${(error as Error).message}` };
+      return { success: false, message: `SMTP connection failed: ${(error as Error).message}` };
     }
   }
 
