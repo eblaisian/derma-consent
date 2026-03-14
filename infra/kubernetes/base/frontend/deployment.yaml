@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -31,10 +31,10 @@ spec:
               value: "0.0.0.0"
           resources:
             requests:
-              cpu: 128m
-              memory: 128Mi
+              cpu: 25m
+              memory: 64Mi
             limits:
-              cpu: 250m
+              cpu: 200m
               memory: 256Mi
           livenessProbe:
             httpGet:
