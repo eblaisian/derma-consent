@@ -56,12 +56,9 @@ cd "$OVERLAY_DIR"
 kustomize edit set image "BACKEND_IMAGE=$BACKEND_IMAGE"
 kustomize edit set image "FRONTEND_IMAGE=$FRONTEND_IMAGE"
 
-# --- Step 2: Apply all manifests via kustomize ---
-echo ""
-echo "--- Applying Kustomize manifests ---"
-kustomize build "$OVERLAY_DIR" | kubectl apply -f -
-
-# --- Step 3: Run database migration ---
+# --- Step 2: Run database migration BEFORE deploying new pods ---
+# Migration uses the new backend image (has latest Prisma schema).
+# Old pods continue serving traffic during migration.
 echo ""
 echo "--- Running database migration ---"
 kubectl delete job prisma-migrate -n "$NAMESPACE" --ignore-not-found=true
@@ -71,7 +68,23 @@ sed "s|BACKEND_IMAGE|$BACKEND_IMAGE|g" \
 
 echo "Waiting for migration to complete..."
 kubectl wait --for=condition=complete job/prisma-migrate \
-  -n "$NAMESPACE" --timeout=120s
+  -n "$NAMESPACE" --timeout=120s || {
+  echo ""
+  echo "ERROR: Migration job failed or timed out"
+  echo "=== Job Status ==="
+  kubectl describe job/prisma-migrate -n "$NAMESPACE"
+  echo "=== Pod Logs ==="
+  kubectl logs -n "$NAMESPACE" -l job-name=prisma-migrate --tail=100 || true
+  exit 1
+}
+
+echo "Migration completed successfully."
+
+# --- Step 3: Apply all manifests via kustomize ---
+# With Recreate strategy, old pods are killed then new ones start.
+echo ""
+echo "--- Applying Kustomize manifests ---"
+kustomize build "$OVERLAY_DIR" | kubectl apply -f -
 
 # --- Step 4: Wait for backend rollout ---
 echo ""
