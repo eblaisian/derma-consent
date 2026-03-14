@@ -300,6 +300,8 @@ export class PlatformConfigService {
         return this.testStorage();
       case 'plans':
         return { success: true, message: 'Plan limits are configuration values — no connection test needed.' };
+      case 'notifications':
+        return { success: true, message: 'Notification toggles are configuration values — no connection test needed.' };
       case 'ai':
         return this.testOpenAI();
       default:

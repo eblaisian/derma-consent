@@ -1086,7 +1086,12 @@
     "notificationsConfig": "Notificaciones",
     "sendTestEmail": "Enviarme email de prueba",
     "sendTestSms": "Enviar SMS de prueba",
-    "enterTestPhone": "Ingrese número para SMS de prueba (ej. +491234567890):"
+    "enterTestPhone": "Ingrese número para SMS de prueba (ej. +491234567890):",
+    "configurationDescription": "Administre integraciones, credenciales y configuración de notificaciones.",
+    "valueRequired": "Ingrese un valor",
+    "resetConfirm": "¿Restablecer esta configuración a su valor predeterminado? Esta acción no se puede deshacer.",
+    "resetSuccess": "Restablecido al valor predeterminado",
+    "enterNewValue": "Ingrese nuevo valor..."
   },
   "pagination": {
     "showing": "Mostrando {start}–{end} de {total}",

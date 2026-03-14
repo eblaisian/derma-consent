@@ -1086,7 +1086,12 @@
     "notificationsConfig": "Bildirimler",
     "sendTestEmail": "Bana test e-postası gönder",
     "sendTestSms": "Test SMS gönder",
-    "enterTestPhone": "Test SMS için telefon numarası girin (örn. +491234567890):"
+    "enterTestPhone": "Test SMS için telefon numarası girin (örn. +491234567890):",
+    "configurationDescription": "Platform entegrasyonlarını, kimlik bilgilerini ve bildirim ayarlarını yönetin.",
+    "valueRequired": "Lütfen bir değer girin",
+    "resetConfirm": "Bu ayarı varsayılan değerine sıfırlansın mı? Bu işlem geri alınamaz.",
+    "resetSuccess": "Varsayılana sıfırlandı",
+    "enterNewValue": "Yeni değer girin..."
   },
   "pagination": {
     "showing": "{total} içinden {start}–{end} gösteriliyor",

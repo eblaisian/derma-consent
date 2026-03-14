@@ -1086,7 +1086,12 @@
     "notificationsConfig": "Powiadomienia",
     "sendTestEmail": "Wyślij mi testowy email",
     "sendTestSms": "Wyślij testowy SMS",
-    "enterTestPhone": "Wpisz numer telefonu do testu SMS (np. +491234567890):"
+    "enterTestPhone": "Wpisz numer telefonu do testu SMS (np. +491234567890):",
+    "configurationDescription": "Zarządzaj integracjami platformy, danymi uwierzytelniania i ustawieniami powiadomień.",
+    "valueRequired": "Wprowadź wartość",
+    "resetConfirm": "Zresetować to ustawienie do wartości domyślnej? Tej operacji nie można cofnąć.",
+    "resetSuccess": "Zresetowano do wartości domyślnej",
+    "enterNewValue": "Wpisz nową wartość..."
   },
   "pagination": {
     "showing": "Wyświetlanie {start}–{end} z {total}",

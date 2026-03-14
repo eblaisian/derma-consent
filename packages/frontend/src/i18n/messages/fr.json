@@ -1086,7 +1086,12 @@
     "notificationsConfig": "Notifications",
     "sendTestEmail": "M'envoyer un email test",
     "sendTestSms": "Envoyer un SMS test",
-    "enterTestPhone": "Entrez le numéro pour le SMS test (ex. +491234567890) :"
+    "enterTestPhone": "Entrez le numéro pour le SMS test (ex. +491234567890) :",
+    "configurationDescription": "Gérez les intégrations, les identifiants et les paramètres de notifications.",
+    "valueRequired": "Veuillez entrer une valeur",
+    "resetConfirm": "Réinitialiser ce paramètre à sa valeur par défaut ? Cette action est irréversible.",
+    "resetSuccess": "Réinitialisé par défaut",
+    "enterNewValue": "Entrer une nouvelle valeur..."
   },
   "pagination": {
     "showing": "Affichage {start}–{end} sur {total}",

@@ -1086,7 +1086,12 @@
     "notificationsConfig": "Notifications",
     "sendTestEmail": "Send test email to me",
     "sendTestSms": "Send test SMS",
-    "enterTestPhone": "Enter phone number for test SMS (e.g. +491234567890):"
+    "enterTestPhone": "Enter phone number for test SMS (e.g. +491234567890):",
+    "configurationDescription": "Manage platform integrations, credentials, and notification settings.",
+    "valueRequired": "Please enter a value",
+    "resetConfirm": "Reset this setting to its default value? This cannot be undone.",
+    "resetSuccess": "Reset to default",
+    "enterNewValue": "Enter new value..."
   },
   "pagination": {
     "showing": "Showing {start}–{end} of {total}",

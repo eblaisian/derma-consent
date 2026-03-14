@@ -5,7 +5,11 @@ import { useTranslations } from 'next-intl';
 import useSWR from 'swr';
 import { useAuthFetch } from '@/lib/auth-fetch';
 import { toast } from 'sonner';
-import { Eye, EyeOff, RotateCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Eye, EyeOff, RotateCw, Pencil, Trash2, Save, X, Send, MessageSquare } from 'lucide-react';
 
 interface ConfigEntry {
   key: string;
@@ -19,7 +23,7 @@ interface ConfigEntry {
 const CATEGORIES = ['stripe', 'email', 'sms', 'storage', 'plans', 'ai', 'notifications'] as const;
 type Category = (typeof CATEGORIES)[number];
 
-const CATEGORY_LABELS = {
+const CATEGORY_LABELS: Record<Category, string> = {
   stripe: 'stripeConfig',
   email: 'emailConfig',
   sms: 'smsConfig',
@@ -27,7 +31,10 @@ const CATEGORY_LABELS = {
   plans: 'plansConfig',
   ai: 'aiConfig',
   notifications: 'notificationsConfig',
-} as const;
+};
+
+// Categories that have a real connection to test
+const TESTABLE_CATEGORIES = new Set<string>(['stripe', 'email', 'sms', 'storage', 'ai']);
 
 export default function AdminConfigPage() {
   const t = useTranslations('admin');
@@ -35,8 +42,9 @@ export default function AdminConfigPage() {
   const [activeCategory, setActiveCategory] = useState<Category>('stripe');
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
-  const [showSecrets, setShowSecrets] = useState<Set<string>>(new Set());
+  const [showEditSecret, setShowEditSecret] = useState(false);
   const [testingCategory, setTestingCategory] = useState<string | null>(null);
+  const [testingSend, setTestingSend] = useState<string | null>(null);
 
   const { data: configs, isLoading, error, mutate } = useSWR<ConfigEntry[]>(
     `/api/admin/config?category=${activeCategory}`,
@@ -44,6 +52,10 @@ export default function AdminConfigPage() {
   );
 
   const handleSave = async (key: string) => {
+    if (!editValue.trim()) {
+      toast.error(t('valueRequired'));
+      return;
+    }
     try {
       await authFetch(`/api/admin/config/${key}`, {
         method: 'PUT',
@@ -52,16 +64,18 @@ export default function AdminConfigPage() {
       toast.success(t('saved'));
       setEditingKey(null);
       setEditValue('');
+      setShowEditSecret(false);
       mutate();
     } catch {
       toast.error(t('saveFailed'));
     }
   };
 
-  const handleDelete = async (key: string) => {
+  const handleReset = async (key: string) => {
+    if (!confirm(t('resetConfirm'))) return;
     try {
       await authFetch(`/api/admin/config/${key}`, { method: 'DELETE' });
-      toast.success(t('saved'));
+      toast.success(t('resetSuccess'));
       mutate();
     } catch {
       toast.error(t('saveFailed'));
@@ -73,9 +87,9 @@ export default function AdminConfigPage() {
     try {
       const result = await authFetch(`/api/admin/config/test/${category}`, { method: 'POST' });
       if (result.success) {
-        toast.success(t('testSuccess') + ': ' + result.message);
+        toast.success(result.message);
       } else {
-        toast.error(t('testFailed') + ': ' + result.message);
+        toast.error(result.message);
       }
     } catch {
       toast.error(t('testFailed'));
@@ -84,16 +98,33 @@ export default function AdminConfigPage() {
     }
   };
 
-  const toggleSecretVisibility = (key: string) => {
-    setShowSecrets((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
+  const handleSendTest = async (channel: 'email' | 'sms', recipient?: string) => {
+    setTestingSend(channel);
+    try {
+      const body: Record<string, string> = { channel };
+      if (recipient) body.recipient = recipient;
+      const result = await authFetch('/api/admin/notifications/test', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+      if (result.success) {
+        toast.success(result.message);
       } else {
-        next.add(key);
+        toast.error(result.message);
       }
-      return next;
-    });
+    } catch {
+      toast.error(t('testFailed'));
+    } finally {
+      setTestingSend(null);
+    }
+  };
+
+  const sourceVariant = (source: string) => {
+    switch (source) {
+      case 'database': return 'default' as const;
+      case 'environment': return 'secondary' as const;
+      default: return 'outline' as const;
+    }
   };
 
   const sourceLabel = (source: string) => {
@@ -104,184 +135,179 @@ export default function AdminConfigPage() {
     }
   };
 
+  const startEdit = (config: ConfigEntry) => {
+    setEditingKey(config.key);
+    setEditValue(config.isSecret ? '' : config.value);
+    setShowEditSecret(false);
+  };
+
+  const cancelEdit = () => {
+    setEditingKey(null);
+    setEditValue('');
+    setShowEditSecret(false);
+  };
+
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">{t('configuration')}</h1>
+      <div>
+        <h1 className="text-page-title">{t('configuration')}</h1>
+        <p className="text-foreground-secondary mt-1">{t('configurationDescription')}</p>
+      </div>
 
       {/* Category tabs */}
-      <div className="flex gap-1 border-b overflow-x-auto">
+      <div className="flex gap-1 border-b overflow-x-auto pb-px">
         {CATEGORIES.map((cat) => (
           <button
             key={cat}
-            onClick={() => { setActiveCategory(cat); setEditingKey(null); }}
-            className={`whitespace-nowrap px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+            onClick={() => { setActiveCategory(cat); cancelEdit(); }}
+            className={`whitespace-nowrap px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
               activeCategory === cat
-                ? 'border-violet-500 text-violet-700 dark:text-violet-300'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
+                ? 'border-primary text-foreground'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
             }`}
           >
-            {t(CATEGORY_LABELS[cat])}
+            {t(CATEGORY_LABELS[cat] as Parameters<typeof t>[0])}
           </button>
         ))}
       </div>
 
       {/* Config entries */}
       {isLoading ? (
-        <div className="flex justify-center py-10">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-violet-500 border-t-transparent" />
+        <div className="flex justify-center py-12">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       ) : error ? (
-        <div className="flex flex-col items-center justify-center py-10 space-y-3">
+        <div className="flex flex-col items-center justify-center py-12 space-y-3">
           <p className="text-sm text-muted-foreground">{t('errorLoading')}</p>
-          <button
-            onClick={() => mutate()}
-            className="rounded border px-3 py-1.5 text-sm hover:bg-muted"
-          >
+          <Button variant="outline" size="sm" onClick={() => mutate()}>
             {t('retry')}
-          </button>
+          </Button>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {configs?.map((config) => (
-            <div key={config.key} className="rounded-lg border bg-card p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <code className="text-sm font-mono font-medium">{config.key}</code>
-                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                      config.source === 'database'
-                        ? 'bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300'
-                        : config.source === 'environment'
-                          ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
-                          : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
-                    }`}>
-                      {sourceLabel(config.source)}
-                    </span>
-                  </div>
-                  {config.description && (
-                    <p className="mt-1 text-xs text-muted-foreground">{config.description}</p>
-                  )}
+            <Card key={config.key}>
+              <CardContent className="p-4">
+                {/* Key name + source badge + description */}
+                <div className="flex items-center gap-2 mb-1">
+                  <code className="text-sm font-mono font-medium text-foreground">{config.key}</code>
+                  <Badge variant={sourceVariant(config.source)} className="text-[10px] px-1.5 py-0">
+                    {sourceLabel(config.source)}
+                  </Badge>
                 </div>
-              </div>
+                {config.description && (
+                  <p className="text-xs text-muted-foreground mb-3">{config.description}</p>
+                )}
 
-              <div className="mt-3">
+                {/* Edit mode */}
                 {editingKey === config.key ? (
                   <div className="flex items-center gap-2">
-                    <input
-                      type={config.isSecret ? 'password' : 'text'}
-                      value={editValue}
-                      onChange={(e) => setEditValue(e.target.value)}
-                      className="flex-1 rounded border bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-violet-500"
-                      autoFocus
-                    />
-                    <button
-                      onClick={() => handleSave(config.key)}
-                      className="rounded bg-violet-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-700"
-                    >
+                    <div className="relative flex-1">
+                      <Input
+                        type={config.isSecret && !showEditSecret ? 'password' : 'text'}
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        placeholder={config.isSecret ? t('enterNewValue') : config.value}
+                        className="font-mono text-sm pr-10"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSave(config.key);
+                          if (e.key === 'Escape') cancelEdit();
+                        }}
+                      />
+                      {config.isSecret && (
+                        <button
+                          type="button"
+                          onClick={() => setShowEditSecret(!showEditSecret)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          {showEditSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      )}
+                    </div>
+                    <Button size="sm" onClick={() => handleSave(config.key)} className="gap-1.5">
+                      <Save className="h-3.5 w-3.5" />
                       {t('save')}
-                    </button>
-                    <button
-                      onClick={() => { setEditingKey(null); setEditValue(''); }}
-                      className="rounded border px-3 py-1.5 text-sm"
-                    >
-                      {t('cancel')}
-                    </button>
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={cancelEdit}>
+                      <X className="h-3.5 w-3.5" />
+                    </Button>
                   </div>
                 ) : (
+                  /* View mode */
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 rounded bg-muted px-3 py-1.5 text-sm font-mono">
-                      {config.isSecret
-                        ? showSecrets.has(config.key)
-                          ? config.value
-                          : t('secretMasked')
-                        : config.value || '-'
-                      }
+                    <code className="flex-1 rounded-md bg-muted px-3 py-2 text-sm font-mono text-muted-foreground truncate">
+                      {config.isSecret ? '••••••••••••' : config.value || '—'}
                     </code>
-                    {config.isSecret && (
-                      <button
-                        onClick={() => toggleSecretVisibility(config.key)}
-                        className="text-muted-foreground hover:text-foreground"
-                        title={showSecrets.has(config.key) ? t('hide') : t('show')}
-                      >
-                        {showSecrets.has(config.key) ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    )}
-                    <button
-                      onClick={() => { setEditingKey(config.key); setEditValue(config.isSecret ? '' : config.value); }}
-                      className="rounded border px-3 py-1.5 text-sm hover:bg-muted"
-                    >
+                    <Button size="sm" variant="outline" onClick={() => startEdit(config)} className="gap-1.5">
+                      <Pencil className="h-3 w-3" />
                       {t('edit')}
-                    </button>
+                    </Button>
                     {config.source === 'database' && (
-                      <button
-                        onClick={() => handleDelete(config.key)}
-                        className="rounded border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950"
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleReset(config.key)}
+                        className="gap-1.5 text-destructive hover:text-destructive border-destructive/30 hover:bg-destructive/5"
                       >
+                        <Trash2 className="h-3 w-3" />
                         {t('reset')}
-                      </button>
+                      </Button>
                     )}
                   </div>
                 )}
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
 
           {configs?.length === 0 && (
-            <p className="py-8 text-center text-muted-foreground">{t('noConfigKeys')}</p>
+            <p className="py-12 text-center text-muted-foreground">{t('noConfigKeys')}</p>
           )}
         </div>
       )}
 
-      {/* Test connection + send test notification */}
-      <div className="flex flex-wrap items-center gap-3 pt-2">
-        <button
-          onClick={() => handleTestConnection(activeCategory)}
-          disabled={testingCategory === activeCategory}
-          className="flex items-center gap-2 rounded bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700 disabled:opacity-50"
-        >
-          <RotateCw className={`h-4 w-4 ${testingCategory === activeCategory ? 'animate-spin' : ''}`} />
-          {t('testConnection')}
-        </button>
+      {/* Action buttons — only for relevant categories */}
+      <div className="flex flex-wrap items-center gap-3 border-t pt-4">
+        {TESTABLE_CATEGORIES.has(activeCategory) && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleTestConnection(activeCategory)}
+            disabled={testingCategory === activeCategory}
+            className="gap-2"
+          >
+            <RotateCw className={`h-3.5 w-3.5 ${testingCategory === activeCategory ? 'animate-spin' : ''}`} />
+            {t('testConnection')}
+          </Button>
+        )}
 
         {activeCategory === 'email' && (
-          <button
-            onClick={async () => {
-              try {
-                const result = await authFetch('/api/admin/notifications/test', {
-                  method: 'POST',
-                  body: JSON.stringify({ channel: 'email' }),
-                });
-                toast.success(result.message);
-              } catch {
-                toast.error(t('testFailed'));
-              }
-            }}
-            className="flex items-center gap-2 rounded border border-violet-300 px-4 py-2 text-sm font-medium text-violet-700 hover:bg-violet-50 dark:border-violet-700 dark:text-violet-300 dark:hover:bg-violet-950"
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleSendTest('email')}
+            disabled={testingSend === 'email'}
+            className="gap-2"
           >
+            <Send className={`h-3.5 w-3.5 ${testingSend === 'email' ? 'animate-pulse' : ''}`} />
             {t('sendTestEmail')}
-          </button>
+          </Button>
         )}
 
         {activeCategory === 'sms' && (
-          <button
-            onClick={async () => {
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
               const phone = prompt(t('enterTestPhone'));
-              if (!phone) return;
-              try {
-                const result = await authFetch('/api/admin/notifications/test', {
-                  method: 'POST',
-                  body: JSON.stringify({ channel: 'sms', recipient: phone }),
-                });
-                if (result.success) toast.success(result.message);
-                else toast.error(result.message);
-              } catch {
-                toast.error(t('testFailed'));
-              }
+              if (phone) handleSendTest('sms', phone);
             }}
-            className="flex items-center gap-2 rounded border border-violet-300 px-4 py-2 text-sm font-medium text-violet-700 hover:bg-violet-50 dark:border-violet-700 dark:text-violet-300 dark:hover:bg-violet-950"
+            disabled={testingSend === 'sms'}
+            className="gap-2"
           >
+            <MessageSquare className={`h-3.5 w-3.5 ${testingSend === 'sms' ? 'animate-pulse' : ''}`} />
             {t('sendTestSms')}
-          </button>
+          </Button>
         )}
       </div>
     </div>

@@ -1086,7 +1086,12 @@
     "notificationsConfig": "Benachrichtigungen",
     "sendTestEmail": "Test-E-Mail an mich senden",
     "sendTestSms": "Test-SMS senden",
-    "enterTestPhone": "Telefonnummer für Test-SMS eingeben (z.B. +491234567890):"
+    "enterTestPhone": "Telefonnummer für Test-SMS eingeben (z.B. +491234567890):",
+    "configurationDescription": "Plattform-Integrationen, Zugangsdaten und Benachrichtigungseinstellungen verwalten.",
+    "valueRequired": "Bitte geben Sie einen Wert ein",
+    "resetConfirm": "Diese Einstellung auf den Standardwert zurücksetzen? Dies kann nicht rückgängig gemacht werden.",
+    "resetSuccess": "Auf Standard zurückgesetzt",
+    "enterNewValue": "Neuen Wert eingeben..."
   },
   "pagination": {
     "showing": "Zeige {start}–{end} von {total}",

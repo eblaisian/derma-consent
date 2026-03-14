@@ -1086,7 +1086,12 @@
     "notificationsConfig": "الإشعارات",
     "sendTestEmail": "إرسال بريد تجريبي لي",
     "sendTestSms": "إرسال رسالة قصيرة تجريبية",
-    "enterTestPhone": "أدخل رقم الهاتف لاختبار الرسائل القصيرة:"
+    "enterTestPhone": "أدخل رقم الهاتف لاختبار الرسائل القصيرة:",
+    "configurationDescription": "إدارة تكاملات المنصة وبيانات الاعتماد وإعدادات الإشعارات.",
+    "valueRequired": "يرجى إدخال قيمة",
+    "resetConfirm": "إعادة تعيين هذا الإعداد إلى القيمة الافتراضية؟ لا يمكن التراجع عن هذا الإجراء.",
+    "resetSuccess": "تمت إعادة التعيين إلى القيمة الافتراضية",
+    "enterNewValue": "أدخل قيمة جديدة..."
   },
   "pagination": {
     "showing": "عرض {start}–{end} من {total}",
