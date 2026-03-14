@@ -15,13 +15,14 @@ import { SettingsService } from './settings.service';
 import { UpdateSettingsDto } from './settings.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
+import { SubscriptionGuard } from '../billing/subscription.guard';
 import { Roles } from '../auth/roles.decorator';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
 import { ConfigService } from '@nestjs/config';
 import { createClient } from '@supabase/supabase-js';
 
 @Controller('api/settings')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
 @Roles('ADMIN')
 export class SettingsController {
   constructor(

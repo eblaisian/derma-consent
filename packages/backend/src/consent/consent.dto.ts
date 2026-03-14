@@ -57,3 +57,9 @@ export class RevokeConsentDto {
   @IsString()
   reason!: string;
 }
+
+export class ExplainConsentDto {
+  @IsOptional()
+  @IsString()
+  locale?: string;
+}

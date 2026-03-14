@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { company } from '@/lib/company';
 
 export default function ImpressumPage() {
   return (
@@ -16,18 +17,18 @@ export default function ImpressumPage() {
           <section>
             <h2 className="text-lg font-semibold text-foreground">Angaben gemaess § 5 TMG</h2>
             <p>
-              [COMPANY_NAME]<br />
-              [ADDRESS_STREET]<br />
-              [ADDRESS_CITY]<br />
-              Deutschland
+              {company.name}<br />
+              {company.street}<br />
+              {company.city}<br />
+              {company.country}
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-semibold text-foreground">Kontakt</h2>
             <p>
-              Telefon: [PHONE]<br />
-              E-Mail: [EMAIL]
+              Telefon: {company.phone}<br />
+              E-Mail: {company.email}
             </p>
           </section>
 
@@ -35,16 +36,16 @@ export default function ImpressumPage() {
             <h2 className="text-lg font-semibold text-foreground">Umsatzsteuer-ID</h2>
             <p>
               Umsatzsteuer-Identifikationsnummer gemaess § 27a Umsatzsteuergesetz:<br />
-              [UST_ID]
+              {company.vatId}
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-semibold text-foreground">Verantwortlich fuer den Inhalt nach § 55 Abs. 2 RStV</h2>
             <p>
-              [RESPONSIBLE_PERSON]<br />
-              [ADDRESS_STREET]<br />
-              [ADDRESS_CITY]
+              {company.responsiblePerson}<br />
+              {company.street}<br />
+              {company.city}
             </p>
           </section>
 

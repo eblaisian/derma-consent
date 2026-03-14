@@ -76,6 +76,8 @@ export class BillingService implements OnModuleInit {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${frontendUrl}/billing?success=true`,
       cancel_url: `${frontendUrl}/billing?cancelled=true`,
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
       subscription_data: {
         metadata: { practiceId },
       },
@@ -123,6 +125,9 @@ export class BillingService implements OnModuleInit {
             status: this.mapStripeStatus(sub.status),
             plan,
             currentPeriodEnd: new Date(sub.current_period_end * 1000),
+            ...(sub.trial_end && {
+              trialEndsAt: new Date(sub.trial_end * 1000),
+            }),
           },
         });
         break;

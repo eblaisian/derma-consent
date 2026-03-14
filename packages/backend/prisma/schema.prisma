@@ -49,6 +49,10 @@ enum AuditAction {
   PRACTICE_SUSPENDED
   PRACTICE_ACTIVATED
   PRACTICE_SUBSCRIPTION_OVERRIDDEN
+  LOGIN_SUCCESS
+  LOGIN_FAILED
+  ACCOUNT_LOCKED
+  CONSENT_EXPLAINER_REQUESTED
 }
 
 enum BodyRegion {
@@ -125,6 +129,8 @@ model User {
   emailVerified    Boolean  @default(false) @map("email_verified")
   twoFactorSecret  String?  @map("two_factor_secret")
   twoFactorEnabled Boolean  @default(false) @map("two_factor_enabled")
+  failedLoginAttempts Int      @default(0) @map("failed_login_attempts")
+  lockedUntil         DateTime? @map("locked_until")
   practiceId       String?  @map("practice_id")
   role             UserRole @default(ADMIN)
   createdAt    DateTime @default(now()) @map("created_at")
@@ -279,6 +285,7 @@ model ConsentForm {
   comprehensionScore    Float?    @map("comprehension_score")
   comprehensionAnswers  Json?     @map("comprehension_answers")
   pdfStoragePath      String?       @map("pdf_storage_path")
+  pdfSignatureHash    String?       @map("pdf_signature_hash")
   expiresAt           DateTime      @map("expires_at")
   revokedAt           DateTime?     @map("revoked_at")
   createdAt           DateTime      @default(now()) @map("created_at")

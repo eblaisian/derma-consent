@@ -27,4 +27,13 @@ export class PracticeController {
   update(@Body() dto: UpdatePracticeDto, @CurrentUser() user: CurrentUserPayload) {
     return this.practiceService.update(user.practiceId!, dto);
   }
+
+  @Patch('rotate-key')
+  @Roles('ADMIN')
+  rotateKey(
+    @Body() body: { encryptedPrivKey: object },
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    return this.practiceService.rotateKey(user.practiceId!, body.encryptedPrivKey);
+  }
 }

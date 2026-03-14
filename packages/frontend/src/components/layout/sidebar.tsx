@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import useSWR from 'swr';
+import { API_URL, createAuthFetcher } from '@/lib/api';
+import { usePractice } from '@/hooks/use-practice';
 import { useVault } from '@/hooks/use-vault';
 import {
   LayoutDashboard,
@@ -17,21 +20,25 @@ import {
   Lock,
   Shield,
   LogOut,
+  MessageSquare,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAiStatus } from '@/hooks/use-ai-status';
 
 interface NavItem {
   href: string;
-  labelKey: 'dashboard' | 'patients' | 'analytics' | 'team' | 'billing' | 'settings' | 'audit';
+  labelKey: 'dashboard' | 'patients' | 'analytics' | 'team' | 'billing' | 'settings' | 'audit' | 'communications';
   icon: React.ComponentType<{ className?: string }>;
   roles: string[];
   section: 'overview' | 'management' | 'system';
+  aiFeature?: 'communications'; // gates visibility behind AI status
 }
 
 const navItems: NavItem[] = [
   { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard, roles: ['ADMIN', 'ARZT', 'EMPFANG'], section: 'overview' },
   { href: '/patients', labelKey: 'patients', icon: User, roles: ['ADMIN', 'ARZT'], section: 'overview' },
-  { href: '/analytics', labelKey: 'analytics', icon: BarChart3, roles: ['ADMIN', 'ARZT'], section: 'management' },
+  { href: '/communications', labelKey: 'communications', icon: MessageSquare, roles: ['ADMIN', 'ARZT', 'EMPFANG'], section: 'overview', aiFeature: 'communications' },
+  { href: '/analytics', labelKey: 'analytics', icon: BarChart3, roles: ['ADMIN'], section: 'management' },
   { href: '/team', labelKey: 'team', icon: Users, roles: ['ADMIN'], section: 'management' },
   { href: '/audit', labelKey: 'audit', icon: ScrollText, roles: ['ADMIN'], section: 'management' },
   { href: '/billing', labelKey: 'billing', icon: CreditCard, roles: ['ADMIN'], section: 'system' },
@@ -46,13 +53,26 @@ export function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const { isUnlocked, autoLockRemaining, requestUnlock, lock } = useVault();
+  const { practiceId } = usePractice();
   const userRole = session?.user?.role || 'EMPFANG';
+  const { features: aiFeatures } = useAiStatus();
+
+  const { data: consentsData } = useSWR<{ items: Array<{ status: string }> }>(
+    practiceId && session?.accessToken ? `${API_URL}/api/consent/practice` : null,
+    createAuthFetcher(session?.accessToken),
+    { refreshInterval: 60000 },
+  );
+  const pendingCount = consentsData?.items.filter(c => c.status === 'PENDING').length ?? 0;
 
   const handleLock = () => {
     lock();
   };
 
-  const filteredItems = navItems.filter((item) => item.roles.includes(userRole));
+  const filteredItems = navItems.filter((item) => {
+    if (!item.roles.includes(userRole)) return false;
+    if (item.aiFeature && !aiFeatures[item.aiFeature]) return false;
+    return true;
+  });
 
   const itemsBySection = (section: string) =>
     filteredItems.filter((item) => item.section === section);
@@ -97,7 +117,12 @@ export function Sidebar() {
                         <span className="absolute inset-y-1.5 start-0 w-0.5 rounded-full bg-sidebar-primary" />
                       )}
                       <item.icon className={cn('h-5 w-5 shrink-0', isActive ? 'text-sidebar-primary' : 'text-muted-foreground')} />
-                      {t(item.labelKey)}
+                      <span className="flex-1">{t(item.labelKey)}</span>
+                      {item.href === '/dashboard' && pendingCount > 0 && (
+                        <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground px-1">
+                          {pendingCount > 99 ? '99+' : pendingCount}
+                        </span>
+                      )}
                     </Link>
                   );
                 })}

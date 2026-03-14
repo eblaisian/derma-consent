@@ -14,8 +14,10 @@ import {
   getFormFields,
 } from './form-fields';
 import { ComprehensionQuiz } from './comprehension-quiz';
+import { ConsentExplainer } from './consent-explainer';
 import { EducationVideo } from './education-video';
 import { quizQuestions } from './quiz-questions';
+import { usePublicAiStatus } from '@/hooks/use-ai-status';
 
 type Step = 'form' | 'quiz' | 'signature' | 'review' | 'submitting';
 
@@ -24,6 +26,7 @@ const STEPS = ['form', 'quiz', 'signature', 'review'] as const;
 interface ConsentFormProps {
   consentType: ConsentType;
   practiceName: string;
+  token: string;
   onSubmit: (data: {
     formData: Record<string, unknown>;
     signatureData: string;
@@ -37,6 +40,7 @@ interface ConsentFormProps {
 export function ConsentForm({
   consentType,
   practiceName,
+  token,
   onSubmit,
   brandColor,
   videoUrl,
@@ -45,6 +49,7 @@ export function ConsentForm({
   const tTypes = useTranslations('consentTypes');
   const tFields = useTranslations('medicalFields');
   const tOptions = useTranslations('medicalOptions');
+  const { aiEnabled } = usePublicAiStatus();
   const [step, setStep] = useState<Step>('form');
   const [signatureData, setSignatureData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -124,12 +129,33 @@ export function ConsentForm({
         </p>
       </div>
 
-      {/* Progress bar */}
+      {/* Progress bar with step labels */}
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-muted-foreground">
-            {t('stepOf', { current: currentStepIndex + 1, total: STEPS.length })}
-          </span>
+        <div className="flex items-center justify-between mb-3">
+          {STEPS.map((s, i) => {
+            const stepLabels = {
+              form: t('stepForm'),
+              quiz: t('stepQuiz'),
+              signature: t('stepSignature'),
+              review: t('stepReview'),
+            };
+            const isCurrent = i === currentStepIndex;
+            const isComplete = i < currentStepIndex;
+            return (
+              <div key={s} className="flex flex-col items-center gap-1 flex-1">
+                <div className={`flex size-7 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
+                  isCurrent ? 'bg-primary text-primary-foreground' : isComplete ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
+                }`}
+                  style={isCurrent && brandColor ? { backgroundColor: brandColor } : undefined}
+                >
+                  {isComplete ? '✓' : i + 1}
+                </div>
+                <span className={`text-[10px] leading-tight text-center ${isCurrent ? 'font-medium text-foreground' : 'text-muted-foreground'}`}>
+                  {stepLabels[s]}
+                </span>
+              </div>
+            );
+          })}
         </div>
         <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
           <div
@@ -139,10 +165,19 @@ export function ConsentForm({
         </div>
       </div>
 
-      {/* Security badge */}
-      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-        <Shield className="h-3.5 w-3.5 text-success" />
-        {t('endToEndEncrypted')}
+      {/* Security badge + AI Explainer */}
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Shield className="h-3.5 w-3.5 text-success" />
+          {t('endToEndEncrypted')}
+        </div>
+        {step === 'form' && aiEnabled && (
+          <ConsentExplainer
+            consentType={consentType}
+            token={token}
+            brandColor={brandColor}
+          />
+        )}
       </div>
 
       {error && (

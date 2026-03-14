@@ -19,7 +19,10 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import { toast } from 'sonner';
-import { Trash2, ArrowLeft, Upload, Plus, Columns2 } from 'lucide-react';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { VaultUnlockBanner } from '@/components/vault/vault-unlock-banner';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Trash2, ArrowLeft, Upload, Plus, Columns2, FileSignature } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PhotoGallery } from '@/components/photos/photo-gallery';
@@ -74,6 +77,8 @@ export default function PatientDetailPage() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<TreatmentTemplateSummary | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [decryptedName, setDecryptedName] = useState<string | null>(null);
   const [decryptedDob, setDecryptedDob] = useState<string | null>(null);
   const [decryptedEmail, setDecryptedEmail] = useState<string | null>(null);
@@ -145,14 +150,16 @@ export default function PatientDetailPage() {
   }, [isUnlocked, patient, decryptPatientFields]);
 
   const handleDelete = async () => {
-    if (!confirm(t('deleteConfirm'))) return;
-
+    setIsDeleting(true);
     try {
       await authFetch(`/api/patients/${id}`, { method: 'DELETE' });
       toast.success(t('deleted'));
       router.push('/patients');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t('deleteError'));
+    } finally {
+      setIsDeleting(false);
+      setDeleteDialogOpen(false);
     }
   };
 
@@ -180,13 +187,51 @@ export default function PatientDetailPage() {
         </Button>
         <div className="flex-1">
           <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground">ID: {patient.id}</p>
         </div>
-        <Button variant="destructive" size="sm" onClick={handleDelete}>
+        <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>
           <Trash2 className="mr-2 h-4 w-4" />
           {t('delete')}
         </Button>
       </div>
+
+      <VaultUnlockBanner />
+
+      {/* Clinical Overview */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('summaryTitle')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div>
+              <p className="text-2xl font-bold tabular-nums">{patient.consentForms.length}</p>
+              <p className="text-xs text-muted-foreground">{t('summaryConsents')}</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tabular-nums">{plans.length}</p>
+              <p className="text-xs text-muted-foreground">{t('summaryPlans')}</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tabular-nums">{photos.length}</p>
+              <p className="text-xs text-muted-foreground">{t('summaryPhotos')}</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium">
+                {(() => {
+                  const dates = [
+                    ...patient.consentForms.map(c => c.signatureTimestamp || c.createdAt),
+                    ...plans.map(p => p.createdAt),
+                    ...photos.map(p => p.takenAt),
+                  ].filter(Boolean).map(d => new Date(d).getTime());
+                  if (dates.length === 0) return '—';
+                  return format.dateTime(new Date(Math.max(...dates)), { dateStyle: 'medium' });
+                })()}
+              </p>
+              <p className="text-xs text-muted-foreground">{t('summaryLastActivity')}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -204,18 +249,22 @@ export default function PatientDetailPage() {
               <VaultLockedPlaceholder size="sm" className="inline-flex h-6 w-auto px-2 text-xs" />
             )}
           </div>
-          {decryptedDob && (
-            <div>
-              <span className="text-sm text-muted-foreground">{tPatients('dateOfBirth')}: </span>
+          <div>
+            <span className="text-sm text-muted-foreground">{tPatients('dateOfBirth')}: </span>
+            {decryptedDob ? (
               <span className="text-sm">{decryptedDob}</span>
-            </div>
-          )}
-          {decryptedEmail && (
-            <div>
-              <span className="text-sm text-muted-foreground">{tPatients('email')}: </span>
+            ) : !isUnlocked ? (
+              <VaultLockedPlaceholder size="sm" className="inline-flex h-6 w-auto px-2 text-xs" />
+            ) : null}
+          </div>
+          <div>
+            <span className="text-sm text-muted-foreground">{tPatients('email')}: </span>
+            {decryptedEmail ? (
               <span className="text-sm">{decryptedEmail}</span>
-            </div>
-          )}
+            ) : !isUnlocked ? (
+              <VaultLockedPlaceholder size="sm" className="inline-flex h-6 w-auto px-2 text-xs" />
+            ) : null}
+          </div>
           <div>
             <span className="text-sm text-muted-foreground">{t('createdLabel')}</span>
             <span className="text-sm">
@@ -225,6 +274,35 @@ export default function PatientDetailPage() {
         </CardContent>
       </Card>
 
+      {/* Treatment Plans Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('treatmentPlans')}</CardTitle>
+              <CardDescription>{t('treatmentPlanCount', { count: plans.length })}</CardDescription>
+            </div>
+            <div className="flex gap-2">
+              {templates && templates.length > 0 && (
+                <Button variant="outline" size="sm" onClick={() => setTemplatePickerOpen(true)}>
+                  {tPlan('fromTemplate')}
+                </Button>
+              )}
+              {practice && (
+                <Button size="sm" onClick={() => { setSelectedTemplate(null); setEditorOpen(true); }}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  {tPlan('newPlan')}
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <TreatmentHistory plans={plans} />
+        </CardContent>
+      </Card>
+
+      {/* Consents Section */}
       <Card>
         <CardHeader>
           <CardTitle>{t('consents')}</CardTitle>
@@ -267,8 +345,13 @@ export default function PatientDetailPage() {
               ))}
               {patient.consentForms.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                    {t('noConsents')}
+                  <TableCell colSpan={4} className="p-0">
+                    <EmptyState
+                      icon={FileSignature}
+                      title={t('noConsents')}
+                      description={t('noConsentsDescription')}
+                      className="py-12"
+                    />
                   </TableCell>
                 </TableRow>
               )}
@@ -306,34 +389,6 @@ export default function PatientDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Treatment Plans Section */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>{t('treatmentPlans')}</CardTitle>
-              <CardDescription>{t('treatmentPlanCount', { count: plans.length })}</CardDescription>
-            </div>
-            <div className="flex gap-2">
-              {templates && templates.length > 0 && (
-                <Button variant="outline" size="sm" onClick={() => setTemplatePickerOpen(true)}>
-                  {tPlan('fromTemplate')}
-                </Button>
-              )}
-              {practice && (
-                <Button size="sm" onClick={() => { setSelectedTemplate(null); setEditorOpen(true); }}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  {tPlan('newPlan')}
-                </Button>
-              )}
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <TreatmentHistory plans={plans} />
-        </CardContent>
-      </Card>
-
       {/* Dialogs */}
       {practice && (
         <>
@@ -367,6 +422,18 @@ export default function PatientDetailPage() {
           onSelect={handleTemplateSelect}
         />
       )}
+
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title={t('deleteConfirmTitle')}
+        description={t('deleteConfirmDescription')}
+        confirmLabel={t('delete')}
+        cancelLabel={t('cancel')}
+        onConfirm={handleDelete}
+        variant="destructive"
+        loading={isDeleting}
+      />
     </div>
   );
 }

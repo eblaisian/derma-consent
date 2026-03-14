@@ -63,4 +63,23 @@ export class SmsService implements OnModuleInit {
       throw error;
     }
   }
+
+  async sendMessage(phone: string, body: string): Promise<void> {
+    if (!this.client || !this.phoneNumber) {
+      this.logger.log(`[NO-OP] SMS to ${phone}: ${body.substring(0, 50)}...`);
+      return;
+    }
+
+    try {
+      const message = await this.client.messages.create({
+        to: phone,
+        from: this.phoneNumber,
+        body,
+      });
+      this.logger.log(`SMS sent to ${phone} (SID: ${message.sid})`);
+    } catch (error) {
+      this.logger.error(`Failed to send SMS to ${phone}`, error);
+      throw error;
+    }
+  }
 }

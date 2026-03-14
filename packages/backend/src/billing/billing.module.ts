@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { BillingService } from './billing.service';
 import { BillingController } from './billing.controller';
 import { BillingWebhookController } from './billing-webhook.controller';
 import { SubscriptionGuard } from './subscription.guard';
 
+@Global()
 @Module({
   providers: [BillingService, SubscriptionGuard],
   controllers: [BillingController, BillingWebhookController],

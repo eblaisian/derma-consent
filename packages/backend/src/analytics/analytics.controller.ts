@@ -2,11 +2,12 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AnalyticsService } from './analytics.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
+import { SubscriptionGuard } from '../billing/subscription.guard';
 import { Roles } from '../auth/roles.decorator';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
 
 @Controller('api/analytics')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
@@ -56,5 +57,20 @@ export class AnalyticsController {
       startDate ? new Date(startDate) : undefined,
       endDate ? new Date(endDate) : undefined,
     );
+  }
+
+  @Get('retention-flags')
+  @Roles('ADMIN', 'ARZT')
+  getRetentionFlags(@CurrentUser() user: CurrentUserPayload) {
+    return this.analyticsService.getRetentionFlags(user.practiceId!);
+  }
+
+  @Get('insights')
+  @Roles('ADMIN', 'ARZT')
+  getInsights(
+    @CurrentUser() user: CurrentUserPayload,
+    @Query('locale') locale?: string,
+  ) {
+    return this.analyticsService.generateInsights(user.practiceId!, locale || 'de');
   }
 }

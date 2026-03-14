@@ -9,7 +9,7 @@ interface CardProps extends React.ComponentProps<"div"> {
 }
 
 const variantStyles: Record<CardVariant, string> = {
-  raised: "bg-card text-card-foreground rounded-xl shadow-[var(--shadow-sm)]",
+  raised: "bg-card text-card-foreground rounded-xl shadow-[var(--shadow-sm)] transition-[box-shadow] duration-200 ease-out",
   flat: "bg-card text-card-foreground rounded-xl",
   inset: "bg-muted text-card-foreground rounded-xl",
 };

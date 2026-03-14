@@ -132,7 +132,12 @@ export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
         ) : (
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>{t('treatmentType')}</Label>
+              <Label className="text-sm font-medium">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">1</span>
+                  {t('treatmentType')}
+                </span>
+              </Label>
               <Select value={type} onValueChange={(v) => setType(v as ConsentType)}>
                 <SelectTrigger>
                   <SelectValue placeholder={t('selectTreatment')} />
@@ -148,7 +153,12 @@ export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label>{t('deliveryChannel')}</Label>
+              <Label className="text-sm font-medium">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">2</span>
+                  {t('deliveryChannel')}
+                </span>
+              </Label>
               <Select value={deliveryChannel} onValueChange={(v) => setDeliveryChannel(v as 'email' | 'sms' | 'whatsapp')}>
                 <SelectTrigger>
                   <SelectValue />

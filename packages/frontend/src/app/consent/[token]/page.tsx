@@ -170,6 +170,7 @@ export default function ConsentPage({
         <ConsentForm
           consentType={data.type as ConsentType}
           practiceName={data.practice?.name || 'Praxis'}
+          token={token}
           onSubmit={handleSubmit}
           brandColor={brandColor ?? undefined}
           videoUrl={videoUrl ?? undefined}

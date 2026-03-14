@@ -9,11 +9,11 @@ import { usePractice } from '@/hooks/use-practice';
 import { API_URL, createAuthFetcher } from '@/lib/api';
 import type { ConsentFormSummary } from '@/lib/types';
 import { NewConsentDialog } from '@/components/dashboard/new-consent-dialog';
-import { OnboardingModal } from '@/components/dashboard/onboarding-modal';
+import { OnboardingChecklist } from '@/components/dashboard/onboarding-checklist';
 import { ConsentTable } from '@/components/dashboard/consent-table';
 import { StatCard } from '@/components/ui/stat-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FileSignature, Clock, CheckCircle, User } from 'lucide-react';
+import { FileSignature, Clock, CheckCircle, User, AlertCircle } from 'lucide-react';
 
 export default function DashboardPage() {
   const t = useTranslations('dashboard');
@@ -21,6 +21,7 @@ export default function DashboardPage() {
   const { data: session } = useSession();
   const { practiceId, practice, isLoading: practiceLoading } = usePractice();
   const [showNewConsent, setShowNewConsent] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('ALL');
 
   const {
     data: consentsData,
@@ -41,6 +42,31 @@ export default function DashboardPage() {
     createAuthFetcher(session?.accessToken),
   );
 
+  const isAdmin = session?.user?.role === 'ADMIN';
+
+  const { data: settingsData } = useSWR<{ logoUrl?: string }>(
+    isAdmin && practiceId && session?.accessToken
+      ? `${API_URL}/api/settings`
+      : null,
+    createAuthFetcher(session?.accessToken),
+  );
+
+  const { data: teamData } = useSWR<{ length: number } | Array<unknown>>(
+    isAdmin && practiceId && session?.accessToken
+      ? `${API_URL}/api/team/members`
+      : null,
+    createAuthFetcher(session?.accessToken),
+  );
+
+  const [onboardingDismissed, setOnboardingDismissed] = useState(() =>
+    typeof window !== 'undefined' ? localStorage.getItem('onboarding-complete') === 'true' : false
+  );
+
+  const dismissOnboarding = () => {
+    localStorage.setItem('onboarding-complete', 'true');
+    setOnboardingDismissed(true);
+  };
+
   // If user doesn't have a practice yet, redirect to setup (unless platform admin)
   const isPlatformAdmin = session?.user?.role === 'PLATFORM_ADMIN';
   const needsSetup = !practiceLoading && !practiceId && !!session && !isPlatformAdmin;
@@ -52,17 +78,6 @@ export default function DashboardPage() {
     }
   }, [needsSetup, isPlatformAdmin, router]);
 
-  const showOnboarding =
-    !consentsLoading &&
-    consents !== undefined &&
-    consents.length === 0 &&
-    typeof window !== 'undefined' &&
-    !localStorage.getItem('onboarding-dismissed');
-
-  const dismissOnboarding = () => {
-    localStorage.setItem('onboarding-dismissed', 'true');
-  };
-
   // Compute stats
   const stats = useMemo(() => {
     if (!consents) return null;
@@ -73,7 +88,14 @@ export default function DashboardPage() {
     const completedThisMonth = consents.filter(
       c => c.status === 'COMPLETED' && new Date(c.createdAt) >= monthStart
     ).length;
-    return { total, pending, completedThisMonth };
+    const sevenDaysFromNow = new Date(now.getTime() + 7 * 86400000);
+    const expiringSoon = consents.filter(
+      c => c.status === 'PENDING' && new Date(c.expiresAt) <= sevenDaysFromNow
+    ).length;
+    const recentlySigned = consents.filter(
+      c => c.status === 'SIGNED' && c.signatureTimestamp && (now.getTime() - new Date(c.signatureTimestamp).getTime()) < 86400000
+    ).length;
+    return { total, pending, completedThisMonth, expiringSoon, recentlySigned };
   }, [consents]);
 
   if (needsSetup || practiceLoading || !practiceId) {
@@ -86,54 +108,112 @@ export default function DashboardPage() {
 
   const userName = session?.user?.name || session?.user?.email?.split('@')[0] || '';
 
+  const teamCount = Array.isArray(teamData) ? teamData.length : 0;
+
   return (
     <div className="space-y-8">
-      {/* Welcome banner with subtle gradient */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/5 via-background to-primary/[0.02] p-6 sm:p-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-page-title">
-              {t('title')}
-            </h1>
-            <p className="mt-1 text-sm text-foreground-secondary leading-relaxed">
-              {t('welcomeBack', { name: userName })}
-            </p>
-          </div>
-          <NewConsentDialog onCreated={() => refreshConsents()} />
+      {/* Onboarding checklist for admins */}
+      {isAdmin && !onboardingDismissed && !consentsLoading && (
+        <OnboardingChecklist
+          hasConsents={(consents?.length ?? 0) > 0}
+          teamCount={teamCount}
+          hasLogo={!!settingsData?.logoUrl}
+          onDismiss={dismissOnboarding}
+        />
+      )}
+
+      {/* Welcome banner */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-page-title">{t('title')}</h1>
+          <p className="mt-1 text-sm text-foreground-secondary leading-relaxed">
+            {t('welcomeBack', { name: userName })}
+          </p>
         </div>
-        {/* Decorative gradient accent */}
-        <div className="absolute -top-12 -end-12 h-32 w-32 rounded-full bg-primary/5 blur-3xl" aria-hidden="true" />
+        <NewConsentDialog onCreated={() => refreshConsents()} />
       </div>
 
       {/* Stat cards with stagger animation */}
       {consentsLoading ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-[110px] rounded-xl" />
           ))}
         </div>
       ) : stats && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-children">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 stagger-children">
           <StatCard
             title={t('statTotal')}
             value={stats.total}
             icon={<FileSignature className="h-4 w-4" />}
+            accent="primary"
           />
           <StatCard
             title={t('statPending')}
             value={stats.pending}
             icon={<Clock className="h-4 w-4" />}
+            accent="warning"
           />
           <StatCard
             title={t('statCompleted')}
             value={stats.completedThisMonth}
             icon={<CheckCircle className="h-4 w-4" />}
+            accent="success"
           />
           <StatCard
             title={t('statPatients')}
             value={patientsData?.total ?? 0}
             icon={<User className="h-4 w-4" />}
+            accent="info"
           />
+        </div>
+      )}
+
+      {/* Needs Attention */}
+      {stats && (stats.pending > 0 || stats.expiringSoon > 0 || stats.recentlySigned > 0) && (
+        <div className="grid gap-3 sm:grid-cols-3">
+          {stats.pending > 0 && (
+            <button
+              onClick={() => setStatusFilter('PENDING')}
+              className="flex items-center gap-3 rounded-xl border border-warning/20 bg-warning/5 px-4 py-3 text-start transition-colors hover:bg-warning/10"
+            >
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-warning/10">
+                <Clock className="size-4 text-warning" />
+              </div>
+              <div>
+                <p className="text-xl font-bold tabular-nums">{stats.pending}</p>
+                <p className="text-xs text-muted-foreground">{t('chipPendingLabel')}</p>
+              </div>
+            </button>
+          )}
+          {stats.expiringSoon > 0 && (
+            <button
+              onClick={() => setStatusFilter('PENDING')}
+              className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-start transition-colors hover:bg-destructive/10"
+            >
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-destructive/10">
+                <AlertCircle className="size-4 text-destructive" />
+              </div>
+              <div>
+                <p className="text-xl font-bold tabular-nums">{stats.expiringSoon}</p>
+                <p className="text-xs text-muted-foreground">{t('chipExpiringSoonLabel')}</p>
+              </div>
+            </button>
+          )}
+          {stats.recentlySigned > 0 && (
+            <button
+              onClick={() => setStatusFilter('SIGNED')}
+              className="flex items-center gap-3 rounded-xl border border-success/20 bg-success/5 px-4 py-3 text-start transition-colors hover:bg-success/10"
+            >
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-success/10">
+                <CheckCircle className="size-4 text-success" />
+              </div>
+              <div>
+                <p className="text-xl font-bold tabular-nums">{stats.recentlySigned}</p>
+                <p className="text-xs text-muted-foreground">{t('chipRecentlySignedLabel')}</p>
+              </div>
+            </button>
+          )}
         </div>
       )}
 
@@ -149,24 +229,18 @@ export default function DashboardPage() {
             ))}
           </div>
         ) : (
-          <ConsentTable
-            consents={consents || []}
-            onRefresh={() => refreshConsents()}
-            onCreateConsent={() => setShowNewConsent(true)}
-          />
+          <div className="overflow-x-auto -mx-6 px-6">
+            <ConsentTable
+              consents={consents || []}
+              onRefresh={() => refreshConsents()}
+              onCreateConsent={() => setShowNewConsent(true)}
+              statusFilter={statusFilter}
+              onStatusFilterChange={setStatusFilter}
+            />
+          </div>
         )}
       </div>
 
-      {showOnboarding && (
-        <OnboardingModal
-          open={true}
-          onClose={dismissOnboarding}
-          onCreateConsent={() => {
-            dismissOnboarding();
-            setShowNewConsent(true);
-          }}
-        />
-      )}
     </div>
   );
 }

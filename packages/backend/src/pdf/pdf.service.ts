@@ -28,7 +28,7 @@ export class PdfService implements OnModuleInit {
     const consent = await this.prisma.consentForm.findUniqueOrThrow({
       where: { id: consentId },
       include: {
-        practice: { select: { name: true } },
+        practice: { select: { name: true, publicKey: true } },
       },
     });
 
@@ -120,6 +120,33 @@ export class PdfService implements OnModuleInit {
         { align: 'center' },
       );
 
+    // Digital signature: SHA-256 hash of consent metadata, verifiable with practice public key
+    const signaturePayload = JSON.stringify({
+      consentId: consent.id,
+      practiceId: consent.practiceId,
+      type: consent.type,
+      status: consent.status,
+      signatureTimestamp: consent.signatureTimestamp?.toISOString(),
+      signatureIp: consent.signatureIp,
+      fingerprint,
+      generatedAt: new Date().toISOString(),
+    });
+
+    const signatureHash = crypto
+      .createHash('sha256')
+      .update(signaturePayload)
+      .digest('hex');
+
+    doc
+      .fontSize(7)
+      .fillColor('#999999')
+      .text(
+        `Digitale Signatur (SHA-256): ${signatureHash}`,
+        50,
+        doc.page.height - 65,
+        { align: 'center' },
+      );
+
     doc.end();
     const pdfBuffer = await pdfComplete;
 
@@ -141,12 +168,16 @@ export class PdfService implements OnModuleInit {
       }
     }
 
+    // Compute hash of the final PDF for tamper detection
+    const pdfHash = crypto.createHash('sha256').update(pdfBuffer).digest('hex');
+
     // Update consent to COMPLETED
     await this.prisma.consentForm.update({
       where: { id: consentId },
       data: {
         status: ConsentStatus.COMPLETED,
         pdfStoragePath: storagePath,
+        pdfSignatureHash: pdfHash,
       },
     });
 

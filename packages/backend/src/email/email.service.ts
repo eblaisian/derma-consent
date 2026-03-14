@@ -7,6 +7,7 @@ import { welcomeTemplate, getWelcomeSubject } from './templates/welcome.template
 import { subscriptionTemplate, getSubscriptionSubject } from './templates/subscription.template';
 import { passwordResetTemplate, getPasswordResetSubject } from './templates/password-reset.template';
 import { emailVerificationTemplate, getEmailVerificationSubject } from './templates/email-verification.template';
+import { consentReminderTemplate, getConsentReminderSubject } from './templates/consent-reminder.template';
 
 type Locale = 'de' | 'en' | 'es' | 'fr';
 
@@ -104,5 +105,26 @@ export class EmailService implements OnModuleInit {
       getEmailVerificationSubject(locale),
       emailVerificationTemplate(verifyLink, locale),
     );
+  }
+
+  async sendConsentReminder(to: string, practiceName: string, consentLink: string, locale: Locale = 'de') {
+    await this.send(
+      to,
+      getConsentReminderSubject(practiceName, locale),
+      consentReminderTemplate(practiceName, consentLink, locale),
+    );
+  }
+
+  async sendCustomMessage(to: string, subject: string, body: string) {
+    const html = `
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+  <div style="white-space: pre-wrap; line-height: 1.6;">${body.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+  <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
+  <p style="color: #999; font-size: 12px;">Gesendet über DermaConsent</p>
+</body>
+</html>`;
+    await this.send(to, subject, html);
   }
 }

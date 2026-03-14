@@ -7,6 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuditService } from '../audit/audit.service';
 import { SyncUserDto } from './auth.dto';
 import { RegisterDto, LoginDto } from './credentials.dto';
 import { TwoFactorService } from './two-factor.service';
@@ -21,6 +22,7 @@ export class AuthService {
     private readonly twoFactorService: TwoFactorService,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
+    private readonly auditService: AuditService,
   ) {}
 
   async syncUser(dto: SyncUserDto) {
@@ -117,9 +119,63 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Check account lockout
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
+      const minutesLeft = Math.ceil(
+        (user.lockedUntil.getTime() - Date.now()) / 60000,
+      );
+      throw new UnauthorizedException(
+        `Account is locked. Try again in ${minutesLeft} minute(s).`,
+      );
+    }
+
+    // Reset stale lockout counter if lockout period has expired
+    if (user.lockedUntil && user.lockedUntil <= new Date()) {
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { failedLoginAttempts: 0, lockedUntil: null },
+      });
+      user.failedLoginAttempts = 0;
+    }
+
     const valid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!valid) {
+      const attempts = user.failedLoginAttempts + 1;
+      const MAX_ATTEMPTS = 5;
+      const LOCKOUT_MINUTES = 15;
+
+      const updateData: { failedLoginAttempts: number; lockedUntil?: Date } = {
+        failedLoginAttempts: attempts,
+      };
+
+      if (attempts >= MAX_ATTEMPTS) {
+        updateData.lockedUntil = new Date(
+          Date.now() + LOCKOUT_MINUTES * 60 * 1000,
+        );
+      }
+
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: updateData,
+      });
+
+      if (attempts >= MAX_ATTEMPTS) {
+        await this.logAuthEvent(user, 'ACCOUNT_LOCKED');
+        throw new UnauthorizedException(
+          `Too many failed attempts. Account locked for ${LOCKOUT_MINUTES} minutes.`,
+        );
+      }
+
+      await this.logAuthEvent(user, 'LOGIN_FAILED');
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Reset failed attempts on successful login
+    if (user.failedLoginAttempts > 0 || user.lockedUntil) {
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { failedLoginAttempts: 0, lockedUntil: null },
+      });
     }
 
     if (!user.emailVerified) {
@@ -131,6 +187,7 @@ export class AuthService {
       return { requires2FA: true, tempToken };
     }
 
+    await this.logAuthEvent(user, 'LOGIN_SUCCESS');
     return this.signAndReturn(user);
   }
 
@@ -238,6 +295,101 @@ export class AuthService {
     await this.emailService.sendEmailVerification(user.email, verifyLink);
 
     return { message: 'If applicable, a verification email has been sent.' };
+  }
+
+  /** GDPR Art. 15 — Export all personal data for a user */
+  async exportAccountData(userId: string, practiceId: string | null) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        emailVerified: true,
+        twoFactorEnabled: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    const accounts = await this.prisma.account.findMany({
+      where: { userId },
+      select: {
+        provider: true,
+        providerAccountId: true,
+      },
+    });
+
+    let practiceData = null;
+    let consentHistory: object[] = [];
+    let auditLogs: object[] = [];
+
+    if (practiceId) {
+      practiceData = await this.prisma.practice.findUnique({
+        where: { id: practiceId },
+        select: {
+          id: true,
+          name: true,
+          createdAt: true,
+        },
+      });
+
+      consentHistory = await this.prisma.consentForm.findMany({
+        where: { practiceId },
+        select: {
+          id: true,
+          type: true,
+          status: true,
+          createdAt: true,
+          expiresAt: true,
+          signatureTimestamp: true,
+          revokedAt: true,
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 1000,
+      });
+
+      auditLogs = await this.prisma.auditLog.findMany({
+        where: { userId },
+        select: {
+          action: true,
+          entityType: true,
+          entityId: true,
+          ipAddress: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 1000,
+      });
+    }
+
+    return {
+      exportDate: new Date().toISOString(),
+      format: 'GDPR Art. 15 Data Export',
+      user,
+      oauthProviders: accounts,
+      practice: practiceData,
+      consentHistory,
+      auditLogs,
+    };
+  }
+
+  private async logAuthEvent(
+    user: { id: string; practiceId: string | null },
+    action: 'LOGIN_SUCCESS' | 'LOGIN_FAILED' | 'ACCOUNT_LOCKED',
+  ) {
+    try {
+      await this.auditService.log({
+        practiceId: user.practiceId || undefined,
+        userId: user.id,
+        action,
+        entityType: 'User',
+        entityId: user.id,
+      });
+    } catch {
+      // Audit logging should never break auth flow
+    }
   }
 
   private signAndReturn(user: {

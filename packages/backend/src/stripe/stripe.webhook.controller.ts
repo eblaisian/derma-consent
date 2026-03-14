@@ -85,6 +85,50 @@ export class StripeWebhookController {
         });
         break;
       }
+      case 'charge.refunded': {
+        const charge = event.data.object;
+        const paymentIntentId =
+          typeof charge.payment_intent === 'string'
+            ? charge.payment_intent
+            : null;
+
+        if (paymentIntentId) {
+          const consent = await this.prisma.consentForm.findFirst({
+            where: { stripePaymentIntent: paymentIntentId },
+          });
+
+          if (consent) {
+            await this.prisma.consentForm.update({
+              where: { id: consent.id },
+              data: { status: ConsentStatus.REVOKED, revokedAt: new Date() },
+            });
+            this.logger.log(`Consent ${consent.id} revoked due to refund on ${paymentIntentId}`);
+          }
+        }
+        break;
+      }
+
+      case 'charge.dispute.created': {
+        const dispute = event.data.object;
+        const paymentIntentId =
+          typeof dispute.payment_intent === 'string'
+            ? dispute.payment_intent
+            : null;
+
+        if (paymentIntentId) {
+          const consent = await this.prisma.consentForm.findFirst({
+            where: { stripePaymentIntent: paymentIntentId },
+          });
+
+          if (consent) {
+            this.logger.warn(
+              `Dispute opened for consent ${consent.id}, payment intent ${paymentIntentId}`,
+            );
+          }
+        }
+        break;
+      }
+
       default:
         this.logger.log(`Unhandled event type: ${event.type}`);
     }

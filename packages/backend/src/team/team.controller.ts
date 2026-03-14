@@ -12,6 +12,7 @@ import { TeamService } from './team.service';
 import { InviteDto, ChangeRoleDto } from './team.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
+import { SubscriptionGuard } from '../billing/subscription.guard';
 import { Roles } from '../auth/roles.decorator';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
 
@@ -20,14 +21,14 @@ export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 
   @Get('members')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
   @Roles('ADMIN')
   listMembers(@CurrentUser() user: CurrentUserPayload) {
     return this.teamService.listMembers(user.practiceId!);
   }
 
   @Post('invite')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
   @Roles('ADMIN')
   createInvite(
     @Body() dto: InviteDto,
@@ -37,7 +38,7 @@ export class TeamController {
   }
 
   @Delete('members/:userId')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
   @Roles('ADMIN')
   removeMember(
     @Param('userId') userId: string,
@@ -47,7 +48,7 @@ export class TeamController {
   }
 
   @Patch('members/:userId/role')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
   @Roles('ADMIN')
   changeRole(
     @Param('userId') userId: string,

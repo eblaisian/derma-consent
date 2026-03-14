@@ -3,9 +3,11 @@
 import { useTranslations } from 'next-intl';
 import { useFormatter } from 'next-intl';
 import { useVault } from '@/hooks/use-vault';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Badge } from '@/components/ui/badge';
 import { VaultLockedPlaceholder } from '@/components/vault/vault-locked-placeholder';
 import { EncryptedPhotoViewer } from './encrypted-photo-viewer';
+import { Camera } from 'lucide-react';
 import type { TreatmentPhotoSummary } from '@/lib/types';
 
 interface Props {
@@ -21,9 +23,12 @@ export function PhotoGallery({ photos, onPhotoClick }: Props) {
 
   if (photos.length === 0) {
     return (
-      <p className="text-center text-sm text-muted-foreground py-8">
-        {t('noPhotos')}
-      </p>
+      <EmptyState
+        icon={Camera}
+        title={t('noPhotos')}
+        description={t('noPhotosDescription')}
+        className="py-12"
+      />
     );
   }
 

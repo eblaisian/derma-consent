@@ -2,13 +2,17 @@ import './sentry';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
+import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     rawBody: true,
+    bufferLogs: true,
   });
+
+  app.useLogger(app.get(Logger));
 
   app.use(
     helmet({
@@ -47,7 +51,7 @@ async function bootstrap() {
 
   const port = parseInt(process.env.PORT || '3001', 10);
   await app.listen(port, '0.0.0.0');
-  console.log(`Backend running on http://localhost:${port}`);
+  app.get(Logger).log(`Backend running on http://localhost:${port}`);
 }
 
 bootstrap();

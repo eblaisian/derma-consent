@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import { useTranslations, useFormatter } from 'next-intl';
 import { useVault } from '@/hooks/use-vault';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Badge } from '@/components/ui/badge';
 import { VaultLockedPlaceholder } from '@/components/vault/vault-locked-placeholder';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, ClipboardList } from 'lucide-react';
 import { TreatmentSummary } from './treatment-summary';
 import type { TreatmentPlanSummary } from '@/lib/types';
 
@@ -22,9 +23,12 @@ export function TreatmentHistory({ plans }: Props) {
 
   if (plans.length === 0) {
     return (
-      <p className="text-center text-sm text-muted-foreground py-8">
-        {t('noPlans')}
-      </p>
+      <EmptyState
+        icon={ClipboardList}
+        title={t('noPlans')}
+        description={t('noPlansDescription')}
+        className="py-12"
+      />
     );
   }
 

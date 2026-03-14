@@ -14,12 +14,13 @@ import { CreateConsentDto } from './consent.dto';
 import { EmailService } from '../email/email.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
+import { SubscriptionGuard } from '../billing/subscription.guard';
 import { Roles } from '../auth/roles.decorator';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
 import { PaginationDto } from '../common/pagination.dto';
 
 @Controller('api/consent')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
 export class ConsentController {
   private readonly logger = new Logger(ConsentController.name);
 

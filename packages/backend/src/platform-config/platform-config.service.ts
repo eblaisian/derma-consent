@@ -40,6 +40,10 @@ const ENV_VAR_MAP: Record<string, string> = {
   'storage.supabaseUrl': 'SUPABASE_URL',
   'storage.supabaseServiceKey': 'SUPABASE_SERVICE_KEY',
   'storage.supabaseBucket': 'SUPABASE_BUCKET',
+  'openai.apiKey': 'OPENAI_API_KEY',
+  'openai.baseUrl': 'OPENAI_BASE_URL',
+  'openai.model': 'OPENAI_MODEL',
+  'openai.explainerEnabled': 'OPENAI_EXPLAINER_ENABLED',
 };
 
 // Default values for config keys
@@ -52,6 +56,9 @@ const DEFAULTS: Record<string, string> = {
   'plans.starterLimit': '100',
   'plans.professionalLimit': '-1',
   'plans.enterpriseLimit': '-1',
+  'openai.baseUrl': 'https://api.openai.com/v1',
+  'openai.model': 'gpt-4o-mini',
+  'openai.explainerEnabled': 'true',
 };
 
 // Which keys are secrets
@@ -64,6 +71,7 @@ const SECRET_KEYS = new Set([
   'sms.twilioAccountSid',
   'sms.twilioAuthToken',
   'storage.supabaseServiceKey',
+  'openai.apiKey',
 ]);
 
 // Config key metadata
@@ -93,6 +101,10 @@ const CONFIG_METADATA: Record<string, { category: string; description: string; i
   'plans.starterLimit': { category: 'plans', description: 'Starter Plan Monthly Consent Limit', isSecret: false },
   'plans.professionalLimit': { category: 'plans', description: 'Professional Plan Monthly Consent Limit (-1 = unlimited)', isSecret: false },
   'plans.enterpriseLimit': { category: 'plans', description: 'Enterprise Plan Monthly Consent Limit (-1 = unlimited)', isSecret: false },
+  'openai.apiKey': { category: 'ai', description: 'OpenAI API Key (sk-...) — not needed for Ollama', isSecret: true },
+  'openai.baseUrl': { category: 'ai', description: 'API Base URL (default: OpenAI, set to http://localhost:11434/v1 for Ollama)', isSecret: false },
+  'openai.model': { category: 'ai', description: 'Model (e.g. gpt-4o-mini, llama3.2, mistral)', isSecret: false },
+  'openai.explainerEnabled': { category: 'ai', description: 'Enable AI Consent Explainer on patient forms (true/false)', isSecret: false },
 };
 
 const CACHE_TTL_MS = 60_000; // 60 seconds
@@ -272,6 +284,8 @@ export class PlatformConfigService {
         return this.testStorage();
       case 'plans':
         return { success: true, message: 'Plan limits are configuration values — no connection test needed.' };
+      case 'ai':
+        return this.testOpenAI();
       default:
         return { success: false, message: `Unknown category: ${category}` };
     }
@@ -361,6 +375,31 @@ export class PlatformConfigService {
       return { success: true, message: 'Twilio connection successful' };
     } catch (error) {
       return { success: false, message: `Twilio connection failed: ${(error as Error).message}` };
+    }
+  }
+
+  private async testOpenAI(): Promise<{ success: boolean; message: string }> {
+    try {
+      const baseUrl = (await this.get('openai.baseUrl')) || 'https://api.openai.com/v1';
+      const apiKey = await this.get('openai.apiKey');
+      const isOllama = baseUrl !== 'https://api.openai.com/v1';
+
+      if (!isOllama && !apiKey) {
+        return { success: false, message: 'OpenAI API key not configured' };
+      }
+
+      const res = await fetch(`${baseUrl}/models`, {
+        headers: { Authorization: `Bearer ${apiKey || 'ollama'}` },
+      });
+      if (!res.ok) {
+        const body = await res.text();
+        return { success: false, message: `AI API error: ${res.status} ${body.substring(0, 100)}` };
+      }
+
+      const provider = isOllama ? 'Ollama' : 'OpenAI';
+      return { success: true, message: `${provider} connection successful` };
+    } catch (error) {
+      return { success: false, message: `AI connection failed: ${(error as Error).message}` };
     }
   }
 

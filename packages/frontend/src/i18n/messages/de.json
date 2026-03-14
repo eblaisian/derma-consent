@@ -62,7 +62,30 @@
     "copyright": "2026 DermaConsent. Alle Rechte vorbehalten.",
     "impressum": "Impressum",
     "datenschutz": "Datenschutz",
-    "kontakt": "Kontakt"
+    "kontakt": "Kontakt",
+    "navFeatures": "Funktionen",
+    "navPricing": "Preise",
+    "trustBadge1": "DSGVO-konform",
+    "trustBadge2": "In Ihrem Browser verschlüsselt",
+    "trustBadge3": "Zero-Knowledge-Architektur",
+    "trustBadge4": "Made in Germany",
+    "stat1Value": "AES-256",
+    "stat1Label": "Verschlüsselung auf Militärniveau",
+    "stat2Value": "8",
+    "stat2Label": "Unterstützte Sprachen",
+    "stat3Value": "6",
+    "stat3Label": "Abgedeckte Behandlungsarten",
+    "comparisonTitle": "Pläne vergleichen",
+    "comparisonFeature": "Funktion",
+    "compUsers": "Teammitglieder",
+    "compConsents": "Einwilligungsformulare",
+    "compEncryption": "Zero-Knowledge-Verschlüsselung",
+    "compAnalytics": "Erweiterte Analysen",
+    "compSupport": "Prioritäts-Support",
+    "compSLA": "SLA-Garantie",
+    "compDedicated": "Persönlicher Ansprechpartner",
+    "footerLegal": "Rechtliches",
+    "footerContact": "Kontakt"
   },
   "login": {
     "title": "DermaConsent",
@@ -95,7 +118,15 @@
     "resendVerification": "Bestätigungs-E-Mail erneut senden",
     "resending": "Wird gesendet...",
     "verificationResent": "Bestätigungs-E-Mail gesendet. Bitte prüfen Sie Ihren Posteingang.",
-    "verificationResendFailed": "Bestätigungs-E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
+    "verificationResendFailed": "Bestätigungs-E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+    "brandTagline": "Datenschutzorientiertes Einwilligungsmanagement für Dermatologie-Praxen",
+    "trustEncryption": "Patientendaten werden in Ihrem Browser verschlüsselt — wir sehen sie nie",
+    "trustCompliance": "Von Grund auf DSGVO-konform",
+    "trustLanguages": "8 Sprachen — Einwilligungsformulare in der Sprache Ihrer Patienten",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort verbergen",
+    "privacyPrefix": "Mit der Anmeldung stimmen Sie unserer",
+    "privacyLink": "Datenschutzerklärung zu"
   },
   "forgotPassword": {
     "title": "Passwort vergessen",
@@ -222,7 +253,18 @@
     "educationVideoHint": "Bitte sehen Sie sich dieses kurze Video über die Behandlung an, bevor Sie das Formular ausfüllen.",
     "footerEncrypted": "Ende-zu-Ende verschlüsselt",
     "footerGdpr": "DSGVO-konform",
-    "footerEu": "Daten in der EU gespeichert"
+    "footerEu": "Daten in der EU gespeichert",
+    "explainerButton": "Mir das erklären",
+    "explainerTitle": "Was bedeutet dieses Formular?",
+    "explainerSubtitle": "KI-generierte Erklärung Ihres Eingriffs in einfacher Sprache.",
+    "explainerLoading": "Erklärung wird generiert...",
+    "explainerError": "Erklärung konnte nicht geladen werden. Bitte erneut versuchen.",
+    "explainerRetry": "Erneut versuchen",
+    "explainerDisclaimer": "Diese Erklärung wurde von einer KI generiert und dient nur zur Information. Sie ersetzt nicht die ärztliche Aufklärung.",
+    "stepForm": "Formular",
+    "stepQuiz": "Quiz",
+    "stepSignature": "Unterschrift",
+    "stepReview": "Prüfen"
   },
   "consentTypes": {
     "BOTOX": "Botox / Botulinumtoxin",
@@ -289,7 +331,11 @@
     "statTotal": "Gesamte Einwilligungen",
     "statPending": "Ausstehend",
     "statCompleted": "Abgeschlossen diesen Monat",
-    "statPatients": "Patienten"
+    "statPatients": "Patienten",
+    "needsAttentionTitle": "Aufmerksamkeit erforderlich",
+    "chipPendingLabel": "Ausstehende Einwilligungen",
+    "chipExpiringSoonLabel": "Laufen in 7 Tagen ab",
+    "chipRecentlySignedLabel": "Kürzlich unterzeichnet"
   },
   "settings": {
     "title": "Einstellungen",
@@ -318,7 +364,11 @@
     "logoUploaded": "Logo hochgeladen",
     "logoUploadError": "Fehler beim Hochladen",
     "educationVideos": "Aufklärungsvideos",
-    "educationVideosDescription": "Fügen Sie YouTube- oder Vimeo-Video-URLs für jeden Behandlungstyp hinzu. Videos werden im Einwilligungsformular angezeigt."
+    "educationVideosDescription": "Fügen Sie YouTube- oder Vimeo-Video-URLs für jeden Behandlungstyp hinzu. Videos werden im Einwilligungsformular angezeigt.",
+    "logoDragHint": "Logo hierher ziehen oder klicken zum Durchsuchen",
+    "logoFormatHint": "PNG, JPG oder SVG — Max. 2 MB",
+    "logoReplace": "Logo ersetzen",
+    "noChanges": "Keine Änderungen zu speichern"
   },
   "languages": {
     "title": "Sprache",
@@ -343,7 +393,9 @@
     "revenue": "Umsatz",
     "revenueDescription": "Gesamtumsatz aus bezahlten Einwilligungen",
     "transactions": "Transaktionen",
-    "avg": "Durchschn."
+    "avg": "Durchschn.",
+    "noRevenue": "Noch keine Einnahmen verzeichnet",
+    "noRevenueDescription": "Einnahmen werden angezeigt, sobald Patienten kostenpflichtige Einwilligungsformulare ausfüllen."
   },
   "patients": {
     "title": "Patienten",
@@ -374,7 +426,8 @@
     "vaultRequired": "Bitte entsperren Sie zuerst den Tresor",
     "noPatients": "Noch keine Patienten vorhanden.",
     "found": "Patient gefunden: {id}",
-    "notFound": "Patient nicht gefunden"
+    "notFound": "Patient nicht gefunden",
+    "noPatientsDescription": "Patienten werden automatisch erstellt, wenn Einwilligungsformulare eingereicht werden."
   },
   "patientDetail": {
     "title": "Patientendetails",
@@ -392,7 +445,16 @@
     "photos": "Fotos",
     "photoCount": "{count} Fotos",
     "treatmentPlans": "Behandlungspläne",
-    "treatmentPlanCount": "{count} Behandlungspläne"
+    "treatmentPlanCount": "{count} Behandlungspläne",
+    "noConsentsDescription": "Senden Sie ein Einwilligungsformular an diesen Patienten, um zu beginnen.",
+    "deleteConfirmTitle": "Patient löschen",
+    "deleteConfirmDescription": "Dies löscht diesen Patienten und alle zugehörigen Daten dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "cancel": "Abbrechen",
+    "summaryTitle": "Klinische Übersicht",
+    "summaryConsents": "Einwilligungen",
+    "summaryPlans": "Behandlungspläne",
+    "summaryPhotos": "Fotos",
+    "summaryLastActivity": "Letzte Aktivität"
   },
   "consentStatus": {
     "PENDING": "Ausstehend",
@@ -425,7 +487,11 @@
     "memberRemoved": "Mitglied entfernt",
     "removeError": "Fehler beim Entfernen",
     "roleChanged": "Rolle geändert",
-    "roleChangeError": "Fehler beim Ändern der Rolle"
+    "roleChangeError": "Fehler beim Ändern der Rolle",
+    "removeMember": "Mitglied entfernen",
+    "removeConfirmTitle": "Teammitglied entfernen",
+    "removeConfirmDescription": "Möchten Sie {name} wirklich aus dem Team entfernen? Der Zugriff geht sofort verloren.",
+    "cancel": "Abbrechen"
   },
   "roles": {
     "ADMIN": "Administrator",
@@ -464,7 +530,8 @@
     "stripeDashboard": "Stripe Dashboard",
     "monthly": "Monatlich",
     "yearly": "Jährlich",
-    "yearlySavings": "(spare 20%)"
+    "yearlySavings": "(spare 20%)",
+    "currentPlanActive": "Ihr aktueller Plan"
   },
   "subscriptionPlans": {
     "FREE_TRIAL": "Kostenlose Testphase",
@@ -513,31 +580,35 @@
     "next": "Weiter",
     "noEntries": "Keine Einträge gefunden.",
     "exportStarted": "Export gestartet",
-    "exportError": "Fehler beim Export"
+    "exportError": "Fehler beim Export",
+    "unknownUser": "Unbekannter Benutzer"
   },
   "auditActions": {
-    "CONSENT_CREATED": "Einwilligung erstellt",
-    "CONSENT_SUBMITTED": "Einwilligung eingereicht",
-    "CONSENT_REVOKED": "Einwilligung widerrufen",
-    "CONSENT_VIEWED": "Einwilligung eingesehen",
-    "VAULT_UNLOCKED": "Tresor entsperrt",
-    "VAULT_LOCKED": "Tresor gesperrt",
-    "PATIENT_CREATED": "Patient erstellt",
-    "PATIENT_VIEWED": "Patient eingesehen",
-    "TEAM_MEMBER_INVITED": "Mitglied eingeladen",
-    "TEAM_MEMBER_REMOVED": "Mitglied entfernt",
-    "TEAM_MEMBER_ROLE_CHANGED": "Rolle geändert",
-    "PRACTICE_SETTINGS_UPDATED": "Einstellungen aktualisiert",
-    "SUBSCRIPTION_CREATED": "Abonnement erstellt",
-    "SUBSCRIPTION_CANCELLED": "Abonnement gekündigt",
-    "DATA_EXPORTED": "Daten exportiert",
-    "DATA_DELETED": "Daten gelöscht",
+    "CONSENT_CREATED": "{actor} hat ein Einwilligungsformular erstellt",
+    "CONSENT_SUBMITTED": "{actor} hat ein Einwilligungsformular eingereicht",
+    "CONSENT_REVOKED": "{actor} hat eine Einwilligung widerrufen",
+    "CONSENT_VIEWED": "{actor} hat ein Einwilligungsformular angesehen",
+    "VAULT_UNLOCKED": "{actor} hat den Tresor entsperrt",
+    "VAULT_LOCKED": "{actor} hat den Tresor gesperrt",
+    "PATIENT_CREATED": "{actor} hat einen Patienten hinzugefügt",
+    "PATIENT_VIEWED": "{actor} hat einen Patienten angesehen",
+    "TEAM_MEMBER_INVITED": "{actor} hat ein Teammitglied eingeladen",
+    "TEAM_MEMBER_REMOVED": "{actor} hat ein Teammitglied entfernt",
+    "TEAM_MEMBER_ROLE_CHANGED": "{actor} hat eine Teamrolle geändert",
+    "PRACTICE_SETTINGS_UPDATED": "{actor} hat Praxis-Einstellungen aktualisiert",
+    "SUBSCRIPTION_CREATED": "{actor} hat ein Abonnement erstellt",
+    "SUBSCRIPTION_CANCELLED": "{actor} hat Abonnement gekündigt",
+    "DATA_EXPORTED": "{actor} hat Daten exportiert",
+    "DATA_DELETED": "{actor} hat Daten gelöscht",
     "PHOTO_UPLOADED": "Foto hochgeladen",
-    "PHOTO_VIEWED": "Foto angesehen",
+    "PHOTO_VIEWED": "{actor} hat ein Foto angesehen",
     "PHOTO_DELETED": "Foto gelöscht",
-    "TREATMENT_PLAN_CREATED": "Behandlungsplan erstellt",
+    "TREATMENT_PLAN_CREATED": "{actor} hat einen Behandlungsplan erstellt",
     "TREATMENT_PLAN_UPDATED": "Behandlungsplan aktualisiert",
-    "TREATMENT_PLAN_VIEWED": "Behandlungsplan angesehen"
+    "TREATMENT_PLAN_VIEWED": "{actor} hat einen Behandlungsplan angesehen",
+    "LOGIN_SUCCESS": "{actor} hat sich angemeldet",
+    "LOGIN_FAILED": "Fehlgeschlagener Anmeldeversuch für {actor}",
+    "ACCOUNT_LOCKED": "Konto gesperrt für {actor}"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -546,7 +617,9 @@
     "team": "Team",
     "billing": "Abrechnung",
     "settings": "Einstellungen",
-    "audit": "Protokoll"
+    "audit": "Protokoll",
+    "helpCenter": "Hilfe",
+    "communications": "Kommunikation"
   },
   "sidebar": {
     "overview": "Übersicht",
@@ -589,7 +662,10 @@
     "daysAgo": "vor {count} T.",
     "emptyTitle": "Noch keine Einwilligungen",
     "emptyDescription": "Erstellen Sie Ihre erste Einwilligung und senden Sie sie an einen Patienten.",
-    "emptyAction": "Einwilligung erstellen"
+    "emptyAction": "Einwilligung erstellen",
+    "filterByStatus": "Nach Status filtern",
+    "allStatuses": "Alle Status",
+    "risk": "Risiko"
   },
   "newConsent": {
     "button": "Neue Einwilligung",
@@ -636,7 +712,10 @@
     "autoLockWarning": "Tresor wird in 1 Minute automatisch gesperrt",
     "stayActive": "Aktiv bleiben",
     "lockNow": "Jetzt sperren",
-    "keyboardShortcut": "Tipp: Strg+Shift+L zum Öffnen jederzeit drücken"
+    "keyboardShortcut": "Tipp: Strg+Shift+L zum Öffnen jederzeit drücken",
+    "unlockBannerTitle": "Patientendaten sind verschlüsselt",
+    "unlockBannerDescription": "Entsperren Sie Ihren Tresor mit Ihrem Master-Passwort, um Patientennamen und Details anzuzeigen.",
+    "unlockAction": "Tresor entsperren"
   },
   "decryptedViewer": {
     "title": "Entschlüsselte Daten",
@@ -657,7 +736,18 @@
     "firstConsentDescription": "Klicken Sie unten, um Ihr erstes Einwilligungsformular zu erstellen. Sie wählen einen Behandlungstyp und wir generieren einen sicheren Link, den Sie an Ihren Patienten senden können.",
     "next": "Weiter",
     "back": "Zurück",
-    "createFirst": "Erste Einwilligung erstellen"
+    "createFirst": "Erste Einwilligung erstellen",
+    "checklistTitle": "Erste Schritte mit DermaConsent",
+    "stepsComplete": "{done} von {total} Schritten abgeschlossen",
+    "step_vault": "Master-Passwort festlegen",
+    "step_logo": "Praxis-Logo hochladen",
+    "step_team": "Erstes Teammitglied einladen",
+    "step_consent": "Erste Einwilligung senden",
+    "action_vault": "Einrichten",
+    "action_logo": "Hochladen",
+    "action_team": "Einladen",
+    "action_consent": "Erstellen",
+    "dismiss": "Schließen"
   },
   "metadata": {
     "description": "DSGVO-konforme digitale Einwilligungen für Dermatologie-Praxen"
@@ -684,7 +774,8 @@
     "noAfterPhotos": "Keine Nachher-Fotos",
     "consent": "Fotoeinwilligung",
     "consentGranted": "Einwilligung erteilt",
-    "consentNotGranted": "Keine Einwilligung"
+    "consentNotGranted": "Keine Einwilligung",
+    "noPhotosDescription": "Fotos hochladen, um Behandlungsfortschritt und Ergebnisse nachzuverfolgen."
   },
   "bodyRegions": {
     "FOREHEAD": "Stirn",
@@ -749,7 +840,8 @@
     "selectAreas": "Behandlungsbereiche auswählen",
     "noAreasSelected": "Keine Behandlungsbereiche ausgewählt",
     "areasCount": "{count} Bereiche",
-    "customize": "Anpassen"
+    "customize": "Anpassen",
+    "noPlansDescription": "Erstellen Sie einen Behandlungsplan, um Injektionspunkte und Produkte zu dokumentieren."
   },
   "treatmentTemplate": {
     "pickTemplate": "Vorlage wählen",
@@ -989,6 +1081,101 @@
     "practiceNotFoundDescription": "Die gesuchte Praxis existiert nicht oder wurde gelöscht.",
     "errorLoading": "Daten konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
     "backToPractices": "Zurück zu Praxen",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "aiConfig": "KI / Erklärer"
+  },
+  "pagination": {
+    "showing": "Zeige {start}–{end} von {total}",
+    "previous": "Zurück",
+    "next": "Weiter"
+  },
+  "auditActionLabels": {
+    "CONSENT_CREATED": "Einwilligung erstellt",
+    "CONSENT_SUBMITTED": "Einwilligung eingereicht",
+    "CONSENT_REVOKED": "Einwilligung widerrufen",
+    "CONSENT_VIEWED": "Einwilligung angesehen",
+    "VAULT_UNLOCKED": "Tresor entsperrt",
+    "VAULT_LOCKED": "Tresor gesperrt",
+    "PATIENT_CREATED": "Patient hinzugefügt",
+    "PATIENT_VIEWED": "Patient angesehen",
+    "TEAM_MEMBER_INVITED": "Mitglied eingeladen",
+    "TEAM_MEMBER_REMOVED": "Mitglied entfernt",
+    "TEAM_MEMBER_ROLE_CHANGED": "Rolle geändert",
+    "PRACTICE_SETTINGS_UPDATED": "Einstellungen aktualisiert",
+    "SUBSCRIPTION_CREATED": "Abonnement erstellt",
+    "SUBSCRIPTION_CANCELLED": "Abonnement gekündigt",
+    "DATA_EXPORTED": "Daten exportiert",
+    "DATA_DELETED": "Daten gelöscht",
+    "LOGIN_SUCCESS": "Anmeldung",
+    "LOGIN_FAILED": "Fehlgeschlagene Anmeldung",
+    "ACCOUNT_LOCKED": "Konto gesperrt",
+    "PHOTO_VIEWED": "Foto angesehen",
+    "TREATMENT_PLAN_CREATED": "Behandlungsplan erstellt",
+    "TREATMENT_PLAN_VIEWED": "Behandlungsplan angesehen"
+  },
+  "noShowRisk": {
+    "LOW": "Niedrig",
+    "MEDIUM": "Mittel",
+    "HIGH": "Hoch",
+    "tooltipLOW": "Wahrscheinlich vollständig — kürzlich für einen Routineeingriff gesendet.",
+    "tooltipMEDIUM": "Mittleres Risiko — prüfen Sie, ob der Patient den Link erhalten hat.",
+    "tooltipHIGH": "Hohes Abbruchrisiko — senden Sie jetzt eine Erinnerung."
+  },
+  "communications": {
+    "pageTitle": "Kommunikation",
+    "pageSubtitle": "Erstellen und versenden Sie KI-gestützte Patientennachrichten in jeder Sprache.",
+    "title": "Nachrichten-Assistent",
+    "subtitle": "Wählen Sie einen Kontext und eine Sprache — die KI erstellt eine professionelle Patientennachricht.",
+    "contextLabel": "Nachrichtenkontext",
+    "languageLabel": "Patientensprache",
+    "generateButton": "Entwurf generieren",
+    "generating": "Wird generiert...",
+    "draftLabel": "Nachrichtenentwurf (bearbeitbar)",
+    "copyButton": "Kopieren",
+    "copied": "Kopiert!",
+    "sendButton": "Senden",
+    "sendDialogTitle": "Nachricht senden",
+    "sendDialogDescription": "Senden Sie diese Nachricht per E-Mail oder SMS an einen Patienten.",
+    "recipientLabel": "Empfänger",
+    "channelEmail": "E-Mail",
+    "channelSms": "SMS",
+    "sendAction": "Jetzt senden",
+    "sending": "Wird gesendet...",
+    "sendSuccess": "Nachricht erfolgreich gesendet",
+    "sendError": "Nachricht konnte nicht gesendet werden",
+    "errorUnavailable": "KI ist nicht verfügbar. Bitte konfigurieren Sie den API-Schlüssel in den Admin-Einstellungen.",
+    "contexts": {
+      "CONSENT_REMINDER": "Erinnerung an Einwilligungsformular",
+      "APPOINTMENT_CONFIRMATION": "Terminbestätigung",
+      "APPOINTMENT_REMINDER": "Terminerinnerung",
+      "FOLLOW_UP": "Nachsorge nach Behandlung",
+      "TREATMENT_PREPARATION": "Vorbereitung auf die Behandlung",
+      "RESULT_READY": "Ergebnisse bereit",
+      "GENERAL": "Allgemeine Nachricht"
+    },
+    "fillPlaceholders": "Ergänzen Sie die Angaben vor dem Versand:"
+  },
+  "aftercare": {
+    "dialogTitle": "Nachsorgeanweisungen",
+    "generate": "Nachsorge erstellen",
+    "generating": "Wird erstellt...",
+    "copy": "Kopieren",
+    "copied": "Kopiert!",
+    "print": "Drucken",
+    "regenerate": "Neu generieren",
+    "editHint": "Überprüfen und bearbeiten Sie die Anweisungen, bevor Sie sie an den Patienten weitergeben.",
+    "error": "Nachsorgeanweisungen konnten nicht generiert werden."
+  },
+  "retention": {
+    "widgetTitle": "Überfällige Nachuntersuchungen",
+    "patients": "Patienten",
+    "daysSince": "Tage seit",
+    "bookFollowUp": "Nachuntersuchung buchen"
+  },
+  "analyticsInsights": {
+    "cardTitle": "KI-Einblicke",
+    "refresh": "Aktualisieren",
+    "loading": "Wird analysiert...",
+    "noAi": "KI-Einblicke nicht verfügbar"
   }
 }

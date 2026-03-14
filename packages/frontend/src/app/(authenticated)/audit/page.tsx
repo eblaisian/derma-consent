@@ -55,11 +55,25 @@ const auditActionKeys = [
   'SUBSCRIPTION_CANCELLED',
   'DATA_EXPORTED',
   'DATA_DELETED',
+  'LOGIN_SUCCESS',
+  'LOGIN_FAILED',
+  'ACCOUNT_LOCKED',
+  'PHOTO_VIEWED',
+  'TREATMENT_PLAN_CREATED',
+  'TREATMENT_PLAN_VIEWED',
 ] as const;
+
+function isSignificantIp(ip: string | null): boolean {
+  if (!ip || ip === '—') return false;
+  if (ip.startsWith('127.') || ip.startsWith('10.') || ip.startsWith('192.168.')) return false;
+  if (/^172\.(1[6-9]|2\d|3[01])\./.test(ip)) return false;
+  return true;
+}
 
 export default function AuditPage() {
   const t = useTranslations('audit');
   const tActions = useTranslations('auditActions');
+  const tActionLabels = useTranslations('auditActionLabels');
   const format = useFormatter();
   const { data: session } = useSession();
   const [actionFilter, setActionFilter] = useState('');
@@ -126,7 +140,9 @@ export default function AuditPage() {
                 <SelectContent>
                   <SelectItem value="all">{t('allActions')}</SelectItem>
                   {auditActionKeys.map((key) => (
-                    <SelectItem key={key} value={key}>{tActions(key)}</SelectItem>
+                    <SelectItem key={key} value={key}>
+                      {tActionLabels.has(key) ? tActionLabels(key) : key}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -164,49 +180,50 @@ export default function AuditPage() {
               <TableRow>
                 <TableHead>{t('timestamp')}</TableHead>
                 <TableHead>{t('action')}</TableHead>
-                <TableHead>{t('user')}</TableHead>
                 <TableHead>{t('entity')}</TableHead>
-                <TableHead>{t('ip')}</TableHead>
+                {data?.items.some((e) => isSignificantIp(e.ipAddress)) && (
+                  <TableHead>{t('ip')}</TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`}>
                   <TableCell><Skeleton className="h-4 w-28" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-36" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-48" /></TableCell>
                   <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                 </TableRow>
               ))}
-              {data?.items.map((entry) => (
-                <TableRow key={entry.id}>
-                  <TableCell className="text-sm">
-                    {format.dateTime(new Date(entry.createdAt), {
-                      dateStyle: 'medium',
-                      timeStyle: 'short',
-                      timeZone: 'Europe/Berlin',
-                    })}
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    {tActions.has(entry.action as typeof auditActionKeys[number])
-                      ? tActions(entry.action as typeof auditActionKeys[number])
-                      : entry.action}
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    {entry.user?.name || entry.user?.email || '—'}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {entry.entityType ? `${entry.entityType}` : '—'}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {entry.ipAddress || '—'}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {data?.items.map((entry) => {
+                const actor = entry.user?.name || entry.user?.email || t('unknownUser');
+                return (
+                  <TableRow key={entry.id}>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {format.dateTime(new Date(entry.createdAt), {
+                        dateStyle: 'medium',
+                        timeStyle: 'short',
+                        timeZone: 'Europe/Berlin',
+                      })}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {tActions.has(entry.action as typeof auditActionKeys[number])
+                        ? tActions(entry.action as typeof auditActionKeys[number], { actor })
+                        : `${actor}: ${entry.action}`}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {entry.entityType || '—'}
+                    </TableCell>
+                    {data.items.some((e) => isSignificantIp(e.ipAddress)) && (
+                      <TableCell className="text-sm text-muted-foreground">
+                        {isSignificantIp(entry.ipAddress) ? entry.ipAddress : ''}
+                      </TableCell>
+                    )}
+                  </TableRow>
+                );
+              })}
               {(!data?.items || data.items.length === 0) && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
                     {t('noEntries')}
                   </TableCell>
                 </TableRow>

@@ -4,13 +4,8 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { AuthLayout } from '@/components/auth/auth-layout';
+import { PasswordInput } from '@/components/auth/password-input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,6 +14,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export default function RegisterPage() {
   const t = useTranslations('register');
+  const tLogin = useTranslations('login');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,11 +22,18 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const checks = [
+    password.length >= 8,
+    /[A-Z]/.test(password),
+    /[0-9]/.test(password),
+  ];
+  const passed = checks.filter(Boolean).length;
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
 
-    if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+    if (!checks.every(Boolean)) {
       setError(t('passwordRequirements'));
       return;
     }
@@ -58,7 +61,6 @@ export default function RegisterPage() {
         return;
       }
 
-      // Account created — sign in via NextAuth
       const result = await signIn('credentials', {
         email,
         password,
@@ -78,107 +80,103 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center p-4">
-      {/* Decorative background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.02]" aria-hidden="true" />
-      <div className="absolute top-1/4 -start-20 h-56 w-56 rounded-full bg-primary/5 blur-3xl" aria-hidden="true" />
-      <div className="absolute bottom-1/4 -end-20 h-40 w-40 rounded-full bg-primary/3 blur-3xl" aria-hidden="true" />
+    <AuthLayout>
+      <div className="space-y-6">
+        <div className="space-y-2 text-center">
+          <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+          <p className="text-sm text-muted-foreground">{t('description')}</p>
+        </div>
 
-      <Card className="relative w-full max-w-md shadow-[var(--shadow-lg)] animate-scale-in">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl tracking-tight">{t('title')}</CardTitle>
-          <CardDescription>{t('description')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="space-y-1.5">
-              <Label htmlFor="name">{t('name')}</Label>
-              <Input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder={t('namePlaceholder')}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email">{t('email')}</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t('emailPlaceholder')}
-                required
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="password">{t('password')}</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={t('passwordPlaceholder')}
-                required
-                minLength={8}
-              />
-              {password.length > 0 && (
-                <div className="space-y-1.5">
-                  <div className="flex gap-1">
-                    {Array.from({ length: 3 }).map((_, i) => {
-                      const checks = [
-                        password.length >= 8,
-                        /[A-Z]/.test(password),
-                        /[0-9]/.test(password),
-                      ];
-                      const passed = checks.filter(Boolean).length;
-                      return (
-                        <div
-                          key={i}
-                          className={`h-1 flex-1 rounded-full transition-colors ${
-                            i < passed
-                              ? passed <= 1 ? 'bg-destructive' : passed === 2 ? 'bg-yellow-500' : 'bg-green-500'
-                              : 'bg-muted'
-                          }`}
-                        />
-                      );
-                    })}
-                  </div>
-                  <ul className="text-xs text-muted-foreground space-y-0.5">
-                    <li className={password.length >= 8 ? 'text-green-600' : ''}>{t('minLength')}</li>
-                    <li className={/[A-Z]/.test(password) ? 'text-green-600' : ''}>{t('uppercase')}</li>
-                    <li className={/[0-9]/.test(password) ? 'text-green-600' : ''}>{t('number')}</li>
-                  </ul>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">{t('name')}</Label>
+            <Input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t('namePlaceholder')}
+              autoComplete="name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">{t('email')}</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t('emailPlaceholder')}
+              required
+              autoComplete="email"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">{t('password')}</Label>
+            <PasswordInput
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={t('passwordPlaceholder')}
+              required
+              minLength={8}
+              autoComplete="new-password"
+            />
+            {password.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex gap-1">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`h-1 flex-1 rounded-full transition-colors ${
+                        i < passed
+                          ? passed <= 1 ? 'bg-destructive' : passed === 2 ? 'bg-yellow-500' : 'bg-green-500'
+                          : 'bg-muted'
+                      }`}
+                    />
+                  ))}
                 </div>
-              )}
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder={t('confirmPasswordPlaceholder')}
-                required
-              />
-            </div>
-            {error && (
-              <p id="register-error" className="text-sm text-destructive" role="alert">{error}</p>
+                <ul className="text-xs text-muted-foreground space-y-0.5">
+                  <li className={checks[0] ? 'text-green-600' : ''}>{t('minLength')}</li>
+                  <li className={checks[1] ? 'text-green-600' : ''}>{t('uppercase')}</li>
+                  <li className={checks[2] ? 'text-green-600' : ''}>{t('number')}</li>
+                </ul>
+              </div>
             )}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? t('submitting') : t('submit')}
-            </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              {t('hasAccount')}{' '}
-              <Link href="/login" className="text-primary underline underline-offset-4 hover:text-primary/80">
-                {t('signIn')}
-              </Link>
-            </p>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
+            <PasswordInput
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder={t('confirmPasswordPlaceholder')}
+              required
+              autoComplete="new-password"
+            />
+          </div>
+          {error && (
+            <p id="register-error" className="text-sm text-destructive" role="alert">{error}</p>
+          )}
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? t('submitting') : t('submit')}
+          </Button>
+          <p className="text-center text-sm text-muted-foreground">
+            {t('hasAccount')}{' '}
+            <Link href="/login" className="text-primary underline underline-offset-4 hover:text-primary/80">
+              {t('signIn')}
+            </Link>
+          </p>
+        </form>
+
+        <p className="text-center text-xs text-muted-foreground">
+          {tLogin('privacyPrefix')}{' '}
+          <Link href="/datenschutz" className="underline underline-offset-4 hover:text-primary">
+            {tLogin('privacyLink')}
+          </Link>
+          .
+        </p>
+      </div>
+    </AuthLayout>
   );
 }

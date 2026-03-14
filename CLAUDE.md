@@ -207,11 +207,42 @@ See `docs/STRATEGY.md` for full product strategy, target market, and roadmap. Ke
 
 Backend requires: `DATABASE_URL`, `AUTH_SECRET`, `FRONTEND_URL`. Optional: Stripe keys, `RESEND_API_KEY`, Supabase credentials, `PLATFORM_ENCRYPTION_KEY` (for encrypting secrets in PlatformConfig DB). Frontend requires: `NEXT_PUBLIC_API_URL`. OAuth provider keys are optional (providers auto-register when env vars present). See `.env.example` for full list.
 
+## UI/UX Design Workflow
+
+This project has a structured UI/UX workflow to produce polished, professional interfaces.
+
+### Design → Build → Polish Pipeline
+
+When building any UI:
+
+1. **Design phase**: Use `/frontend-design` skill to commit to an aesthetic direction, define typography/color/spacing rules, and plan all component states before writing code
+2. **Build phase**: Implement using shadcn/ui components, Tailwind theme tokens, and the design system defined in step 1
+3. **Polish phase**: Run skills in sequence:
+   - `/baseline-ui` — Fix spacing, typography, interaction states, visual consistency
+   - `/fix-accessibility` — Keyboard nav, ARIA labels, focus management, semantic HTML
+   - `/fix-motion` — Animation performance + `prefers-reduced-motion` compliance
+4. **Review phase**: Use `/ui-review` for comprehensive design quality audit
+
+### Visual Feedback Loop (Playwright MCP)
+
+When `make dev` is running, use the Playwright MCP to close the visual feedback loop:
+1. Navigate to `localhost:3000` and the page being built
+2. Take a screenshot → visually verify the design
+3. Iterate until it looks intentionally designed, not AI-generated
+
+### Reference Designs
+
+Drop screenshots of admired UIs into `.claude/ui-references/` for visual anchoring. Reference them when building new pages.
+
+---
+
 ## Claude Code Setup
 
 This project has custom skills, agents, and rules configured in `.claude/`:
 
 ### Skills (invoke with `/command`)
+
+**Development:**
 - `/test-backend [pattern]` — Run backend Jest tests
 - `/test-frontend [file]` — Run frontend Vitest tests
 - `/db-migrate` — Safe migration workflow (status → migrate → generate → test)
@@ -223,6 +254,19 @@ This project has custom skills, agents, and rules configured in `.claude/`:
 - `/pr [title]` — Create pull request with template
 - `/deploy [staging|production]` — Deployment workflow
 - `/load-test` — Run k6 load tests
+
+**UI/UX Design:**
+- `/frontend-design` — Design direction + production code with full state handling
+- `/baseline-ui [path]` — Polish spacing, typography, interaction states, visual consistency (ibelick/ui-skills)
+- `/fix-accessibility [path]` — Fix keyboard nav, ARIA labels, focus, semantic HTML
+- `/fix-motion [path]` — Fix animation performance + reduced-motion compliance
+- `/fixing-accessibility [path]` — WCAG compliance audit (ibelick/ui-skills)
+- `/fixing-motion-performance [path]` — Animation perf audit (ibelick/ui-skills)
+- `/fixing-metadata [path]` — SEO, Open Graph, meta tags audit (ibelick/ui-skills)
+- `/ui-review [path]` — Comprehensive UI design quality review and audit
+- `/web-design-guidelines [path]` — 100+ Web Interface Guidelines rules (Vercel)
+- `/composition-patterns` — React composition patterns: compound components, context, variants (Vercel)
+- `/react-best-practices` — 57 React/Next.js performance optimization rules (Vercel)
 
 ### Agents
 
@@ -236,6 +280,9 @@ This project has custom skills, agents, and rules configured in `.claude/`:
 - **code-reviewer** — Review for security, encryption, and quality (Large changes, sensitive areas)
 - **i18n-sync** — Check/sync translation keys across all 8 locales
 - **security-auditor** — Deep healthcare compliance audit (runs on Opus — use for sensitive changes and pre-release)
+
+**UI/UX:**
+- **ui-designer** — Senior UI/UX designer agent (runs on Opus) — designs and builds polished interfaces from scratch
 
 **On-demand:**
 - **debugger** — Investigate bugs and failing tests
