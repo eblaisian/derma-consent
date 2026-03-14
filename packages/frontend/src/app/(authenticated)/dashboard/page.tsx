@@ -232,7 +232,6 @@ export default function DashboardPage() {
             <ConsentTable
               consents={consents || []}
               onRefresh={() => refreshConsents()}
-              onCreateConsent={() => setShowNewConsent(true)}
               statusFilter={statusFilter}
               onStatusFilterChange={setStatusFilter}
             />
