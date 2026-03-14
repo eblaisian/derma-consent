@@ -6,16 +6,17 @@ COPY packages/frontend/package.json ./packages/frontend/
 RUN pnpm install --frozen-lockfile --filter @derma-consent/frontend
 
 FROM node:20-alpine AS build
-WORKDIR /app/packages/frontend
+WORKDIR /app
 RUN corepack enable pnpm
-COPY --from=deps /app/node_modules /app/node_modules
-COPY --from=deps /app/packages/frontend/node_modules ./node_modules
-COPY packages/frontend/ .
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages/frontend/node_modules ./packages/frontend/node_modules
+COPY pnpm-workspace.yaml package.json ./
+COPY packages/frontend/ ./packages/frontend/
 
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
-RUN pnpm build
+RUN pnpm --filter @derma-consent/frontend build
 
 FROM node:20-alpine AS runner
 WORKDIR /app

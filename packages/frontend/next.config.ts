@@ -21,6 +21,9 @@ const cspDirectives = [
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  turbopack: {
+    root: "../..",
+  },
   headers: async () => [
     {
       source: "/(.*)",
