@@ -45,8 +45,8 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Auth-Secret', 'stripe-signature'],
   });
 
-  const port = process.env.BACKEND_PORT || 3001;
-  await app.listen(port);
+  const port = parseInt(process.env.PORT || '3001', 10);
+  await app.listen(port, '0.0.0.0');
   console.log(`Backend running on http://localhost:${port}`);
 }
 
