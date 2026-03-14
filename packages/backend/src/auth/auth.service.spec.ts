@@ -54,7 +54,7 @@ describe('AuthService', () => {
   };
 
   const mockConfig = { get: jest.fn().mockReturnValue('http://localhost:3000') };
-  const mockNotification = { sendEmailVerification: jest.fn(), sendWelcome: jest.fn(), sendPasswordReset: jest.fn() };
+  const mockNotification = { sendEmailVerification: jest.fn().mockResolvedValue(undefined), sendWelcome: jest.fn().mockResolvedValue(undefined), sendPasswordReset: jest.fn().mockResolvedValue(undefined) };
   const mockAudit = { log: jest.fn() };
 
   beforeEach(async () => {
