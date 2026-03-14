@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlatformAdminGuard } from '../auth/platform-admin.guard';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
@@ -18,6 +19,7 @@ import { UpdateConfigDto } from './dto/admin.dto';
 
 @Controller('api/admin/config')
 @UseGuards(JwtAuthGuard, PlatformAdminGuard)
+@SkipThrottle()
 export class AdminConfigController {
   constructor(
     private readonly platformConfig: PlatformConfigService,

@@ -367,15 +367,17 @@ export class PlatformConfigService {
       const smtpUser = await this.get('email.smtpUser');
       const smtpPass = await this.get('email.smtpPass');
       if (!smtpUser || !smtpPass) return { success: false, message: 'SMTP credentials not configured' };
+      const smtpHost = (await this.get('email.smtpHost')) || 'smtp.gmail.com';
+      const smtpPort = parseInt((await this.get('email.smtpPort')) || '465', 10);
       const { createTransport } = await import('nodemailer');
       const transporter = createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpPort === 465,
         auth: { user: smtpUser, pass: smtpPass },
       });
       await transporter.verify();
-      return { success: true, message: 'SMTP connection successful' };
+      return { success: true, message: `SMTP connection to ${smtpHost}:${smtpPort} successful` };
     } catch (error) {
       return { success: false, message: `SMTP connection failed: ${(error as Error).message}` };
     }
