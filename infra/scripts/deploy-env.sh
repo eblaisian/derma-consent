@@ -59,15 +59,26 @@ cd "$OVERLAY_DIR"
 kustomize edit set image "BACKEND_IMAGE=$BACKEND_IMAGE"
 kustomize edit set image "FRONTEND_IMAGE=$FRONTEND_IMAGE"
 
-# --- Step 2: Apply all manifests via kustomize ---
+# --- Step 2: Scale down to clear stuck state from any previous failed deploys ---
+# Previous failed rollouts can leave orphaned Pending pods and broken ReplicaSets.
+# Scaling to 0 ensures a clean slate and frees node resources before deploying.
+echo ""
+echo "--- Scaling down existing deployments ---"
+kubectl scale deployment/backend -n "$NAMESPACE" --replicas=0 --timeout=60s 2>/dev/null || true
+kubectl scale deployment/frontend -n "$NAMESPACE" --replicas=0 --timeout=60s 2>/dev/null || true
+echo "Waiting for pods to terminate..."
+kubectl wait --for=delete pod -l app=backend -n "$NAMESPACE" --timeout=60s 2>/dev/null || true
+kubectl wait --for=delete pod -l app=frontend -n "$NAMESPACE" --timeout=60s 2>/dev/null || true
+
+# --- Step 3: Apply all manifests via kustomize ---
 # Migration runs as an initContainer on the backend pod (same image pull).
-# With Recreate strategy: old pod killed → new pod starts → initContainer
-# runs migration → main container starts serving traffic.
+# With Recreate strategy: new pod starts → initContainer runs migration →
+# main container starts serving traffic.
 echo ""
 echo "--- Applying Kustomize manifests ---"
 kustomize build "$OVERLAY_DIR" | kubectl apply -f -
 
-# --- Step 3: Wait for backend rollout (includes migration via initContainer) ---
+# --- Step 4: Wait for backend rollout (includes migration via initContainer) ---
 echo ""
 echo "--- Waiting for backend rollout (migration runs as init container) ---"
 kubectl rollout status deployment/backend -n "$NAMESPACE" --timeout=600s || {
@@ -84,7 +95,7 @@ kubectl rollout status deployment/backend -n "$NAMESPACE" --timeout=600s || {
   exit 1
 }
 
-# --- Step 4: Wait for frontend rollout ---
+# --- Step 5: Wait for frontend rollout ---
 echo ""
 echo "--- Waiting for frontend rollout ---"
 kubectl rollout status deployment/frontend -n "$NAMESPACE" --timeout=300s || {
@@ -97,7 +108,7 @@ kubectl rollout status deployment/frontend -n "$NAMESPACE" --timeout=300s || {
   exit 1
 }
 
-# --- Step 5: Clean up any leftover migration jobs from previous deploys ---
+# --- Step 6: Clean up any leftover migration jobs from previous deploys ---
 kubectl delete job prisma-migrate -n "$NAMESPACE" --ignore-not-found=true
 
 # --- Done ---
