@@ -100,7 +100,7 @@ jobs:
           platforms: linux/amd64
           push: true
           cache-from: type=registry,ref=${{ env.BACKEND_IMAGE }}:buildcache
-          cache-to: type=registry,ref=${{ env.BACKEND_IMAGE }}:buildcache,mode=max
+          cache-to: type=registry,ref=${{ env.BACKEND_IMAGE }}:buildcache,mode=min
           tags: |
             ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
             ${{ env.BACKEND_IMAGE }}:latest
@@ -115,7 +115,7 @@ jobs:
           build-args: |
             NEXT_PUBLIC_API_URL=https://api.consent.eblaisian.com
           cache-from: type=registry,ref=${{ env.FRONTEND_IMAGE }}:buildcache
-          cache-to: type=registry,ref=${{ env.FRONTEND_IMAGE }}:buildcache,mode=max
+          cache-to: type=registry,ref=${{ env.FRONTEND_IMAGE }}:buildcache,mode=min
           tags: |
             ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
             ${{ env.FRONTEND_IMAGE }}:latest
@@ -206,3 +206,32 @@ jobs:
           echo "Point these DNS records to the IP above:"
           echo "  consent.eblaisian.com     → A record"
           echo "  api.consent.eblaisian.com → A record"
+
+      - name: Clean up old registry images
+        run: |
+          KEEP=3
+          for REPO in backend frontend; do
+            echo "--- Cleaning $REPO (keeping last $KEEP) ---"
+            # List all manifests as JSON, sorted newest-first by the API
+            MANIFESTS=$(doctl registry repository list-manifests "$REPO" --output json 2>/dev/null || echo "[]")
+            TOTAL=$(echo "$MANIFESTS" | jq 'length')
+            echo "  Found $TOTAL manifests"
+
+            if [ "$TOTAL" -le "$KEEP" ]; then
+              echo "  Nothing to clean (≤ $KEEP manifests)"
+              continue
+            fi
+
+            # Get digests of old manifests (skip the first $KEEP)
+            OLD_DIGESTS=$(echo "$MANIFESTS" | jq -r ".[$KEEP:][].digest")
+            for DIGEST in $OLD_DIGESTS; do
+              echo "  Deleting: $DIGEST"
+              doctl registry repository delete-manifest "$REPO" "$DIGEST" --force || true
+            done
+          done
+
+          # Trigger garbage collection to reclaim storage
+          echo ""
+          echo "--- Starting garbage collection ---"
+          doctl registry garbage-collection start ${{ env.REGISTRY_NAME }} \
+            --include-untagged-manifests --force || echo "GC already running or failed to start"
