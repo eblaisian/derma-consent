@@ -230,8 +230,5 @@ jobs:
             done
           done
 
-          # Trigger garbage collection to reclaim storage
           echo ""
-          echo "--- Starting garbage collection ---"
-          doctl registry garbage-collection start ${{ env.REGISTRY_NAME }} \
-            --include-untagged-manifests --force || echo "GC already running or failed to start"
+          echo "Note: GC runs on a separate schedule (registry-gc.yml) to avoid read-only mode blocking deploys."

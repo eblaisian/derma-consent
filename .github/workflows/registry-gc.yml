@@ -1,0 +1,23 @@
+name: Registry GC
+
+on:
+  schedule:
+    # Run daily at 3am UTC — off-hours, no deploys expected
+    - cron: '0 3 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  garbage-collection:
+    name: DOCR Garbage Collection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Run garbage collection
+        run: |
+          echo "--- Starting DOCR garbage collection ---"
+          doctl registry garbage-collection start derma-consent \
+            --include-untagged-manifests --force || echo "GC already running"
