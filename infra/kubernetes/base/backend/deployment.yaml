@@ -16,6 +16,35 @@ spec:
     spec:
       imagePullSecrets:
         - name: registry-derma-consent
+      initContainers:
+        - name: migrate
+          image: BACKEND_IMAGE
+          command: ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && ./node_modules/.bin/tsx prisma/bootstrap.ts"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DATABASE_URL
+            - name: PLATFORM_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: PLATFORM_ADMIN_EMAIL
+                  optional: true
+            - name: PLATFORM_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: PLATFORM_ADMIN_PASSWORD
+                  optional: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
       containers:
         - name: backend
           image: BACKEND_IMAGE

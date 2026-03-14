@@ -10,6 +10,9 @@ set -euo pipefail
 #     --overlay <prod> \
 #     --backend-image <image:tag> \
 #     --frontend-image <image:tag>
+#
+# Migration runs as an initContainer on the backend deployment.
+# No separate Job needed — same image pull, no scheduling conflicts.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA_DIR="$(cd "$SCRIPT_DIR/../kubernetes" && pwd)"
@@ -56,45 +59,46 @@ cd "$OVERLAY_DIR"
 kustomize edit set image "BACKEND_IMAGE=$BACKEND_IMAGE"
 kustomize edit set image "FRONTEND_IMAGE=$FRONTEND_IMAGE"
 
-# --- Step 2: Run database migration BEFORE deploying new pods ---
-# Migration uses the new backend image (has latest Prisma schema).
-# Old pods continue serving traffic during migration.
-echo ""
-echo "--- Running database migration ---"
-kubectl delete job prisma-migrate -n "$NAMESPACE" --ignore-not-found=true
-
-sed "s|BACKEND_IMAGE|$BACKEND_IMAGE|g" \
-  "$INFRA_DIR/jobs/migration-job.yaml" | kubectl apply -n "$NAMESPACE" -f -
-
-echo "Waiting for migration to complete..."
-kubectl wait --for=condition=complete job/prisma-migrate \
-  -n "$NAMESPACE" --timeout=300s || {
-  echo ""
-  echo "ERROR: Migration job failed or timed out"
-  echo "=== Job Status ==="
-  kubectl describe job/prisma-migrate -n "$NAMESPACE"
-  echo "=== Pod Logs ==="
-  kubectl logs -n "$NAMESPACE" -l job-name=prisma-migrate --tail=100 || true
-  exit 1
-}
-
-echo "Migration completed successfully."
-
-# --- Step 3: Apply all manifests via kustomize ---
-# With Recreate strategy, old pods are killed then new ones start.
+# --- Step 2: Apply all manifests via kustomize ---
+# Migration runs as an initContainer on the backend pod (same image pull).
+# With Recreate strategy: old pod killed → new pod starts → initContainer
+# runs migration → main container starts serving traffic.
 echo ""
 echo "--- Applying Kustomize manifests ---"
 kustomize build "$OVERLAY_DIR" | kubectl apply -f -
 
-# --- Step 4: Wait for backend rollout ---
+# --- Step 3: Wait for backend rollout (includes migration via initContainer) ---
 echo ""
-echo "--- Waiting for backend rollout ---"
-kubectl rollout status deployment/backend -n "$NAMESPACE" --timeout=180s
+echo "--- Waiting for backend rollout (migration runs as init container) ---"
+kubectl rollout status deployment/backend -n "$NAMESPACE" --timeout=600s || {
+  echo ""
+  echo "ERROR: Backend rollout failed"
+  echo "=== Pod Status ==="
+  kubectl get pods -n "$NAMESPACE" -l app=backend -o wide
+  echo "=== Pod Events ==="
+  kubectl describe pods -n "$NAMESPACE" -l app=backend | tail -30
+  echo "=== Init Container Logs (migration) ==="
+  kubectl logs -n "$NAMESPACE" -l app=backend -c migrate --tail=100 || true
+  echo "=== Main Container Logs ==="
+  kubectl logs -n "$NAMESPACE" -l app=backend -c backend --tail=50 || true
+  exit 1
+}
 
-# --- Step 5: Wait for frontend rollout ---
+# --- Step 4: Wait for frontend rollout ---
 echo ""
 echo "--- Waiting for frontend rollout ---"
-kubectl rollout status deployment/frontend -n "$NAMESPACE" --timeout=180s
+kubectl rollout status deployment/frontend -n "$NAMESPACE" --timeout=300s || {
+  echo ""
+  echo "ERROR: Frontend rollout failed"
+  echo "=== Pod Status ==="
+  kubectl get pods -n "$NAMESPACE" -l app=frontend -o wide
+  echo "=== Pod Events ==="
+  kubectl describe pods -n "$NAMESPACE" -l app=frontend | tail -20
+  exit 1
+}
+
+# --- Step 5: Clean up any leftover migration jobs from previous deploys ---
+kubectl delete job prisma-migrate -n "$NAMESPACE" --ignore-not-found=true
 
 # --- Done ---
 echo ""
