@@ -1083,7 +1083,10 @@
     "backToPractices": "Вернуться к клиникам",
     "retry": "Повторить",
     "aiConfig": "ИИ / Объяснитель",
-    "notificationsConfig": "Уведомления"
+    "notificationsConfig": "Уведомления",
+    "sendTestEmail": "Отправить мне тестовое письмо",
+    "sendTestSms": "Отправить тестовое SMS",
+    "enterTestPhone": "Введите номер для тестового SMS (напр. +491234567890):"
   },
   "pagination": {
     "showing": "Показано {start}–{end} из {total}",

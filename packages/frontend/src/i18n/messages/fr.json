@@ -1083,7 +1083,10 @@
     "backToPractices": "Retour aux cabinets",
     "retry": "Réessayer",
     "aiConfig": "IA / Explicateur",
-    "notificationsConfig": "Notifications"
+    "notificationsConfig": "Notifications",
+    "sendTestEmail": "M'envoyer un email test",
+    "sendTestSms": "Envoyer un SMS test",
+    "enterTestPhone": "Entrez le numéro pour le SMS test (ex. +491234567890) :"
   },
   "pagination": {
     "showing": "Affichage {start}–{end} sur {total}",

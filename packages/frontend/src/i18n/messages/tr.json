@@ -1083,7 +1083,10 @@
     "backToPractices": "Kliniklere dön",
     "retry": "Tekrar dene",
     "aiConfig": "Yapay Zeka / Açıklayıcı",
-    "notificationsConfig": "Bildirimler"
+    "notificationsConfig": "Bildirimler",
+    "sendTestEmail": "Bana test e-postası gönder",
+    "sendTestSms": "Test SMS gönder",
+    "enterTestPhone": "Test SMS için telefon numarası girin (örn. +491234567890):"
   },
   "pagination": {
     "showing": "{total} içinden {start}–{end} gösteriliyor",

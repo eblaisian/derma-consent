@@ -232,8 +232,8 @@ export default function AdminConfigPage() {
         </div>
       )}
 
-      {/* Test connection */}
-      <div className="pt-2">
+      {/* Test connection + send test notification */}
+      <div className="flex flex-wrap items-center gap-3 pt-2">
         <button
           onClick={() => handleTestConnection(activeCategory)}
           disabled={testingCategory === activeCategory}
@@ -242,6 +242,47 @@ export default function AdminConfigPage() {
           <RotateCw className={`h-4 w-4 ${testingCategory === activeCategory ? 'animate-spin' : ''}`} />
           {t('testConnection')}
         </button>
+
+        {activeCategory === 'email' && (
+          <button
+            onClick={async () => {
+              try {
+                const result = await authFetch('/api/admin/notifications/test', {
+                  method: 'POST',
+                  body: JSON.stringify({ channel: 'email' }),
+                });
+                toast.success(result.message);
+              } catch {
+                toast.error(t('testFailed'));
+              }
+            }}
+            className="flex items-center gap-2 rounded border border-violet-300 px-4 py-2 text-sm font-medium text-violet-700 hover:bg-violet-50 dark:border-violet-700 dark:text-violet-300 dark:hover:bg-violet-950"
+          >
+            {t('sendTestEmail')}
+          </button>
+        )}
+
+        {activeCategory === 'sms' && (
+          <button
+            onClick={async () => {
+              const phone = prompt(t('enterTestPhone'));
+              if (!phone) return;
+              try {
+                const result = await authFetch('/api/admin/notifications/test', {
+                  method: 'POST',
+                  body: JSON.stringify({ channel: 'sms', recipient: phone }),
+                });
+                if (result.success) toast.success(result.message);
+                else toast.error(result.message);
+              } catch {
+                toast.error(t('testFailed'));
+              }
+            }}
+            className="flex items-center gap-2 rounded border border-violet-300 px-4 py-2 text-sm font-medium text-violet-700 hover:bg-violet-50 dark:border-violet-700 dark:text-violet-300 dark:hover:bg-violet-950"
+          >
+            {t('sendTestSms')}
+          </button>
+        )}
       </div>
     </div>
   );

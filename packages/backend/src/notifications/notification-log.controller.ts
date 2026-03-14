@@ -1,10 +1,21 @@
-import { Controller, Get, Post, Query, UseGuards, Body } from '@nestjs/common';
+import { Controller, Get, Post, Query, Body, UseGuards } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
+import { SmsService } from '../sms/sms.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlatformAdminGuard } from '../auth/platform-admin.guard';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
 import { PaginationDto } from '../common/pagination.dto';
+import { IsIn, IsOptional, IsString } from 'class-validator';
+
+class TestNotificationDto {
+  @IsIn(['email', 'sms'])
+  channel!: 'email' | 'sms';
+
+  @IsOptional()
+  @IsString()
+  recipient?: string;
+}
 
 @Controller('api/admin/notifications')
 @UseGuards(JwtAuthGuard, PlatformAdminGuard)
@@ -12,6 +23,7 @@ export class NotificationLogController {
   constructor(
     private readonly prisma: PrismaService,
     private readonly emailService: EmailService,
+    private readonly smsService: SmsService,
   ) {}
 
   @Get()
@@ -78,12 +90,32 @@ export class NotificationLogController {
   }
 
   @Post('test')
-  async sendTestEmail(@CurrentUser() user: CurrentUserPayload) {
-    await this.emailService.sendCustomMessage(
-      user.email,
-      'DermaConsent — Test Email',
-      'This is a test email from DermaConsent. If you are reading this, your email configuration is working correctly.',
-    );
-    return { success: true, message: `Test email sent to ${user.email}` };
+  async sendTestNotification(
+    @Body() dto: TestNotificationDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    const recipient = dto.recipient || user.email;
+
+    if (dto.channel === 'email') {
+      await this.emailService.sendCustomMessage(
+        recipient,
+        'DermaConsent — Test Email',
+        'This is a test email from DermaConsent.\n\nIf you are reading this, your email configuration is working correctly.\n\nNo action required.',
+      );
+      return { success: true, message: `Test email sent to ${recipient}` };
+    }
+
+    if (dto.channel === 'sms') {
+      if (!this.smsService.isConfigured) {
+        return { success: false, message: 'SMS is not configured. Set Twilio credentials in Admin > Config > SMS.' };
+      }
+      await this.smsService.sendMessage(
+        recipient,
+        'DermaConsent Test: Your SMS configuration is working correctly.',
+      );
+      return { success: true, message: `Test SMS sent to ${recipient}` };
+    }
+
+    return { success: false, message: `Unknown channel: ${dto.channel}` };
   }
 }

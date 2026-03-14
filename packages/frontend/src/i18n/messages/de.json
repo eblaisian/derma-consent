@@ -1083,7 +1083,10 @@
     "backToPractices": "Zurück zu Praxen",
     "retry": "Erneut versuchen",
     "aiConfig": "KI / Erklärer",
-    "notificationsConfig": "Benachrichtigungen"
+    "notificationsConfig": "Benachrichtigungen",
+    "sendTestEmail": "Test-E-Mail an mich senden",
+    "sendTestSms": "Test-SMS senden",
+    "enterTestPhone": "Telefonnummer für Test-SMS eingeben (z.B. +491234567890):"
   },
   "pagination": {
     "showing": "Zeige {start}–{end} von {total}",

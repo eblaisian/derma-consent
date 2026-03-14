@@ -1083,7 +1083,10 @@
     "backToPractices": "العودة إلى العيادات",
     "retry": "إعادة المحاولة",
     "aiConfig": "الذكاء الاصطناعي",
-    "notificationsConfig": "الإشعارات"
+    "notificationsConfig": "الإشعارات",
+    "sendTestEmail": "إرسال بريد تجريبي لي",
+    "sendTestSms": "إرسال رسالة قصيرة تجريبية",
+    "enterTestPhone": "أدخل رقم الهاتف لاختبار الرسائل القصيرة:"
   },
   "pagination": {
     "showing": "عرض {start}–{end} من {total}",

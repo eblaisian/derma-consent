@@ -1083,7 +1083,10 @@
     "backToPractices": "Wróć do gabinetów",
     "retry": "Ponów",
     "aiConfig": "AI / Wyjaśniacz",
-    "notificationsConfig": "Powiadomienia"
+    "notificationsConfig": "Powiadomienia",
+    "sendTestEmail": "Wyślij mi testowy email",
+    "sendTestSms": "Wyślij testowy SMS",
+    "enterTestPhone": "Wpisz numer telefonu do testu SMS (np. +491234567890):"
   },
   "pagination": {
     "showing": "Wyświetlanie {start}–{end} z {total}",
