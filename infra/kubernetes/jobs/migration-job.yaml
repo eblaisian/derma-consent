@@ -3,8 +3,9 @@ kind: Job
 metadata:
   name: prisma-migrate
 spec:
-  backoffLimit: 3
-  activeDeadlineSeconds: 120
+  backoffLimit: 2
+  activeDeadlineSeconds: 90
+  ttlSecondsAfterFinished: 300
   template:
     spec:
       imagePullSecrets:
@@ -34,8 +35,8 @@ spec:
                   optional: true
           resources:
             requests:
-              cpu: 25m
+              cpu: 100m
               memory: 128Mi
             limits:
-              cpu: 200m
+              cpu: 300m
               memory: 256Mi
