@@ -4,7 +4,7 @@ metadata:
   name: prisma-migrate
 spec:
   backoffLimit: 2
-  activeDeadlineSeconds: 90
+  activeDeadlineSeconds: 300
   ttlSecondsAfterFinished: 300
   template:
     spec:
@@ -14,7 +14,7 @@ spec:
       containers:
         - name: migrate
           image: BACKEND_IMAGE
-          command: ["sh", "-c", "npx prisma migrate deploy && npx tsx prisma/bootstrap.ts"]
+          command: ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && ./node_modules/.bin/tsx prisma/bootstrap.ts"]
           env:
             - name: DATABASE_URL
               valueFrom:

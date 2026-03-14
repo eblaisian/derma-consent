@@ -68,7 +68,7 @@ sed "s|BACKEND_IMAGE|$BACKEND_IMAGE|g" \
 
 echo "Waiting for migration to complete..."
 kubectl wait --for=condition=complete job/prisma-migrate \
-  -n "$NAMESPACE" --timeout=120s || {
+  -n "$NAMESPACE" --timeout=300s || {
   echo ""
   echo "ERROR: Migration job failed or timed out"
   echo "=== Job Status ==="
