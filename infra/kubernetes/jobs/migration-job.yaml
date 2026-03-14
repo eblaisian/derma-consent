@@ -13,13 +13,25 @@ spec:
       containers:
         - name: migrate
           image: BACKEND_IMAGE
-          command: ["npx", "prisma", "migrate", "deploy"]
+          command: ["sh", "-c", "npx prisma migrate deploy && npx tsx prisma/bootstrap.ts"]
           env:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   name: app-secrets
                   key: DATABASE_URL
+            - name: PLATFORM_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: PLATFORM_ADMIN_EMAIL
+                  optional: true
+            - name: PLATFORM_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: PLATFORM_ADMIN_PASSWORD
+                  optional: true
           resources:
             requests:
               cpu: 25m
