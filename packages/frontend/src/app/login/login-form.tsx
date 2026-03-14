@@ -46,12 +46,14 @@ export function LoginForm({ enabledProviders }: Props) {
         password,
         redirect: false,
       });
+      // NextAuth v5 propagates CredentialsSignin.code, check both error and code
+      const errorCode = result?.code || result?.error || '';
       if (result?.error) {
-        if (result.error.includes('EMAIL_NOT_VERIFIED')) {
+        if (errorCode.includes('EMAIL_NOT_VERIFIED')) {
           setError(t('emailNotVerified'));
           setEmailNotVerified(true);
-        } else if (result.error.includes('2FA_REQUIRED')) {
-          const token = result.error.split('2FA_REQUIRED:')[1];
+        } else if (errorCode.includes('2FA_REQUIRED')) {
+          const token = errorCode.split('2FA_REQUIRED:')[1];
           setTempToken(token);
           setTwoFactorStep(true);
           setError('');

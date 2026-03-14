@@ -98,15 +98,15 @@ export class AuthService {
       },
     });
 
-    // Send verification email
+    // Send verification + welcome emails (fire-and-forget — don't block registration)
     const verifyToken = this.jwtService.sign(
       { sub: user.id, type: 'email-verify' },
       { expiresIn: '24h' },
     );
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     const verifyLink = `${frontendUrl}/verify-email?token=${verifyToken}`;
-    await this.notificationService.sendEmailVerification({ recipientEmail: user.email, verifyLink, userId: user.id });
-    await this.notificationService.sendWelcome({ recipientEmail: user.email, userName: user.name || user.email, userId: user.id });
+    this.notificationService.sendEmailVerification({ recipientEmail: user.email, verifyLink, userId: user.id }).catch(() => {});
+    this.notificationService.sendWelcome({ recipientEmail: user.email, userName: user.name || user.email, userId: user.id }).catch(() => {});
 
     return this.signAndReturn(user);
   }

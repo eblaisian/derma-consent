@@ -1,9 +1,25 @@
-import NextAuth from 'next-auth';
+import NextAuth, { CredentialsSignin } from 'next-auth';
 import type { Provider } from 'next-auth/providers';
 import Google from 'next-auth/providers/google';
 import MicrosoftEntraId from 'next-auth/providers/microsoft-entra-id';
 import Apple from 'next-auth/providers/apple';
 import Credentials from 'next-auth/providers/credentials';
+
+class EmailNotVerifiedError extends CredentialsSignin {
+  code: string;
+  constructor(email: string) {
+    super();
+    this.code = `EMAIL_NOT_VERIFIED:${email}`;
+  }
+}
+
+class TwoFactorRequiredError extends CredentialsSignin {
+  code: string;
+  constructor(tempToken: string) {
+    super();
+    this.code = `2FA_REQUIRED:${tempToken}`;
+  }
+}
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -81,14 +97,15 @@ providers.push(
       if (!res.ok) return null;
       const data = await res.json();
 
-      // If email is not verified, throw a special error that the login form can catch
+      // If email is not verified, throw a CredentialsSignin with custom code
+      // NextAuth v5 only propagates error.code to the client, not message
       if (data.emailNotVerified) {
-        throw new Error(`EMAIL_NOT_VERIFIED:${data.email}`);
+        throw new EmailNotVerifiedError(data.email);
       }
 
-      // If 2FA is required, throw a special error that the login form can catch
+      // If 2FA is required, throw a CredentialsSignin with custom code
       if (data.requires2FA) {
-        throw new Error(`2FA_REQUIRED:${data.tempToken}`);
+        throw new TwoFactorRequiredError(data.tempToken);
       }
 
       return {
