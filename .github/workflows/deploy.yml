@@ -153,8 +153,13 @@ jobs:
         run: |
           kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.yaml
           echo "Waiting for cert-manager..."
-          kubectl rollout status deployment/cert-manager -n cert-manager --timeout=120s || true
-          kubectl rollout status deployment/cert-manager-webhook -n cert-manager --timeout=120s || true
+          kubectl rollout status deployment/cert-manager -n cert-manager --timeout=120s
+          kubectl rollout status deployment/cert-manager-webhook -n cert-manager --timeout=120s
+          echo "Waiting for CRDs to be established..."
+          kubectl wait --for=condition=Established crd/clusterissuers.cert-manager.io --timeout=60s
+
+      - name: Create ClusterIssuer
+        run: kubectl apply -f infra/kubernetes/base/cert-manager/cluster-issuer.yaml
 
       - name: Create namespace
         run: kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -

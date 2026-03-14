@@ -7,4 +7,3 @@ resources:
   - frontend/deployment.yaml
   - frontend/service.yaml
   - ingress/ingress-rules.yaml
-  - cert-manager/cluster-issuer.yaml
