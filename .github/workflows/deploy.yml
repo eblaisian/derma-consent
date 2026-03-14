@@ -146,6 +146,10 @@ jobs:
       - name: Install nginx ingress controller
         run: |
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.3/deploy/static/provider/do/deploy.yaml
+          # Disable PROXY protocol — DO LB and nginx must match, and ACME solvers break with it
+          kubectl patch configmap ingress-nginx-controller -n ingress-nginx --type merge -p '{"data":{"use-proxy-protocol":"false"}}'
+          kubectl annotate svc ingress-nginx-controller -n ingress-nginx \
+            service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol="false" --overwrite
           echo "Waiting for ingress controller..."
           kubectl rollout status deployment/ingress-nginx-controller -n ingress-nginx --timeout=180s || true
 
