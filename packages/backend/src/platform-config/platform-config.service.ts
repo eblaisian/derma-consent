@@ -33,7 +33,7 @@ const ENV_VAR_MAP: Record<string, string> = {
   'email.smtpHost': 'SMTP_HOST',
   'email.smtpPort': 'SMTP_PORT',
   'email.smtpUser': 'SMTP_USER',
-  'email.smtpPass': 'SMTP_PASS',
+  'email.smtpPass': 'SMTP_PASSWORD',
   'email.fromAddress': 'SMTP_FROM_EMAIL',
   'email.fromName': 'EMAIL_FROM_NAME',
   'sms.twilioAccountSid': 'TWILIO_ACCOUNT_SID',
