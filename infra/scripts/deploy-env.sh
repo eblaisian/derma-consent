@@ -59,16 +59,16 @@ cd "$OVERLAY_DIR"
 kustomize edit set image "BACKEND_IMAGE=$BACKEND_IMAGE"
 kustomize edit set image "FRONTEND_IMAGE=$FRONTEND_IMAGE"
 
-# --- Step 2: Scale down to clear stuck state from any previous failed deploys ---
-# Previous failed rollouts can leave orphaned Pending pods and broken ReplicaSets.
-# Scaling to 0 ensures a clean slate and frees node resources before deploying.
+# --- Step 2: Delete deployments to clear all stale ReplicaSets and pods ---
+# Failed rollouts leave orphaned ReplicaSets with Pending pods that block
+# new deploys. Deleting the deployment removes ALL ReplicaSets and pods.
+# kubectl apply in Step 3 recreates them fresh. Brief downtime is fine pre-launch.
 echo ""
-echo "--- Scaling down existing deployments ---"
-kubectl scale deployment/backend -n "$NAMESPACE" --replicas=0 --timeout=60s 2>/dev/null || true
-kubectl scale deployment/frontend -n "$NAMESPACE" --replicas=0 --timeout=60s 2>/dev/null || true
-echo "Waiting for pods to terminate..."
-kubectl wait --for=delete pod -l app=backend -n "$NAMESPACE" --timeout=60s 2>/dev/null || true
-kubectl wait --for=delete pod -l app=frontend -n "$NAMESPACE" --timeout=60s 2>/dev/null || true
+echo "--- Clearing existing deployments ---"
+kubectl delete deployment backend frontend -n "$NAMESPACE" --ignore-not-found=true --timeout=60s
+echo "Waiting for all pods to terminate..."
+kubectl wait --for=delete pod -l app=backend -n "$NAMESPACE" --timeout=120s 2>/dev/null || true
+kubectl wait --for=delete pod -l app=frontend -n "$NAMESPACE" --timeout=120s 2>/dev/null || true
 
 # --- Step 3: Apply all manifests via kustomize ---
 # Migration runs as an initContainer on the backend pod (same image pull).
