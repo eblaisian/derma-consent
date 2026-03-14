@@ -49,7 +49,7 @@ export default function BillingPage() {
   const handlePortal = async () => {
     try {
       const data = await authFetch('/api/billing/portal', { method: 'POST' });
-      if (data.url) window.location.href = data.url;
+      if (data.url) window.location.assign(data.url);
     } catch {
       toast.error(t('portalError'));
     }
@@ -61,7 +61,7 @@ export default function BillingPage() {
         method: 'POST',
         body: JSON.stringify({ priceId }),
       });
-      if (data.url) window.location.href = data.url;
+      if (data.url) window.location.assign(data.url);
     } catch {
       toast.error(t('checkoutError'));
     }

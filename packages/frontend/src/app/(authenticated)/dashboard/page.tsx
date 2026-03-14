@@ -19,8 +19,7 @@ export default function DashboardPage() {
   const t = useTranslations('dashboard');
   const router = useRouter();
   const { data: session } = useSession();
-  const { practiceId, practice, isLoading: practiceLoading } = usePractice();
-  const [showNewConsent, setShowNewConsent] = useState(false);
+  const { practiceId, isLoading: practiceLoading } = usePractice();
   const [statusFilter, setStatusFilter] = useState('ALL');
 
   const {

@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useVault } from '@/hooks/use-vault';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Circle, Lock, Image, UserPlus, FileSignature, X } from 'lucide-react';
+import { CheckCircle2, Lock, Image, UserPlus, FileSignature, X } from 'lucide-react';
 import Link from 'next/link';
 
 interface OnboardingChecklistProps {
