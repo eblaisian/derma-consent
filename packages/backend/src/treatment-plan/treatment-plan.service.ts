@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
+import { AiService } from '../ai/ai.service';
 import {
   CreateTreatmentPlanDto,
   UpdateTreatmentPlanDto,
   CreateTemplateDto,
   UpdateTemplateDto,
+  GenerateAftercareDto,
 } from './treatment-plan.dto';
 
 @Injectable()
@@ -13,6 +15,7 @@ export class TreatmentPlanService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
+    private readonly ai: AiService,
   ) {}
 
   // --- Treatment Plans ---
@@ -211,5 +214,48 @@ export class TreatmentPlanService {
 
     await this.prisma.treatmentTemplate.delete({ where: { id } });
     return { success: true };
+  }
+
+  // --- Aftercare Instructions ---
+
+  private static readonly LOCALE_NAMES: Record<string, string> = {
+    de: 'German', en: 'English', es: 'Spanish', fr: 'French',
+    ar: 'Arabic', tr: 'Turkish', pl: 'Polish', ru: 'Russian',
+  };
+
+  async generateAftercare(
+    practiceId: string,
+    userId: string,
+    dto: GenerateAftercareDto,
+  ): Promise<{ content: string }> {
+    const locale = dto.locale || 'de';
+    const language = TreatmentPlanService.LOCALE_NAMES[locale] || 'German';
+    const region = dto.bodyRegion ? ` on the ${dto.bodyRegion.toLowerCase().replace('_', ' ')}` : '';
+
+    const content = await this.ai.chat([
+      {
+        role: 'system',
+        content: [
+          'You are a dermatology aftercare specialist at a German practice.',
+          'Write practical, patient-friendly post-treatment instructions.',
+          'Use numbered steps (1, 2, 3...). Keep it concise — 5-8 steps.',
+          'Include: immediate aftercare, things to avoid, expected side effects, when to call the doctor.',
+          `Respond entirely in ${language}. Use formal address.`,
+        ].join(' '),
+      },
+      {
+        role: 'user',
+        content: `Generate aftercare instructions for: ${dto.type}${region} treatment.`,
+      },
+    ], { maxTokens: 600, temperature: 0.3 });
+
+    await this.audit.log({
+      practiceId,
+      userId,
+      action: 'TREATMENT_PLAN_CREATED',
+      metadata: { subAction: 'aftercare_generated', type: dto.type, bodyRegion: dto.bodyRegion, locale },
+    });
+
+    return { content };
   }
 }

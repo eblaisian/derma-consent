@@ -62,7 +62,30 @@
     "copyright": "2026 DermaConsent. Tous droits réservés.",
     "impressum": "Mentions légales",
     "datenschutz": "Politique de confidentialité",
-    "kontakt": "Contact"
+    "kontakt": "Contact",
+    "navFeatures": "Fonctionnalités",
+    "navPricing": "Tarifs",
+    "trustBadge1": "Conforme RGPD",
+    "trustBadge2": "Chiffré dans votre navigateur",
+    "trustBadge3": "Architecture zéro connaissance",
+    "trustBadge4": "Fabriqué en Allemagne",
+    "stat1Value": "AES-256",
+    "stat1Label": "Chiffrement de niveau militaire",
+    "stat2Value": "8",
+    "stat2Label": "Langues prises en charge",
+    "stat3Value": "6",
+    "stat3Label": "Types de traitement couverts",
+    "comparisonTitle": "Comparer les forfaits",
+    "comparisonFeature": "Fonctionnalité",
+    "compUsers": "Membres de l\\u0027équipe",
+    "compConsents": "Formulaires de consentement",
+    "compEncryption": "Chiffrement zéro connaissance",
+    "compAnalytics": "Analyses avancées",
+    "compSupport": "Support prioritaire",
+    "compSLA": "Garantie SLA",
+    "compDedicated": "Gestionnaire de compte dédié",
+    "footerLegal": "Mentions légales",
+    "footerContact": "Contact"
   },
   "login": {
     "title": "DermaConsent",
@@ -95,7 +118,15 @@
     "resendVerification": "Renvoyer l'e-mail de vérification",
     "resending": "Envoi en cours...",
     "verificationResent": "E-mail de vérification envoyé. Veuillez vérifier votre boîte de réception.",
-    "verificationResendFailed": "Échec du renvoi de l'e-mail de vérification. Veuillez réessayer."
+    "verificationResendFailed": "Échec du renvoi de l'e-mail de vérification. Veuillez réessayer.",
+    "brandTagline": "Gestion du consentement axée sur la confidentialité pour les cabinets dermatologiques",
+    "trustEncryption": "Données patient chiffrées dans votre navigateur — nous ne les voyons jamais",
+    "trustCompliance": "Entièrement conforme au RGPD par conception",
+    "trustLanguages": "8 langues — formulaires de consentement dans la langue de vos patients",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "privacyPrefix": "En vous connectant, vous acceptez notre",
+    "privacyLink": "politique de confidentialité"
   },
   "forgotPassword": {
     "title": "Mot de passe oublié",
@@ -222,7 +253,18 @@
     "educationVideoHint": "Veuillez regarder cette courte vidéo sur la procédure avant de remplir le formulaire.",
     "footerEncrypted": "Chiffrement de bout en bout",
     "footerGdpr": "Conforme au RGPD",
-    "footerEu": "Données stockées dans l'UE"
+    "footerEu": "Données stockées dans l'UE",
+    "explainerButton": "Expliquez-moi cela",
+    "explainerTitle": "Que signifie ce formulaire ?",
+    "explainerSubtitle": "Explication générée par IA de votre procédure en langage simple.",
+    "explainerLoading": "Génération de l'explication...",
+    "explainerError": "Impossible de charger l'explication. Veuillez réessayer.",
+    "explainerRetry": "Réessayer",
+    "explainerDisclaimer": "Cette explication est générée par IA à titre éducatif et ne remplace pas l'avis médical de votre médecin.",
+    "stepForm": "Formulaire",
+    "stepQuiz": "Quiz",
+    "stepSignature": "Signature",
+    "stepReview": "Vérifier"
   },
   "consentTypes": {
     "BOTOX": "Botox / Toxine botulique",
@@ -289,7 +331,11 @@
     "statTotal": "Total des consentements",
     "statPending": "En attente",
     "statCompleted": "Complétés ce mois",
-    "statPatients": "Patients"
+    "statPatients": "Patients",
+    "needsAttentionTitle": "Attention requise",
+    "chipPendingLabel": "Consentements en attente",
+    "chipExpiringSoonLabel": "Expirent dans 7 jours",
+    "chipRecentlySignedLabel": "Récemment signés"
   },
   "settings": {
     "title": "Paramètres",
@@ -318,7 +364,11 @@
     "logoUploaded": "Logo téléchargé",
     "logoUploadError": "Erreur lors du téléchargement du logo",
     "educationVideos": "Vidéos éducatives",
-    "educationVideosDescription": "Ajoutez des URLs YouTube ou Vimeo pour chaque type de traitement. Les vidéos sont affichées sur le formulaire de consentement."
+    "educationVideosDescription": "Ajoutez des URLs YouTube ou Vimeo pour chaque type de traitement. Les vidéos sont affichées sur le formulaire de consentement.",
+    "logoDragHint": "Glissez votre logo ici ou cliquez pour parcourir",
+    "logoFormatHint": "PNG, JPG ou SVG — Max 2 Mo",
+    "logoReplace": "Remplacer le logo",
+    "noChanges": "Aucune modification à enregistrer"
   },
   "languages": {
     "title": "Langue",
@@ -343,7 +393,9 @@
     "revenue": "Chiffre d'affaires",
     "revenueDescription": "Revenus totaux des consentements payés",
     "transactions": "transactions",
-    "avg": "Moy."
+    "avg": "Moy.",
+    "noRevenue": "Aucun revenu enregistré pour le moment",
+    "noRevenueDescription": "Les revenus apparaîtront lorsque les patients auront rempli des formulaires de consentement payants."
   },
   "patients": {
     "title": "Patients",
@@ -374,7 +426,8 @@
     "vaultRequired": "Veuillez d'abord déverrouiller le coffre-fort",
     "noPatients": "Aucun patient pour le moment.",
     "found": "Patient trouvé : {id}",
-    "notFound": "Patient non trouvé"
+    "notFound": "Patient non trouvé",
+    "noPatientsDescription": "Les patients sont créés automatiquement lors de la soumission des formulaires de consentement."
   },
   "patientDetail": {
     "title": "Détails du patient",
@@ -392,7 +445,16 @@
     "photos": "Photos",
     "photoCount": "{count} Photos",
     "treatmentPlans": "Plans de traitement",
-    "treatmentPlanCount": "{count} Plans de traitement"
+    "treatmentPlanCount": "{count} Plans de traitement",
+    "noConsentsDescription": "Envoyez un formulaire de consentement à ce patient pour commencer.",
+    "deleteConfirmTitle": "Supprimer le patient",
+    "deleteConfirmDescription": "Cela supprimera définitivement ce patient et toutes les données associées. Cette action ne peut pas être annulée.",
+    "cancel": "Annuler",
+    "summaryTitle": "Aperçu clinique",
+    "summaryConsents": "Consentements",
+    "summaryPlans": "Plans de traitement",
+    "summaryPhotos": "Photos",
+    "summaryLastActivity": "Dernière activité"
   },
   "consentStatus": {
     "PENDING": "En attente",
@@ -425,7 +487,11 @@
     "memberRemoved": "Membre supprimé",
     "removeError": "Erreur lors de la suppression du membre",
     "roleChanged": "Rôle modifié",
-    "roleChangeError": "Erreur lors de la modification du rôle"
+    "roleChangeError": "Erreur lors de la modification du rôle",
+    "removeMember": "Supprimer le membre",
+    "removeConfirmTitle": "Supprimer un membre de l'équipe",
+    "removeConfirmDescription": "Êtes-vous sûr de vouloir supprimer {name} de l'équipe ? L'accès sera perdu immédiatement.",
+    "cancel": "Annuler"
   },
   "roles": {
     "ADMIN": "Administrateur",
@@ -464,7 +530,8 @@
     "stripeDashboard": "Tableau de bord Stripe",
     "monthly": "Mensuel",
     "yearly": "Annuel",
-    "yearlySavings": "(économisez 20%)"
+    "yearlySavings": "(économisez 20%)",
+    "currentPlanActive": "Votre forfait actuel"
   },
   "subscriptionPlans": {
     "FREE_TRIAL": "Essai gratuit",
@@ -513,31 +580,35 @@
     "next": "Suivant",
     "noEntries": "Aucune entrée trouvée.",
     "exportStarted": "Export démarré",
-    "exportError": "Erreur lors de l'export"
+    "exportError": "Erreur lors de l'export",
+    "unknownUser": "Utilisateur inconnu"
   },
   "auditActions": {
-    "CONSENT_CREATED": "Consentement créé",
-    "CONSENT_SUBMITTED": "Consentement soumis",
-    "CONSENT_REVOKED": "Consentement révoqué",
-    "CONSENT_VIEWED": "Consentement consulté",
-    "VAULT_UNLOCKED": "Coffre-fort déverrouillé",
-    "VAULT_LOCKED": "Coffre-fort verrouillé",
-    "PATIENT_CREATED": "Patient créé",
-    "PATIENT_VIEWED": "Patient consulté",
-    "TEAM_MEMBER_INVITED": "Membre invité",
-    "TEAM_MEMBER_REMOVED": "Membre supprimé",
-    "TEAM_MEMBER_ROLE_CHANGED": "Rôle modifié",
-    "PRACTICE_SETTINGS_UPDATED": "Paramètres mis à jour",
-    "SUBSCRIPTION_CREATED": "Abonnement créé",
-    "SUBSCRIPTION_CANCELLED": "Abonnement annulé",
-    "DATA_EXPORTED": "Données exportées",
-    "DATA_DELETED": "Données supprimées",
+    "CONSENT_CREATED": "{actor} a créé un formulaire de consentement",
+    "CONSENT_SUBMITTED": "{actor} a soumis un formulaire de consentement",
+    "CONSENT_REVOKED": "{actor} a révoqué un consentement",
+    "CONSENT_VIEWED": "{actor} a consulté un formulaire",
+    "VAULT_UNLOCKED": "{actor} a déverrouillé le coffre",
+    "VAULT_LOCKED": "{actor} a verrouillé le coffre",
+    "PATIENT_CREATED": "{actor} a ajouté un patient",
+    "PATIENT_VIEWED": "{actor} a consulté un patient",
+    "TEAM_MEMBER_INVITED": "{actor} a invité un membre",
+    "TEAM_MEMBER_REMOVED": "{actor} a supprimé un membre",
+    "TEAM_MEMBER_ROLE_CHANGED": "{actor} a changé un rôle",
+    "PRACTICE_SETTINGS_UPDATED": "{actor} a mis à jour les paramètres",
+    "SUBSCRIPTION_CREATED": "{actor} a créé un abonnement",
+    "SUBSCRIPTION_CANCELLED": "{actor} a annulé l abonnement",
+    "DATA_EXPORTED": "{actor} a exporté des données",
+    "DATA_DELETED": "{actor} a supprimé des données",
     "PHOTO_UPLOADED": "Photo téléchargée",
-    "PHOTO_VIEWED": "Photo consultée",
+    "PHOTO_VIEWED": "{actor} a consulté une photo",
     "PHOTO_DELETED": "Photo supprimée",
-    "TREATMENT_PLAN_CREATED": "Plan de traitement créé",
+    "TREATMENT_PLAN_CREATED": "{actor} a créé un plan de traitement",
     "TREATMENT_PLAN_UPDATED": "Plan de traitement mis à jour",
-    "TREATMENT_PLAN_VIEWED": "Plan de traitement consulté"
+    "TREATMENT_PLAN_VIEWED": "{actor} a consulté un plan de traitement",
+    "LOGIN_SUCCESS": "{actor} s est connecté",
+    "LOGIN_FAILED": "Tentative de connexion échouée pour {actor}",
+    "ACCOUNT_LOCKED": "Compte verrouillé pour {actor}"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -546,7 +617,9 @@
     "team": "Équipe",
     "billing": "Facturation",
     "settings": "Paramètres",
-    "audit": "Audit"
+    "audit": "Audit",
+    "helpCenter": "Centre d aide",
+    "communications": "Communications"
   },
   "sidebar": {
     "overview": "Aperçu",
@@ -589,7 +662,10 @@
     "daysAgo": "il y a {count} j",
     "emptyTitle": "Aucun formulaire de consentement",
     "emptyDescription": "Créez votre premier formulaire de consentement et envoyez-le à un patient.",
-    "emptyAction": "Créer un consentement"
+    "emptyAction": "Créer un consentement",
+    "filterByStatus": "Filtrer par statut",
+    "allStatuses": "Tous les statuts",
+    "risk": "Risque"
   },
   "newConsent": {
     "button": "Nouveau consentement",
@@ -636,7 +712,10 @@
     "autoLockWarning": "Le coffre-fort se verrouillera automatiquement dans 1 minute",
     "stayActive": "Rester actif",
     "lockNow": "Verrouiller maintenant",
-    "keyboardShortcut": "Astuce : Appuyez sur Ctrl+Shift+L pour ouvrir à tout moment"
+    "keyboardShortcut": "Astuce : Appuyez sur Ctrl+Shift+L pour ouvrir à tout moment",
+    "unlockBannerTitle": "Les données des patients sont chiffrées",
+    "unlockBannerDescription": "Déverrouillez votre coffre-fort avec votre mot de passe principal pour afficher les noms et détails des patients.",
+    "unlockAction": "Déverrouiller le coffre"
   },
   "decryptedViewer": {
     "title": "Données déchiffrées",
@@ -670,7 +749,8 @@
     "noAfterPhotos": "Pas de photos après",
     "consent": "Consentement photo",
     "consentGranted": "Consentement accordé",
-    "consentNotGranted": "Pas de consentement"
+    "consentNotGranted": "Pas de consentement",
+    "noPhotosDescription": "Téléchargez des photos pour suivre la progression et les résultats du traitement."
   },
   "bodyRegions": {
     "FOREHEAD": "Front",
@@ -735,7 +815,8 @@
     "selectAreas": "Sélectionner les zones de traitement",
     "noAreasSelected": "Aucune zone de traitement sélectionnée",
     "areasCount": "{count} zones",
-    "customize": "Personnaliser"
+    "customize": "Personnaliser",
+    "noPlansDescription": "Créez un plan de traitement pour documenter les points d'injection et les produits."
   },
   "treatmentTemplate": {
     "pickTemplate": "Choisir un modèle",
@@ -766,7 +847,18 @@
     "firstConsentDescription": "Cliquez ci-dessous pour créer votre premier formulaire de consentement. Vous choisirez un type de traitement et nous générerons un lien sécurisé que vous pourrez envoyer à votre patient.",
     "next": "Suivant",
     "back": "Retour",
-    "createFirst": "Créer le premier consentement"
+    "createFirst": "Créer le premier consentement",
+    "checklistTitle": "Démarrez avec DermaConsent",
+    "stepsComplete": "{done} sur {total} étapes terminées",
+    "step_vault": "Définir votre mot de passe principal",
+    "step_logo": "Téléchargez le logo de votre cabinet",
+    "step_team": "Invitez votre premier membre",
+    "step_consent": "Envoyez votre premier consentement",
+    "action_vault": "Configurer",
+    "action_logo": "Télécharger",
+    "action_team": "Inviter",
+    "action_consent": "Créer",
+    "dismiss": "Fermer"
   },
   "metadata": {
     "description": "Consentements numériques conformes au RGPD pour les cabinets de dermatologie"
@@ -989,6 +1081,110 @@
     "practiceNotFoundDescription": "Le cabinet que vous recherchez n'existe pas ou a été supprimé.",
     "errorLoading": "Impossible de charger les données. Veuillez réessayer.",
     "backToPractices": "Retour aux cabinets",
-    "retry": "Réessayer"
+    "retry": "Réessayer",
+    "aiConfig": "IA / Explicateur",
+    "notificationsConfig": "Notifications",
+    "sendTestEmail": "M'envoyer un email test",
+    "sendTestSms": "Envoyer un SMS test",
+    "enterTestPhone": "Entrez le numéro pour le SMS test (ex. +491234567890) :",
+    "configurationDescription": "Gérez les intégrations, les identifiants et les paramètres de notifications.",
+    "valueRequired": "Veuillez entrer une valeur",
+    "resetConfirm": "Réinitialiser ce paramètre à sa valeur par défaut ? Cette action est irréversible.",
+    "resetSuccess": "Réinitialisé par défaut",
+    "enterNewValue": "Entrer une nouvelle valeur..."
+  },
+  "pagination": {
+    "showing": "Affichage {start}–{end} sur {total}",
+    "previous": "Précédent",
+    "next": "Suivant"
+  },
+  "auditActionLabels": {
+    "CONSENT_CREATED": "Consentement créé",
+    "CONSENT_SUBMITTED": "Consentement soumis",
+    "CONSENT_REVOKED": "Consentement révoqué",
+    "CONSENT_VIEWED": "Consentement consulté",
+    "VAULT_UNLOCKED": "Coffre déverrouillé",
+    "VAULT_LOCKED": "Coffre verrouillé",
+    "PATIENT_CREATED": "Patient ajouté",
+    "PATIENT_VIEWED": "Patient consulté",
+    "TEAM_MEMBER_INVITED": "Membre invité",
+    "TEAM_MEMBER_REMOVED": "Membre supprimé",
+    "TEAM_MEMBER_ROLE_CHANGED": "Rôle modifié",
+    "PRACTICE_SETTINGS_UPDATED": "Paramètres mis à jour",
+    "SUBSCRIPTION_CREATED": "Abonnement créé",
+    "SUBSCRIPTION_CANCELLED": "Abonnement annulé",
+    "DATA_EXPORTED": "Données exportées",
+    "DATA_DELETED": "Données supprimées",
+    "LOGIN_SUCCESS": "Connexion",
+    "LOGIN_FAILED": "Connexion échouée",
+    "ACCOUNT_LOCKED": "Compte verrouillé",
+    "PHOTO_VIEWED": "Photo consultée",
+    "TREATMENT_PLAN_CREATED": "Plan créé",
+    "TREATMENT_PLAN_VIEWED": "Plan consulté"
+  },
+  "noShowRisk": {
+    "LOW": "Faible",
+    "MEDIUM": "Moyen",
+    "HIGH": "Élevé",
+    "tooltipLOW": "Complétion probable — envoyé récemment pour une procédure de routine.",
+    "tooltipMEDIUM": "Risque modéré — vérifiez si le patient a reçu le lien.",
+    "tooltipHIGH": "Risque élevé d'abandon — envisagez d'envoyer un rappel maintenant."
+  },
+  "communications": {
+    "pageTitle": "Communications",
+    "pageSubtitle": "Rédigez et envoyez des messages patients assistés par IA dans n'importe quelle langue.",
+    "title": "Compositeur de messages",
+    "subtitle": "Sélectionnez un contexte et une langue — l'IA rédigera un message professionnel.",
+    "contextLabel": "Contexte du message",
+    "languageLabel": "Langue du patient",
+    "generateButton": "Générer le brouillon",
+    "generating": "Génération...",
+    "draftLabel": "Brouillon du message (modifiable)",
+    "copyButton": "Copier",
+    "copied": "Copié !",
+    "sendButton": "Envoyer",
+    "sendDialogTitle": "Envoyer le message",
+    "sendDialogDescription": "Envoyez ce message au patient par e-mail ou SMS.",
+    "recipientLabel": "Destinataire",
+    "channelEmail": "E-mail",
+    "channelSms": "SMS",
+    "sendAction": "Envoyer maintenant",
+    "sending": "Envoi...",
+    "sendSuccess": "Message envoyé avec succès",
+    "sendError": "Échec de l'envoi du message",
+    "errorUnavailable": "L'IA n'est pas disponible. Configurez la clé API dans les paramètres administrateur.",
+    "contexts": {
+      "CONSENT_REMINDER": "Rappel de consentement",
+      "APPOINTMENT_CONFIRMATION": "Confirmation de rendez-vous",
+      "APPOINTMENT_REMINDER": "Rappel de rendez-vous",
+      "FOLLOW_UP": "Suivi post-traitement",
+      "TREATMENT_PREPARATION": "Instructions de préparation",
+      "RESULT_READY": "Résultats disponibles",
+      "GENERAL": "Message général"
+    },
+    "fillPlaceholders": "Complétez les informations avant d'envoyer :"
+  },
+  "aftercare": {
+    "dialogTitle": "Instructions post-traitement",
+    "generate": "Générer les soins",
+    "generating": "Génération...",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "print": "Imprimer",
+    "regenerate": "Régénérer",
+    "editHint": "Vérifiez et modifiez les instructions avant de les partager avec le patient.",
+    "error": "Impossible de générer les instructions."
+  },
+  "retention": {
+    "widgetTitle": "Suivis en retard",
+    "patients": "patients",
+    "daysSince": "jours depuis",
+    "bookFollowUp": "Planifier un suivi"
+  },
+  "analyticsInsights": {
+    "cardTitle": "Analyses IA",
+    "refresh": "Actualiser",
+    "loading": "Analyse...",
+    "noAi": "Analyses IA non disponibles"
   }
 }

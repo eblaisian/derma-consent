@@ -30,6 +30,8 @@ export interface Practice {
   updatedAt: string;
 }
 
+export type NoShowRisk = 'LOW' | 'MEDIUM' | 'HIGH';
+
 export interface ConsentFormSummary {
   id: string;
   token: string;
@@ -38,6 +40,7 @@ export interface ConsentFormSummary {
   expiresAt: string;
   createdAt: string;
   signatureTimestamp: string | null;
+  noShowRisk: NoShowRisk | null;
 }
 
 // --- Photos ---

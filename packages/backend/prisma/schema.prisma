@@ -49,6 +49,10 @@ enum AuditAction {
   PRACTICE_SUSPENDED
   PRACTICE_ACTIVATED
   PRACTICE_SUBSCRIPTION_OVERRIDDEN
+  LOGIN_SUCCESS
+  LOGIN_FAILED
+  ACCOUNT_LOCKED
+  CONSENT_EXPLAINER_REQUESTED
 }
 
 enum BodyRegion {
@@ -112,6 +116,7 @@ model Practice {
   treatmentPhotos    TreatmentPhoto[]
   treatmentPlans     TreatmentPlan[]
   treatmentTemplates TreatmentTemplate[]
+  notificationLogs   NotificationLog[]
 
   @@map("practices")
 }
@@ -125,6 +130,9 @@ model User {
   emailVerified    Boolean  @default(false) @map("email_verified")
   twoFactorSecret  String?  @map("two_factor_secret")
   twoFactorEnabled Boolean  @default(false) @map("two_factor_enabled")
+  failedLoginAttempts Int      @default(0) @map("failed_login_attempts")
+  lockedUntil         DateTime? @map("locked_until")
+  locale           String   @default("de")
   practiceId       String?  @map("practice_id")
   role             UserRole @default(ADMIN)
   createdAt    DateTime @default(now()) @map("created_at")
@@ -215,6 +223,7 @@ model PracticeSettings {
   enabledConsentTypes  Json    @default("[\"BOTOX\",\"FILLER\",\"LASER\",\"CHEMICAL_PEEL\",\"MICRONEEDLING\",\"PRP\"]") @map("enabled_consent_types")
   brandColor          String?  @map("brand_color")
   educationVideos     Json?    @map("education_videos")
+  preferredChannel    String   @default("email") @map("preferred_channel")
   createdAt           DateTime @default(now()) @map("created_at")
   updatedAt           DateTime @updatedAt @map("updated_at")
 
@@ -279,6 +288,7 @@ model ConsentForm {
   comprehensionScore    Float?    @map("comprehension_score")
   comprehensionAnswers  Json?     @map("comprehension_answers")
   pdfStoragePath      String?       @map("pdf_storage_path")
+  pdfSignatureHash    String?       @map("pdf_signature_hash")
   expiresAt           DateTime      @map("expires_at")
   revokedAt           DateTime?     @map("revoked_at")
   createdAt           DateTime      @default(now()) @map("created_at")
@@ -383,4 +393,34 @@ model PlatformConfig {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("platform_config")
+}
+
+// ── Notifications ──
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model NotificationLog {
+  id            String             @id @default(uuid())
+  practiceId    String?            @map("practice_id")
+  recipientType String             @map("recipient_type") // "user" | "patient" | "external"
+  channel       String             // "email" | "sms" | "whatsapp"
+  templateKey   String             @map("template_key") // "consent_link" | "invite" | "welcome" etc.
+  locale        String             @default("de")
+  status        NotificationStatus @default(PENDING)
+  providerRef   String?            @map("provider_ref") // SMTP message-id or Twilio SID
+  errorMessage  String?            @map("error_message")
+  metadata      Json?              // non-PII context (e.g. consentType, role)
+  sentAt        DateTime?          @map("sent_at")
+  createdAt     DateTime           @default(now()) @map("created_at")
+
+  practice      Practice?          @relation(fields: [practiceId], references: [id])
+
+  @@index([practiceId, createdAt])
+  @@index([status, createdAt])
+  @@index([templateKey])
+  @@map("notification_logs")
 }

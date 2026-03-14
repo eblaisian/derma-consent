@@ -231,6 +231,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         setIsUnlocked(true);
         setIsLoading(false);
         setError(null);
+        localStorage.setItem('vault-ever-unlocked', 'true');
         await persistToSession(privateKey);
       } catch {
         setIsUnlocked(false);

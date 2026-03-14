@@ -50,10 +50,7 @@ export function ConfirmDialog({
           </Button>
           <Button
             variant={variant === 'destructive' ? 'destructive' : 'default'}
-            onClick={() => {
-              onConfirm();
-              onOpenChange(false);
-            }}
+            onClick={onConfirm}
             disabled={loading}
           >
             {confirmLabel}

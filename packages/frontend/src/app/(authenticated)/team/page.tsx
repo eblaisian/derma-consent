@@ -22,6 +22,8 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { Trash2, UserPlus } from 'lucide-react';
@@ -44,6 +46,7 @@ export default function TeamPage() {
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('ARZT');
   const [isInviting, setIsInviting] = useState(false);
+  const [memberToRemove, setMemberToRemove] = useState<TeamMember | null>(null);
 
   const { data: members, isLoading, mutate } = useSWR<TeamMember[]>(
     session?.accessToken ? `${API_URL}/api/team/members` : null,
@@ -197,14 +200,20 @@ export default function TeamPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     {member.id !== session?.user?.id && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-destructive"
-                        onClick={() => handleRemove(member.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-destructive"
+                            onClick={() => setMemberToRemove(member)}
+                            aria-label={t('removeMember')}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{t('removeMember')}</TooltipContent>
+                      </Tooltip>
                     )}
                   </TableCell>
                 </TableRow>
@@ -213,6 +222,20 @@ export default function TeamPage() {
           </Table>
         </CardContent>
       </Card>
+
+      <ConfirmDialog
+        open={!!memberToRemove}
+        onOpenChange={(open) => !open && setMemberToRemove(null)}
+        title={t('removeConfirmTitle')}
+        description={t('removeConfirmDescription', { name: memberToRemove?.name || memberToRemove?.email || '' })}
+        confirmLabel={t('removeMember')}
+        cancelLabel={t('cancel')}
+        onConfirm={() => {
+          if (memberToRemove) handleRemove(memberToRemove.id);
+          setMemberToRemove(null);
+        }}
+        variant="destructive"
+      />
     </div>
   );
 }

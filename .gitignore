@@ -15,3 +15,11 @@ docs/.vitepress/cache/
 .digitalocean/
 
 .mcp.json
+
+# IDE & tooling
+.DS_Store
+.continue/
+.playwright-mcp/
+.agent/
+.agents/
+skills-lock.json

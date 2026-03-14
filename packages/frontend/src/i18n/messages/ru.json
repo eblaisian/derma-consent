@@ -62,7 +62,30 @@
     "copyright": "2026 DermaConsent. Все права защищены.",
     "impressum": "Импрессум",
     "datenschutz": "Политика конфиденциальности",
-    "kontakt": "Контакты"
+    "kontakt": "Контакты",
+    "navFeatures": "Возможности",
+    "navPricing": "Цены",
+    "trustBadge1": "Соответствует GDPR",
+    "trustBadge2": "Зашифровано в браузере",
+    "trustBadge3": "Архитектура с нулевым знанием",
+    "trustBadge4": "Сделано в Германии",
+    "stat1Value": "AES-256",
+    "stat1Label": "Шифрование военного уровня",
+    "stat2Value": "8",
+    "stat2Label": "Поддерживаемых языков",
+    "stat3Value": "6",
+    "stat3Label": "Типов лечения",
+    "comparisonTitle": "Сравнить тарифы",
+    "comparisonFeature": "Функция",
+    "compUsers": "Члены команды",
+    "compConsents": "Формы согласия",
+    "compEncryption": "Шифрование с нулевым знанием",
+    "compAnalytics": "Расширенная аналитика",
+    "compSupport": "Приоритетная поддержка",
+    "compSLA": "Гарантия SLA",
+    "compDedicated": "Выделенный менеджер",
+    "footerLegal": "Правовая информация",
+    "footerContact": "Контакты"
   },
   "login": {
     "title": "DermaConsent",
@@ -95,7 +118,15 @@
     "resendVerification": "Отправить повторно",
     "resending": "Отправка...",
     "verificationResent": "Письмо с подтверждением отправлено. Проверьте свою почту.",
-    "verificationResendFailed": "Не удалось отправить письмо. Попробуйте ещё раз."
+    "verificationResendFailed": "Не удалось отправить письмо. Попробуйте ещё раз.",
+    "brandTagline": "Управление согласием с приоритетом конфиденциальности для дерматологических клиник",
+    "trustEncryption": "Данные пациента зашифрованы в вашем браузере — мы их никогда не видим",
+    "trustCompliance": "Полностью соответствует GDPR по умолчанию",
+    "trustLanguages": "8 языков — формы согласия на языке ваших пациентов",
+    "showPassword": "Показать пароль",
+    "hidePassword": "Скрыть пароль",
+    "privacyPrefix": "Входя в систему, вы соглашаетесь с нашей",
+    "privacyLink": "политикой конфиденциальности"
   },
   "forgotPassword": {
     "title": "Забыли пароль",
@@ -222,7 +253,18 @@
     "educationVideoHint": "Пожалуйста, посмотрите это короткое видео о процедуре перед заполнением формы.",
     "footerEncrypted": "Сквозное шифрование",
     "footerGdpr": "Соответствие DSGVO/GDPR",
-    "footerEu": "Данные хранятся в ЕС"
+    "footerEu": "Данные хранятся в ЕС",
+    "explainerButton": "Объясните мне это",
+    "explainerTitle": "Что означает эта форма?",
+    "explainerSubtitle": "Объяснение вашей процедуры, созданное ИИ, простым языком.",
+    "explainerLoading": "Создание объяснения...",
+    "explainerError": "Не удалось загрузить объяснение. Попробуйте ещё раз.",
+    "explainerRetry": "Попробовать снова",
+    "explainerDisclaimer": "Это объяснение создано ИИ в образовательных целях и не заменяет медицинскую консультацию вашего врача.",
+    "stepForm": "Форма",
+    "stepQuiz": "Тест",
+    "stepSignature": "Подпись",
+    "stepReview": "Проверка"
   },
   "consentTypes": {
     "BOTOX": "Ботокс / Ботулотоксин",
@@ -289,7 +331,11 @@
     "statTotal": "Всего согласий",
     "statPending": "Ожидающие",
     "statCompleted": "Завершено в этом месяце",
-    "statPatients": "Пациенты"
+    "statPatients": "Пациенты",
+    "needsAttentionTitle": "Требует внимания",
+    "chipPendingLabel": "Ожидающие согласия",
+    "chipExpiringSoonLabel": "Истекают через 7 дней",
+    "chipRecentlySignedLabel": "Недавно подписанные"
   },
   "settings": {
     "title": "Настройки",
@@ -318,7 +364,11 @@
     "logoUploaded": "Логотип загружен",
     "logoUploadError": "Ошибка загрузки логотипа",
     "educationVideos": "Обучающие видео",
-    "educationVideosDescription": "Добавьте ссылки на YouTube или Vimeo для каждого типа процедуры. Видео отображаются в форме согласия."
+    "educationVideosDescription": "Добавьте ссылки на YouTube или Vimeo для каждого типа процедуры. Видео отображаются в форме согласия.",
+    "logoDragHint": "Перетащите логотип или нажмите для выбора",
+    "logoFormatHint": "PNG, JPG или SVG — Макс. 2 МБ",
+    "logoReplace": "Заменить логотип",
+    "noChanges": "Нет изменений для сохранения"
   },
   "languages": {
     "title": "Язык",
@@ -343,7 +393,9 @@
     "revenue": "Доход",
     "revenueDescription": "Общий доход от оплаченных согласий",
     "transactions": "транзакции",
-    "avg": "Среднее"
+    "avg": "Среднее",
+    "noRevenue": "Доходов пока нет",
+    "noRevenueDescription": "Доход появится, когда пациенты заполнят платные формы согласия."
   },
   "patients": {
     "title": "Пациенты",
@@ -374,7 +426,8 @@
     "vaultRequired": "Сначала разблокируйте хранилище",
     "noPatients": "Пациентов пока нет.",
     "found": "Пациент найден: {id}",
-    "notFound": "Пациент не найден"
+    "notFound": "Пациент не найден",
+    "noPatientsDescription": "Пациенты создаются автоматически при отправке форм согласия."
   },
   "patientDetail": {
     "title": "Данные пациента",
@@ -392,7 +445,16 @@
     "photos": "Фотографии",
     "photoCount": "{count} Фотографий",
     "treatmentPlans": "Планы процедур",
-    "treatmentPlanCount": "{count} Планов процедур"
+    "treatmentPlanCount": "{count} Планов процедур",
+    "noConsentsDescription": "Отправьте этому пациенту форму согласия, чтобы начать работу.",
+    "deleteConfirmTitle": "Удалить пациента",
+    "deleteConfirmDescription": "Это навсегда удалит этого пациента и все связанные данные. Это действие нельзя отменить.",
+    "cancel": "Отмена",
+    "summaryTitle": "Клинический обзор",
+    "summaryConsents": "Согласия",
+    "summaryPlans": "Планы лечения",
+    "summaryPhotos": "Фото",
+    "summaryLastActivity": "Последняя активность"
   },
   "consentStatus": {
     "PENDING": "Ожидает",
@@ -425,7 +487,11 @@
     "memberRemoved": "Участник удалён",
     "removeError": "Ошибка удаления участника",
     "roleChanged": "Роль изменена",
-    "roleChangeError": "Ошибка изменения роли"
+    "roleChangeError": "Ошибка изменения роли",
+    "removeMember": "Удалить участника",
+    "removeConfirmTitle": "Удалить члена команды",
+    "removeConfirmDescription": "Вы уверены, что хотите удалить {name} из команды? Доступ будет потерян немедленно.",
+    "cancel": "Отмена"
   },
   "roles": {
     "ADMIN": "Администратор",
@@ -464,7 +530,8 @@
     "stripeDashboard": "Панель Stripe",
     "monthly": "Ежемесячно",
     "yearly": "Ежегодно",
-    "yearlySavings": "(скидка 20%)"
+    "yearlySavings": "(скидка 20%)",
+    "currentPlanActive": "Ваш текущий план"
   },
   "subscriptionPlans": {
     "FREE_TRIAL": "Бесплатный пробный период",
@@ -513,31 +580,35 @@
     "next": "Далее",
     "noEntries": "Записи не найдены.",
     "exportStarted": "Экспорт начат",
-    "exportError": "Ошибка экспорта"
+    "exportError": "Ошибка экспорта",
+    "unknownUser": "Неизвестный пользователь"
   },
   "auditActions": {
-    "CONSENT_CREATED": "Согласие создано",
-    "CONSENT_SUBMITTED": "Согласие отправлено",
-    "CONSENT_REVOKED": "Согласие отозвано",
-    "CONSENT_VIEWED": "Согласие просмотрено",
-    "VAULT_UNLOCKED": "Хранилище разблокировано",
-    "VAULT_LOCKED": "Хранилище заблокировано",
-    "PATIENT_CREATED": "Пациент создан",
-    "PATIENT_VIEWED": "Пациент просмотрен",
-    "TEAM_MEMBER_INVITED": "Участник приглашён",
-    "TEAM_MEMBER_REMOVED": "Участник удалён",
-    "TEAM_MEMBER_ROLE_CHANGED": "Роль изменена",
-    "PRACTICE_SETTINGS_UPDATED": "Настройки обновлены",
-    "SUBSCRIPTION_CREATED": "Подписка создана",
-    "SUBSCRIPTION_CANCELLED": "Подписка отменена",
-    "DATA_EXPORTED": "Данные экспортированы",
-    "DATA_DELETED": "Данные удалены",
+    "CONSENT_CREATED": "{actor} создал форму согласия",
+    "CONSENT_SUBMITTED": "{actor} отправил форму согласия",
+    "CONSENT_REVOKED": "{actor} отозвал согласие",
+    "CONSENT_VIEWED": "{actor} просмотрел форму согласия",
+    "VAULT_UNLOCKED": "{actor} разблокировал сейф",
+    "VAULT_LOCKED": "{actor} заблокировал сейф",
+    "PATIENT_CREATED": "{actor} добавил пациента",
+    "PATIENT_VIEWED": "{actor} просмотрел пациента",
+    "TEAM_MEMBER_INVITED": "{actor} пригласил участника",
+    "TEAM_MEMBER_REMOVED": "{actor} удалил участника",
+    "TEAM_MEMBER_ROLE_CHANGED": "{actor} изменил роль",
+    "PRACTICE_SETTINGS_UPDATED": "{actor} обновил настройки",
+    "SUBSCRIPTION_CREATED": "{actor} создал подписку",
+    "SUBSCRIPTION_CANCELLED": "{actor} отменил подписку",
+    "DATA_EXPORTED": "{actor} экспортировал данные",
+    "DATA_DELETED": "{actor} удалил данные",
     "PHOTO_UPLOADED": "Фотография загружена",
-    "PHOTO_VIEWED": "Фотография просмотрена",
+    "PHOTO_VIEWED": "{actor} просмотрел фото",
     "PHOTO_DELETED": "Фотография удалена",
-    "TREATMENT_PLAN_CREATED": "План процедуры создан",
+    "TREATMENT_PLAN_CREATED": "{actor} создал план лечения",
     "TREATMENT_PLAN_UPDATED": "План процедуры обновлён",
-    "TREATMENT_PLAN_VIEWED": "План процедуры просмотрен"
+    "TREATMENT_PLAN_VIEWED": "{actor} просмотрел план лечения",
+    "LOGIN_SUCCESS": "{actor} вошёл в систему",
+    "LOGIN_FAILED": "Неудачная попытка входа для {actor}",
+    "ACCOUNT_LOCKED": "Аккаунт заблокирован для {actor}"
   },
   "nav": {
     "dashboard": "Панель управления",
@@ -546,7 +617,9 @@
     "team": "Команда",
     "billing": "Биллинг",
     "settings": "Настройки",
-    "audit": "Журнал аудита"
+    "audit": "Журнал аудита",
+    "helpCenter": "Центр помощи",
+    "communications": "Коммуникации"
   },
   "sidebar": {
     "overview": "Обзор",
@@ -589,7 +662,10 @@
     "daysAgo": "{count} дн. назад",
     "emptyTitle": "Форм согласия пока нет",
     "emptyDescription": "Создайте первую форму согласия и отправьте её пациенту.",
-    "emptyAction": "Создать форму согласия"
+    "emptyAction": "Создать форму согласия",
+    "filterByStatus": "Фильтр по статусу",
+    "allStatuses": "Все статусы",
+    "risk": "Риск"
   },
   "newConsent": {
     "button": "Новое согласие",
@@ -636,7 +712,10 @@
     "autoLockWarning": "Хранилище автоматически заблокируется через 1 минуту",
     "stayActive": "Оставаться активным",
     "lockNow": "Заблокировать сейчас",
-    "keyboardShortcut": "Совет: Нажмите Ctrl+Shift+L для открытия в любое время"
+    "keyboardShortcut": "Совет: Нажмите Ctrl+Shift+L для открытия в любое время",
+    "unlockBannerTitle": "Данные пациента зашифрованы",
+    "unlockBannerDescription": "Разблокируйте свой сейф с помощью главного пароля, чтобы просмотреть имена и данные пациентов.",
+    "unlockAction": "Открыть сейф"
   },
   "decryptedViewer": {
     "title": "Расшифрованные данные",
@@ -657,7 +736,18 @@
     "firstConsentDescription": "Нажмите ниже, чтобы создать первую форму согласия. Вы выберете тип процедуры, и мы сгенерируем защищённую ссылку, которую можно отправить пациенту.",
     "next": "Далее",
     "back": "Назад",
-    "createFirst": "Создать первое согласие"
+    "createFirst": "Создать первое согласие",
+    "checklistTitle": "Начните с DermaConsent",
+    "stepsComplete": "{done} из {total} шагов выполнено",
+    "step_vault": "Установите мастер-пароль",
+    "step_logo": "Загрузите логотип практики",
+    "step_team": "Пригласите первого участника",
+    "step_consent": "Отправьте первую форму согласия",
+    "action_vault": "Настроить",
+    "action_logo": "Загрузить",
+    "action_team": "Пригласить",
+    "action_consent": "Создать",
+    "dismiss": "Закрыть"
   },
   "metadata": {
     "description": "GDPR-совместимые цифровые формы согласия для дерматологических клиник"
@@ -684,7 +774,8 @@
     "noAfterPhotos": "Нет фотографий после",
     "consent": "Согласие на фото",
     "consentGranted": "Согласие получено",
-    "consentNotGranted": "Нет согласия"
+    "consentNotGranted": "Нет согласия",
+    "noPhotosDescription": "Загружайте фотографии, чтобы отслеживать ход лечения и результаты."
   },
   "bodyRegions": {
     "FOREHEAD": "Лоб",
@@ -749,7 +840,8 @@
     "selectAreas": "Выберите области лечения",
     "noAreasSelected": "Области лечения не выбраны",
     "areasCount": "{count} областей",
-    "customize": "Настроить"
+    "customize": "Настроить",
+    "noPlansDescription": "Создайте план лечения для документирования точек инъекций и продуктов."
   },
   "treatmentTemplate": {
     "pickTemplate": "Выбрать шаблон",
@@ -989,6 +1081,110 @@
     "practiceNotFoundDescription": "Искомая клиника не существует или была удалена.",
     "errorLoading": "Не удалось загрузить данные. Попробуйте ещё раз.",
     "backToPractices": "Вернуться к клиникам",
-    "retry": "Повторить"
+    "retry": "Повторить",
+    "aiConfig": "ИИ / Объяснитель",
+    "notificationsConfig": "Уведомления",
+    "sendTestEmail": "Отправить мне тестовое письмо",
+    "sendTestSms": "Отправить тестовое SMS",
+    "enterTestPhone": "Введите номер для тестового SMS (напр. +491234567890):",
+    "configurationDescription": "Управление интеграциями платформы, учётными данными и настройками уведомлений.",
+    "valueRequired": "Введите значение",
+    "resetConfirm": "Сбросить эту настройку к значению по умолчанию? Это действие нельзя отменить.",
+    "resetSuccess": "Сброшено к значению по умолчанию",
+    "enterNewValue": "Введите новое значение..."
+  },
+  "pagination": {
+    "showing": "Показано {start}–{end} из {total}",
+    "previous": "Предыдущая",
+    "next": "Следующая"
+  },
+  "auditActionLabels": {
+    "CONSENT_CREATED": "Согласие создано",
+    "CONSENT_SUBMITTED": "Согласие отправлено",
+    "CONSENT_REVOKED": "Согласие отозвано",
+    "CONSENT_VIEWED": "Согласие просмотрено",
+    "VAULT_UNLOCKED": "Сейф разблокирован",
+    "VAULT_LOCKED": "Сейф заблокирован",
+    "PATIENT_CREATED": "Пациент добавлен",
+    "PATIENT_VIEWED": "Пациент просмотрен",
+    "TEAM_MEMBER_INVITED": "Участник приглашён",
+    "TEAM_MEMBER_REMOVED": "Участник удалён",
+    "TEAM_MEMBER_ROLE_CHANGED": "Роль изменена",
+    "PRACTICE_SETTINGS_UPDATED": "Настройки обновлены",
+    "SUBSCRIPTION_CREATED": "Подписка создана",
+    "SUBSCRIPTION_CANCELLED": "Подписка отменена",
+    "DATA_EXPORTED": "Данные экспортированы",
+    "DATA_DELETED": "Данные удалены",
+    "LOGIN_SUCCESS": "Вход",
+    "LOGIN_FAILED": "Неудачный вход",
+    "ACCOUNT_LOCKED": "Аккаунт заблокирован",
+    "PHOTO_VIEWED": "Фото просмотрено",
+    "TREATMENT_PLAN_CREATED": "План лечения создан",
+    "TREATMENT_PLAN_VIEWED": "План лечения просмотрен"
+  },
+  "noShowRisk": {
+    "LOW": "Низкий",
+    "MEDIUM": "Средний",
+    "HIGH": "Высокий",
+    "tooltipLOW": "Вероятно завершит — отправлено недавно для обычной процедуры.",
+    "tooltipMEDIUM": "Умеренный риск — проверьте, получил ли пациент ссылку.",
+    "tooltipHIGH": "Высокий риск отказа — рассмотрите отправку напоминания сейчас."
+  },
+  "communications": {
+    "pageTitle": "Коммуникации",
+    "pageSubtitle": "Создавайте и отправляйте сообщения пациентам с помощью ИИ на любом языке.",
+    "title": "Составитель сообщений",
+    "subtitle": "Выберите контекст и язык — ИИ составит профессиональное сообщение для пациента.",
+    "contextLabel": "Контекст сообщения",
+    "languageLabel": "Язык пациента",
+    "generateButton": "Создать черновик",
+    "generating": "Создание...",
+    "draftLabel": "Черновик сообщения (редактируемый)",
+    "copyButton": "Копировать",
+    "copied": "Скопировано!",
+    "sendButton": "Отправить",
+    "sendDialogTitle": "Отправить сообщение",
+    "sendDialogDescription": "Отправьте это сообщение пациенту по электронной почте или SMS.",
+    "recipientLabel": "Получатель",
+    "channelEmail": "Эл. почта",
+    "channelSms": "SMS",
+    "sendAction": "Отправить сейчас",
+    "sending": "Отправка...",
+    "sendSuccess": "Сообщение успешно отправлено",
+    "sendError": "Не удалось отправить сообщение",
+    "errorUnavailable": "ИИ недоступен. Настройте API-ключ в настройках администратора.",
+    "contexts": {
+      "CONSENT_REMINDER": "Напоминание о форме согласия",
+      "APPOINTMENT_CONFIRMATION": "Подтверждение приёма",
+      "APPOINTMENT_REMINDER": "Напоминание о приёме",
+      "FOLLOW_UP": "Контроль после процедуры",
+      "TREATMENT_PREPARATION": "Инструкции по подготовке к процедуре",
+      "RESULT_READY": "Результаты готовы",
+      "GENERAL": "Общее сообщение"
+    },
+    "fillPlaceholders": "Заполните данные перед отправкой:"
+  },
+  "aftercare": {
+    "dialogTitle": "Инструкции по уходу",
+    "generate": "Создать инструкции",
+    "generating": "Создание...",
+    "copy": "Копировать",
+    "copied": "Скопировано!",
+    "print": "Печать",
+    "regenerate": "Создать заново",
+    "editHint": "Проверьте и отредактируйте инструкции перед передачей пациенту.",
+    "error": "Не удалось создать инструкции."
+  },
+  "retention": {
+    "widgetTitle": "Просроченные осмотры",
+    "patients": "пациентов",
+    "daysSince": "дней назад",
+    "bookFollowUp": "Записать на осмотр"
+  },
+  "analyticsInsights": {
+    "cardTitle": "ИИ-аналитика",
+    "refresh": "Обновить",
+    "loading": "Анализ...",
+    "noAi": "ИИ-аналитика недоступна"
   }
 }

@@ -109,4 +109,11 @@ export class AuthController {
   async verify2FA(@Body() dto: TwoFactorVerifyLoginDto) {
     return this.authService.verifyTwoFactorLogin(dto.tempToken, dto.token);
   }
+
+  /** GDPR Art. 15 — Data Subject Access Request (DSAR) */
+  @Get('account/export')
+  @UseGuards(JwtAuthGuard)
+  async exportAccountData(@CurrentUser() user: CurrentUserPayload) {
+    return this.authService.exportAccountData(user.userId, user.practiceId);
+  }
 }

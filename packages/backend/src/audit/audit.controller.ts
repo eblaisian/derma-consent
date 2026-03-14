@@ -11,13 +11,14 @@ import { Response } from 'express';
 import { AuditService } from './audit.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
+import { SubscriptionGuard } from '../billing/subscription.guard';
 import { Roles } from '../auth/roles.decorator';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
 import { AuditAction } from '@prisma/client';
 import { PaginationDto } from '../common/pagination.dto';
 
 @Controller('api/audit')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
 export class AuditController {
   constructor(private readonly auditService: AuditService) {}
 
@@ -62,6 +63,7 @@ export class AuditController {
   }
 
   @Post('vault-event')
+  @Roles('ADMIN', 'ARZT', 'EMPFANG')
   async vaultEvent(
     @CurrentUser() user: CurrentUserPayload,
     @Body() body: { action: 'VAULT_UNLOCKED' | 'VAULT_LOCKED' },

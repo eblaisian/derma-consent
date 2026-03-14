@@ -8,12 +8,31 @@ interface StatCardProps {
   subtitle?: string;
   trend?: { value: number; isPositive: boolean };
   icon?: React.ReactNode;
+  accent?: 'primary' | 'warning' | 'success' | 'info';
   className?: string;
 }
 
-export function StatCard({ title, value, subtitle, trend, icon, className }: StatCardProps) {
+const accentStyles = {
+  primary: 'border-l-primary/60',
+  warning: 'border-l-warning/60',
+  success: 'border-l-success/60',
+  info: 'border-l-info/60',
+};
+
+const iconBgStyles = {
+  primary: 'bg-primary/10 text-primary',
+  warning: 'bg-warning/10 text-warning',
+  success: 'bg-success/10 text-success',
+  info: 'bg-info/10 text-info',
+};
+
+export function StatCard({ title, value, subtitle, trend, icon, accent, className }: StatCardProps) {
   return (
-    <Card className={cn('relative overflow-hidden animate-fade-in-up', className)}>
+    <Card className={cn(
+      'relative overflow-hidden animate-fade-in-up transition-shadow hover:shadow-sm',
+      accent && `border-l-[3px] ${accentStyles[accent]}`,
+      className,
+    )}>
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
           <span className="text-label text-foreground-secondary">{title}</span>
@@ -28,7 +47,12 @@ export function StatCard({ title, value, subtitle, trend, icon, className }: Sta
               {Math.abs(trend.value)}%
             </span>
           )}
-          {!trend && icon && (
+          {!trend && icon && accent && (
+            <span className={cn('flex size-8 items-center justify-center rounded-lg', iconBgStyles[accent])}>
+              {icon}
+            </span>
+          )}
+          {!trend && icon && !accent && (
             <span className="text-muted-foreground">{icon}</span>
           )}
         </div>

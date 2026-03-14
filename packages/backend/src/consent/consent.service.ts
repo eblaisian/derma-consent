@@ -7,6 +7,7 @@ import { PdfService } from '../pdf/pdf.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { CreateConsentDto, SubmitConsentDto } from './consent.dto';
 import { ConsentStatus } from '@prisma/client';
+import { computeNoShowRisk, type NoShowRisk } from './no-show-risk';
 
 @Injectable()
 export class ConsentService {
@@ -268,6 +269,13 @@ export class ConsentService {
       this.prisma.consentForm.count({ where: { practiceId } }),
     ]);
 
-    return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
+    const enrichedItems = items.map((item) => ({
+      ...item,
+      noShowRisk: (item.status === ConsentStatus.PENDING
+        ? computeNoShowRisk({ type: item.type, createdAt: item.createdAt, expiresAt: item.expiresAt })
+        : null) as NoShowRisk | null,
+    }));
+
+    return { items: enrichedItems, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 }

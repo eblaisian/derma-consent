@@ -6,16 +6,11 @@ import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useVault } from '@/hooks/use-vault';
 import { useAuthFetch } from '@/lib/auth-fetch';
+import { AuthLayout } from '@/components/auth/auth-layout';
+import { PasswordInput } from '@/components/auth/password-input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { toast } from 'sonner';
 
 export default function SetupPage() {
@@ -32,7 +27,6 @@ export default function SetupPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Redirect if already has practice
   const hasPractice = !!session?.user?.practiceId;
   useEffect(() => {
     if (hasPractice) {
@@ -74,7 +68,6 @@ export default function SetupPage() {
         }),
       });
 
-      // Refresh session to pick up the new practiceId
       await updateSession({ practiceId: practice.id });
       toast.success(t('success'));
       router.push('/dashboard');
@@ -90,88 +83,83 @@ export default function SetupPage() {
   const loading = isSubmitting || vaultLoading;
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl">{t('title')}</CardTitle>
-          <CardDescription>
-            {t('description')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">{t('practiceName')}</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder={t('practiceNamePlaceholder')}
-                required
-              />
-            </div>
+    <AuthLayout>
+      <div className="space-y-6">
+        <div className="space-y-2 text-center">
+          <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+          <p className="text-sm text-muted-foreground">{t('description')}</p>
+        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="dsgvoContact">{t('dsgvoContact')}</Label>
-              <Input
-                id="dsgvoContact"
-                type="email"
-                value={dsgvoContact}
-                onChange={(e) => setDsgvoContact(e.target.value)}
-                placeholder={t('dsgvoContactPlaceholder')}
-                required
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">{t('practiceName')}</Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t('practiceNamePlaceholder')}
+              required
+              autoComplete="organization"
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">{t('masterPassword')}</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={t('masterPasswordPlaceholder')}
-                required
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="dsgvoContact">{t('dsgvoContact')}</Label>
+            <Input
+              id="dsgvoContact"
+              type="email"
+              value={dsgvoContact}
+              onChange={(e) => setDsgvoContact(e.target.value)}
+              placeholder={t('dsgvoContactPlaceholder')}
+              required
+              autoComplete="email"
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="passwordConfirm">
-                {t('confirmPassword')}
-              </Label>
-              <Input
-                id="passwordConfirm"
-                type="password"
-                value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
-                placeholder={t('confirmPasswordPlaceholder')}
-                required
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">{t('masterPassword')}</Label>
+            <PasswordInput
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={t('masterPasswordPlaceholder')}
+              required
+              autoComplete="new-password"
+            />
+          </div>
 
-            <div className="rounded-md border border-amber-500/50 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-400">
-              <strong>{t('important')}</strong> {t('passwordWarning')}
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="passwordConfirm">{t('confirmPassword')}</Label>
+            <PasswordInput
+              id="passwordConfirm"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+              placeholder={t('confirmPasswordPlaceholder')}
+              required
+              autoComplete="new-password"
+            />
+          </div>
 
-            {error && (
-              <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                {error}
-              </div>
+          <div className="rounded-lg border border-warning/50 bg-warning/10 p-3 text-sm text-warning-foreground">
+            <strong>{t('important')}</strong> {t('passwordWarning')}
+          </div>
+
+          {error && (
+            <p className="text-sm text-destructive" role="alert">{error}</p>
+          )}
+
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                {t('generatingKeys')}
+              </span>
+            ) : (
+              t('submit')
             )}
-
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  {t('generatingKeys')}
-                </span>
-              ) : (
-                t('submit')
-              )}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+          </Button>
+        </form>
+      </div>
+    </AuthLayout>
   );
 }

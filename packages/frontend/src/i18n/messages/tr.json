@@ -62,7 +62,30 @@
     "copyright": "2026 DermaConsent. Tüm hakları saklıdır.",
     "impressum": "Künye",
     "datenschutz": "Gizlilik Politikası",
-    "kontakt": "İletişim"
+    "kontakt": "İletişim",
+    "navFeatures": "Özellikler",
+    "navPricing": "Fiyatlar",
+    "trustBadge1": "KVKK uyumlu",
+    "trustBadge2": "Tarayıcınızda şifrelenir",
+    "trustBadge3": "Sıfır bilgi mimarisi",
+    "trustBadge4": "Almanya yapımı",
+    "stat1Value": "AES-256",
+    "stat1Label": "Askeri düzeyde şifreleme",
+    "stat2Value": "8",
+    "stat2Label": "Desteklenen dil",
+    "stat3Value": "6",
+    "stat3Label": "Kapsanan tedavi türü",
+    "comparisonTitle": "Planları karşılaştır",
+    "comparisonFeature": "Özellik",
+    "compUsers": "Ekip üyeleri",
+    "compConsents": "Onam formları",
+    "compEncryption": "Sıfır bilgi şifreleme",
+    "compAnalytics": "Gelişmiş analitik",
+    "compSupport": "Öncelikli destek",
+    "compSLA": "SLA garantisi",
+    "compDedicated": "Özel hesap yöneticisi",
+    "footerLegal": "Yasal",
+    "footerContact": "İletişim"
   },
   "login": {
     "title": "DermaConsent",
@@ -95,7 +118,15 @@
     "resendVerification": "Doğrulama e-postasını yeniden gönder",
     "resending": "Gönderiliyor...",
     "verificationResent": "Doğrulama e-postası gönderildi. Lütfen gelen kutunuzu kontrol edin.",
-    "verificationResendFailed": "Doğrulama e-postası gönderilemedi. Lütfen tekrar deneyin."
+    "verificationResendFailed": "Doğrulama e-postası gönderilemedi. Lütfen tekrar deneyin.",
+    "brandTagline": "Dermatoloji klinikleri için gizlilik odaklı onam yönetimi",
+    "trustEncryption": "Hasta verileri tarayıcınızda şifrelenir — biz asla görmeyiz",
+    "trustCompliance": "Tasarım gereği tamamen KVKK/GDPR uyumlu",
+    "trustLanguages": "8 dil — hastalarınızın dilinde onam formları",
+    "showPassword": "Şifreyi göster",
+    "hidePassword": "Şifreyi gizle",
+    "privacyPrefix": "Giriş yaparak kabul etmiş olursunuz",
+    "privacyLink": "gizlilik politikamızı"
   },
   "forgotPassword": {
     "title": "Şifremi unuttum",
@@ -222,7 +253,18 @@
     "educationVideoHint": "Formu doldurmadan önce lütfen işlem hakkındaki bu kısa videoyu izleyin.",
     "footerEncrypted": "Uçtan uca şifreli",
     "footerGdpr": "DSGVO/GDPR uyumlu",
-    "footerEu": "Veriler AB'de saklanır"
+    "footerEu": "Veriler AB'de saklanır",
+    "explainerButton": "Bunu bana açıkla",
+    "explainerTitle": "Bu form ne anlama geliyor?",
+    "explainerSubtitle": "Yapay zeka tarafından oluşturulmuş, sade bir dille prosedür açıklaması.",
+    "explainerLoading": "Açıklama oluşturuluyor...",
+    "explainerError": "Açıklama yüklenemedi. Lütfen tekrar deneyin.",
+    "explainerRetry": "Tekrar dene",
+    "explainerDisclaimer": "Bu açıklama, eğitim amaçlı yapay zeka tarafından oluşturulmuştur ve doktorunuzun tıbbi tavsiyesinin yerini tutmaz.",
+    "stepForm": "Form",
+    "stepQuiz": "Quiz",
+    "stepSignature": "İmza",
+    "stepReview": "İncele"
   },
   "consentTypes": {
     "BOTOX": "Botox / Botulinum toksin",
@@ -289,7 +331,11 @@
     "statTotal": "Toplam Onamlar",
     "statPending": "Bekleyen",
     "statCompleted": "Bu Ay Tamamlanan",
-    "statPatients": "Hastalar"
+    "statPatients": "Hastalar",
+    "needsAttentionTitle": "Dikkat gerekiyor",
+    "chipPendingLabel": "Bekleyen onamlar",
+    "chipExpiringSoonLabel": "7 gün içinde sona eriyor",
+    "chipRecentlySignedLabel": "Son imzalananlar"
   },
   "settings": {
     "title": "Ayarlar",
@@ -318,7 +364,11 @@
     "logoUploaded": "Logo yüklendi",
     "logoUploadError": "Logo yüklenirken hata oluştu",
     "educationVideos": "Eğitim Videoları",
-    "educationVideosDescription": "Her tedavi türü için YouTube veya Vimeo video URL'leri ekleyin. Videolar onam formunda gösterilir."
+    "educationVideosDescription": "Her tedavi türü için YouTube veya Vimeo video URL'leri ekleyin. Videolar onam formunda gösterilir.",
+    "logoDragHint": "Logonuzu buraya sürükleyin veya göz atmak için tıklayın",
+    "logoFormatHint": "PNG, JPG veya SVG — Maks. 2 MB",
+    "logoReplace": "Logoyu değiştir",
+    "noChanges": "Kaydedilecek değişiklik yok"
   },
   "languages": {
     "title": "Dil",
@@ -343,7 +393,9 @@
     "revenue": "Gelir",
     "revenueDescription": "Ücretli onamlardan toplam gelir",
     "transactions": "işlem",
-    "avg": "Ort."
+    "avg": "Ort.",
+    "noRevenue": "Henüz gelir kaydedilmedi",
+    "noRevenueDescription": "Hastalar ücretli onam formlarını tamamladığında gelir görünecektir."
   },
   "patients": {
     "title": "Hastalar",
@@ -374,7 +426,8 @@
     "vaultRequired": "Lütfen önce kasayı açın",
     "noPatients": "Henüz hasta yok.",
     "found": "Hasta bulundu: {id}",
-    "notFound": "Hasta bulunamadı"
+    "notFound": "Hasta bulunamadı",
+    "noPatientsDescription": "Hastalar, onam formları gönderildiğinde otomatik olarak oluşturulur."
   },
   "patientDetail": {
     "title": "Hasta detayları",
@@ -392,7 +445,16 @@
     "photos": "Fotoğraflar",
     "photoCount": "{count} Fotoğraf",
     "treatmentPlans": "Tedavi Planları",
-    "treatmentPlanCount": "{count} Tedavi Planı"
+    "treatmentPlanCount": "{count} Tedavi Planı",
+    "noConsentsDescription": "Başlamak için bu hastaya bir onam formu gönderin.",
+    "deleteConfirmTitle": "Hastayı sil",
+    "deleteConfirmDescription": "Bu, bu hastayı ve tüm ilişkili verileri kalıcı olarak silecektir. Bu işlem geri alınamaz.",
+    "cancel": "İptal",
+    "summaryTitle": "Klinik Özet",
+    "summaryConsents": "Onamlar",
+    "summaryPlans": "Tedavi planları",
+    "summaryPhotos": "Fotoğraflar",
+    "summaryLastActivity": "Son aktivite"
   },
   "consentStatus": {
     "PENDING": "Bekliyor",
@@ -425,7 +487,11 @@
     "memberRemoved": "Üye kaldırıldı",
     "removeError": "Üye kaldırılırken hata oluştu",
     "roleChanged": "Rol değiştirildi",
-    "roleChangeError": "Rol değiştirilirken hata oluştu"
+    "roleChangeError": "Rol değiştirilirken hata oluştu",
+    "removeMember": "Üyeyi kaldır",
+    "removeConfirmTitle": "Ekip üyesini kaldır",
+    "removeConfirmDescription": "{name} ekipten çıkarmak istediğinizden emin misiniz? Erişimi hemen kaybedecek.",
+    "cancel": "İptal"
   },
   "roles": {
     "ADMIN": "Yönetici",
@@ -464,7 +530,8 @@
     "stripeDashboard": "Stripe Paneli",
     "monthly": "Aylık",
     "yearly": "Yıllık",
-    "yearlySavings": "(%20 tasarruf)"
+    "yearlySavings": "(%20 tasarruf)",
+    "currentPlanActive": "Mevcut planınız"
   },
   "subscriptionPlans": {
     "FREE_TRIAL": "Ücretsiz deneme",
@@ -513,31 +580,35 @@
     "next": "Sonraki",
     "noEntries": "Kayıt bulunamadı.",
     "exportStarted": "Dışa aktarma başladı",
-    "exportError": "Dışa aktarma hatası"
+    "exportError": "Dışa aktarma hatası",
+    "unknownUser": "Bilinmeyen kullanıcı"
   },
   "auditActions": {
-    "CONSENT_CREATED": "Onam oluşturuldu",
-    "CONSENT_SUBMITTED": "Onam gönderildi",
-    "CONSENT_REVOKED": "Onam iptal edildi",
-    "CONSENT_VIEWED": "Onam görüntülendi",
-    "VAULT_UNLOCKED": "Kasa açıldı",
-    "VAULT_LOCKED": "Kasa kilitlendi",
-    "PATIENT_CREATED": "Hasta oluşturuldu",
-    "PATIENT_VIEWED": "Hasta görüntülendi",
-    "TEAM_MEMBER_INVITED": "Üye davet edildi",
-    "TEAM_MEMBER_REMOVED": "Üye kaldırıldı",
-    "TEAM_MEMBER_ROLE_CHANGED": "Rol değiştirildi",
-    "PRACTICE_SETTINGS_UPDATED": "Ayarlar güncellendi",
-    "SUBSCRIPTION_CREATED": "Abonelik oluşturuldu",
-    "SUBSCRIPTION_CANCELLED": "Abonelik iptal edildi",
-    "DATA_EXPORTED": "Veri dışa aktarıldı",
-    "DATA_DELETED": "Veri silindi",
+    "CONSENT_CREATED": "{actor} bir onam formu oluşturdu",
+    "CONSENT_SUBMITTED": "{actor} bir onam formu gönderdi",
+    "CONSENT_REVOKED": "{actor} bir onamı iptal etti",
+    "CONSENT_VIEWED": "{actor} bir onam formunu görüntüledi",
+    "VAULT_UNLOCKED": "{actor} kasayı açtı",
+    "VAULT_LOCKED": "{actor} kasayı kilitledi",
+    "PATIENT_CREATED": "{actor} bir hasta ekledi",
+    "PATIENT_VIEWED": "{actor} bir hastayı görüntüledi",
+    "TEAM_MEMBER_INVITED": "{actor} bir ekip üyesi davet etti",
+    "TEAM_MEMBER_REMOVED": "{actor} bir ekip üyesini kaldırdı",
+    "TEAM_MEMBER_ROLE_CHANGED": "{actor} bir ekip rolünü değiştirdi",
+    "PRACTICE_SETTINGS_UPDATED": "{actor} klinik ayarlarını güncelledi",
+    "SUBSCRIPTION_CREATED": "{actor} bir abonelik oluşturdu",
+    "SUBSCRIPTION_CANCELLED": "{actor} aboneliği iptal etti",
+    "DATA_EXPORTED": "{actor} verileri dışa aktardı",
+    "DATA_DELETED": "{actor} verileri sildi",
     "PHOTO_UPLOADED": "Fotoğraf yüklendi",
-    "PHOTO_VIEWED": "Fotoğraf görüntülendi",
+    "PHOTO_VIEWED": "{actor} bir fotoğraf görüntüledi",
     "PHOTO_DELETED": "Fotoğraf silindi",
-    "TREATMENT_PLAN_CREATED": "Tedavi planı oluşturuldu",
+    "TREATMENT_PLAN_CREATED": "{actor} bir tedavi planı oluşturdu",
     "TREATMENT_PLAN_UPDATED": "Tedavi planı güncellendi",
-    "TREATMENT_PLAN_VIEWED": "Tedavi planı görüntülendi"
+    "TREATMENT_PLAN_VIEWED": "{actor} bir tedavi planını görüntüledi",
+    "LOGIN_SUCCESS": "{actor} giriş yaptı",
+    "LOGIN_FAILED": "{actor} için başarısız giriş denemesi",
+    "ACCOUNT_LOCKED": "{actor} hesabı kilitlendi"
   },
   "nav": {
     "dashboard": "Kontrol Paneli",
@@ -546,7 +617,9 @@
     "team": "Ekip",
     "billing": "Faturalandırma",
     "settings": "Ayarlar",
-    "audit": "Denetim günlüğü"
+    "audit": "Denetim günlüğü",
+    "helpCenter": "Yardım merkezi",
+    "communications": "İletişim"
   },
   "sidebar": {
     "overview": "Genel Bakış",
@@ -589,7 +662,10 @@
     "daysAgo": "{count}g önce",
     "emptyTitle": "Henüz onam formu yok",
     "emptyDescription": "İlk onam formunuzu oluşturun ve bir hastaya gönderin.",
-    "emptyAction": "Onam Formu Oluştur"
+    "emptyAction": "Onam Formu Oluştur",
+    "filterByStatus": "Duruma göre filtrele",
+    "allStatuses": "Tüm durumlar",
+    "risk": "Risk"
   },
   "newConsent": {
     "button": "Yeni onam",
@@ -636,7 +712,10 @@
     "autoLockWarning": "Kasa 1 dakika içinde otomatik olarak kilitlenecek",
     "stayActive": "Aktif kal",
     "lockNow": "Şimdi kilitle",
-    "keyboardShortcut": "İpucu: İstediğiniz zaman açmak için Ctrl+Shift+L basın"
+    "keyboardShortcut": "İpucu: İstediğiniz zaman açmak için Ctrl+Shift+L basın",
+    "unlockBannerTitle": "Hasta verileri şifreli",
+    "unlockBannerDescription": "Hasta adlarını ve ayrıntılarını görüntülemek için ana parolanızla kasanızı açın.",
+    "unlockAction": "Kasayı aç"
   },
   "decryptedViewer": {
     "title": "Çözülmüş veri",
@@ -657,7 +736,18 @@
     "firstConsentDescription": "İlk onam formunuzu oluşturmak için aşağıya tıklayın. Bir tedavi türü seçeceksiniz ve hastanıza gönderebileceğiniz güvenli bir bağlantı oluşturacağız.",
     "next": "İleri",
     "back": "Geri",
-    "createFirst": "İlk Onamı Oluştur"
+    "createFirst": "İlk Onamı Oluştur",
+    "checklistTitle": "DermaConsent ile başlayın",
+    "stepsComplete": "{total} adımdan {done} tamamlandı",
+    "step_vault": "Ana parolanızı belirleyin",
+    "step_logo": "Klinik logonuzu yükleyin",
+    "step_team": "İlk ekip üyenizi davet edin",
+    "step_consent": "İlk onam formunuzu gönderin",
+    "action_vault": "Kur",
+    "action_logo": "Yükle",
+    "action_team": "Davet et",
+    "action_consent": "Oluştur",
+    "dismiss": "Kapat"
   },
   "metadata": {
     "description": "Dermatoloji klinikleri için GDPR uyumlu dijital onam formları"
@@ -684,7 +774,8 @@
     "noAfterPhotos": "Sonrası fotoğrafı yok",
     "consent": "Fotoğraf onamı",
     "consentGranted": "Onam verildi",
-    "consentNotGranted": "Onam yok"
+    "consentNotGranted": "Onam yok",
+    "noPhotosDescription": "Tedavi ilerlemesini ve sonuçlarını takip etmek için fotoğraflar yükleyin."
   },
   "bodyRegions": {
     "FOREHEAD": "Alın",
@@ -749,7 +840,8 @@
     "selectAreas": "Tedavi alanlarını seçin",
     "noAreasSelected": "Tedavi alanı seçilmedi",
     "areasCount": "{count} alan",
-    "customize": "Özelleştir"
+    "customize": "Özelleştir",
+    "noPlansDescription": "Enjeksiyon noktaları ve ürünleri belgelemek için bir tedavi planı oluşturun."
   },
   "treatmentTemplate": {
     "pickTemplate": "Şablon Seçin",
@@ -989,6 +1081,110 @@
     "practiceNotFoundDescription": "Aradığınız klinik mevcut değil veya silinmiş.",
     "errorLoading": "Veriler yüklenemedi. Lütfen tekrar deneyin.",
     "backToPractices": "Kliniklere dön",
-    "retry": "Tekrar dene"
+    "retry": "Tekrar dene",
+    "aiConfig": "Yapay Zeka / Açıklayıcı",
+    "notificationsConfig": "Bildirimler",
+    "sendTestEmail": "Bana test e-postası gönder",
+    "sendTestSms": "Test SMS gönder",
+    "enterTestPhone": "Test SMS için telefon numarası girin (örn. +491234567890):",
+    "configurationDescription": "Platform entegrasyonlarını, kimlik bilgilerini ve bildirim ayarlarını yönetin.",
+    "valueRequired": "Lütfen bir değer girin",
+    "resetConfirm": "Bu ayarı varsayılan değerine sıfırlansın mı? Bu işlem geri alınamaz.",
+    "resetSuccess": "Varsayılana sıfırlandı",
+    "enterNewValue": "Yeni değer girin..."
+  },
+  "pagination": {
+    "showing": "{total} içinden {start}–{end} gösteriliyor",
+    "previous": "Önceki",
+    "next": "Sonraki"
+  },
+  "auditActionLabels": {
+    "CONSENT_CREATED": "Onam oluşturuldu",
+    "CONSENT_SUBMITTED": "Onam gönderildi",
+    "CONSENT_REVOKED": "Onam iptal edildi",
+    "CONSENT_VIEWED": "Onam görüntülendi",
+    "VAULT_UNLOCKED": "Kasa açıldı",
+    "VAULT_LOCKED": "Kasa kilitlendi",
+    "PATIENT_CREATED": "Hasta eklendi",
+    "PATIENT_VIEWED": "Hasta görüntülendi",
+    "TEAM_MEMBER_INVITED": "Üye davet edildi",
+    "TEAM_MEMBER_REMOVED": "Üye kaldırıldı",
+    "TEAM_MEMBER_ROLE_CHANGED": "Rol değiştirildi",
+    "PRACTICE_SETTINGS_UPDATED": "Ayarlar güncellendi",
+    "SUBSCRIPTION_CREATED": "Abonelik oluşturuldu",
+    "SUBSCRIPTION_CANCELLED": "Abonelik iptal edildi",
+    "DATA_EXPORTED": "Veriler dışa aktarıldı",
+    "DATA_DELETED": "Veriler silindi",
+    "LOGIN_SUCCESS": "Giriş",
+    "LOGIN_FAILED": "Başarısız giriş",
+    "ACCOUNT_LOCKED": "Hesap kilitli",
+    "PHOTO_VIEWED": "Fotoğraf görüntülendi",
+    "TREATMENT_PLAN_CREATED": "Tedavi planı oluşturuldu",
+    "TREATMENT_PLAN_VIEWED": "Tedavi planı görüntülendi"
+  },
+  "noShowRisk": {
+    "LOW": "Düşük",
+    "MEDIUM": "Orta",
+    "HIGH": "Yüksek",
+    "tooltipLOW": "Tamamlama olasılığı yüksek — rutin bir işlem için yakın zamanda gönderildi.",
+    "tooltipMEDIUM": "Orta risk — hastanın bağlantıyı alıp almadığını kontrol edin.",
+    "tooltipHIGH": "Yüksek terk riski — şimdi bir hatırlatma göndermeyi düşünün."
+  },
+  "communications": {
+    "pageTitle": "İletişim",
+    "pageSubtitle": "Yapay zeka destekli hasta mesajlarını herhangi bir dilde hazırlayın ve gönderin.",
+    "title": "Mesaj Oluşturucu",
+    "subtitle": "Bir bağlam ve dil seçin — yapay zeka profesyonel bir hasta mesajı hazırlayacak.",
+    "contextLabel": "Mesaj bağlamı",
+    "languageLabel": "Hasta dili",
+    "generateButton": "Taslak oluştur",
+    "generating": "Oluşturuluyor...",
+    "draftLabel": "Mesaj taslağı (düzenlenebilir)",
+    "copyButton": "Kopyala",
+    "copied": "Kopyalandı!",
+    "sendButton": "Gönder",
+    "sendDialogTitle": "Mesaj gönder",
+    "sendDialogDescription": "Bu mesajı hastaya e-posta veya SMS ile gönderin.",
+    "recipientLabel": "Alıcı",
+    "channelEmail": "E-posta",
+    "channelSms": "SMS",
+    "sendAction": "Şimdi gönder",
+    "sending": "Gönderiliyor...",
+    "sendSuccess": "Mesaj başarıyla gönderildi",
+    "sendError": "Mesaj gönderilemedi",
+    "errorUnavailable": "Yapay zeka kullanılamıyor. Lütfen Admin ayarlarından API anahtarını yapılandırın.",
+    "contexts": {
+      "CONSENT_REMINDER": "Onay formu hatırlatması",
+      "APPOINTMENT_CONFIRMATION": "Randevu onayı",
+      "APPOINTMENT_REMINDER": "Randevu hatırlatması",
+      "FOLLOW_UP": "Tedavi sonrası takip",
+      "TREATMENT_PREPARATION": "Tedaviye hazırlık talimatları",
+      "RESULT_READY": "Sonuçlar hazır bildirimi",
+      "GENERAL": "Genel mesaj"
+    },
+    "fillPlaceholders": "Göndermeden önce bilgileri doldurun:"
+  },
+  "aftercare": {
+    "dialogTitle": "Bakım Talimatları",
+    "generate": "Bakım oluştur",
+    "generating": "Oluşturuluyor...",
+    "copy": "Kopyala",
+    "copied": "Kopyalandı!",
+    "print": "Yazdır",
+    "regenerate": "Yeniden oluştur",
+    "editHint": "Hastayla paylaşmadan önce talimatları gözden geçirin ve düzenleyin.",
+    "error": "Bakım talimatları oluşturulamadı."
+  },
+  "retention": {
+    "widgetTitle": "Gecikmiş Kontroller",
+    "patients": "hasta",
+    "daysSince": "gün önce",
+    "bookFollowUp": "Kontrol planla"
+  },
+  "analyticsInsights": {
+    "cardTitle": "Yapay Zeka Analizleri",
+    "refresh": "Yenile",
+    "loading": "Analiz ediliyor...",
+    "noAi": "Yapay zeka analizleri mevcut değil"
   }
 }

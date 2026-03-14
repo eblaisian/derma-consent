@@ -30,8 +30,10 @@ const ENV_VAR_MAP: Record<string, string> = {
   'stripe.enterpriseYearlyPriceId': 'STRIPE_ENTERPRISE_YEARLY_PRICE_ID',
   'stripe.platformFeePercent': 'STRIPE_PLATFORM_FEE_PERCENT',
   'stripe.subscriptionWebhookSecret': 'STRIPE_SUBSCRIPTION_WEBHOOK_SECRET',
+  'email.smtpHost': 'SMTP_HOST',
+  'email.smtpPort': 'SMTP_PORT',
   'email.smtpUser': 'SMTP_USER',
-  'email.smtpPass': 'SMTP_PASS',
+  'email.smtpPass': 'SMTP_PASSWORD',
   'email.fromAddress': 'SMTP_FROM_EMAIL',
   'email.fromName': 'EMAIL_FROM_NAME',
   'sms.twilioAccountSid': 'TWILIO_ACCOUNT_SID',
@@ -40,11 +42,17 @@ const ENV_VAR_MAP: Record<string, string> = {
   'storage.supabaseUrl': 'SUPABASE_URL',
   'storage.supabaseServiceKey': 'SUPABASE_SERVICE_KEY',
   'storage.supabaseBucket': 'SUPABASE_BUCKET',
+  'openai.apiKey': 'OPENAI_API_KEY',
+  'openai.baseUrl': 'OPENAI_BASE_URL',
+  'openai.model': 'OPENAI_MODEL',
+  'openai.explainerEnabled': 'OPENAI_EXPLAINER_ENABLED',
 };
 
 // Default values for config keys
 const DEFAULTS: Record<string, string> = {
   'stripe.platformFeePercent': '5',
+  'email.smtpHost': 'smtp.gmail.com',
+  'email.smtpPort': '465',
   'email.fromAddress': 'noreply@eblaisian.com',
   'email.fromName': 'DermaConsent',
   'storage.supabaseBucket': 'consent-pdfs',
@@ -52,6 +60,14 @@ const DEFAULTS: Record<string, string> = {
   'plans.starterLimit': '100',
   'plans.professionalLimit': '-1',
   'plans.enterpriseLimit': '-1',
+  'openai.baseUrl': 'https://api.openai.com/v1',
+  'openai.model': 'gpt-4o-mini',
+  'openai.explainerEnabled': 'true',
+  'notifications.consentLinkEnabled': 'true',
+  'notifications.consentReminderEnabled': 'true',
+  'notifications.inviteEnabled': 'true',
+  'notifications.welcomeEnabled': 'true',
+  'notifications.subscriptionAlertsEnabled': 'true',
 };
 
 // Which keys are secrets
@@ -64,6 +80,7 @@ const SECRET_KEYS = new Set([
   'sms.twilioAccountSid',
   'sms.twilioAuthToken',
   'storage.supabaseServiceKey',
+  'openai.apiKey',
 ]);
 
 // Config key metadata
@@ -79,6 +96,8 @@ const CONFIG_METADATA: Record<string, { category: string; description: string; i
   'stripe.enterpriseMonthlyPriceId': { category: 'stripe', description: 'Enterprise Plan Monthly Price ID', isSecret: false },
   'stripe.enterpriseYearlyPriceId': { category: 'stripe', description: 'Enterprise Plan Yearly Price ID', isSecret: false },
   'stripe.platformFeePercent': { category: 'stripe', description: 'Platform Fee Percentage', isSecret: false },
+  'email.smtpHost': { category: 'email', description: 'SMTP Host (e.g. smtp.gmail.com)', isSecret: false },
+  'email.smtpPort': { category: 'email', description: 'SMTP Port (e.g. 465 for TLS)', isSecret: false },
   'email.smtpUser': { category: 'email', description: 'SMTP Username (Gmail address)', isSecret: false },
   'email.smtpPass': { category: 'email', description: 'SMTP Password (App Password)', isSecret: true },
   'email.fromAddress': { category: 'email', description: 'Sender Email Address', isSecret: false },
@@ -93,6 +112,15 @@ const CONFIG_METADATA: Record<string, { category: string; description: string; i
   'plans.starterLimit': { category: 'plans', description: 'Starter Plan Monthly Consent Limit', isSecret: false },
   'plans.professionalLimit': { category: 'plans', description: 'Professional Plan Monthly Consent Limit (-1 = unlimited)', isSecret: false },
   'plans.enterpriseLimit': { category: 'plans', description: 'Enterprise Plan Monthly Consent Limit (-1 = unlimited)', isSecret: false },
+  'openai.apiKey': { category: 'ai', description: 'OpenAI API Key (sk-...) — not needed for Ollama', isSecret: true },
+  'openai.baseUrl': { category: 'ai', description: 'API Base URL (default: OpenAI, set to http://localhost:11434/v1 for Ollama)', isSecret: false },
+  'openai.model': { category: 'ai', description: 'Model (e.g. gpt-4o-mini, llama3.2, mistral)', isSecret: false },
+  'openai.explainerEnabled': { category: 'ai', description: 'Enable AI Consent Explainer on patient forms (true/false)', isSecret: false },
+  'notifications.consentLinkEnabled': { category: 'notifications', description: 'Send consent link emails to patients', isSecret: false },
+  'notifications.consentReminderEnabled': { category: 'notifications', description: 'Send consent reminder emails to admins', isSecret: false },
+  'notifications.inviteEnabled': { category: 'notifications', description: 'Send team invite emails', isSecret: false },
+  'notifications.welcomeEnabled': { category: 'notifications', description: 'Send welcome emails on registration', isSecret: false },
+  'notifications.subscriptionAlertsEnabled': { category: 'notifications', description: 'Send trial expiry and payment failure alerts', isSecret: false },
 };
 
 const CACHE_TTL_MS = 60_000; // 60 seconds
@@ -272,6 +300,10 @@ export class PlatformConfigService {
         return this.testStorage();
       case 'plans':
         return { success: true, message: 'Plan limits are configuration values — no connection test needed.' };
+      case 'notifications':
+        return { success: true, message: 'Notification toggles are configuration values — no connection test needed.' };
+      case 'ai':
+        return this.testOpenAI();
       default:
         return { success: false, message: `Unknown category: ${category}` };
     }
@@ -361,6 +393,31 @@ export class PlatformConfigService {
       return { success: true, message: 'Twilio connection successful' };
     } catch (error) {
       return { success: false, message: `Twilio connection failed: ${(error as Error).message}` };
+    }
+  }
+
+  private async testOpenAI(): Promise<{ success: boolean; message: string }> {
+    try {
+      const baseUrl = (await this.get('openai.baseUrl')) || 'https://api.openai.com/v1';
+      const apiKey = await this.get('openai.apiKey');
+      const isOllama = baseUrl !== 'https://api.openai.com/v1';
+
+      if (!isOllama && !apiKey) {
+        return { success: false, message: 'OpenAI API key not configured' };
+      }
+
+      const res = await fetch(`${baseUrl}/models`, {
+        headers: { Authorization: `Bearer ${apiKey || 'ollama'}` },
+      });
+      if (!res.ok) {
+        const body = await res.text();
+        return { success: false, message: `AI API error: ${res.status} ${body.substring(0, 100)}` };
+      }
+
+      const provider = isOllama ? 'Ollama' : 'OpenAI';
+      return { success: true, message: `${provider} connection successful` };
+    } catch (error) {
+      return { success: false, message: `AI connection failed: ${(error as Error).message}` };
     }
   }
 

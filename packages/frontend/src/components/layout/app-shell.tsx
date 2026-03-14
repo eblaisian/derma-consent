@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import {
   Menu,
   X,
+  CircleHelp,
   LayoutDashboard,
   User,
   BarChart3,
@@ -19,25 +20,36 @@ import {
   ScrollText,
   CreditCard,
   Settings,
+  MessageSquare,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { useAiStatus } from '@/hooks/use-ai-status';
 
 const mobileNavItems = [
-  { href: '/dashboard', labelKey: 'dashboard' as const, icon: LayoutDashboard },
-  { href: '/patients', labelKey: 'patients' as const, icon: User },
-  { href: '/analytics', labelKey: 'analytics' as const, icon: BarChart3 },
-  { href: '/team', labelKey: 'team' as const, icon: Users },
-  { href: '/billing', labelKey: 'billing' as const, icon: CreditCard },
-  { href: '/settings', labelKey: 'settings' as const, icon: Settings },
-  { href: '/audit', labelKey: 'audit' as const, icon: ScrollText },
+  { href: '/dashboard', labelKey: 'dashboard' as const, icon: LayoutDashboard, roles: ['ADMIN', 'ARZT', 'EMPFANG'] },
+  { href: '/patients', labelKey: 'patients' as const, icon: User, roles: ['ADMIN', 'ARZT'] },
+  { href: '/communications', labelKey: 'communications' as const, icon: MessageSquare, roles: ['ADMIN', 'ARZT', 'EMPFANG'], aiFeature: 'communications' as const },
+  { href: '/analytics', labelKey: 'analytics' as const, icon: BarChart3, roles: ['ADMIN'] },
+  { href: '/team', labelKey: 'team' as const, icon: Users, roles: ['ADMIN'] },
+  { href: '/billing', labelKey: 'billing' as const, icon: CreditCard, roles: ['ADMIN'] },
+  { href: '/settings', labelKey: 'settings' as const, icon: Settings, roles: ['ADMIN'] },
+  { href: '/audit', labelKey: 'audit' as const, icon: ScrollText, roles: ['ADMIN'] },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const tNav = useTranslations('nav');
-  useSession();
+  const { data: session } = useSession();
+  const userRole = session?.user?.role || 'EMPFANG';
+  const { features: aiFeatures } = useAiStatus();
+  const filteredMobileNav = mobileNavItems.filter((item) => {
+    if (!item.roles.includes(userRole)) return false;
+    if (item.aiFeature && !aiFeatures[item.aiFeature as keyof typeof aiFeatures]) return false;
+    return true;
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -47,6 +59,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <VaultProvider>
+    <TooltipProvider delayDuration={300}>
     <div className="flex h-screen">
       {/* Skip to content link */}
       <a
@@ -81,9 +94,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" asChild aria-label={tNav('helpCenter')}>
+                  <a href="https://docs.consent.eblaisian.com" target="_blank" rel="noopener noreferrer">
+                    <CircleHelp className="h-4 w-4" />
+                  </a>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{tNav('helpCenter')}</TooltipContent>
+            </Tooltip>
             <VaultStatusButton />
             <ThemeToggle />
-            <LanguageSwitcher />
+            <div className="hidden md:block">
+              <LanguageSwitcher />
+            </div>
           </div>
         </header>
 
@@ -104,7 +129,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               aria-label="Mobile navigation"
             >
               <div className="flex flex-col gap-0.5">
-                {mobileNavItems.map((item) => {
+                {filteredMobileNav.map((item) => {
                   const isActive = pathname.startsWith(item.href);
                   const Icon = item.icon;
                   return (
@@ -140,6 +165,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <VaultUnlockModal />
     </div>
+    </TooltipProvider>
     </VaultProvider>
   );
 }

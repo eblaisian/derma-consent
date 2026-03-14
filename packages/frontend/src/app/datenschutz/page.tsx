@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { company } from '@/lib/company';
 
 export default function DatenschutzPage() {
   return (
@@ -25,11 +26,11 @@ export default function DatenschutzPage() {
           <section>
             <h2 className="text-lg font-semibold text-foreground">2. Verantwortliche Stelle</h2>
             <p>
-              [COMPANY_NAME]<br />
-              [ADDRESS_STREET]<br />
-              [ADDRESS_CITY]<br />
-              E-Mail: [EMAIL]<br />
-              Telefon: [PHONE]
+              {company.name}<br />
+              {company.street}<br />
+              {company.city}<br />
+              E-Mail: {company.email}<br />
+              Telefon: {company.phone}
             </p>
             <p>
               Verantwortliche Stelle ist die natuerliche oder juristische Person, die allein oder gemeinsam mit anderen ueber
@@ -106,7 +107,7 @@ export default function DatenschutzPage() {
             <h2 className="text-lg font-semibold text-foreground">8. Zahlungsabwicklung</h2>
             <p>
               Fuer die Zahlungsabwicklung nutzen wir den Dienst Stripe. Bei einer Zahlung werden Ihre Zahlungsdaten
-              direkt an Stripe uebermittelt. DermaConsent speichert keine Kreditkarten- oder Bankdaten.
+              direkt an Stripe uebermittelt. {company.productName} speichert keine Kreditkarten- oder Bankdaten.
               Die Datenschutzerklaerung von Stripe finden Sie unter:{' '}
               <a href="https://stripe.com/de/privacy" target="_blank" rel="noopener noreferrer" className="text-primary underline">
                 https://stripe.com/de/privacy
@@ -129,7 +130,7 @@ export default function DatenschutzPage() {
               Wir behalten uns vor, diese Datenschutzerklaerung anzupassen, damit sie stets den aktuellen rechtlichen
               Anforderungen entspricht oder um Aenderungen unserer Leistungen umzusetzen.
             </p>
-            <p className="text-xs text-muted-foreground mt-4">Stand: Februar 2026</p>
+            <p className="text-xs text-muted-foreground mt-4">Stand: Maerz 2026</p>
           </section>
         </div>
       </div>

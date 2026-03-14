@@ -178,6 +178,11 @@ export default function AnalyticsPage() {
               <Skeleton className="h-9 w-40" />
               <Skeleton className="h-4 w-56 mt-2" />
             </>
+          ) : revenue?.totalRevenue === 0 && revenue?.transactionCount === 0 ? (
+            <div className="py-4">
+              <p className="text-sm text-muted-foreground">{t('noRevenue')}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t('noRevenueDescription')}</p>
+            </div>
           ) : (
             <>
               <p className="text-3xl font-bold">
@@ -211,6 +216,9 @@ export default function AnalyticsPage() {
                 style={{ width: `${conversion.conversionRate}%` }}
               />
             </div>
+            <p className="mt-2 text-sm font-medium tabular-nums">
+              {conversion.conversionRate.toFixed(1)}%
+            </p>
           </CardContent>
         </Card>
       )}
@@ -223,23 +231,34 @@ export default function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             {typeData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={typeData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    dataKey="value"
-                    label={(entry) => entry.name}
-                  >
-                    {typeData.map((_, index) => (
-                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
+              <>
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={typeData}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={90}
+                      dataKey="value"
+                      label={false}
+                    >
+                      {typeData.map((_, index) => (
+                        <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1.5">
+                  {typeData.map((entry, index) => (
+                    <div key={entry.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <div className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                      <span className="truncate max-w-[120px]">{entry.name}</span>
+                      <span className="tabular-nums font-medium text-foreground">({entry.value})</span>
+                    </div>
+                  ))}
+                </div>
+              </>
             ) : (
               <p className="text-center text-muted-foreground py-12">{t('noData')}</p>
             )}
@@ -249,7 +268,9 @@ export default function AnalyticsPage() {
         {/* By Period */}
         <Card>
           <CardHeader>
-            <CardTitle>{t('last30Days')}</CardTitle>
+            <CardTitle>
+              {dateRange === '7d' ? t('last7Days') : dateRange === '30d' ? t('last30Days') : t('last90Days')}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {byPeriod && byPeriod.length > 0 ? (

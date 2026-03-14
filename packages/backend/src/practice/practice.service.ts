@@ -65,6 +65,22 @@ export class PracticeService {
     });
   }
 
+  async rotateKey(practiceId: string, encryptedPrivKey: object) {
+    const practice = await this.prisma.practice.findUnique({
+      where: { id: practiceId },
+    });
+
+    if (!practice) {
+      throw new NotFoundException('Practice not found');
+    }
+
+    return this.prisma.practice.update({
+      where: { id: practiceId },
+      data: { encryptedPrivKey },
+      select: { id: true, updatedAt: true },
+    });
+  }
+
   async findById(id: string) {
     const practice = await this.prisma.practice.findUnique({
       where: { id },

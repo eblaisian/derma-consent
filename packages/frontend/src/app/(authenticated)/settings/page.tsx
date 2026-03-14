@@ -10,6 +10,7 @@ import { usePractice } from '@/hooks/use-practice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Upload } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { TwoFactorSetup } from '@/components/settings/two-factor-setup';
@@ -48,6 +49,7 @@ export default function SettingsPage() {
   const [isSavingTypes, setIsSavingTypes] = useState(false);
   const [educationVideos, setEducationVideos] = useState<Record<string, string>>({});
   const [isSavingVideos, setIsSavingVideos] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   // Track original values for dirty-state detection
   const [originalPractice, setOriginalPractice] = useState({ name: '', dsgvoContact: '' });
@@ -156,10 +158,7 @@ export default function SettingsPage() {
     );
   };
 
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const handleLogoFile = async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -214,9 +213,14 @@ export default function SettingsPage() {
               <Label>{t('dsgvoContact')}</Label>
               <Input type="email" value={dsgvoContact} onChange={(e) => setDsgvoContact(e.target.value)} />
             </div>
-            <Button onClick={handleSavePractice} disabled={isSavingPractice || !isPracticeDirty}>
-              {isSavingPractice ? t('saving') : t('savePracticeInfo')}
-            </Button>
+            <div>
+              <Button onClick={handleSavePractice} disabled={isSavingPractice || !isPracticeDirty}>
+                {isSavingPractice ? t('saving') : t('savePracticeInfo')}
+              </Button>
+              {!isPracticeDirty && !isSavingPractice && (
+                <p className="text-xs text-muted-foreground mt-1.5">{t('noChanges')}</p>
+              )}
+            </div>
           </div>
 
           <div className="surface-raised p-6 space-y-4">
@@ -224,23 +228,40 @@ export default function SettingsPage() {
               <h3 className="text-section-head">{t('logoTitle')}</h3>
               <p className="text-sm text-muted-foreground mt-1">{t('logoDescription')}</p>
             </div>
-            {settings?.logoUrl && (
-              <img
-                src={settings.logoUrl}
-                alt={t('logoAlt')}
-                className="h-16 w-auto object-contain"
-              />
-            )}
-            <div>
-              <Label htmlFor="logo-upload">{t('logoUpload')}</Label>
-              <Input
+            <label
+              htmlFor="logo-upload"
+              className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 transition-colors ${
+                isDragging ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-muted/50'
+              }`}
+              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDragging(false);
+                const file = e.dataTransfer.files[0];
+                if (file) handleLogoFile(file);
+              }}
+            >
+              {settings?.logoUrl ? (
+                <div className="flex flex-col items-center gap-3">
+                  <img src={settings.logoUrl} alt={t('logoAlt')} className="h-16 w-auto object-contain" />
+                  <span className="text-xs text-muted-foreground">{t('logoReplace')}</span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                  <Upload className="size-8" />
+                  <span className="text-sm">{t('logoDragHint')}</span>
+                  <span className="text-xs">{t('logoFormatHint')}</span>
+                </div>
+              )}
+              <input
                 id="logo-upload"
                 type="file"
-                accept="image/*"
-                onChange={handleLogoUpload}
-                className="mt-1"
+                accept="image/png,image/jpeg,image/svg+xml"
+                onChange={(e) => { const file = e.target.files?.[0]; if (file) handleLogoFile(file); }}
+                className="sr-only"
               />
-            </div>
+            </label>
           </div>
         </TabsContent>
 
@@ -277,9 +298,14 @@ export default function SettingsPage() {
                 />
               </div>
             </div>
-            <Button onClick={handleSaveSettings} disabled={isSaving || !isConsentDirty}>
-              {isSaving ? t('saving') : t('save')}
-            </Button>
+            <div>
+              <Button onClick={handleSaveSettings} disabled={isSaving || !isConsentDirty}>
+                {isSaving ? t('saving') : t('save')}
+              </Button>
+              {!isConsentDirty && !isSaving && (
+                <p className="text-xs text-muted-foreground mt-1.5">{t('noChanges')}</p>
+              )}
+            </div>
           </div>
 
           <div className="surface-raised p-6 space-y-4">
@@ -300,9 +326,14 @@ export default function SettingsPage() {
                 </label>
               ))}
             </div>
-            <Button onClick={handleSaveConsentTypes} disabled={isSavingTypes || !isTypesDirty}>
-              {isSavingTypes ? t('saving') : t('saveConsentTypes')}
-            </Button>
+            <div>
+              <Button onClick={handleSaveConsentTypes} disabled={isSavingTypes || !isTypesDirty}>
+                {isSavingTypes ? t('saving') : t('saveConsentTypes')}
+              </Button>
+              {!isTypesDirty && !isSavingTypes && (
+                <p className="text-xs text-muted-foreground mt-1.5">{t('noChanges')}</p>
+              )}
+            </div>
           </div>
         </TabsContent>
 
@@ -326,9 +357,14 @@ export default function SettingsPage() {
                 />
               </div>
             ))}
-            <Button onClick={handleSaveVideos} disabled={isSavingVideos || !isVideosDirty}>
-              {isSavingVideos ? t('saving') : t('save')}
-            </Button>
+            <div>
+              <Button onClick={handleSaveVideos} disabled={isSavingVideos || !isVideosDirty}>
+                {isSavingVideos ? t('saving') : t('save')}
+              </Button>
+              {!isVideosDirty && !isSavingVideos && (
+                <p className="text-xs text-muted-foreground mt-1.5">{t('noChanges')}</p>
+              )}
+            </div>
           </div>
         </TabsContent>
 

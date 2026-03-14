@@ -62,7 +62,30 @@
     "copyright": "2026 DermaConsent. جميع الحقوق محفوظة.",
     "impressum": "البيانات القانونية",
     "datenschutz": "سياسة الخصوصية",
-    "kontakt": "اتصل بنا"
+    "kontakt": "اتصل بنا",
+    "navFeatures": "الميزات",
+    "navPricing": "الأسعار",
+    "trustBadge1": "متوافق مع GDPR",
+    "trustBadge2": "مشفر في متصفحك",
+    "trustBadge3": "بنية بدون معرفة",
+    "trustBadge4": "صنع في ألمانيا",
+    "stat1Value": "AES-256",
+    "stat1Label": "تشفير بمستوى عسكري",
+    "stat2Value": "8",
+    "stat2Label": "لغات مدعومة",
+    "stat3Value": "6",
+    "stat3Label": "أنواع العلاج المغطاة",
+    "comparisonTitle": "مقارنة الخطط",
+    "comparisonFeature": "الميزة",
+    "compUsers": "أعضاء الفريق",
+    "compConsents": "نماذج الموافقة",
+    "compEncryption": "تشفير بدون معرفة",
+    "compAnalytics": "تحليلات متقدمة",
+    "compSupport": "دعم ذو أولوية",
+    "compSLA": "ضمان SLA",
+    "compDedicated": "مدير حساب مخصص",
+    "footerLegal": "قانوني",
+    "footerContact": "اتصل بنا"
   },
   "login": {
     "title": "DermaConsent",
@@ -95,7 +118,15 @@
     "resendVerification": "إعادة إرسال بريد التحقق",
     "resending": "جارٍ الإرسال...",
     "verificationResent": "تم إرسال بريد التحقق. يرجى التحقق من صندوق الوارد.",
-    "verificationResendFailed": "فشل إعادة إرسال بريد التحقق. يرجى المحاولة مرة أخرى."
+    "verificationResendFailed": "فشل إعادة إرسال بريد التحقق. يرجى المحاولة مرة أخرى.",
+    "brandTagline": "إدارة الموافقة مع خصوصية أولوية لعيادات الأمراض الجلدية",
+    "trustEncryption": "بيانات المريض مشفرة في متصفحك — لا نراها أبداً",
+    "trustCompliance": "متوافق بالكامل مع GDPR بالتصميم",
+    "trustLanguages": "8 لغات — نماذج موافقة بلغة مرضاك",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "privacyPrefix": "بتسجيل الدخول، أنت توافق على",
+    "privacyLink": "سياسة الخصوصية"
   },
   "forgotPassword": {
     "title": "نسيت كلمة المرور",
@@ -222,7 +253,18 @@
     "educationVideoHint": "يرجى مشاهدة هذا الفيديو القصير حول الإجراء قبل ملء النموذج.",
     "footerEncrypted": "مشفر من طرف إلى طرف",
     "footerGdpr": "متوافق مع DSGVO/GDPR",
-    "footerEu": "البيانات مخزنة في الاتحاد الأوروبي"
+    "footerEu": "البيانات مخزنة في الاتحاد الأوروبي",
+    "explainerButton": "اشرح لي هذا",
+    "explainerTitle": "ماذا يعني هذا النموذج؟",
+    "explainerSubtitle": "شرح مولّد بالذكاء الاصطناعي لإجراءك بلغة بسيطة.",
+    "explainerLoading": "جارٍ إنشاء الشرح...",
+    "explainerError": "تعذّر تحميل الشرح. يرجى المحاولة مرة أخرى.",
+    "explainerRetry": "إعادة المحاولة",
+    "explainerDisclaimer": "هذا الشرح مولّد بالذكاء الاصطناعي لأغراض تعليمية ولا يغني عن المشورة الطبية.",
+    "stepForm": "النموذج",
+    "stepQuiz": "اختبار",
+    "stepSignature": "التوقيع",
+    "stepReview": "مراجعة"
   },
   "consentTypes": {
     "BOTOX": "Botox / توكسين البوتولينوم",
@@ -289,7 +331,11 @@
     "statTotal": "إجمالي الموافقات",
     "statPending": "قيد الانتظار",
     "statCompleted": "المكتملة هذا الشهر",
-    "statPatients": "المرضى"
+    "statPatients": "المرضى",
+    "needsAttentionTitle": "يحتاج انتباه",
+    "chipPendingLabel": "موافقات معلقة",
+    "chipExpiringSoonLabel": "تنتهي خلال 7 أيام",
+    "chipRecentlySignedLabel": "موقعة حديثاً"
   },
   "settings": {
     "title": "الإعدادات",
@@ -318,7 +364,11 @@
     "logoUploaded": "تم رفع الشعار",
     "logoUploadError": "خطأ في رفع الشعار",
     "educationVideos": "فيديوهات تعليمية",
-    "educationVideosDescription": "أضف روابط فيديو YouTube أو Vimeo لكل نوع علاج. تظهر الفيديوهات في نموذج الموافقة."
+    "educationVideosDescription": "أضف روابط فيديو YouTube أو Vimeo لكل نوع علاج. تظهر الفيديوهات في نموذج الموافقة.",
+    "logoDragHint": "اسحب شعارك هنا أو انقر للاستعراض",
+    "logoFormatHint": "PNG، JPG أو SVG — بحد أقصى 2 ميجا",
+    "logoReplace": "استبدال الشعار",
+    "noChanges": "لا توجد تغييرات للحفظ"
   },
   "languages": {
     "title": "اللغة",
@@ -343,7 +393,9 @@
     "revenue": "الإيرادات",
     "revenueDescription": "إجمالي الإيرادات من الموافقات المدفوعة",
     "transactions": "معاملات",
-    "avg": "المتوسط"
+    "avg": "المتوسط",
+    "noRevenue": "لا توجد إيرادات مسجلة بعد",
+    "noRevenueDescription": "ستظهر الإيرادات بمجرد أن يكمل المرضى نماذج الموافقة المدفوعة."
   },
   "patients": {
     "title": "المرضى",
@@ -374,7 +426,8 @@
     "vaultRequired": "يرجى فتح الخزنة أولاً",
     "noPatients": "لا يوجد مرضى بعد.",
     "found": "تم العثور على المريض: {id}",
-    "notFound": "المريض غير موجود"
+    "notFound": "المريض غير موجود",
+    "noPatientsDescription": "يتم إنشاء المرضى تلقائياً عند تقديم نماذج الموافقة."
   },
   "patientDetail": {
     "title": "تفاصيل المريض",
@@ -392,7 +445,16 @@
     "photos": "الصور",
     "photoCount": "{count} صورة",
     "treatmentPlans": "خطط العلاج",
-    "treatmentPlanCount": "{count} خطة علاج"
+    "treatmentPlanCount": "{count} خطة علاج",
+    "noConsentsDescription": "أرسل نموذج موافقة لهذا المريض للبدء.",
+    "deleteConfirmTitle": "حذف المريض",
+    "deleteConfirmDescription": "سيؤدي هذا إلى حذف هذا المريض وجميع البيانات المرتبطة به بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
+    "cancel": "إلغاء",
+    "summaryTitle": "نظرة سريرية",
+    "summaryConsents": "الموافقات",
+    "summaryPlans": "خطط العلاج",
+    "summaryPhotos": "الصور",
+    "summaryLastActivity": "آخر نشاط"
   },
   "consentStatus": {
     "PENDING": "قيد الانتظار",
@@ -425,7 +487,11 @@
     "memberRemoved": "تم إزالة العضو",
     "removeError": "خطأ في إزالة العضو",
     "roleChanged": "تم تغيير الدور",
-    "roleChangeError": "خطأ في تغيير الدور"
+    "roleChangeError": "خطأ في تغيير الدور",
+    "removeMember": "إزالة عضو",
+    "removeConfirmTitle": "إزالة عضو الفريق",
+    "removeConfirmDescription": "هل أنت متأكد أنك تريد إزالة {name} من الفريق؟ سيفقد الوصول على الفور.",
+    "cancel": "إلغاء"
   },
   "roles": {
     "ADMIN": "مدير",
@@ -464,7 +530,8 @@
     "stripeDashboard": "لوحة تحكم Stripe",
     "monthly": "شهري",
     "yearly": "سنوي",
-    "yearlySavings": "(وفر 20%)"
+    "yearlySavings": "(وفر 20%)",
+    "currentPlanActive": "خطتك الحالية"
   },
   "subscriptionPlans": {
     "FREE_TRIAL": "تجربة مجانية",
@@ -513,31 +580,35 @@
     "next": "التالي",
     "noEntries": "لم يتم العثور على سجلات.",
     "exportStarted": "بدأ التصدير",
-    "exportError": "خطأ في التصدير"
+    "exportError": "خطأ في التصدير",
+    "unknownUser": "مستخدم غير معروف"
   },
   "auditActions": {
-    "CONSENT_CREATED": "تم إنشاء الموافقة",
-    "CONSENT_SUBMITTED": "تم تقديم الموافقة",
-    "CONSENT_REVOKED": "تم إلغاء الموافقة",
-    "CONSENT_VIEWED": "تم عرض الموافقة",
-    "VAULT_UNLOCKED": "تم فتح الخزنة",
-    "VAULT_LOCKED": "تم قفل الخزنة",
-    "PATIENT_CREATED": "تم إنشاء المريض",
-    "PATIENT_VIEWED": "تم عرض المريض",
-    "TEAM_MEMBER_INVITED": "تمت دعوة عضو",
-    "TEAM_MEMBER_REMOVED": "تم إزالة عضو",
-    "TEAM_MEMBER_ROLE_CHANGED": "تم تغيير الدور",
-    "PRACTICE_SETTINGS_UPDATED": "تم تحديث الإعدادات",
-    "SUBSCRIPTION_CREATED": "تم إنشاء الاشتراك",
-    "SUBSCRIPTION_CANCELLED": "تم إلغاء الاشتراك",
-    "DATA_EXPORTED": "تم تصدير البيانات",
-    "DATA_DELETED": "تم حذف البيانات",
+    "CONSENT_CREATED": "{actor} أنشأ نموذج موافقة",
+    "CONSENT_SUBMITTED": "{actor} قدم نموذج موافقة",
+    "CONSENT_REVOKED": "{actor} ألغى موافقة",
+    "CONSENT_VIEWED": "{actor} عرض نموذج موافقة",
+    "VAULT_UNLOCKED": "{actor} فتح الخزنة",
+    "VAULT_LOCKED": "{actor} أغلق الخزنة",
+    "PATIENT_CREATED": "{actor} أضاف مريضًا",
+    "PATIENT_VIEWED": "{actor} عرض مريضًا",
+    "TEAM_MEMBER_INVITED": "{actor} دعا عضو فريق",
+    "TEAM_MEMBER_REMOVED": "{actor} أزال عضو فريق",
+    "TEAM_MEMBER_ROLE_CHANGED": "{actor} غيّر دور فريق",
+    "PRACTICE_SETTINGS_UPDATED": "{actor} حدّث إعدادات العيادة",
+    "SUBSCRIPTION_CREATED": "{actor} أنشأ اشتراكًا",
+    "SUBSCRIPTION_CANCELLED": "{actor} ألغى الاشتراك",
+    "DATA_EXPORTED": "{actor} صدّر البيانات",
+    "DATA_DELETED": "{actor} حذف البيانات",
     "PHOTO_UPLOADED": "تم رفع الصورة",
-    "PHOTO_VIEWED": "تم عرض الصورة",
+    "PHOTO_VIEWED": "{actor} عرض صورة",
     "PHOTO_DELETED": "تم حذف الصورة",
-    "TREATMENT_PLAN_CREATED": "تم إنشاء خطة العلاج",
+    "TREATMENT_PLAN_CREATED": "{actor} أنشأ خطة علاج",
     "TREATMENT_PLAN_UPDATED": "تم تحديث خطة العلاج",
-    "TREATMENT_PLAN_VIEWED": "تم عرض خطة العلاج"
+    "TREATMENT_PLAN_VIEWED": "{actor} عرض خطة علاج",
+    "LOGIN_SUCCESS": "{actor} سجّل الدخول",
+    "LOGIN_FAILED": "محاولة تسجيل دخول فاشلة لـ {actor}",
+    "ACCOUNT_LOCKED": "تم قفل الحساب لـ {actor}"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -546,7 +617,9 @@
     "team": "الفريق",
     "billing": "الفواتير",
     "settings": "الإعدادات",
-    "audit": "سجل التدقيق"
+    "audit": "سجل التدقيق",
+    "helpCenter": "مركز المساعدة",
+    "communications": "الاتصالات"
   },
   "sidebar": {
     "overview": "نظرة عامة",
@@ -589,7 +662,10 @@
     "daysAgo": "منذ {count} يوم",
     "emptyTitle": "لا توجد نماذج موافقة بعد",
     "emptyDescription": "أنشئ أول نموذج موافقة وأرسله إلى مريض.",
-    "emptyAction": "إنشاء نموذج موافقة"
+    "emptyAction": "إنشاء نموذج موافقة",
+    "filterByStatus": "تصفية حسب الحالة",
+    "allStatuses": "جميع الحالات",
+    "risk": "المخاطر"
   },
   "newConsent": {
     "button": "موافقة جديدة",
@@ -636,7 +712,10 @@
     "autoLockWarning": "سيتم قفل الخزنة تلقائيًا خلال دقيقة واحدة",
     "stayActive": "البقاء نشطًا",
     "lockNow": "قفل الآن",
-    "keyboardShortcut": "نصيحة: اضغط Ctrl+Shift+L للفتح في أي وقت"
+    "keyboardShortcut": "نصيحة: اضغط Ctrl+Shift+L للفتح في أي وقت",
+    "unlockBannerTitle": "بيانات المريض مشفرة",
+    "unlockBannerDescription": "افتح خزنتك باستخدام كلمة المرور الرئيسية لعرض أسماء المرضى والتفاصيل.",
+    "unlockAction": "فتح الخزنة"
   },
   "decryptedViewer": {
     "title": "البيانات المفكوكة التشفير",
@@ -657,7 +736,18 @@
     "firstConsentDescription": "انقر أدناه لإنشاء أول نموذج موافقة. ستختار نوع العلاج وسنقوم بإنشاء رابط آمن يمكنك إرساله إلى مريضك.",
     "next": "التالي",
     "back": "رجوع",
-    "createFirst": "إنشاء أول موافقة"
+    "createFirst": "إنشاء أول موافقة",
+    "checklistTitle": "ابدأ مع DermaConsent",
+    "stepsComplete": "{done} من {total} خطوات مكتملة",
+    "step_vault": "حدد كلمة المرور الرئيسية",
+    "step_logo": "ارفع شعار عيادتك",
+    "step_team": "ادعُ أول عضو في فريقك",
+    "step_consent": "أرسل أول نموذج موافقة",
+    "action_vault": "إعداد",
+    "action_logo": "رفع",
+    "action_team": "دعوة",
+    "action_consent": "إنشاء",
+    "dismiss": "إغلاق"
   },
   "metadata": {
     "description": "نماذج موافقة رقمية متوافقة مع GDPR لعيادات الأمراض الجلدية"
@@ -684,7 +774,8 @@
     "noAfterPhotos": "لا توجد صور بعد",
     "consent": "موافقة التصوير",
     "consentGranted": "تم منح الموافقة",
-    "consentNotGranted": "لا توجد موافقة"
+    "consentNotGranted": "لا توجد موافقة",
+    "noPhotosDescription": "قم برفع الصور لتتبع تقدم العلاج والنتائج."
   },
   "bodyRegions": {
     "FOREHEAD": "الجبهة",
@@ -749,7 +840,8 @@
     "selectAreas": "اختر مناطق العلاج",
     "noAreasSelected": "لم يتم اختيار مناطق علاج",
     "areasCount": "{count} مناطق",
-    "customize": "تخصيص"
+    "customize": "تخصيص",
+    "noPlansDescription": "قم بإنشاء خطة علاج لتوثيق نقاط الحقن والمنتجات."
   },
   "treatmentTemplate": {
     "pickTemplate": "اختر قالباً",
@@ -989,6 +1081,110 @@
     "practiceNotFoundDescription": "العيادة التي تبحث عنها غير موجودة أو تم حذفها.",
     "errorLoading": "فشل تحميل البيانات. يرجى المحاولة مرة أخرى.",
     "backToPractices": "العودة إلى العيادات",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "aiConfig": "الذكاء الاصطناعي",
+    "notificationsConfig": "الإشعارات",
+    "sendTestEmail": "إرسال بريد تجريبي لي",
+    "sendTestSms": "إرسال رسالة قصيرة تجريبية",
+    "enterTestPhone": "أدخل رقم الهاتف لاختبار الرسائل القصيرة:",
+    "configurationDescription": "إدارة تكاملات المنصة وبيانات الاعتماد وإعدادات الإشعارات.",
+    "valueRequired": "يرجى إدخال قيمة",
+    "resetConfirm": "إعادة تعيين هذا الإعداد إلى القيمة الافتراضية؟ لا يمكن التراجع عن هذا الإجراء.",
+    "resetSuccess": "تمت إعادة التعيين إلى القيمة الافتراضية",
+    "enterNewValue": "أدخل قيمة جديدة..."
+  },
+  "pagination": {
+    "showing": "عرض {start}–{end} من {total}",
+    "previous": "السابق",
+    "next": "التالي"
+  },
+  "auditActionLabels": {
+    "CONSENT_CREATED": "إنشاء موافقة",
+    "CONSENT_SUBMITTED": "موافقة مقدمة",
+    "CONSENT_REVOKED": "موافقة ملغاة",
+    "CONSENT_VIEWED": "موافقة معروضة",
+    "VAULT_UNLOCKED": "خزنة مفتوحة",
+    "VAULT_LOCKED": "خزنة مغلقة",
+    "PATIENT_CREATED": "مريض مضاف",
+    "PATIENT_VIEWED": "مريض معروض",
+    "TEAM_MEMBER_INVITED": "عضو مدعو",
+    "TEAM_MEMBER_REMOVED": "عضو مُزال",
+    "TEAM_MEMBER_ROLE_CHANGED": "تغيير دور",
+    "PRACTICE_SETTINGS_UPDATED": "تحديث إعدادات",
+    "SUBSCRIPTION_CREATED": "اشتراك مُنشأ",
+    "SUBSCRIPTION_CANCELLED": "اشتراك ملغى",
+    "DATA_EXPORTED": "بيانات مصدّرة",
+    "DATA_DELETED": "بيانات محذوفة",
+    "LOGIN_SUCCESS": "تسجيل دخول",
+    "LOGIN_FAILED": "دخول فاشل",
+    "ACCOUNT_LOCKED": "حساب مقفل",
+    "PHOTO_VIEWED": "صورة معروضة",
+    "TREATMENT_PLAN_CREATED": "خطة علاج مُنشأة",
+    "TREATMENT_PLAN_VIEWED": "خطة علاج معروضة"
+  },
+  "noShowRisk": {
+    "LOW": "منخفض",
+    "MEDIUM": "متوسط",
+    "HIGH": "مرتفع",
+    "tooltipLOW": "من المرجح الإكمال — تم الإرسال مؤخراً لإجراء روتيني.",
+    "tooltipMEDIUM": "خطر معتدل — تحقق مما إذا كان المريض قد استلم الرابط.",
+    "tooltipHIGH": "خطر مرتفع للانسحاب — فكر في إرسال تذكير الآن."
+  },
+  "communications": {
+    "pageTitle": "الاتصالات",
+    "pageSubtitle": "قم بصياغة وإرسال رسائل للمرضى مدعومة بالذكاء الاصطناعي بأي لغة.",
+    "title": "مؤلف الرسائل",
+    "subtitle": "اختر السياق واللغة — سيقوم الذكاء الاصطناعي بصياغة رسالة مهنية.",
+    "contextLabel": "سياق الرسالة",
+    "languageLabel": "لغة المريض",
+    "generateButton": "إنشاء مسودة",
+    "generating": "جارٍ الإنشاء...",
+    "draftLabel": "مسودة الرسالة (قابلة للتعديل)",
+    "copyButton": "نسخ",
+    "copied": "تم النسخ!",
+    "sendButton": "إرسال",
+    "sendDialogTitle": "إرسال رسالة",
+    "sendDialogDescription": "أرسل هذه الرسالة إلى المريض عبر البريد الإلكتروني أو الرسائل القصيرة.",
+    "recipientLabel": "المستلم",
+    "channelEmail": "بريد إلكتروني",
+    "channelSms": "رسالة قصيرة",
+    "sendAction": "إرسال الآن",
+    "sending": "جارٍ الإرسال...",
+    "sendSuccess": "تم إرسال الرسالة بنجاح",
+    "sendError": "فشل إرسال الرسالة",
+    "errorUnavailable": "الذكاء الاصطناعي غير متاح. يرجى تكوين مفتاح API في إعدادات المسؤول.",
+    "contexts": {
+      "CONSENT_REMINDER": "تذكير بنموذج الموافقة",
+      "APPOINTMENT_CONFIRMATION": "تأكيد الموعد",
+      "APPOINTMENT_REMINDER": "تذكير بالموعد",
+      "FOLLOW_UP": "متابعة بعد العلاج",
+      "TREATMENT_PREPARATION": "تعليمات التحضير للعلاج",
+      "RESULT_READY": "النتائج جاهزة",
+      "GENERAL": "رسالة عامة"
+    },
+    "fillPlaceholders": "أكمل البيانات قبل الإرسال:"
+  },
+  "aftercare": {
+    "dialogTitle": "تعليمات الرعاية اللاحقة",
+    "generate": "إنشاء تعليمات",
+    "generating": "جارٍ الإنشاء...",
+    "copy": "نسخ",
+    "copied": "تم النسخ!",
+    "print": "طباعة",
+    "regenerate": "إعادة الإنشاء",
+    "editHint": "راجع وعدّل التعليمات قبل مشاركتها مع المريض.",
+    "error": "تعذّر إنشاء تعليمات الرعاية."
+  },
+  "retention": {
+    "widgetTitle": "متابعات متأخرة",
+    "patients": "مرضى",
+    "daysSince": "أيام منذ",
+    "bookFollowUp": "حجز متابعة"
+  },
+  "analyticsInsights": {
+    "cardTitle": "تحليلات الذكاء الاصطناعي",
+    "refresh": "تحديث",
+    "loading": "جارٍ التحليل...",
+    "noAi": "تحليلات الذكاء الاصطناعي غير متاحة"
   }
 }

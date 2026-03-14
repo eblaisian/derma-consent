@@ -158,11 +158,11 @@
   --shadow-brand: 0 4px 14px oklch(0.55 0.16 270 / 0.15);
 
   /* Animation tokens */
-  --duration-fast: 100ms;
+  --duration-fast: 150ms;
   --duration-normal: 200ms;
   --duration-slow: 300ms;
   --ease-default: cubic-bezier(0.25, 0.1, 0.25, 1.0);
-  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -238,11 +238,11 @@
   --shadow-xl: 0 20px 25px oklch(0 0 0 / 0.30), 0 8px 10px oklch(0 0 0 / 0.20);
   --shadow-brand: 0 4px 14px oklch(0.65 0.16 270 / 0.25);
 
-  --duration-fast: 100ms;
+  --duration-fast: 150ms;
   --duration-normal: 200ms;
   --duration-slow: 300ms;
   --ease-default: cubic-bezier(0.25, 0.1, 0.25, 1.0);
-  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -280,7 +280,7 @@
 @keyframes fade-in-up {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -291,7 +291,7 @@
 @keyframes slide-in-down {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;
@@ -302,7 +302,7 @@
 @keyframes scale-in {
   from {
     opacity: 0;
-    transform: scale(0.97);
+    transform: scale(0.98);
   }
   to {
     opacity: 1;
@@ -339,7 +339,7 @@
 /* ─── Utility Classes ─── */
 @layer utilities {
   .transition-default {
-    transition-property: background-color, border-color, color, box-shadow;
+    transition-property: background-color, border-color, color, box-shadow, transform, opacity;
     transition-duration: var(--duration-fast);
     transition-timing-function: var(--ease-default);
   }
@@ -347,7 +347,7 @@
   .transition-elevation {
     transition-property: box-shadow, transform;
     transition-duration: var(--duration-normal);
-    transition-timing-function: var(--ease-default);
+    transition-timing-function: var(--ease-out);
   }
 
   /* Fluid typography utilities */
@@ -380,6 +380,7 @@
     background-color: var(--card);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-subtle);
   }
 
   .surface-overlay {
@@ -395,19 +396,19 @@
 
   /* Animation utilities */
   .animate-fade-in-up {
-    animation: fade-in-up 400ms var(--ease-out) both;
+    animation: fade-in-up 350ms var(--ease-out) both;
   }
 
   .animate-slide-in-down {
-    animation: slide-in-down 300ms var(--ease-out) both;
+    animation: slide-in-down 250ms var(--ease-out) both;
   }
 
   .animate-scale-in {
-    animation: scale-in 300ms var(--ease-out) both;
+    animation: scale-in 250ms var(--ease-out) both;
   }
 
   .animate-fade-in {
-    animation: fade-in 300ms var(--ease-out) both;
+    animation: fade-in 250ms var(--ease-out) both;
   }
 
   .animate-pulse-glow {
@@ -415,26 +416,53 @@
   }
 
   .animate-shake {
-    animation: shake 500ms var(--ease-default);
+    animation: shake 400ms var(--ease-default);
   }
 
   .animate-vault-success {
-    animation: vault-success 400ms var(--ease-spring);
+    animation: vault-success 350ms var(--ease-spring);
   }
 
-  /* Stagger delay utilities for card grids and lists */
+  /* Stagger delay — 40ms intervals for snappier cascades */
   .stagger-children > :nth-child(1) { animation-delay: 0ms; }
-  .stagger-children > :nth-child(2) { animation-delay: 60ms; }
-  .stagger-children > :nth-child(3) { animation-delay: 120ms; }
-  .stagger-children > :nth-child(4) { animation-delay: 180ms; }
-  .stagger-children > :nth-child(5) { animation-delay: 240ms; }
-  .stagger-children > :nth-child(6) { animation-delay: 300ms; }
-  .stagger-children > :nth-child(7) { animation-delay: 360ms; }
-  .stagger-children > :nth-child(8) { animation-delay: 420ms; }
+  .stagger-children > :nth-child(2) { animation-delay: 40ms; }
+  .stagger-children > :nth-child(3) { animation-delay: 80ms; }
+  .stagger-children > :nth-child(4) { animation-delay: 120ms; }
+  .stagger-children > :nth-child(5) { animation-delay: 160ms; }
+  .stagger-children > :nth-child(6) { animation-delay: 200ms; }
+  .stagger-children > :nth-child(7) { animation-delay: 240ms; }
+  .stagger-children > :nth-child(8) { animation-delay: 280ms; }
 
   /* Tabular numbers for stats */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ─── Interactive Patterns ─── */
+@layer base {
+  /* Button tactile press — scale down slightly on active */
+  button:not(:disabled):active,
+  [role="button"]:not(:disabled):active {
+    transform: scale(0.98);
+  }
+
+  /* Table row hover */
+  tbody tr {
+    transition: background-color var(--duration-fast) var(--ease-default);
+  }
+
+  /* Card hover — subtle lift */
+  .group\/card:hover,
+  [data-slot="card"]:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Focus-within for form field groups — highlight the container */
+  .space-y-2:has(input:focus-visible),
+  .space-y-2:has(textarea:focus-visible),
+  .space-y-2:has(select:focus-visible) {
+    border-radius: var(--radius-lg);
   }
 }
 

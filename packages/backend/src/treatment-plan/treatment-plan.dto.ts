@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsObject,
   IsDateString,
+  IsIn,
 } from 'class-validator';
 
 export enum ConsentType {
@@ -113,4 +114,21 @@ export class UpdateTemplateDto {
   @IsOptional()
   @IsObject()
   templateData?: Record<string, unknown>;
+}
+
+// --- Aftercare ---
+
+const SUPPORTED_LOCALES = ['de', 'en', 'es', 'fr', 'ar', 'tr', 'pl', 'ru'];
+
+export class GenerateAftercareDto {
+  @IsEnum(ConsentType)
+  type!: ConsentType;
+
+  @IsOptional()
+  @IsEnum(BodyRegion)
+  bodyRegion?: BodyRegion;
+
+  @IsOptional()
+  @IsIn(SUPPORTED_LOCALES)
+  locale?: string;
 }

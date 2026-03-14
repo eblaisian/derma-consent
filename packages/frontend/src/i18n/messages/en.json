@@ -62,7 +62,30 @@
     "copyright": "2026 DermaConsent. All rights reserved.",
     "impressum": "Impressum",
     "datenschutz": "Privacy Policy",
-    "kontakt": "Contact"
+    "kontakt": "Contact",
+    "navFeatures": "Features",
+    "navPricing": "Pricing",
+    "trustBadge1": "DSGVO compliant",
+    "trustBadge2": "Encrypted in your browser",
+    "trustBadge3": "Zero-knowledge architecture",
+    "trustBadge4": "Made in Germany",
+    "stat1Value": "AES-256",
+    "stat1Label": "Military-grade encryption",
+    "stat2Value": "8",
+    "stat2Label": "Languages supported",
+    "stat3Value": "6",
+    "stat3Label": "Treatment types covered",
+    "comparisonTitle": "Compare plans",
+    "comparisonFeature": "Feature",
+    "compUsers": "Team members",
+    "compConsents": "Consent forms",
+    "compEncryption": "Zero-knowledge encryption",
+    "compAnalytics": "Advanced analytics",
+    "compSupport": "Priority support",
+    "compSLA": "SLA guarantee",
+    "compDedicated": "Dedicated account manager",
+    "footerLegal": "Legal",
+    "footerContact": "Contact"
   },
   "login": {
     "title": "DermaConsent",
@@ -95,7 +118,15 @@
     "resendVerification": "Resend verification email",
     "resending": "Sending...",
     "verificationResent": "Verification email sent. Please check your inbox.",
-    "verificationResendFailed": "Failed to resend verification email. Please try again."
+    "verificationResendFailed": "Failed to resend verification email. Please try again.",
+    "brandTagline": "Privacy-first consent management for dermatology practices",
+    "trustEncryption": "Patient data encrypted in your browser — we never see it",
+    "trustCompliance": "Fully DSGVO/GDPR compliant by design",
+    "trustLanguages": "8 languages — consent forms in your patients' language",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "privacyPrefix": "By signing in you agree to our",
+    "privacyLink": "privacy policy"
   },
   "forgotPassword": {
     "title": "Forgot password",
@@ -222,7 +253,18 @@
     "educationVideoHint": "Please watch this short video about the procedure before filling out the form.",
     "footerEncrypted": "End-to-end encrypted",
     "footerGdpr": "DSGVO/GDPR-compliant",
-    "footerEu": "Data stored in EU"
+    "footerEu": "Data stored in EU",
+    "explainerButton": "Explain this to me",
+    "explainerTitle": "What does this consent form mean?",
+    "explainerSubtitle": "AI-generated plain-language explanation of your procedure.",
+    "explainerLoading": "Generating explanation...",
+    "explainerError": "Could not load explanation. Please try again.",
+    "explainerRetry": "Try again",
+    "explainerDisclaimer": "This explanation is AI-generated for educational purposes. It does not replace the medical advice of your doctor.",
+    "stepForm": "Form",
+    "stepQuiz": "Quiz",
+    "stepSignature": "Sign",
+    "stepReview": "Review"
   },
   "consentTypes": {
     "BOTOX": "Botox / Botulinum toxin",
@@ -289,7 +331,11 @@
     "statTotal": "Total Consents",
     "statPending": "Pending",
     "statCompleted": "Completed This Month",
-    "statPatients": "Patients"
+    "statPatients": "Patients",
+    "needsAttentionTitle": "Needs Attention",
+    "chipPendingLabel": "Pending consents",
+    "chipExpiringSoonLabel": "Expiring in 7 days",
+    "chipRecentlySignedLabel": "Recently signed"
   },
   "settings": {
     "title": "Settings",
@@ -318,7 +364,11 @@
     "logoUploaded": "Logo uploaded",
     "logoUploadError": "Error uploading logo",
     "educationVideos": "Education Videos",
-    "educationVideosDescription": "Add YouTube or Vimeo video URLs for each treatment type. Videos are shown on the consent form."
+    "educationVideosDescription": "Add YouTube or Vimeo video URLs for each treatment type. Videos are shown on the consent form.",
+    "logoDragHint": "Drag your logo here or click to browse",
+    "logoFormatHint": "PNG, JPG or SVG — Max 2 MB",
+    "logoReplace": "Replace logo",
+    "noChanges": "No changes to save"
   },
   "languages": {
     "title": "Language",
@@ -343,7 +393,9 @@
     "revenue": "Revenue",
     "revenueDescription": "Total revenue from paid consents",
     "transactions": "transactions",
-    "avg": "Avg"
+    "avg": "Avg",
+    "noRevenue": "No revenue recorded yet",
+    "noRevenueDescription": "Revenue will appear once patients complete paid consent forms."
   },
   "patients": {
     "title": "Patients",
@@ -374,7 +426,8 @@
     "vaultRequired": "Please unlock the vault first",
     "noPatients": "No patients yet.",
     "found": "Patient found: {id}",
-    "notFound": "Patient not found"
+    "notFound": "Patient not found",
+    "noPatientsDescription": "Patients are created automatically when consent forms are submitted."
   },
   "patientDetail": {
     "title": "Patient details",
@@ -392,7 +445,16 @@
     "photos": "Photos",
     "photoCount": "{count} Photos",
     "treatmentPlans": "Treatment Plans",
-    "treatmentPlanCount": "{count} Treatment Plans"
+    "treatmentPlanCount": "{count} Treatment Plans",
+    "noConsentsDescription": "Send a consent form to this patient to get started.",
+    "deleteConfirmTitle": "Delete patient",
+    "deleteConfirmDescription": "This will permanently delete this patient and all associated data. This action cannot be undone.",
+    "cancel": "Cancel",
+    "summaryTitle": "Clinical Overview",
+    "summaryConsents": "Consents",
+    "summaryPlans": "Treatment Plans",
+    "summaryPhotos": "Photos",
+    "summaryLastActivity": "Last Activity"
   },
   "consentStatus": {
     "PENDING": "Pending",
@@ -425,7 +487,11 @@
     "memberRemoved": "Member removed",
     "removeError": "Error removing member",
     "roleChanged": "Role changed",
-    "roleChangeError": "Error changing role"
+    "roleChangeError": "Error changing role",
+    "removeMember": "Remove member",
+    "removeConfirmTitle": "Remove team member",
+    "removeConfirmDescription": "Are you sure you want to remove {name} from the team? They will lose access immediately.",
+    "cancel": "Cancel"
   },
   "roles": {
     "ADMIN": "Administrator",
@@ -464,7 +530,8 @@
     "stripeDashboard": "Stripe Dashboard",
     "monthly": "Monthly",
     "yearly": "Yearly",
-    "yearlySavings": "(save 20%)"
+    "yearlySavings": "(save 20%)",
+    "currentPlanActive": "Your current plan"
   },
   "subscriptionPlans": {
     "FREE_TRIAL": "Free trial",
@@ -513,31 +580,35 @@
     "next": "Next",
     "noEntries": "No entries found.",
     "exportStarted": "Export started",
-    "exportError": "Error exporting"
+    "exportError": "Error exporting",
+    "unknownUser": "Unknown user"
   },
   "auditActions": {
-    "CONSENT_CREATED": "Consent created",
-    "CONSENT_SUBMITTED": "Consent submitted",
-    "CONSENT_REVOKED": "Consent revoked",
-    "CONSENT_VIEWED": "Consent viewed",
-    "VAULT_UNLOCKED": "Vault unlocked",
-    "VAULT_LOCKED": "Vault locked",
-    "PATIENT_CREATED": "Patient created",
-    "PATIENT_VIEWED": "Patient viewed",
-    "TEAM_MEMBER_INVITED": "Member invited",
-    "TEAM_MEMBER_REMOVED": "Member removed",
-    "TEAM_MEMBER_ROLE_CHANGED": "Role changed",
-    "PRACTICE_SETTINGS_UPDATED": "Settings updated",
-    "SUBSCRIPTION_CREATED": "Subscription created",
-    "SUBSCRIPTION_CANCELLED": "Subscription cancelled",
-    "DATA_EXPORTED": "Data exported",
-    "DATA_DELETED": "Data deleted",
+    "CONSENT_CREATED": "{actor} created a consent form",
+    "CONSENT_SUBMITTED": "{actor} submitted a consent form",
+    "CONSENT_REVOKED": "{actor} revoked a consent",
+    "CONSENT_VIEWED": "{actor} viewed a consent form",
+    "VAULT_UNLOCKED": "{actor} unlocked the vault",
+    "VAULT_LOCKED": "{actor} locked the vault",
+    "PATIENT_CREATED": "{actor} added a patient",
+    "PATIENT_VIEWED": "{actor} viewed a patient",
+    "TEAM_MEMBER_INVITED": "{actor} invited a team member",
+    "TEAM_MEMBER_REMOVED": "{actor} removed a team member",
+    "TEAM_MEMBER_ROLE_CHANGED": "{actor} changed a team role",
+    "PRACTICE_SETTINGS_UPDATED": "{actor} updated practice settings",
+    "SUBSCRIPTION_CREATED": "{actor} created a subscription",
+    "SUBSCRIPTION_CANCELLED": "{actor} cancelled subscription",
+    "DATA_EXPORTED": "{actor} exported data",
+    "DATA_DELETED": "{actor} deleted data",
     "PHOTO_UPLOADED": "Photo uploaded",
-    "PHOTO_VIEWED": "Photo viewed",
+    "PHOTO_VIEWED": "{actor} viewed a photo",
     "PHOTO_DELETED": "Photo deleted",
-    "TREATMENT_PLAN_CREATED": "Treatment plan created",
+    "TREATMENT_PLAN_CREATED": "{actor} created a treatment plan",
     "TREATMENT_PLAN_UPDATED": "Treatment plan updated",
-    "TREATMENT_PLAN_VIEWED": "Treatment plan viewed"
+    "TREATMENT_PLAN_VIEWED": "{actor} viewed a treatment plan",
+    "LOGIN_SUCCESS": "{actor} signed in",
+    "LOGIN_FAILED": "Failed sign-in attempt for {actor}",
+    "ACCOUNT_LOCKED": "Account locked for {actor}"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -546,7 +617,9 @@
     "team": "Team",
     "billing": "Billing",
     "settings": "Settings",
-    "audit": "Audit log"
+    "audit": "Audit log",
+    "helpCenter": "Help center",
+    "communications": "Communications"
   },
   "sidebar": {
     "overview": "Overview",
@@ -589,7 +662,10 @@
     "daysAgo": "{count}d ago",
     "emptyTitle": "No consent forms yet",
     "emptyDescription": "Create your first consent form and send it to a patient.",
-    "emptyAction": "Create Consent Form"
+    "emptyAction": "Create Consent Form",
+    "filterByStatus": "Filter by status",
+    "allStatuses": "All statuses",
+    "risk": "Risk"
   },
   "newConsent": {
     "button": "New consent",
@@ -636,7 +712,10 @@
     "autoLockWarning": "Vault will auto-lock in 1 minute",
     "stayActive": "Stay active",
     "lockNow": "Lock now",
-    "keyboardShortcut": "Tip: Press Ctrl+Shift+L to open anytime"
+    "keyboardShortcut": "Tip: Press Ctrl+Shift+L to open anytime",
+    "unlockBannerTitle": "Patient data is encrypted",
+    "unlockBannerDescription": "Unlock your vault with your master password to view patient names and details.",
+    "unlockAction": "Unlock vault"
   },
   "decryptedViewer": {
     "title": "Decrypted data",
@@ -657,7 +736,18 @@
     "firstConsentDescription": "Click below to create your first consent form. You'll choose a treatment type, and we'll generate a secure link you can send to your patient.",
     "next": "Next",
     "back": "Back",
-    "createFirst": "Create First Consent"
+    "createFirst": "Create First Consent",
+    "checklistTitle": "Get started with DermaConsent",
+    "stepsComplete": "{done} of {total} steps complete",
+    "step_vault": "Set your master password",
+    "step_logo": "Upload your practice logo",
+    "step_team": "Invite your first team member",
+    "step_consent": "Send your first consent form",
+    "action_vault": "Set up",
+    "action_logo": "Upload",
+    "action_team": "Invite",
+    "action_consent": "Create",
+    "dismiss": "Dismiss"
   },
   "metadata": {
     "description": "GDPR-compliant digital consent forms for dermatology practices"
@@ -684,7 +774,8 @@
     "noAfterPhotos": "No after photos",
     "consent": "Photo consent",
     "consentGranted": "Consent granted",
-    "consentNotGranted": "No consent"
+    "consentNotGranted": "No consent",
+    "noPhotosDescription": "Upload photos to track treatment progress and results."
   },
   "bodyRegions": {
     "FOREHEAD": "Forehead",
@@ -749,7 +840,8 @@
     "selectAreas": "Select treatment areas",
     "noAreasSelected": "No treatment areas selected",
     "areasCount": "{count} areas",
-    "customize": "Customize"
+    "customize": "Customize",
+    "noPlansDescription": "Create a treatment plan to document injection points and products."
   },
   "treatmentTemplate": {
     "pickTemplate": "Choose Template",
@@ -989,6 +1081,110 @@
     "practiceNotFoundDescription": "The practice you are looking for does not exist or has been deleted.",
     "errorLoading": "Failed to load data. Please try again.",
     "backToPractices": "Back to Practices",
-    "retry": "Retry"
+    "retry": "Retry",
+    "aiConfig": "AI / Explainer",
+    "notificationsConfig": "Notifications",
+    "sendTestEmail": "Send test email to me",
+    "sendTestSms": "Send test SMS",
+    "enterTestPhone": "Enter phone number for test SMS (e.g. +491234567890):",
+    "configurationDescription": "Manage platform integrations, credentials, and notification settings.",
+    "valueRequired": "Please enter a value",
+    "resetConfirm": "Reset this setting to its default value? This cannot be undone.",
+    "resetSuccess": "Reset to default",
+    "enterNewValue": "Enter new value..."
+  },
+  "pagination": {
+    "showing": "Showing {start}–{end} of {total}",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "auditActionLabels": {
+    "CONSENT_CREATED": "Consent created",
+    "CONSENT_SUBMITTED": "Consent submitted",
+    "CONSENT_REVOKED": "Consent revoked",
+    "CONSENT_VIEWED": "Consent viewed",
+    "VAULT_UNLOCKED": "Vault unlocked",
+    "VAULT_LOCKED": "Vault locked",
+    "PATIENT_CREATED": "Patient added",
+    "PATIENT_VIEWED": "Patient viewed",
+    "TEAM_MEMBER_INVITED": "Member invited",
+    "TEAM_MEMBER_REMOVED": "Member removed",
+    "TEAM_MEMBER_ROLE_CHANGED": "Role changed",
+    "PRACTICE_SETTINGS_UPDATED": "Settings updated",
+    "SUBSCRIPTION_CREATED": "Subscription created",
+    "SUBSCRIPTION_CANCELLED": "Subscription cancelled",
+    "DATA_EXPORTED": "Data exported",
+    "DATA_DELETED": "Data deleted",
+    "LOGIN_SUCCESS": "Sign in",
+    "LOGIN_FAILED": "Failed sign-in",
+    "ACCOUNT_LOCKED": "Account locked",
+    "PHOTO_VIEWED": "Photo viewed",
+    "TREATMENT_PLAN_CREATED": "Treatment plan created",
+    "TREATMENT_PLAN_VIEWED": "Treatment plan viewed"
+  },
+  "noShowRisk": {
+    "LOW": "Low",
+    "MEDIUM": "Medium",
+    "HIGH": "High",
+    "tooltipLOW": "Likely to complete — sent recently for a routine procedure.",
+    "tooltipMEDIUM": "Moderate risk — check if the patient has received the link.",
+    "tooltipHIGH": "High dropout risk — consider sending a reminder now."
+  },
+  "communications": {
+    "pageTitle": "Communications",
+    "pageSubtitle": "Draft and send AI-powered patient messages in any language.",
+    "title": "Message Composer",
+    "subtitle": "Select a context and language — AI will draft a professional patient message.",
+    "contextLabel": "Message context",
+    "languageLabel": "Patient language",
+    "generateButton": "Generate draft",
+    "generating": "Generating...",
+    "draftLabel": "Message draft (editable)",
+    "copyButton": "Copy",
+    "copied": "Copied!",
+    "sendButton": "Send",
+    "sendDialogTitle": "Send message",
+    "sendDialogDescription": "Send this message to a patient via email or SMS.",
+    "recipientLabel": "Recipient",
+    "channelEmail": "Email",
+    "channelSms": "SMS",
+    "sendAction": "Send now",
+    "sending": "Sending...",
+    "sendSuccess": "Message sent successfully",
+    "sendError": "Failed to send message",
+    "errorUnavailable": "AI is not available. Please configure the API key in Admin settings.",
+    "contexts": {
+      "CONSENT_REMINDER": "Consent form reminder",
+      "APPOINTMENT_CONFIRMATION": "Appointment confirmation",
+      "APPOINTMENT_REMINDER": "Appointment reminder",
+      "FOLLOW_UP": "Post-treatment follow-up",
+      "TREATMENT_PREPARATION": "Treatment preparation instructions",
+      "RESULT_READY": "Results ready notification",
+      "GENERAL": "General message"
+    },
+    "fillPlaceholders": "Fill in the details before sending:"
+  },
+  "aftercare": {
+    "dialogTitle": "Aftercare Instructions",
+    "generate": "Generate Aftercare",
+    "generating": "Generating...",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "print": "Print",
+    "regenerate": "Regenerate",
+    "editHint": "Review and edit the instructions before sharing with the patient.",
+    "error": "Could not generate aftercare instructions."
+  },
+  "retention": {
+    "widgetTitle": "Overdue Follow-ups",
+    "patients": "patients",
+    "daysSince": "days since",
+    "bookFollowUp": "Book follow-up"
+  },
+  "analyticsInsights": {
+    "cardTitle": "AI Insights",
+    "refresh": "Refresh",
+    "loading": "Analysing...",
+    "noAi": "AI insights not available"
   }
 }

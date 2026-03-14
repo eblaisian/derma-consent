@@ -17,9 +17,12 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import { CreatePatientDialog } from '@/components/patients/create-patient-dialog';
+import { EmptyState } from '@/components/ui/empty-state';
+import { TablePagination } from '@/components/ui/table-pagination';
+import { VaultUnlockBanner } from '@/components/vault/vault-unlock-banner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { Search, Eye } from 'lucide-react';
+import { Search, Eye, UserRound, Lock } from 'lucide-react';
 import Link from 'next/link';
 
 interface Patient {
@@ -47,10 +50,12 @@ export default function PatientsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [decryptedNames, setDecryptedNames] = useState<Record<string, string>>({});
   const [isDecrypting, setIsDecrypting] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 25;
   const decryptedForRef = useRef<string | null>(null);
 
   const { data: patientsData, isLoading, mutate } = useSWR<PatientsResponse>(
-    session?.accessToken ? `${API_URL}/api/patients` : null,
+    session?.accessToken ? `${API_URL}/api/patients?page=${page}&limit=${pageSize}` : null,
     createAuthFetcher(session?.accessToken),
   );
 
@@ -118,6 +123,8 @@ export default function PatientsPage() {
         <CreatePatientDialog onCreated={() => mutate()} />
       </div>
 
+      <VaultUnlockBanner />
+
       <Card>
         <CardContent className="pt-6">
           <div className="flex gap-2">
@@ -143,55 +150,82 @@ export default function PatientsPage() {
           <CardDescription>{t('patientCount', { count: patientsData?.total || 0 })}</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t('name')}</TableHead>
-                <TableHead>{t('createdAt')}</TableHead>
-                <TableHead className="text-right">{t('actions')}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading && Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={`skeleton-${i}`}>
-                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                  <TableCell className="text-right"><Skeleton className="h-8 w-20 ml-auto" /></TableCell>
-                </TableRow>
-              ))}
-              {patientsData?.items.map((patient) => (
-                <TableRow key={patient.id}>
-                  <TableCell className="font-medium">
-                    {decryptedNames[patient.id] ? (
-                      decryptedNames[patient.id]
-                    ) : isDecrypting ? (
-                      <span className="inline-block h-4 w-32 animate-pulse rounded bg-muted" />
-                    ) : (
-                      <span className="text-muted-foreground">{t('encrypted')}</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {format.dateTime(new Date(patient.createdAt), { dateStyle: 'medium' })}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/patients/${patient.id}`}>
-                        <Eye className="mr-1 h-4 w-4" />
-                        {t('details')}
-                      </Link>
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {(!patientsData?.items || patientsData.items.length === 0) && (
+          {isLoading ? (
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center text-muted-foreground py-8">
-                    {t('noPatients')}
-                  </TableCell>
+                  <TableHead>{t('name')}</TableHead>
+                  <TableHead>{t('createdAt')}</TableHead>
+                  <TableHead className="text-right">{t('actions')}</TableHead>
                 </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={`skeleton-${i}`}>
+                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                    <TableCell className="text-right"><Skeleton className="h-8 w-20 ml-auto" /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : !patientsData?.items?.length ? (
+            <EmptyState
+              icon={UserRound}
+              title={t('noPatients')}
+              description={t('noPatientsDescription')}
+            />
+          ) : (
+            <>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('name')}</TableHead>
+                    <TableHead>{t('createdAt')}</TableHead>
+                    <TableHead className="text-right">{t('actions')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {patientsData.items.map((patient) => (
+                    <TableRow key={patient.id}>
+                      <TableCell className="font-medium">
+                        {decryptedNames[patient.id] ? (
+                          decryptedNames[patient.id]
+                        ) : isDecrypting ? (
+                          <span className="inline-block h-4 w-32 animate-pulse rounded bg-muted" />
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                            <Lock className="size-3" />
+                            {t('encrypted')}
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {format.dateTime(new Date(patient.createdAt), { dateStyle: 'medium' })}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm" asChild>
+                          <Link href={`/patients/${patient.id}`}>
+                            <Eye className="mr-1 h-4 w-4" />
+                            {t('details')}
+                          </Link>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              {patientsData.totalPages > 1 && (
+                <TablePagination
+                  page={page}
+                  totalPages={patientsData.totalPages}
+                  total={patientsData.total}
+                  pageSize={pageSize}
+                  onPageChange={setPage}
+                />
               )}
-            </TableBody>
-          </Table>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>
