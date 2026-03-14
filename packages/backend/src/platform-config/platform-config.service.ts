@@ -375,6 +375,9 @@ export class PlatformConfigService {
         port: smtpPort,
         secure: smtpPort === 465,
         auth: { user: smtpUser, pass: smtpPass },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 10000,
       });
       await transporter.verify();
       return { success: true, message: `SMTP connection to ${smtpHost}:${smtpPort} successful` };
