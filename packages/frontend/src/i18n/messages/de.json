@@ -1082,7 +1082,8 @@
     "errorLoading": "Daten konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
     "backToPractices": "Zurück zu Praxen",
     "retry": "Erneut versuchen",
-    "aiConfig": "KI / Erklärer"
+    "aiConfig": "KI / Erklärer",
+    "notificationsConfig": "Benachrichtigungen"
   },
   "pagination": {
     "showing": "Zeige {start}–{end} von {total}",

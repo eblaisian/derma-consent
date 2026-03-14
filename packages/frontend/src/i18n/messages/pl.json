@@ -1082,7 +1082,8 @@
     "errorLoading": "Nie udało się załadować danych. Spróbuj ponownie.",
     "backToPractices": "Wróć do gabinetów",
     "retry": "Ponów",
-    "aiConfig": "AI / Wyjaśniacz"
+    "aiConfig": "AI / Wyjaśniacz",
+    "notificationsConfig": "Powiadomienia"
   },
   "pagination": {
     "showing": "Wyświetlanie {start}–{end} z {total}",

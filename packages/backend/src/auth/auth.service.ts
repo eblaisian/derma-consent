@@ -12,7 +12,7 @@ import { SyncUserDto } from './auth.dto';
 import { RegisterDto, LoginDto } from './credentials.dto';
 import { TwoFactorService } from './two-factor.service';
 import { ConfigService } from '@nestjs/config';
-import { EmailService } from '../email/email.service';
+import { NotificationService } from '../notifications/notification.service';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +21,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly twoFactorService: TwoFactorService,
     private readonly configService: ConfigService,
-    private readonly emailService: EmailService,
+    private readonly notificationService: NotificationService,
     private readonly auditService: AuditService,
   ) {}
 
@@ -105,7 +105,8 @@ export class AuthService {
     );
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     const verifyLink = `${frontendUrl}/verify-email?token=${verifyToken}`;
-    await this.emailService.sendEmailVerification(user.email, verifyLink);
+    await this.notificationService.sendEmailVerification({ recipientEmail: user.email, verifyLink, userId: user.id });
+    await this.notificationService.sendWelcome({ recipientEmail: user.email, userName: user.name || user.email, userId: user.id });
 
     return this.signAndReturn(user);
   }
@@ -231,7 +232,7 @@ export class AuthService {
 
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     const resetLink = `${frontendUrl}/reset-password?token=${resetToken}`;
-    await this.emailService.sendPasswordReset(user.email, resetLink);
+    await this.notificationService.sendPasswordReset({ recipientEmail: user.email, resetLink, userId: user.id });
 
     return { message: 'If an account exists, a reset link has been sent.' };
   }
@@ -292,7 +293,7 @@ export class AuthService {
     );
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     const verifyLink = `${frontendUrl}/verify-email?token=${verifyToken}`;
-    await this.emailService.sendEmailVerification(user.email, verifyLink);
+    await this.notificationService.sendEmailVerification({ recipientEmail: user.email, verifyLink, userId: user.id });
 
     return { message: 'If applicable, a verification email has been sent.' };
   }

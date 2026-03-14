@@ -1082,7 +1082,8 @@
     "errorLoading": "No se pudieron cargar los datos. Inténtelo de nuevo.",
     "backToPractices": "Volver a consultorios",
     "retry": "Reintentar",
-    "aiConfig": "IA / Explicador"
+    "aiConfig": "IA / Explicador",
+    "notificationsConfig": "Notificaciones"
   },
   "pagination": {
     "showing": "Mostrando {start}–{end} de {total}",

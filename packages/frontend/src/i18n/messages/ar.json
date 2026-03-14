@@ -1082,7 +1082,8 @@
     "errorLoading": "فشل تحميل البيانات. يرجى المحاولة مرة أخرى.",
     "backToPractices": "العودة إلى العيادات",
     "retry": "إعادة المحاولة",
-    "aiConfig": "الذكاء الاصطناعي"
+    "aiConfig": "الذكاء الاصطناعي",
+    "notificationsConfig": "الإشعارات"
   },
   "pagination": {
     "showing": "عرض {start}–{end} من {total}",

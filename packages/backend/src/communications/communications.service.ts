@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AiService } from '../ai/ai.service';
-import { EmailService } from '../email/email.service';
-import { SmsService } from '../sms/sms.service';
+import { NotificationService } from '../notifications/notification.service';
 import type { CommunicationContext } from './communications.dto';
 
 const LOCALE_NAMES: Record<string, string> = {
@@ -25,8 +24,7 @@ export class CommunicationsService {
 
   constructor(
     private readonly ai: AiService,
-    private readonly emailService: EmailService,
-    private readonly smsService: SmsService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async generateDraft(
@@ -59,16 +57,19 @@ export class CommunicationsService {
   }
 
   async sendMessage(
+    practiceId: string,
     channel: 'email' | 'sms',
     recipient: string,
     message: string,
     subject: string,
   ): Promise<{ sent: boolean }> {
-    if (channel === 'email') {
-      await this.emailService.sendCustomMessage(recipient, subject, message);
-    } else {
-      await this.smsService.sendMessage(recipient, message);
-    }
+    await this.notificationService.sendCustomMessage({
+      practiceId,
+      channel,
+      ...(channel === 'email' ? { recipientEmail: recipient } : { recipientPhone: recipient }),
+      message,
+      subject,
+    });
     return { sent: true };
   }
 }

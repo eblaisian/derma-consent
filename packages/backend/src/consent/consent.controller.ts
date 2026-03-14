@@ -7,11 +7,10 @@ import {
   Query,
   Body,
   UseGuards,
-  Logger,
 } from '@nestjs/common';
 import { ConsentService } from './consent.service';
 import { CreateConsentDto } from './consent.dto';
-import { EmailService } from '../email/email.service';
+import { NotificationService } from '../notifications/notification.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { SubscriptionGuard } from '../billing/subscription.guard';
@@ -22,11 +21,9 @@ import { PaginationDto } from '../common/pagination.dto';
 @Controller('api/consent')
 @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
 export class ConsentController {
-  private readonly logger = new Logger(ConsentController.name);
-
   constructor(
     private readonly consentService: ConsentService,
-    private readonly emailService: EmailService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   @Post()
@@ -36,15 +33,17 @@ export class ConsentController {
       practiceId: user.practiceId!,
     });
 
-    // Send email if delivery channel is email
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const link = `${frontendUrl}/consent/${consent.token}`;
+
     if (dto.deliveryChannel === 'email' && dto.patientEmail) {
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-      const link = `${frontendUrl}/consent/${consent.token}`;
-      this.emailService
-        .sendConsentLink(dto.patientEmail, consent.practiceName, link, 7)
-        .catch((err) => {
-          this.logger.error(`Failed to send consent email: ${err}`);
-        });
+      this.notificationService.sendConsentLink({
+        practiceId: user.practiceId!,
+        recipientEmail: dto.patientEmail,
+        practiceName: consent.practiceName,
+        consentLink: link,
+        expiryDays: 7,
+      }).catch(() => {});
     }
 
     return consent;

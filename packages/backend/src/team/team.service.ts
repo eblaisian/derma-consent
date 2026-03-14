@@ -7,6 +7,8 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
+import { NotificationService } from '../notifications/notification.service';
+import { ConfigService } from '@nestjs/config';
 import { InviteDto, ChangeRoleDto } from './team.dto';
 import { UserRole } from '@prisma/client';
 
@@ -14,6 +16,8 @@ import { UserRole } from '@prisma/client';
 export class TeamService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly notificationService: NotificationService,
+    private readonly configService: ConfigService,
     @Optional() private readonly auditService?: AuditService,
   ) {}
 
@@ -84,6 +88,22 @@ export class TeamService {
       entityId: invite.id,
       metadata: { email: dto.email, role: dto.role },
     });
+
+    // Send invite email
+    const practice = await this.prisma.practice.findUnique({
+      where: { id: practiceId },
+      select: { name: true },
+    });
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    const inviteLink = `${frontendUrl}/invite/${invite.token}`;
+
+    this.notificationService.sendTeamInvite({
+      practiceId,
+      recipientEmail: dto.email,
+      practiceName: practice?.name || 'Praxis',
+      role: dto.role,
+      inviteLink,
+    }).catch(() => {}); // Fire-and-forget; audit already logged the invite creation
 
     return invite;
   }

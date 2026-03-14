@@ -25,16 +25,19 @@ export class EmailService implements OnModuleInit {
     this.fromEmail = (await this.platformConfig.get('email.fromAddress')) || smtpUser || 'noreply@eblaisian.com';
 
     if (smtpUser && smtpPass) {
+      const smtpHost = (await this.platformConfig.get('email.smtpHost')) || 'smtp.gmail.com';
+      const smtpPort = parseInt((await this.platformConfig.get('email.smtpPort')) || '465', 10);
+
       this.transporter = createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpPort === 465,
         auth: {
           user: smtpUser,
           pass: smtpPass,
         },
       });
-      this.logger.log(`SMTP configured via ${smtpUser}`);
+      this.logger.log(`SMTP configured: ${smtpHost}:${smtpPort} via ${smtpUser}`);
     } else {
       this.logger.warn('SMTP credentials not set — emails will be no-oped');
     }

@@ -1082,7 +1082,8 @@
     "errorLoading": "Failed to load data. Please try again.",
     "backToPractices": "Back to Practices",
     "retry": "Retry",
-    "aiConfig": "AI / Explainer"
+    "aiConfig": "AI / Explainer",
+    "notificationsConfig": "Notifications"
   },
   "pagination": {
     "showing": "Showing {start}–{end} of {total}",

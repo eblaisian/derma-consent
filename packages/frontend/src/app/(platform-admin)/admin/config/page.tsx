@@ -16,7 +16,7 @@ interface ConfigEntry {
   source: 'database' | 'environment' | 'default';
 }
 
-const CATEGORIES = ['stripe', 'email', 'sms', 'storage', 'plans', 'ai'] as const;
+const CATEGORIES = ['stripe', 'email', 'sms', 'storage', 'plans', 'ai', 'notifications'] as const;
 type Category = (typeof CATEGORIES)[number];
 
 const CATEGORY_LABELS = {
@@ -26,6 +26,7 @@ const CATEGORY_LABELS = {
   storage: 'storageConfig',
   plans: 'plansConfig',
   ai: 'aiConfig',
+  notifications: 'notificationsConfig',
 } as const;
 
 export default function AdminConfigPage() {

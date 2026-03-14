@@ -30,6 +30,8 @@ const ENV_VAR_MAP: Record<string, string> = {
   'stripe.enterpriseYearlyPriceId': 'STRIPE_ENTERPRISE_YEARLY_PRICE_ID',
   'stripe.platformFeePercent': 'STRIPE_PLATFORM_FEE_PERCENT',
   'stripe.subscriptionWebhookSecret': 'STRIPE_SUBSCRIPTION_WEBHOOK_SECRET',
+  'email.smtpHost': 'SMTP_HOST',
+  'email.smtpPort': 'SMTP_PORT',
   'email.smtpUser': 'SMTP_USER',
   'email.smtpPass': 'SMTP_PASS',
   'email.fromAddress': 'SMTP_FROM_EMAIL',
@@ -49,6 +51,8 @@ const ENV_VAR_MAP: Record<string, string> = {
 // Default values for config keys
 const DEFAULTS: Record<string, string> = {
   'stripe.platformFeePercent': '5',
+  'email.smtpHost': 'smtp.gmail.com',
+  'email.smtpPort': '465',
   'email.fromAddress': 'noreply@eblaisian.com',
   'email.fromName': 'DermaConsent',
   'storage.supabaseBucket': 'consent-pdfs',
@@ -59,6 +63,11 @@ const DEFAULTS: Record<string, string> = {
   'openai.baseUrl': 'https://api.openai.com/v1',
   'openai.model': 'gpt-4o-mini',
   'openai.explainerEnabled': 'true',
+  'notifications.consentLinkEnabled': 'true',
+  'notifications.consentReminderEnabled': 'true',
+  'notifications.inviteEnabled': 'true',
+  'notifications.welcomeEnabled': 'true',
+  'notifications.subscriptionAlertsEnabled': 'true',
 };
 
 // Which keys are secrets
@@ -87,6 +96,8 @@ const CONFIG_METADATA: Record<string, { category: string; description: string; i
   'stripe.enterpriseMonthlyPriceId': { category: 'stripe', description: 'Enterprise Plan Monthly Price ID', isSecret: false },
   'stripe.enterpriseYearlyPriceId': { category: 'stripe', description: 'Enterprise Plan Yearly Price ID', isSecret: false },
   'stripe.platformFeePercent': { category: 'stripe', description: 'Platform Fee Percentage', isSecret: false },
+  'email.smtpHost': { category: 'email', description: 'SMTP Host (e.g. smtp.gmail.com)', isSecret: false },
+  'email.smtpPort': { category: 'email', description: 'SMTP Port (e.g. 465 for TLS)', isSecret: false },
   'email.smtpUser': { category: 'email', description: 'SMTP Username (Gmail address)', isSecret: false },
   'email.smtpPass': { category: 'email', description: 'SMTP Password (App Password)', isSecret: true },
   'email.fromAddress': { category: 'email', description: 'Sender Email Address', isSecret: false },
@@ -105,6 +116,11 @@ const CONFIG_METADATA: Record<string, { category: string; description: string; i
   'openai.baseUrl': { category: 'ai', description: 'API Base URL (default: OpenAI, set to http://localhost:11434/v1 for Ollama)', isSecret: false },
   'openai.model': { category: 'ai', description: 'Model (e.g. gpt-4o-mini, llama3.2, mistral)', isSecret: false },
   'openai.explainerEnabled': { category: 'ai', description: 'Enable AI Consent Explainer on patient forms (true/false)', isSecret: false },
+  'notifications.consentLinkEnabled': { category: 'notifications', description: 'Send consent link emails to patients', isSecret: false },
+  'notifications.consentReminderEnabled': { category: 'notifications', description: 'Send consent reminder emails to admins', isSecret: false },
+  'notifications.inviteEnabled': { category: 'notifications', description: 'Send team invite emails', isSecret: false },
+  'notifications.welcomeEnabled': { category: 'notifications', description: 'Send welcome emails on registration', isSecret: false },
+  'notifications.subscriptionAlertsEnabled': { category: 'notifications', description: 'Send trial expiry and payment failure alerts', isSecret: false },
 };
 
 const CACHE_TTL_MS = 60_000; // 60 seconds

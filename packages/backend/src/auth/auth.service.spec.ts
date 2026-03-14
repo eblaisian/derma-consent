@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { TwoFactorService } from './two-factor.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
-import { EmailService } from '../email/email.service';
+import { NotificationService } from '../notifications/notification.service';
 import { JwtService } from '@nestjs/jwt';
 
 describe('AuthService', () => {
@@ -54,7 +54,7 @@ describe('AuthService', () => {
   };
 
   const mockConfig = { get: jest.fn().mockReturnValue('http://localhost:3000') };
-  const mockEmail = { sendEmailVerification: jest.fn(), sendWelcome: jest.fn() };
+  const mockNotification = { sendEmailVerification: jest.fn(), sendWelcome: jest.fn(), sendPasswordReset: jest.fn() };
   const mockAudit = { log: jest.fn() };
 
   beforeEach(async () => {
@@ -65,7 +65,7 @@ describe('AuthService', () => {
         { provide: JwtService, useValue: mockJwt },
         { provide: TwoFactorService, useValue: mockTwoFactor },
         { provide: ConfigService, useValue: mockConfig },
-        { provide: EmailService, useValue: mockEmail },
+        { provide: NotificationService, useValue: mockNotification },
         { provide: AuditService, useValue: mockAudit },
       ],
     }).compile();

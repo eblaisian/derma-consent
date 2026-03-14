@@ -1082,7 +1082,8 @@
     "errorLoading": "Не удалось загрузить данные. Попробуйте ещё раз.",
     "backToPractices": "Вернуться к клиникам",
     "retry": "Повторить",
-    "aiConfig": "ИИ / Объяснитель"
+    "aiConfig": "ИИ / Объяснитель",
+    "notificationsConfig": "Уведомления"
   },
   "pagination": {
     "showing": "Показано {start}–{end} из {total}",

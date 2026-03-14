@@ -1082,7 +1082,8 @@
     "errorLoading": "Impossible de charger les données. Veuillez réessayer.",
     "backToPractices": "Retour aux cabinets",
     "retry": "Réessayer",
-    "aiConfig": "IA / Explicateur"
+    "aiConfig": "IA / Explicateur",
+    "notificationsConfig": "Notifications"
   },
   "pagination": {
     "showing": "Affichage {start}–{end} sur {total}",

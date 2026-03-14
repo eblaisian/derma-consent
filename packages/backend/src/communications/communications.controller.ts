@@ -56,6 +56,7 @@ export class CommunicationsController {
     const subject = dto.subject || `${practice?.name || 'Praxis'} — Nachricht`;
 
     return this.communicationsService.sendMessage(
+      user.practiceId!,
       dto.channel,
       dto.recipient,
       dto.message,

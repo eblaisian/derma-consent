@@ -1082,7 +1082,8 @@
     "errorLoading": "Veriler yüklenemedi. Lütfen tekrar deneyin.",
     "backToPractices": "Kliniklere dön",
     "retry": "Tekrar dene",
-    "aiConfig": "Yapay Zeka / Açıklayıcı"
+    "aiConfig": "Yapay Zeka / Açıklayıcı",
+    "notificationsConfig": "Bildirimler"
   },
   "pagination": {
     "showing": "{total} içinden {start}–{end} gösteriliyor",
