@@ -22,22 +22,21 @@ import {
   SubscriptionStatus,
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import * as fs from 'fs/promises';
+import * as nodePath from 'path';
 
 const prisma = new PrismaClient();
 
 // ── Storage helper (mirrors StorageService behavior) ──
 
-async function uploadToStorage(
-  path: string,
-  data: Buffer,
-  contentType: string,
-): Promise<string> {
-  // Try S3-compatible storage if configured via platform_config or env
-  const config = await prisma.platformConfig.findFirst({
-    where: { key: 'storage.accessKey' },
-  }).catch(() => null);
+const LOCAL_STORAGE_DIR = nodePath.join(process.cwd(), '.local-storage');
 
+async function uploadToStorage(
+  filePath: string,
+  data: Buffer,
+  _contentType: string,
+): Promise<string> {
+  // Try S3-compatible storage if configured via platform_config
   const getConfig = async (key: string): Promise<string | null> => {
     const row = await prisma.platformConfig.findFirst({ where: { key } }).catch(() => null);
     return (row?.value as string) ?? null;
@@ -46,10 +45,12 @@ async function uploadToStorage(
   const endpoint = await getConfig('storage.endpoint');
   const accessKey = await getConfig('storage.accessKey');
   const secretKey = await getConfig('storage.secretKey');
-  const region = (await getConfig('storage.region')) || 'fra1';
-  const bucket = (await getConfig('storage.bucket')) || 'derma-consent-bucket';
 
   if (endpoint && accessKey && secretKey) {
+    // Dynamic import to avoid requiring @aws-sdk when not needed
+    const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
+    const region = (await getConfig('storage.region')) || 'fra1';
+    const bucket = (await getConfig('storage.bucket')) || 'derma-consent-bucket';
     const s3 = new S3Client({
       endpoint,
       region,
@@ -58,17 +59,19 @@ async function uploadToStorage(
     });
     await s3.send(new PutObjectCommand({
       Bucket: bucket,
-      Key: path,
+      Key: filePath,
       Body: data,
-      ContentType: contentType,
+      ContentType: _contentType,
       ACL: 'private',
     }));
-    return path;
+    return filePath;
   }
 
-  // Dev fallback: return data URI (same as StorageService.upload when no provider)
-  console.log(`  [DEV-FALLBACK] Storing ${path} as data URI`);
-  return `data:${contentType};base64,${data.toString('base64')}`;
+  // Dev fallback: write to local filesystem (same as LocalFsProvider)
+  const fullPath = nodePath.join(LOCAL_STORAGE_DIR, filePath);
+  await fs.mkdir(nodePath.dirname(fullPath), { recursive: true });
+  await fs.writeFile(fullPath, data);
+  return filePath;
 }
 
 // ── Crypto constants (mirror frontend crypto.ts) ──
