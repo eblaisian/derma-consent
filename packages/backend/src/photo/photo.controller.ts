@@ -14,6 +14,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Response } from 'express';
 import { PhotoService } from './photo.service';
 import { UploadPhotoDto, UpdatePhotoConsentDto } from './photo.dto';
@@ -26,6 +27,7 @@ import { PaginationDto } from '../common/pagination.dto';
 
 @Controller('api/photos')
 @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
+@SkipThrottle()
 @Roles('ADMIN', 'ARZT')
 export class PhotoController {
   constructor(private readonly photoService: PhotoService) {}
