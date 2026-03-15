@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
-import { createTransport, Transporter } from 'nodemailer';
 import { consentLinkTemplate, getConsentLinkSubject } from './templates/consent-link.template';
 import { inviteTemplate, getInviteSubject } from './templates/invite.template';
 import { welcomeTemplate, getWelcomeSubject } from './templates/welcome.template';
@@ -8,6 +7,8 @@ import { subscriptionTemplate, getSubscriptionSubject } from './templates/subscr
 import { passwordResetTemplate, getPasswordResetSubject } from './templates/password-reset.template';
 import { emailVerificationTemplate, getEmailVerificationSubject } from './templates/email-verification.template';
 import { consentReminderTemplate, getConsentReminderSubject } from './templates/consent-reminder.template';
+import type { IEmailTransport } from './transports';
+import { SmtpTransport, ResendTransport, resolveEmailProvider } from './transports';
 
 type Locale = 'de' | 'en' | 'es' | 'fr';
 
@@ -17,48 +18,31 @@ export class EmailService {
 
   constructor(private readonly platformConfig: PlatformConfigService) {}
 
-  /**
-   * Build a transporter on demand from current config.
-   * PlatformConfigService has a 60s cache, so this doesn't hit the DB on every send.
-   * Credentials saved via admin UI take effect within 60 seconds — no restart needed.
-   */
-  private async getTransporter(): Promise<{ transporter: Transporter; fromEmail: string } | null> {
-    const smtpUser = await this.platformConfig.get('email.smtpUser');
-    const smtpPass = await this.platformConfig.get('email.smtpPass');
+  private async getTransport(): Promise<IEmailTransport | null> {
+    const provider = await resolveEmailProvider((key) => this.platformConfig.get(key));
+    if (!provider) return null;
 
-    if (!smtpUser || !smtpPass) {
-      return null;
+    switch (provider) {
+      case 'resend':
+        return new ResendTransport(this.platformConfig);
+      case 'smtp':
+        return new SmtpTransport(this.platformConfig);
     }
-
-    const smtpHost = (await this.platformConfig.get('email.smtpHost')) || 'smtp.gmail.com';
-    const smtpPort = parseInt((await this.platformConfig.get('email.smtpPort')) || '465', 10);
-    const fromEmail = (await this.platformConfig.get('email.fromAddress')) || smtpUser;
-
-    const transporter = createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpPort === 465,
-      auth: { user: smtpUser, pass: smtpPass },
-      connectionTimeout: 15000,
-      greetingTimeout: 15000,
-      socketTimeout: 15000,
-    });
-
-    return { transporter, fromEmail };
   }
 
   private async send(to: string, subject: string, html: string) {
-    const smtp = await this.getTransporter();
+    const transport = await this.getTransport();
 
-    if (!smtp) {
+    if (!transport) {
       this.logger.log(`[NO-OP] Email to ${to}: ${subject}`);
       return;
     }
 
     try {
       const fromName = (await this.platformConfig.get('email.fromName')) || 'DermaConsent';
-      await smtp.transporter.sendMail({
-        from: `${fromName} <${smtp.fromEmail}>`,
+      const fromAddress = (await this.platformConfig.get('email.fromAddress')) || 'noreply@eblaisian.com';
+      await transport.send({
+        from: `${fromName} <${fromAddress}>`,
         to,
         subject,
         html,
