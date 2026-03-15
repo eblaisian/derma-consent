@@ -18,7 +18,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import { SubscriptionGuard } from '../billing/subscription.guard';
 import { Roles } from '../auth/roles.decorator';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
-import { ConfigService } from '@nestjs/config';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { createClient } from '@supabase/supabase-js';
 
 @Controller('api/settings')
@@ -27,7 +27,7 @@ import { createClient } from '@supabase/supabase-js';
 export class SettingsController {
   constructor(
     private readonly settingsService: SettingsService,
-    private readonly configService: ConfigService,
+    private readonly platformConfig: PlatformConfigService,
   ) {}
 
   @Get()
@@ -62,8 +62,8 @@ export class SettingsController {
       throw new BadRequestException('Invalid file type. Allowed: JPEG, PNG, WebP, SVG');
     }
 
-    const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
-    const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_KEY');
+    const supabaseUrl = await this.platformConfig.get('storage.supabaseUrl');
+    const supabaseKey = await this.platformConfig.get('storage.supabaseServiceKey');
 
     if (!supabaseUrl || !supabaseKey) {
       // Store as data URI in dev

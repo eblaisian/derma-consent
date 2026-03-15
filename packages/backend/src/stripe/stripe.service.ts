@@ -19,7 +19,7 @@ export class StripeService implements OnModuleInit {
 
   private getStripe(): Stripe {
     if (!this.stripe) {
-      throw new Error('Stripe is not configured. Set STRIPE_SECRET_KEY in .env');
+      throw new Error('Stripe is not configured. Set stripe.secretKey in Admin → Settings.');
     }
     return this.stripe;
   }

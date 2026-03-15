@@ -19,11 +19,7 @@ describe('BillingService', () => {
   const mockConfig = {
     get: jest.fn((key: string) => {
       const map: Record<string, string> = {
-        STRIPE_SECRET_KEY: 'sk_test_dummy',
-        STRIPE_STARTER_MONTHLY_PRICE_ID: 'price_starter_monthly',
-        STRIPE_STARTER_YEARLY_PRICE_ID: 'price_starter_yearly',
-        STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID: 'price_pro_monthly',
-        STRIPE_PROFESSIONAL_YEARLY_PRICE_ID: 'price_pro_yearly',
+        FRONTEND_URL: 'http://localhost:3000',
       };
       return map[key];
     }),

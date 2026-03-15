@@ -1,19 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { CreatePatientDto } from './patient.dto';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
-export class PatientService {
+export class PatientService implements OnModuleInit {
   private supabase: SupabaseClient | null = null;
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly config: ConfigService,
-  ) {
-    const url = this.config.get<string>('SUPABASE_URL');
-    const key = this.config.get<string>('SUPABASE_SERVICE_KEY');
+    private readonly platformConfig: PlatformConfigService,
+  ) {}
+
+  async onModuleInit() {
+    const url = await this.platformConfig.get('storage.supabaseUrl');
+    const key = await this.platformConfig.get('storage.supabaseServiceKey');
     if (url && key) {
       this.supabase = createClient(url, key);
     }

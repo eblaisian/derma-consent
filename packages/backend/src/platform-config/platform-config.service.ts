@@ -14,33 +14,8 @@ export interface ConfigEntry {
   isSecret: boolean;
   description: string | null;
   category: string;
-  source: 'database' | 'environment' | 'default';
+  source: 'database' | 'default';
 }
-
-// Maps config keys to environment variable names
-const ENV_VAR_MAP: Record<string, string> = {
-  'stripe.secretKey': 'STRIPE_SECRET_KEY',
-  'stripe.webhookSecret': 'STRIPE_WEBHOOK_SECRET',
-  'stripe.connectWebhookSecret': 'STRIPE_CONNECT_WEBHOOK_SECRET',
-  'stripe.starterMonthlyPriceId': 'STRIPE_STARTER_MONTHLY_PRICE_ID',
-  'stripe.starterYearlyPriceId': 'STRIPE_STARTER_YEARLY_PRICE_ID',
-  'stripe.professionalMonthlyPriceId': 'STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID',
-  'stripe.professionalYearlyPriceId': 'STRIPE_PROFESSIONAL_YEARLY_PRICE_ID',
-  'stripe.enterpriseMonthlyPriceId': 'STRIPE_ENTERPRISE_MONTHLY_PRICE_ID',
-  'stripe.enterpriseYearlyPriceId': 'STRIPE_ENTERPRISE_YEARLY_PRICE_ID',
-  'stripe.platformFeePercent': 'STRIPE_PLATFORM_FEE_PERCENT',
-  'stripe.subscriptionWebhookSecret': 'STRIPE_SUBSCRIPTION_WEBHOOK_SECRET',
-  'sms.twilioAccountSid': 'TWILIO_ACCOUNT_SID',
-  'sms.twilioAuthToken': 'TWILIO_AUTH_TOKEN',
-  'sms.twilioPhoneNumber': 'TWILIO_PHONE_NUMBER',
-  'storage.supabaseUrl': 'SUPABASE_URL',
-  'storage.supabaseServiceKey': 'SUPABASE_SERVICE_KEY',
-  'storage.supabaseBucket': 'SUPABASE_BUCKET',
-  'openai.apiKey': 'OPENAI_API_KEY',
-  'openai.baseUrl': 'OPENAI_BASE_URL',
-  'openai.model': 'OPENAI_MODEL',
-  'openai.explainerEnabled': 'OPENAI_EXPLAINER_ENABLED',
-};
 
 // Default values for config keys
 const DEFAULTS: Record<string, string> = {
@@ -137,7 +112,7 @@ export class PlatformConfigService {
   }
 
   /**
-   * Get a config value. Fallback chain: DB → env var → hardcoded default.
+   * Get a config value. Fallback chain: DB → hardcoded default.
    */
   async get(key: string): Promise<string | undefined> {
     // Check cache
@@ -155,16 +130,6 @@ export class PlatformConfigService {
       const value = dbEntry.isSecret ? this.decrypt(dbEntry.value) : dbEntry.value;
       this.cache.set(key, { value, timestamp: Date.now() });
       return value;
-    }
-
-    // Check env var
-    const envVar = ENV_VAR_MAP[key];
-    if (envVar) {
-      const envValue = this.configService.get<string>(envVar);
-      if (envValue) {
-        this.cache.set(key, { value: envValue, timestamp: Date.now() });
-        return envValue;
-      }
     }
 
     // Check defaults
@@ -234,7 +199,7 @@ export class PlatformConfigService {
 
     for (const [key, meta] of relevantKeys) {
       let value: string;
-      let source: 'database' | 'environment' | 'default';
+      let source: 'database' | 'default';
 
       const dbEntry = dbMap.get(key);
 
@@ -242,15 +207,8 @@ export class PlatformConfigService {
         value = dbEntry.isSecret ? this.decrypt(dbEntry.value) : dbEntry.value;
         source = 'database';
       } else {
-        const envVar = ENV_VAR_MAP[key];
-        const envValue = envVar ? this.configService.get<string>(envVar) : undefined;
-        if (envValue) {
-          value = envValue;
-          source = 'environment';
-        } else {
-          value = DEFAULTS[key] ?? '';
-          source = 'default';
-        }
+        value = DEFAULTS[key] ?? '';
+        source = 'default';
       }
 
       entries.push({
@@ -267,7 +225,7 @@ export class PlatformConfigService {
   }
 
   /**
-   * Delete a config override (reverts to env var / default).
+   * Delete a config override (reverts to default).
    */
   async delete(key: string): Promise<void> {
     await this.prisma.platformConfig.deleteMany({ where: { key } });

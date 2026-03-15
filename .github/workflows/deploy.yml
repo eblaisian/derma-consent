@@ -56,7 +56,6 @@ jobs:
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/dermaconsent_test
           AUTH_SECRET: ci-test-secret
-          STRIPE_SECRET_KEY: sk_test_dummy
 
   test-frontend:
     name: Test Frontend
@@ -181,8 +180,7 @@ jobs:
             --from-literal=FRONTEND_URL="https://consent.eblaisian.com" \
             --from-literal=PLATFORM_ADMIN_EMAIL="${{ secrets.PLATFORM_ADMIN_EMAIL }}" \
             --from-literal=PLATFORM_ADMIN_PASSWORD="${{ secrets.PLATFORM_ADMIN_PASSWORD }}" \
-            --from-literal=STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY }}" \
-            --from-literal=STRIPE_WEBHOOK_SECRET="${{ secrets.STRIPE_WEBHOOK_SECRET }}" \
+            --from-literal=PLATFORM_ENCRYPTION_KEY="${{ secrets.PLATFORM_ENCRYPTION_KEY }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy

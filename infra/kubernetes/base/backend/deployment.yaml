@@ -70,18 +70,11 @@ spec:
                 secretKeyRef:
                   name: app-secrets
                   key: FRONTEND_URL
-            - name: STRIPE_SECRET_KEY
+            - name: PLATFORM_ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
                   name: app-secrets
-                  key: STRIPE_SECRET_KEY
-                  optional: true
-            - name: STRIPE_WEBHOOK_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: app-secrets
-                  key: STRIPE_WEBHOOK_SECRET
-                  optional: true
+                  key: PLATFORM_ENCRYPTION_KEY
           resources:
             requests:
               cpu: 50m

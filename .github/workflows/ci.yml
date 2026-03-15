@@ -48,7 +48,6 @@ jobs:
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/dermaconsent_test
           AUTH_SECRET: ci-test-secret
-          STRIPE_SECRET_KEY: sk_test_dummy
 
   frontend:
     name: Frontend

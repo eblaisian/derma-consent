@@ -2,25 +2,28 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  OnModuleInit,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { AuditService } from '../audit/audit.service';
 import { UploadPhotoDto } from './photo.dto';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { randomUUID } from 'crypto';
 
 @Injectable()
-export class PhotoService {
+export class PhotoService implements OnModuleInit {
   private supabase: SupabaseClient | null = null;
 
   constructor(
     private readonly prisma: PrismaService,
+    private readonly platformConfig: PlatformConfigService,
     private readonly audit: AuditService,
-    private readonly config: ConfigService,
-  ) {
-    const url = this.config.get<string>('SUPABASE_URL');
-    const key = this.config.get<string>('SUPABASE_SERVICE_KEY');
+  ) {}
+
+  async onModuleInit() {
+    const url = await this.platformConfig.get('storage.supabaseUrl');
+    const key = await this.platformConfig.get('storage.supabaseServiceKey');
     if (url && key) {
       this.supabase = createClient(url, key);
     }

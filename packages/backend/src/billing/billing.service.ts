@@ -23,7 +23,7 @@ export class BillingService implements OnModuleInit {
   private getStripe(): Stripe {
     if (!this.stripe) {
       throw new ServiceUnavailableException(
-        'Billing is not configured. Set STRIPE_SECRET_KEY in .env',
+        'Billing is not configured. Set stripe.secretKey in Admin → Settings.',
       );
     }
     return this.stripe;
@@ -192,7 +192,7 @@ export class BillingService implements OnModuleInit {
     const secret = await this.platformConfig.get('stripe.subscriptionWebhookSecret');
     if (!secret) {
       throw new ServiceUnavailableException(
-        'Billing webhooks are not configured. Set STRIPE_SUBSCRIPTION_WEBHOOK_SECRET in .env',
+        'Billing webhooks are not configured. Set stripe.subscriptionWebhookSecret in Admin → Settings.',
       );
     }
     return this.getStripe().webhooks.constructEvent(payload, signature, secret);

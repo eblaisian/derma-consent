@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PatientService } from './patient.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 
 describe('PatientService', () => {
   let service: PatientService;
@@ -41,8 +41,8 @@ describe('PatientService', () => {
     ),
   };
 
-  const mockConfig = {
-    get: jest.fn().mockReturnValue(undefined),
+  const mockPlatformConfig = {
+    get: jest.fn().mockResolvedValue(undefined),
   };
 
   beforeEach(async () => {
@@ -50,7 +50,7 @@ describe('PatientService', () => {
       providers: [
         PatientService,
         { provide: PrismaService, useValue: mockPrisma },
-        { provide: ConfigService, useValue: mockConfig },
+        { provide: PlatformConfigService, useValue: mockPlatformConfig },
       ],
     }).compile();
 
