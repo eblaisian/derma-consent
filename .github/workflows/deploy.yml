@@ -179,8 +179,6 @@ jobs:
             --from-literal=DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             --from-literal=AUTH_SECRET="${{ secrets.AUTH_SECRET }}" \
             --from-literal=FRONTEND_URL="https://consent.eblaisian.com" \
-            --from-literal=SMTP_USER="${{ secrets.SMTP_USER }}" \
-            --from-literal=SMTP_PASS="${{ secrets.SMTP_PASS }}" \
             --from-literal=PLATFORM_ADMIN_EMAIL="${{ secrets.PLATFORM_ADMIN_EMAIL }}" \
             --from-literal=PLATFORM_ADMIN_PASSWORD="${{ secrets.PLATFORM_ADMIN_PASSWORD }}" \
             --from-literal=STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY }}" \

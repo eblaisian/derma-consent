@@ -1,14 +1,10 @@
 import './sentry';
-import { setDefaultResultOrder } from 'dns';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/http-exception.filter';
-
-// Force IPv4 DNS resolution — DOKS nodes lack IPv6 connectivity
-setDefaultResultOrder('ipv4first');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

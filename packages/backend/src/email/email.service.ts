@@ -8,7 +8,7 @@ import { passwordResetTemplate, getPasswordResetSubject } from './templates/pass
 import { emailVerificationTemplate, getEmailVerificationSubject } from './templates/email-verification.template';
 import { consentReminderTemplate, getConsentReminderSubject } from './templates/consent-reminder.template';
 import type { IEmailTransport } from './transports';
-import { SmtpTransport, ResendTransport, resolveEmailProvider } from './transports';
+import { ResendTransport } from './transports';
 
 type Locale = 'de' | 'en' | 'es' | 'fr';
 
@@ -19,15 +19,9 @@ export class EmailService {
   constructor(private readonly platformConfig: PlatformConfigService) {}
 
   private async getTransport(): Promise<IEmailTransport | null> {
-    const provider = await resolveEmailProvider((key) => this.platformConfig.get(key));
-    if (!provider) return null;
-
-    switch (provider) {
-      case 'resend':
-        return new ResendTransport(this.platformConfig);
-      case 'smtp':
-        return new SmtpTransport(this.platformConfig);
-    }
+    const apiKey = await this.platformConfig.get('email.resendApiKey');
+    if (!apiKey) return null;
+    return new ResendTransport(this.platformConfig);
   }
 
   private async send(to: string, subject: string, html: string) {

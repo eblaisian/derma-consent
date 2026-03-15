@@ -82,18 +82,6 @@ spec:
                   name: app-secrets
                   key: STRIPE_WEBHOOK_SECRET
                   optional: true
-            - name: SMTP_USER
-              valueFrom:
-                secretKeyRef:
-                  name: app-secrets
-                  key: SMTP_USER
-                  optional: true
-            - name: SMTP_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: app-secrets
-                  key: SMTP_PASS
-                  optional: true
           resources:
             requests:
               cpu: 50m

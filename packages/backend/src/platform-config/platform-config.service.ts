@@ -30,14 +30,6 @@ const ENV_VAR_MAP: Record<string, string> = {
   'stripe.enterpriseYearlyPriceId': 'STRIPE_ENTERPRISE_YEARLY_PRICE_ID',
   'stripe.platformFeePercent': 'STRIPE_PLATFORM_FEE_PERCENT',
   'stripe.subscriptionWebhookSecret': 'STRIPE_SUBSCRIPTION_WEBHOOK_SECRET',
-  'email.smtpHost': 'SMTP_HOST',
-  'email.smtpPort': 'SMTP_PORT',
-  'email.smtpUser': 'SMTP_USER',
-  'email.smtpPass': 'SMTP_PASSWORD',
-  'email.fromAddress': 'SMTP_FROM_EMAIL',
-  'email.fromName': 'EMAIL_FROM_NAME',
-  'email.provider': 'EMAIL_PROVIDER',
-  'email.resendApiKey': 'RESEND_API_KEY',
   'sms.twilioAccountSid': 'TWILIO_ACCOUNT_SID',
   'sms.twilioAuthToken': 'TWILIO_AUTH_TOKEN',
   'sms.twilioPhoneNumber': 'TWILIO_PHONE_NUMBER',
@@ -53,9 +45,6 @@ const ENV_VAR_MAP: Record<string, string> = {
 // Default values for config keys
 const DEFAULTS: Record<string, string> = {
   'stripe.platformFeePercent': '5',
-  'email.provider': 'auto',
-  'email.smtpHost': 'smtp.gmail.com',
-  'email.smtpPort': '465',
   'email.fromAddress': 'noreply@eblaisian.com',
   'email.fromName': 'DermaConsent',
   'storage.supabaseBucket': 'consent-pdfs',
@@ -79,7 +68,6 @@ const SECRET_KEYS = new Set([
   'stripe.webhookSecret',
   'stripe.connectWebhookSecret',
   'stripe.subscriptionWebhookSecret',
-  'email.smtpPass',
   'email.resendApiKey',
   'sms.twilioAccountSid',
   'sms.twilioAuthToken',
@@ -100,14 +88,9 @@ const CONFIG_METADATA: Record<string, { category: string; description: string; i
   'stripe.enterpriseMonthlyPriceId': { category: 'stripe', description: 'Enterprise Plan Monthly Price ID', isSecret: false },
   'stripe.enterpriseYearlyPriceId': { category: 'stripe', description: 'Enterprise Plan Yearly Price ID', isSecret: false },
   'stripe.platformFeePercent': { category: 'stripe', description: 'Platform Fee Percentage', isSecret: false },
-  'email.provider': { category: 'email', description: 'Email provider (auto, resend, smtp)', isSecret: false },
   'email.resendApiKey': { category: 'email', description: 'Resend API Key (re_...)', isSecret: true },
-  'email.fromAddress': { category: 'email', description: 'Sender Email Address', isSecret: false },
-  'email.fromName': { category: 'email', description: 'Sender Name', isSecret: false },
-  'email.smtpHost': { category: 'email', description: 'SMTP Host (e.g. smtp.gmail.com)', isSecret: false },
-  'email.smtpPort': { category: 'email', description: 'SMTP Port (e.g. 465 for TLS)', isSecret: false },
-  'email.smtpUser': { category: 'email', description: 'SMTP Username', isSecret: false },
-  'email.smtpPass': { category: 'email', description: 'SMTP Password', isSecret: true },
+  'email.fromAddress': { category: 'email', description: 'Sender Email Address (must be verified in Resend)', isSecret: false },
+  'email.fromName': { category: 'email', description: 'Sender Display Name', isSecret: false },
   'sms.twilioAccountSid': { category: 'sms', description: 'Twilio Account SID', isSecret: true },
   'sms.twilioAuthToken': { category: 'sms', description: 'Twilio Auth Token', isSecret: true },
   'sms.twilioPhoneNumber': { category: 'sms', description: 'Twilio Phone Number', isSecret: false },
@@ -370,16 +353,13 @@ export class PlatformConfigService {
 
   private async testEmail(): Promise<{ success: boolean; message: string }> {
     try {
-      const { resolveEmailProvider, ResendTransport, SmtpTransport } = await import('../email/transports');
-      const provider = await resolveEmailProvider((key) => this.get(key));
-      if (!provider) {
-        return { success: false, message: 'No email provider configured (set Resend API key or SMTP credentials)' };
+      const apiKey = await this.get('email.resendApiKey');
+      if (!apiKey) {
+        return { success: false, message: 'Resend API key not configured' };
       }
 
-      const transport = provider === 'resend'
-        ? new ResendTransport(this)
-        : new SmtpTransport(this);
-
+      const { ResendTransport } = await import('../email/transports');
+      const transport = new ResendTransport(this);
       return await transport.test();
     } catch (error) {
       return { success: false, message: `Email test failed: ${(error as Error).message}` };
