@@ -127,13 +127,8 @@ export class ConsentService {
       throw new NotFoundException('Consent form not found');
     }
 
-    if (consent.expiresAt < new Date()) {
-      throw new BadRequestException('Consent link has expired');
-    }
-
-    if (consent.status === ConsentStatus.REVOKED) {
-      throw new BadRequestException('Consent has been revoked');
-    }
+    // Return consent with its status for all states — let the frontend render appropriately.
+    // Only the submit endpoint enforces status restrictions.
 
     const settings = await this.prisma.practiceSettings.findUnique({
       where: { practiceId: consent.practiceId },
@@ -148,6 +143,14 @@ export class ConsentService {
 
   async submit(token: string, dto: SubmitConsentDto, ip: string, userAgent: string) {
     const consent = await this.findByToken(token);
+
+    if (consent.expiresAt < new Date()) {
+      throw new BadRequestException('Consent link has expired');
+    }
+
+    if (consent.status === ConsentStatus.REVOKED) {
+      throw new BadRequestException('Consent has been revoked');
+    }
 
     if (consent.status !== ConsentStatus.PENDING) {
       throw new BadRequestException('Consent form has already been submitted');

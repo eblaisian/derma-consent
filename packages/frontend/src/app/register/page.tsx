@@ -24,6 +24,7 @@ export default function RegisterPage() {
 
   const checks = [
     password.length >= 8,
+    /[a-z]/.test(password),
     /[A-Z]/.test(password),
     /[0-9]/.test(password),
   ];
@@ -125,12 +126,12 @@ export default function RegisterPage() {
             {password.length > 0 && (
               <div className="space-y-2">
                 <div className="flex gap-1">
-                  {Array.from({ length: 3 }).map((_, i) => (
+                  {Array.from({ length: 4 }).map((_, i) => (
                     <div
                       key={i}
                       className={`h-1 flex-1 rounded-full transition-colors ${
                         i < passed
-                          ? passed <= 1 ? 'bg-destructive' : passed === 2 ? 'bg-yellow-500' : 'bg-green-500'
+                          ? passed <= 1 ? 'bg-destructive' : passed <= 2 ? 'bg-yellow-500' : 'bg-green-500'
                           : 'bg-muted'
                       }`}
                     />
@@ -138,8 +139,9 @@ export default function RegisterPage() {
                 </div>
                 <ul className="text-xs text-muted-foreground space-y-0.5">
                   <li className={checks[0] ? 'text-green-600' : ''}>{t('minLength')}</li>
-                  <li className={checks[1] ? 'text-green-600' : ''}>{t('uppercase')}</li>
-                  <li className={checks[2] ? 'text-green-600' : ''}>{t('number')}</li>
+                  <li className={checks[1] ? 'text-green-600' : ''}>{t('lowercase')}</li>
+                  <li className={checks[2] ? 'text-green-600' : ''}>{t('uppercase')}</li>
+                  <li className={checks[3] ? 'text-green-600' : ''}>{t('number')}</li>
                 </ul>
               </div>
             )}

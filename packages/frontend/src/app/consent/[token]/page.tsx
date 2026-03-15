@@ -6,9 +6,11 @@ import { useTranslations } from 'next-intl';
 import { ConsentForm } from '@/components/consent-form/consent-form';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useVault } from '@/hooks/use-vault';
-import { Shield, CheckCircle, FileSignature } from 'lucide-react';
+import { Shield, CheckCircle, FileSignature, XCircle, Clock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { ConsentType } from '@/components/consent-form/form-fields';
+
+type ConsentStatus = 'PENDING' | 'FILLED' | 'SIGNED' | 'PAID' | 'COMPLETED' | 'EXPIRED' | 'REVOKED';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -136,6 +138,45 @@ export default function ConsentPage({
           <p className="text-foreground-secondary">
             {t('redirectingToPayment')}
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Status-aware rendering for non-PENDING consents
+  const consentStatus = data?.status as ConsentStatus;
+
+  if (consentStatus === 'REVOKED') {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-center space-y-4 max-w-md px-4">
+          <XCircle className="h-16 w-16 text-destructive mx-auto" strokeWidth={1.5} />
+          <h1 className="text-xl font-semibold">{t('revokedTitle')}</h1>
+          <p className="text-foreground-secondary">{t('revokedMessage')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (consentStatus === 'EXPIRED' || (data?.expiresAt && new Date(data.expiresAt) < new Date())) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-center space-y-4 max-w-md px-4">
+          <Clock className="h-16 w-16 text-muted-foreground mx-auto" strokeWidth={1.5} />
+          <h1 className="text-xl font-semibold">{t('expiredTitle')}</h1>
+          <p className="text-foreground-secondary">{t('expiredMessage')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (consentStatus === 'SIGNED' || consentStatus === 'PAID' || consentStatus === 'COMPLETED') {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-center space-y-4 max-w-md px-4">
+          <CheckCircle className="h-16 w-16 text-success mx-auto" strokeWidth={1.5} />
+          <h1 className="text-xl font-semibold">{t('thankYou')}</h1>
+          <p className="text-foreground-secondary">{t('alreadyCompletedMessage')}</p>
         </div>
       </div>
     );

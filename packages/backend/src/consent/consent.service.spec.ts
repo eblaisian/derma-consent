@@ -135,26 +135,20 @@ describe('ConsentService', () => {
       );
     });
 
-    it('should throw BadRequestException for expired token', async () => {
-      mockPrisma.consentForm.findUnique.mockResolvedValue({
-        ...mockConsent,
-        expiresAt: new Date('2020-01-01'),
-      });
+    it('should return consent with expired status for frontend rendering', async () => {
+      const expiredConsent = { ...mockConsent, expiresAt: new Date('2020-01-01') };
+      mockPrisma.consentForm.findUnique.mockResolvedValue(expiredConsent);
 
-      await expect(service.findByToken('abc-123-token')).rejects.toThrow(
-        BadRequestException,
-      );
+      const result = await service.findByToken('abc-123-token');
+      expect(result.expiresAt).toEqual(new Date('2020-01-01'));
     });
 
-    it('should throw BadRequestException for revoked consent', async () => {
-      mockPrisma.consentForm.findUnique.mockResolvedValue({
-        ...mockConsent,
-        status: 'REVOKED',
-      });
+    it('should return consent with revoked status for frontend rendering', async () => {
+      const revokedConsent = { ...mockConsent, status: 'REVOKED' };
+      mockPrisma.consentForm.findUnique.mockResolvedValue(revokedConsent);
 
-      await expect(service.findByToken('abc-123-token')).rejects.toThrow(
-        BadRequestException,
-      );
+      const result = await service.findByToken('abc-123-token');
+      expect(result.status).toBe('REVOKED');
     });
   });
 

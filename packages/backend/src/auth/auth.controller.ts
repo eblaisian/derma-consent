@@ -5,6 +5,7 @@ import {
   Patch,
   Body,
   Headers,
+  HttpCode,
   UseGuards,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -46,24 +47,28 @@ export class AuthController {
   }
 
   @Post('login')
+  @HttpCode(200)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   async login(@Body() dto: LoginDto) {
     return this.authService.loginWithCredentials(dto);
   }
 
   @Post('forgot-password')
+  @HttpCode(200)
   @Throttle({ default: { limit: 3, ttl: 60000 } })
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.authService.forgotPassword(dto.email);
   }
 
   @Post('reset-password')
+  @HttpCode(200)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   async resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto.token, dto.newPassword);
   }
 
   @Post('verify-email')
+  @HttpCode(200)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   async verifyEmail(@Body() dto: VerifyEmailDto) {
     return this.authService.verifyEmail(dto.token);
@@ -106,6 +111,7 @@ export class AuthController {
   }
 
   @Post('2fa/verify')
+  @HttpCode(200)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   async verify2FA(@Body() dto: TwoFactorVerifyLoginDto) {
     return this.authService.verifyTwoFactorLogin(dto.tempToken, dto.token);

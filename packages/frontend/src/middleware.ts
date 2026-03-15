@@ -14,10 +14,27 @@ const protectedPaths = [
   '/billing',
   '/setup',
   '/admin',
+  '/profile',
+  '/communications',
 ];
 
 function isProtectedPath(pathname: string) {
   return protectedPaths.some((p) => pathname.startsWith(p));
+}
+
+// Role-based route access control
+// Each role lists the path prefixes it is allowed to access
+const roleAllowedPaths: Record<string, string[]> = {
+  ADMIN: ['/dashboard', '/patients', '/communications', '/analytics', '/team', '/audit', '/billing', '/settings', '/setup', '/profile'],
+  ARZT: ['/dashboard', '/patients', '/communications', '/analytics', '/profile'],
+  EMPFANG: ['/dashboard', '/communications', '/profile'],
+  PLATFORM_ADMIN: ['/admin', '/profile'],
+};
+
+function isRoleAllowed(role: string, pathname: string): boolean {
+  const allowed = roleAllowedPaths[role];
+  if (!allowed) return false;
+  return allowed.some((p) => pathname.startsWith(p));
 }
 
 function detectLocaleFromHeader(request: NextRequest): Locale {
@@ -52,6 +69,26 @@ export default async function middleware(request: NextRequest) {
       }
       return authResponse;
     }
+
+    // Role-based access control: check if user's role can access this path
+    const session = await auth();
+    const role = (session?.user as Record<string, unknown> | undefined)?.role as string | undefined;
+
+    if (role && !isRoleAllowed(role, pathname)) {
+      const redirectTo = role === 'PLATFORM_ADMIN' ? '/admin' : '/dashboard';
+      const url = request.nextUrl.clone();
+      url.pathname = redirectTo;
+      const redirectResponse = NextResponse.redirect(url);
+      if (!hasLocaleCookie) {
+        const locale = detectLocaleFromHeader(request);
+        redirectResponse.cookies.set(LOCALE_COOKIE, locale, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 365,
+          sameSite: 'lax',
+        });
+      }
+      return redirectResponse;
+    }
   }
 
   // Set locale cookie on first visit (browser detection)
@@ -80,6 +117,8 @@ export const config = {
     '/billing/:path*',
     '/setup/:path*',
     '/admin/:path*',
+    '/communications/:path*',
+    '/profile/:path*',
     // Also match public paths for locale cookie auto-detection
     '/',
     '/login',

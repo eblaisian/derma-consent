@@ -51,8 +51,7 @@ export function ComprehensionQuiz({ questions, onComplete, brandColor }: Compreh
     if (isLastQuestion) {
       const allAnswers = [...answers];
       const correctCount = allAnswers.filter((a) => a.correct).length;
-      const score = correctCount / questions.length;
-      onComplete(score, allAnswers);
+      onComplete(correctCount, allAnswers);
     } else {
       setCurrentIndex((prev) => prev + 1);
       setSelectedOption(null);

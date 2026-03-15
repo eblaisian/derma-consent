@@ -67,16 +67,14 @@ export default function DashboardPage() {
     setOnboardingDismissed(true);
   };
 
-  // If user doesn't have a practice yet, redirect to setup (unless platform admin)
-  const isPlatformAdmin = session?.user?.role === 'PLATFORM_ADMIN';
-  const needsSetup = !practiceLoading && !practiceId && !!session && !isPlatformAdmin;
+  // If user doesn't have a practice yet, redirect to setup
+  // Note: PLATFORM_ADMIN redirect to /admin is handled by middleware
+  const needsSetup = !practiceLoading && !practiceId && !!session && session?.user?.role !== 'PLATFORM_ADMIN';
   useEffect(() => {
-    if (isPlatformAdmin) {
-      router.push('/admin');
-    } else if (needsSetup) {
+    if (needsSetup) {
       router.push('/setup');
     }
-  }, [needsSetup, isPlatformAdmin, router]);
+  }, [needsSetup, router]);
 
   // Compute stats
   const stats = useMemo(() => {

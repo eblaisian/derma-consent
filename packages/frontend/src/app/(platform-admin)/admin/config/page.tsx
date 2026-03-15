@@ -7,10 +7,12 @@ import { useAuthFetch } from '@/lib/auth-fetch';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import {
   Eye,
@@ -129,6 +131,8 @@ export default function AdminConfigPage() {
   const [showEditSecret, setShowEditSecret] = useState(false);
   const [testingCategory, setTestingCategory] = useState<string | null>(null);
   const [testingSend, setTestingSend] = useState<string | null>(null);
+  const [testDialog, setTestDialog] = useState<{ open: boolean; channel: 'email' | 'sms' }>({ open: false, channel: 'email' });
+  const [testRecipient, setTestRecipient] = useState('');
 
   // Fetch all categories for status dots
   const categoryFetchers = Object.fromEntries(
@@ -335,7 +339,7 @@ export default function AdminConfigPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleSendTest('email')}
+                          onClick={() => { setTestRecipient(''); setTestDialog({ open: true, channel: 'email' }); }}
                           disabled={testingSend === 'email'}
                           className="gap-2"
                         >
@@ -348,10 +352,7 @@ export default function AdminConfigPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => {
-                            const phone = prompt(t('enterTestPhone'));
-                            if (phone) handleSendTest('sms', phone);
-                          }}
+                          onClick={() => { setTestRecipient(''); setTestDialog({ open: true, channel: 'sms' }); }}
                           disabled={testingSend === 'sms'}
                           className="gap-2"
                         >
@@ -424,6 +425,56 @@ export default function AdminConfigPage() {
           ))}
         </Tabs>
       </div>
+      {/* Send test notification dialog */}
+      <Dialog open={testDialog.open} onOpenChange={(open) => setTestDialog((prev) => ({ ...prev, open }))}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {testDialog.channel === 'email' ? t('sendTestEmail') : t('sendTestSms')}
+            </DialogTitle>
+            <DialogDescription>
+              {testDialog.channel === 'email' ? t('enterTestEmail') : t('enterTestPhone')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="test-recipient">
+              {testDialog.channel === 'email' ? t('emailLabel') : t('phoneLabel')}
+            </Label>
+            <Input
+              id="test-recipient"
+              type={testDialog.channel === 'email' ? 'email' : 'tel'}
+              placeholder={testDialog.channel === 'email' ? 'name@example.com' : '+491234567890'}
+              value={testRecipient}
+              onChange={(e) => setTestRecipient(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && testRecipient.trim()) {
+                  setTestDialog({ open: false, channel: testDialog.channel });
+                  handleSendTest(testDialog.channel, testRecipient.trim());
+                }
+              }}
+              autoFocus
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setTestDialog((prev) => ({ ...prev, open: false }))}
+            >
+              {t('cancel')}
+            </Button>
+            <Button
+              disabled={!testRecipient.trim()}
+              onClick={() => {
+                setTestDialog({ open: false, channel: testDialog.channel });
+                handleSendTest(testDialog.channel, testRecipient.trim());
+              }}
+            >
+              <Send className="h-3.5 w-3.5 mr-2" />
+              {t('send')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </TooltipProvider>
   );
 }

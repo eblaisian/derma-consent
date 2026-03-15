@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { ShieldCheck, Lock, FileCheck, Languages } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -38,7 +39,12 @@ export function AuthLayout({ children }: AuthLayoutProps) {
       </div>
 
       {/* Right form panel */}
-      <div className="flex flex-1 flex-col items-center justify-center p-6 sm:p-10">
+      <div className="relative flex flex-1 flex-col items-center justify-center p-6 sm:p-10">
+        {/* Language switcher — top-right corner */}
+        <div className="absolute top-4 right-4">
+          <LanguageSwitcher />
+        </div>
+
         {/* Mobile logo — shown only on small screens */}
         <div className="mb-8 flex items-center gap-2 lg:hidden">
           <ShieldCheck className="size-6 text-primary" strokeWidth={1.75} />
