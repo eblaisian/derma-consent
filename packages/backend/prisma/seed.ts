@@ -22,8 +22,54 @@ import {
   SubscriptionStatus,
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 const prisma = new PrismaClient();
+
+// ── Storage helper (mirrors StorageService behavior) ──
+
+async function uploadToStorage(
+  path: string,
+  data: Buffer,
+  contentType: string,
+): Promise<string> {
+  // Try S3-compatible storage if configured via platform_config or env
+  const config = await prisma.platformConfig.findFirst({
+    where: { key: 'storage.accessKey' },
+  }).catch(() => null);
+
+  const getConfig = async (key: string): Promise<string | null> => {
+    const row = await prisma.platformConfig.findFirst({ where: { key } }).catch(() => null);
+    return (row?.value as string) ?? null;
+  };
+
+  const endpoint = await getConfig('storage.endpoint');
+  const accessKey = await getConfig('storage.accessKey');
+  const secretKey = await getConfig('storage.secretKey');
+  const region = (await getConfig('storage.region')) || 'fra1';
+  const bucket = (await getConfig('storage.bucket')) || 'derma-consent-bucket';
+
+  if (endpoint && accessKey && secretKey) {
+    const s3 = new S3Client({
+      endpoint,
+      region,
+      credentials: { accessKeyId: accessKey, secretAccessKey: secretKey },
+      forcePathStyle: false,
+    });
+    await s3.send(new PutObjectCommand({
+      Bucket: bucket,
+      Key: path,
+      Body: data,
+      ContentType: contentType,
+      ACL: 'private',
+    }));
+    return path;
+  }
+
+  // Dev fallback: return data URI (same as StorageService.upload when no provider)
+  console.log(`  [DEV-FALLBACK] Storing ${path} as data URI`);
+  return `data:${contentType};base64,${data.toString('base64')}`;
+}
 
 // ── Crypto constants (mirror frontend crypto.ts) ──
 
@@ -812,8 +858,12 @@ async function main() {
     const pngBuffer = Buffer.from(TINY_PNG_BASE64, 'base64');
     const photoEnc = await encryptBlob(pngBuffer.buffer.slice(pngBuffer.byteOffset, pngBuffer.byteOffset + pngBuffer.byteLength), pubKey);
 
-    // Store encrypted blob as data URI so StorageService can decode it
-    const encryptedBlobBase64 = photoEnc.encryptedBlob.toString('base64');
+    // Upload encrypted blob via storage (S3 in prod, data URI fallback in dev)
+    const storagePath = await uploadToStorage(
+      `photos/${practiceId}/${patientIds[ph.patientIdx]}/${Date.now()}.enc`,
+      photoEnc.encryptedBlob,
+      'application/octet-stream',
+    );
 
     await prisma.treatmentPhoto.create({
       data: {
@@ -824,7 +874,7 @@ async function main() {
         type: ph.type,
         bodyRegion: ph.bodyRegion,
         encryptedSessionKey: photoEnc.encryptedSessionKey,
-        storagePath: `data:application/octet-stream;base64,${encryptedBlobBase64}`,
+        storagePath,
         encryptedMetadata: { iv: photoEnc.iv, ciphertext: encMeta.ciphertext },
         photoConsentGranted: true,
         takenAt: daysAgo(ph.daysAgo),
@@ -964,6 +1014,7 @@ async function main() {
   console.log('  4. Browse patients, consent forms, treatment plans');
   console.log('  5. Open a PENDING consent link in incognito for patient flow');
   console.log('');
+
 }
 
 main()
@@ -971,4 +1022,6 @@ main()
     console.error('Seed failed:', err);
     process.exit(1);
   })
-  .finally(() => prisma.$disconnect());
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
