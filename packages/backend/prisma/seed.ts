@@ -123,6 +123,31 @@ async function encryptFormData(data: unknown, publicKey: CryptoKey) {
   };
 }
 
+async function encryptBlob(data: ArrayBuffer, publicKey: CryptoKey) {
+  const sessionKey = await crypto.subtle.generateKey(
+    { name: 'AES-GCM', length: AES_KEY_LENGTH },
+    true,
+    ['encrypt'],
+  );
+  const rawSessionKey = await crypto.subtle.exportKey('raw', sessionKey);
+  const encryptedSessionKey = await crypto.subtle.encrypt(
+    { name: 'RSA-OAEP' },
+    publicKey,
+    rawSessionKey,
+  );
+  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    sessionKey,
+    data,
+  );
+  return {
+    encryptedSessionKey: arrayBufferToBase64(encryptedSessionKey),
+    iv: arrayBufferToBase64(iv.buffer as ArrayBuffer),
+    encryptedBlob: Buffer.from(ciphertext),
+  };
+}
+
 async function encryptString(value: string, publicKey: CryptoKey) {
   const result = await encryptFormData(value, publicKey);
   return JSON.stringify(result);
@@ -783,8 +808,12 @@ async function main() {
     const metadata = { description: `${ph.type} photo — ${ph.bodyRegion}`, camera: 'Canon EOS R5' };
     const encMeta = await encryptFormData(metadata, pubKey);
 
-    // Encrypt a session key for the photo itself (storage path is the tiny PNG placeholder)
-    const photoEnc = await encryptFormData({ placeholder: true }, pubKey);
+    // Encrypt the photo binary with AES-GCM (mirrors frontend encryptBlob)
+    const pngBuffer = Buffer.from(TINY_PNG_BASE64, 'base64');
+    const photoEnc = await encryptBlob(pngBuffer.buffer.slice(pngBuffer.byteOffset, pngBuffer.byteOffset + pngBuffer.byteLength), pubKey);
+
+    // Store encrypted blob as data URI so StorageService can decode it
+    const encryptedBlobBase64 = photoEnc.encryptedBlob.toString('base64');
 
     await prisma.treatmentPhoto.create({
       data: {
@@ -795,8 +824,8 @@ async function main() {
         type: ph.type,
         bodyRegion: ph.bodyRegion,
         encryptedSessionKey: photoEnc.encryptedSessionKey,
-        storagePath: `data:image/png;base64,${TINY_PNG_BASE64}`,
-        encryptedMetadata: { iv: encMeta.iv, ciphertext: encMeta.ciphertext },
+        storagePath: `data:application/octet-stream;base64,${encryptedBlobBase64}`,
+        encryptedMetadata: { iv: photoEnc.iv, ciphertext: encMeta.ciphertext },
         photoConsentGranted: true,
         takenAt: daysAgo(ph.daysAgo),
         createdAt: daysAgo(ph.daysAgo),
