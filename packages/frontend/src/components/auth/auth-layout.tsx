@@ -10,6 +10,7 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children }: AuthLayoutProps) {
   const t = useTranslations('login');
+  const tLanding = useTranslations('landing');
 
   return (
     <div className="relative flex min-h-dvh">
@@ -34,7 +35,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         </div>
 
         <p className="text-sm text-primary-foreground/60">
-          2026 DermaConsent. All rights reserved.
+          {tLanding('copyright')}
         </p>
       </div>
 

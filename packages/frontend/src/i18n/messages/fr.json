@@ -186,7 +186,8 @@
     "minLength": "Au moins 8 caractères",
     "uppercase": "Une lettre majuscule",
     "lowercase": "Une lettre minuscule",
-    "number": "Un chiffre"
+    "number": "Un chiffre",
+    "tosLabel": "J'accepte les conditions d'utilisation et la"
   },
   "setup": {
     "title": "Enregistrer le cabinet",

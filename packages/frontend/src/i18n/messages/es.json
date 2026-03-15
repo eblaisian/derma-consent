@@ -186,7 +186,8 @@
     "minLength": "Al menos 8 caracteres",
     "uppercase": "Una letra mayúscula",
     "lowercase": "Una letra minúscula",
-    "number": "Un número"
+    "number": "Un número",
+    "tosLabel": "Acepto los términos de servicio y la"
   },
   "setup": {
     "title": "Registrar consulta",

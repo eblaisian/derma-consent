@@ -21,6 +21,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [tosAccepted, setTosAccepted] = useState(false);
 
   const checks = [
     password.length >= 8,
@@ -157,10 +158,25 @@ export default function RegisterPage() {
               autoComplete="new-password"
             />
           </div>
+          <div className="flex items-start gap-2">
+            <input
+              type="checkbox"
+              id="tos"
+              checked={tosAccepted}
+              onChange={(e) => setTosAccepted(e.target.checked)}
+              className="mt-1 h-4 w-4 shrink-0 rounded border-input accent-primary"
+            />
+            <label htmlFor="tos" className="text-xs text-muted-foreground leading-snug cursor-pointer">
+              {t('tosLabel')}{' '}
+              <Link href="/datenschutz" className="underline underline-offset-4 hover:text-primary">
+                {tLogin('privacyLink')}
+              </Link>
+            </label>
+          </div>
           {error && (
             <p id="register-error" className="text-sm text-destructive" role="alert">{error}</p>
           )}
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading || !tosAccepted}>
             {loading ? t('submitting') : t('submit')}
           </Button>
           <p className="text-center text-sm text-muted-foreground">
@@ -171,13 +187,6 @@ export default function RegisterPage() {
           </p>
         </form>
 
-        <p className="text-center text-xs text-muted-foreground">
-          {tLogin('privacyPrefix')}{' '}
-          <Link href="/datenschutz" className="underline underline-offset-4 hover:text-primary">
-            {tLogin('privacyLink')}
-          </Link>
-          .
-        </p>
       </div>
     </AuthLayout>
   );

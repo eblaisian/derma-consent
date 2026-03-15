@@ -186,7 +186,8 @@
     "minLength": "En az 8 karakter",
     "uppercase": "Bir büyük harf",
     "lowercase": "Bir küçük harf",
-    "number": "Bir rakam"
+    "number": "Bir rakam",
+    "tosLabel": "Hizmet şartlarını ve"
   },
   "setup": {
     "title": "Klinik kaydı",

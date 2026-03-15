@@ -186,7 +186,8 @@
     "minLength": "Mindestens 8 Zeichen",
     "uppercase": "Ein Großbuchstabe",
     "lowercase": "Ein Kleinbuchstabe",
-    "number": "Eine Zahl"
+    "number": "Eine Zahl",
+    "tosLabel": "Ich akzeptiere die AGB und"
   },
   "setup": {
     "title": "Praxis registrieren",

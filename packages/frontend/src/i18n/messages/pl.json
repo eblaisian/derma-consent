@@ -186,7 +186,8 @@
     "minLength": "Co najmniej 8 znaków",
     "uppercase": "Jedna wielka litera",
     "lowercase": "Jedna mała litera",
-    "number": "Jedna cyfra"
+    "number": "Jedna cyfra",
+    "tosLabel": "Akceptuję regulamin i"
   },
   "setup": {
     "title": "Zarejestruj praktykę",
