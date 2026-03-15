@@ -28,6 +28,7 @@ import { AdminModule } from './admin/admin.module';
 import { AiModule } from './ai/ai.module';
 import { NotificationModule } from './notifications/notification.module';
 import { CommunicationsModule } from './communications/communications.module';
+import { StorageModule } from './storage/storage.module';
 import { ScheduledTasksService } from './common/scheduled-tasks.service';
 
 @Module({
@@ -72,6 +73,7 @@ import { ScheduledTasksService } from './common/scheduled-tasks.service';
     PracticeModule,
     TeamModule,
     EmailModule,
+    StorageModule,
     AuditModule,
     BillingModule,
     PatientModule,

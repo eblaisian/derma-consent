@@ -1,28 +1,18 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { PlatformConfigService } from '../platform-config/platform-config.service';
+import { StorageService } from '../storage/storage.service';
 import { ConsentStatus } from '@prisma/client';
-import { createClient } from '@supabase/supabase-js';
 import PDFDocument from 'pdfkit';
 import * as crypto from 'crypto';
 
 @Injectable()
-export class PdfService implements OnModuleInit {
+export class PdfService {
   private readonly logger = new Logger(PdfService.name);
-  private supabase: ReturnType<typeof createClient> | null = null;
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly platformConfig: PlatformConfigService,
+    private readonly storage: StorageService,
   ) {}
-
-  async onModuleInit() {
-    const supabaseUrl = await this.platformConfig.get('storage.supabaseUrl');
-    const supabaseKey = await this.platformConfig.get('storage.supabaseServiceKey');
-    if (supabaseUrl && supabaseKey) {
-      this.supabase = createClient(supabaseUrl, supabaseKey);
-    }
-  }
 
   async generateConsentPdf(consentId: string): Promise<string> {
     const consent = await this.prisma.consentForm.findUniqueOrThrow({
@@ -150,23 +140,9 @@ export class PdfService implements OnModuleInit {
     doc.end();
     const pdfBuffer = await pdfComplete;
 
-    // Upload to Supabase Storage
-    const storagePath = `consents/${consent.practiceId}/${consent.id}.pdf`;
-
-    if (this.supabase) {
-      const bucket = (await this.platformConfig.get('storage.supabaseBucket')) || 'consent-pdfs';
-      const { error } = await this.supabase.storage
-        .from(bucket)
-        .upload(storagePath, pdfBuffer, {
-          contentType: 'application/pdf',
-          upsert: true,
-        });
-
-      if (error) {
-        this.logger.error(`Failed to upload PDF: ${error.message}`);
-        throw error;
-      }
-    }
+    // Upload to storage
+    const storagePath = `consent-pdfs/${consent.practiceId}/${consent.id}.pdf`;
+    await this.storage.upload(storagePath, pdfBuffer, 'application/pdf', { upsert: true });
 
     // Compute hash of the final PDF for tamper detection
     const pdfHash = crypto.createHash('sha256').update(pdfBuffer).digest('hex');
@@ -192,22 +168,10 @@ export class PdfService implements OnModuleInit {
     });
 
     if (!consent?.pdfStoragePath) {
-      throw new Error('PDF not found for this consent');
+      throw new NotFoundException('PDF not found for this consent');
     }
 
-    if (!this.supabase) {
-      throw new Error('Storage is not configured');
-    }
-
-    const bucket = (await this.platformConfig.get('storage.supabaseBucket')) || 'consent-pdfs';
-    const { data, error } = await this.supabase.storage
-      .from(bucket)
-      .createSignedUrl(consent.pdfStoragePath, 3600); // 1 hour expiry
-
-    if (error) {
-      throw error;
-    }
-
-    return { signedUrl: data.signedUrl };
+    const signedUrl = await this.storage.getSignedUrl(consent.pdfStoragePath, 900);
+    return { signedUrl };
   }
 }

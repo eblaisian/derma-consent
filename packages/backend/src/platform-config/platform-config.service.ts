@@ -22,7 +22,9 @@ const DEFAULTS: Record<string, string> = {
   'stripe.platformFeePercent': '5',
   'email.fromAddress': 'noreply@eblaisian.com',
   'email.fromName': 'DermaConsent',
-  'storage.supabaseBucket': 'consent-pdfs',
+  'storage.endpoint': 'https://fra1.digitaloceanspaces.com',
+  'storage.region': 'fra1',
+  'storage.bucket': 'derma-consent-bucket',
   'plans.freeTrialLimit': '25',
   'plans.starterLimit': '100',
   'plans.professionalLimit': '-1',
@@ -46,7 +48,8 @@ const SECRET_KEYS = new Set([
   'email.resendApiKey',
   'sms.twilioAccountSid',
   'sms.twilioAuthToken',
-  'storage.supabaseServiceKey',
+  'storage.accessKey',
+  'storage.secretKey',
   'openai.apiKey',
 ]);
 
@@ -69,9 +72,12 @@ const CONFIG_METADATA: Record<string, { category: string; description: string; i
   'sms.twilioAccountSid': { category: 'sms', description: 'Twilio Account SID', isSecret: true },
   'sms.twilioAuthToken': { category: 'sms', description: 'Twilio Auth Token', isSecret: true },
   'sms.twilioPhoneNumber': { category: 'sms', description: 'Twilio Phone Number', isSecret: false },
-  'storage.supabaseUrl': { category: 'storage', description: 'Supabase Project URL', isSecret: false },
-  'storage.supabaseServiceKey': { category: 'storage', description: 'Supabase Service Role Key', isSecret: true },
-  'storage.supabaseBucket': { category: 'storage', description: 'Supabase Storage Bucket', isSecret: false },
+  'storage.endpoint': { category: 'storage', description: 'S3-compatible endpoint URL (e.g. https://fra1.digitaloceanspaces.com)', isSecret: false },
+  'storage.region': { category: 'storage', description: 'Storage region (e.g. fra1)', isSecret: false },
+  'storage.bucket': { category: 'storage', description: 'Bucket name', isSecret: false },
+  'storage.cdnEndpoint': { category: 'storage', description: 'CDN endpoint URL (optional, e.g. https://bucket.fra1.cdn.digitaloceanspaces.com)', isSecret: false },
+  'storage.accessKey': { category: 'storage', description: 'Access Key ID', isSecret: true },
+  'storage.secretKey': { category: 'storage', description: 'Secret Access Key', isSecret: true },
   'plans.freeTrialLimit': { category: 'plans', description: 'Free Trial Monthly Consent Limit', isSecret: false },
   'plans.starterLimit': { category: 'plans', description: 'Starter Plan Monthly Consent Limit', isSecret: false },
   'plans.professionalLimit': { category: 'plans', description: 'Professional Plan Monthly Consent Limit (-1 = unlimited)', isSecret: false },
@@ -366,16 +372,11 @@ export class PlatformConfigService {
 
   private async testStorage(): Promise<{ success: boolean; message: string }> {
     try {
-      const url = await this.get('storage.supabaseUrl');
-      const key = await this.get('storage.supabaseServiceKey');
-      if (!url || !key) return { success: false, message: 'Supabase credentials not configured' };
-      const { createClient } = await import('@supabase/supabase-js');
-      const supabase = createClient(url, key);
-      const { error } = await supabase.storage.listBuckets();
-      if (error) throw error;
-      return { success: true, message: 'Supabase Storage connection successful' };
+      const { StorageService } = await import('../storage/storage.service');
+      const storageService = new StorageService(this);
+      return await storageService.test();
     } catch (error) {
-      return { success: false, message: `Supabase connection failed: ${(error as Error).message}` };
+      return { success: false, message: `Storage connection failed: ${(error as Error).message}` };
     }
   }
 }

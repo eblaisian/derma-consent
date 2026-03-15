@@ -1,25 +1,14 @@
-import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { PlatformConfigService } from '../platform-config/platform-config.service';
+import { StorageService } from '../storage/storage.service';
 import { CreatePatientDto } from './patient.dto';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
-export class PatientService implements OnModuleInit {
-  private supabase: SupabaseClient | null = null;
-
+export class PatientService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly platformConfig: PlatformConfigService,
+    private readonly storage: StorageService,
   ) {}
-
-  async onModuleInit() {
-    const url = await this.platformConfig.get('storage.supabaseUrl');
-    const key = await this.platformConfig.get('storage.supabaseServiceKey');
-    if (url && key) {
-      this.supabase = createClient(url, key);
-    }
-  }
 
   async findAll(practiceId: string, page = 1, limit = 50) {
     const skip = (page - 1) * limit;
@@ -129,20 +118,15 @@ export class PatientService implements OnModuleInit {
     }
 
     // DSGVO Art. 17 - Right to erasure
-    // Delete photo blobs from Supabase before the transaction
+    // Collect all storage paths before deleting DB records
     const photos = await this.prisma.treatmentPhoto.findMany({
       where: { patientId: id },
       select: { storagePath: true },
     });
-
-    if (this.supabase) {
-      const paths = photos
-        .map((p) => p.storagePath)
-        .filter((p) => !p.startsWith('data:'));
-      if (paths.length > 0) {
-        await this.supabase.storage.from('encrypted-photos').remove(paths);
-      }
-    }
+    const consents = await this.prisma.consentForm.findMany({
+      where: { patientId: id, pdfStoragePath: { not: null } },
+      select: { pdfStoragePath: true },
+    });
 
     await this.prisma.$transaction([
       this.prisma.treatmentPhoto.deleteMany({
@@ -158,6 +142,14 @@ export class PatientService implements OnModuleInit {
         where: { id },
       }),
     ]);
+
+    // Storage deletion after DB commit — if this fails, blobs are orphaned
+    // but DB records are already gone (preferable for GDPR: no PII references remain)
+    const allPaths = [
+      ...photos.map((p) => p.storagePath),
+      ...consents.map((c) => c.pdfStoragePath!),
+    ];
+    await this.storage.remove(allPaths);
 
     return { success: true };
   }

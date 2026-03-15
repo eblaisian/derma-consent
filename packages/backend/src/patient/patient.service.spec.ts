@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { PatientService } from './patient.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { PlatformConfigService } from '../platform-config/platform-config.service';
+import { StorageService } from '../storage/storage.service';
 
 describe('PatientService', () => {
   let service: PatientService;
@@ -27,6 +27,7 @@ describe('PatientService', () => {
       delete: jest.fn(),
     },
     consentForm: {
+      findMany: jest.fn().mockResolvedValue([]),
       deleteMany: jest.fn(),
     },
     treatmentPhoto: {
@@ -41,8 +42,13 @@ describe('PatientService', () => {
     ),
   };
 
-  const mockPlatformConfig = {
-    get: jest.fn().mockResolvedValue(undefined),
+  const mockStorage = {
+    upload: jest.fn().mockResolvedValue('path'),
+    download: jest.fn().mockResolvedValue(Buffer.from('')),
+    remove: jest.fn().mockResolvedValue(undefined),
+    getSignedUrl: jest.fn().mockResolvedValue('https://signed-url'),
+    getPublicUrl: jest.fn().mockReturnValue('https://public-url'),
+    test: jest.fn().mockResolvedValue({ success: true, message: 'ok' }),
   };
 
   beforeEach(async () => {
@@ -50,7 +56,7 @@ describe('PatientService', () => {
       providers: [
         PatientService,
         { provide: PrismaService, useValue: mockPrisma },
-        { provide: PlatformConfigService, useValue: mockPlatformConfig },
+        { provide: StorageService, useValue: mockStorage },
       ],
     }).compile();
 

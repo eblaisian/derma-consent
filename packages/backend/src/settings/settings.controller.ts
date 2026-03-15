@@ -18,8 +18,13 @@ import { RolesGuard } from '../auth/roles.guard';
 import { SubscriptionGuard } from '../billing/subscription.guard';
 import { Roles } from '../auth/roles.decorator';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
-import { PlatformConfigService } from '../platform-config/platform-config.service';
-import { createClient } from '@supabase/supabase-js';
+import { StorageService } from '../storage/storage.service';
+
+const MIME_TO_EXT: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+};
 
 @Controller('api/settings')
 @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
@@ -27,12 +32,20 @@ import { createClient } from '@supabase/supabase-js';
 export class SettingsController {
   constructor(
     private readonly settingsService: SettingsService,
-    private readonly platformConfig: PlatformConfigService,
+    private readonly storage: StorageService,
   ) {}
 
   @Get()
-  findByPractice(@CurrentUser() user: CurrentUserPayload) {
-    return this.settingsService.findByPractice(user.practiceId!);
+  async findByPractice(@CurrentUser() user: CurrentUserPayload) {
+    const settings = await this.settingsService.findByPractice(user.practiceId!);
+
+    // Resolve storage path to public URL at read time
+    if (settings.logoUrl && !settings.logoUrl.startsWith('data:') && !settings.logoUrl.startsWith('http')) {
+      const publicUrl = await this.storage.getPublicUrl(settings.logoUrl);
+      return { ...settings, logoUrl: publicUrl || settings.logoUrl };
+    }
+
+    return settings;
   }
 
   @Patch()
@@ -49,8 +62,7 @@ export class SettingsController {
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser() user: CurrentUserPayload,
   ) {
-    const maxSize = 10 * 1024 * 1024; // 10 MB
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'];
+    const maxSize = 10 * 1024 * 1024;
 
     if (!file) {
       throw new BadRequestException('No file provided');
@@ -58,37 +70,33 @@ export class SettingsController {
     if (file.size > maxSize) {
       throw new BadRequestException('File size exceeds 10 MB limit');
     }
-    if (!allowedMimes.includes(file.mimetype)) {
-      throw new BadRequestException('Invalid file type. Allowed: JPEG, PNG, WebP, SVG');
+    const ext = MIME_TO_EXT[file.mimetype];
+    if (!ext) {
+      throw new BadRequestException('Invalid file type. Allowed: JPEG, PNG, WebP');
     }
 
-    const supabaseUrl = await this.platformConfig.get('storage.supabaseUrl');
-    const supabaseKey = await this.platformConfig.get('storage.supabaseServiceKey');
-
-    if (!supabaseUrl || !supabaseKey) {
-      // Store as data URI in dev
-      const dataUri = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
-      return this.settingsService.updateLogo(user.practiceId!, dataUri);
+    // Delete old logo blob if exists
+    const current = await this.settingsService.findByPractice(user.practiceId!);
+    if (current.logoUrl && !current.logoUrl.startsWith('data:') && !current.logoUrl.startsWith('http')) {
+      await this.storage.remove([current.logoUrl]).catch(() => {});
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
-    const path = `logos/${user.practiceId}/${Date.now()}-${file.originalname}`;
+    // Sanitized path — never use user-supplied filenames
+    const path = `practice-assets/logos/${user.practiceId}/${Date.now()}.${ext}`;
+    const storagePath = await this.storage.upload(path, file.buffer, file.mimetype, { acl: 'public-read' });
 
-    const { error } = await supabase.storage
-      .from('practice-assets')
-      .upload(path, file.buffer, { contentType: file.mimetype });
-
-    if (error) throw error;
-
-    const { data: urlData } = supabase.storage
-      .from('practice-assets')
-      .getPublicUrl(path);
-
-    return this.settingsService.updateLogo(user.practiceId!, urlData.publicUrl);
+    // Store the raw storage path — resolve to public URL at read time
+    return this.settingsService.updateLogo(user.practiceId!, storagePath);
   }
 
   @Delete('logo')
-  deleteLogo(@CurrentUser() user: CurrentUserPayload) {
+  async deleteLogo(@CurrentUser() user: CurrentUserPayload) {
+    // Delete blob from storage
+    const current = await this.settingsService.findByPractice(user.practiceId!);
+    if (current.logoUrl && !current.logoUrl.startsWith('data:') && !current.logoUrl.startsWith('http')) {
+      await this.storage.remove([current.logoUrl]).catch(() => {});
+    }
+
     return this.settingsService.deleteLogo(user.practiceId!);
   }
 }

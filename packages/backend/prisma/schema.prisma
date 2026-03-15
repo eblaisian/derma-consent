@@ -53,6 +53,7 @@ enum AuditAction {
   LOGIN_FAILED
   ACCOUNT_LOCKED
   CONSENT_EXPLAINER_REQUESTED
+  PDF_DOWNLOADED
 }
 
 enum BodyRegion {

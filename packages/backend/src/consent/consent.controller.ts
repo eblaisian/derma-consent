@@ -11,6 +11,8 @@ import {
 import { ConsentService } from './consent.service';
 import { CreateConsentDto } from './consent.dto';
 import { NotificationService } from '../notifications/notification.service';
+import { PdfService } from '../pdf/pdf.service';
+import { AuditService } from '../audit/audit.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { SubscriptionGuard } from '../billing/subscription.guard';
@@ -24,6 +26,8 @@ export class ConsentController {
   constructor(
     private readonly consentService: ConsentService,
     private readonly notificationService: NotificationService,
+    private readonly pdfService: PdfService,
+    private readonly auditService: AuditService,
   ) {}
 
   @Post()
@@ -60,6 +64,25 @@ export class ConsentController {
       pagination.page,
       pagination.limit,
     );
+  }
+
+  @Get(':id/pdf')
+  @Roles('ADMIN', 'ARZT')
+  async downloadPdf(
+    @Param('id') id: string,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    const result = await this.pdfService.downloadPdf(id, user.practiceId!);
+
+    await this.auditService.log({
+      practiceId: user.practiceId!,
+      userId: user.userId,
+      action: 'PDF_DOWNLOADED',
+      entityType: 'ConsentForm',
+      entityId: id,
+    });
+
+    return result;
   }
 
   @Patch(':token/revoke')

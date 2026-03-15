@@ -8,7 +8,7 @@ const cspDirectives = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://js.stripe.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://*.supabase.co",
+  "img-src 'self' data: blob: https://*.digitaloceanspaces.com",
   "font-src 'self'",
   "connect-src 'self' https://api.stripe.com https://*.ingest.sentry.io " +
     (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"),

@@ -2,32 +2,20 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
-  OnModuleInit,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { PlatformConfigService } from '../platform-config/platform-config.service';
+import { StorageService } from '../storage/storage.service';
 import { AuditService } from '../audit/audit.service';
 import { UploadPhotoDto } from './photo.dto';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { randomUUID } from 'crypto';
 
 @Injectable()
-export class PhotoService implements OnModuleInit {
-  private supabase: SupabaseClient | null = null;
-
+export class PhotoService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly platformConfig: PlatformConfigService,
+    private readonly storage: StorageService,
     private readonly audit: AuditService,
   ) {}
-
-  async onModuleInit() {
-    const url = await this.platformConfig.get('storage.supabaseUrl');
-    const key = await this.platformConfig.get('storage.supabaseServiceKey');
-    if (url && key) {
-      this.supabase = createClient(url, key);
-    }
-  }
 
   async upload(
     practiceId: string,
@@ -35,7 +23,6 @@ export class PhotoService implements OnModuleInit {
     dto: UploadPhotoDto,
     fileBuffer: Buffer,
   ) {
-    // Verify patient belongs to practice
     const patient = await this.prisma.patient.findFirst({
       where: { id: dto.patientId, practiceId },
     });
@@ -43,36 +30,30 @@ export class PhotoService implements OnModuleInit {
       throw new NotFoundException('Patient nicht gefunden');
     }
 
-    let storagePath: string;
+    const path = `encrypted-photos/${practiceId}/${dto.patientId}/${randomUUID()}.enc`;
+    const storagePath = await this.storage.upload(path, fileBuffer, 'application/octet-stream');
 
-    if (this.supabase) {
-      storagePath = `encrypted-photos/${practiceId}/${dto.patientId}/${randomUUID()}.enc`;
-      const { error } = await this.supabase.storage
-        .from('encrypted-photos')
-        .upload(storagePath, fileBuffer, {
-          contentType: 'application/octet-stream',
-        });
-      if (error) throw error;
-    } else {
-      // Dev fallback: store as data URI
-      storagePath = `data:application/octet-stream;base64,${fileBuffer.toString('base64')}`;
+    let photo;
+    try {
+      photo = await this.prisma.treatmentPhoto.create({
+        data: {
+          practiceId,
+          patientId: dto.patientId,
+          consentFormId: dto.consentFormId,
+          treatmentPlanId: dto.treatmentPlanId,
+          type: dto.type,
+          bodyRegion: dto.bodyRegion,
+          encryptedSessionKey: dto.encryptedSessionKey,
+          storagePath,
+          encryptedMetadata: dto.encryptedMetadata as object | undefined,
+          photoConsentGranted: dto.photoConsentGranted ?? false,
+          takenAt: new Date(dto.takenAt),
+        },
+      });
+    } catch (error) {
+      await this.storage.remove([storagePath]).catch(() => {});
+      throw error;
     }
-
-    const photo = await this.prisma.treatmentPhoto.create({
-      data: {
-        practiceId,
-        patientId: dto.patientId,
-        consentFormId: dto.consentFormId,
-        treatmentPlanId: dto.treatmentPlanId,
-        type: dto.type,
-        bodyRegion: dto.bodyRegion,
-        encryptedSessionKey: dto.encryptedSessionKey,
-        storagePath,
-        encryptedMetadata: dto.encryptedMetadata as object | undefined,
-        photoConsentGranted: dto.photoConsentGranted ?? false,
-        takenAt: new Date(dto.takenAt),
-      },
-    });
 
     await this.audit.log({
       practiceId,
@@ -143,28 +124,13 @@ export class PhotoService implements OnModuleInit {
       entityId: id,
     });
 
-    if (this.supabase) {
-      const { data, error } = await this.supabase.storage
-        .from('encrypted-photos')
-        .download(photo.storagePath);
-      if (error || !data) throw error || new Error('Download failed');
-      return Buffer.from(await data.arrayBuffer());
-    }
-
-    // Dev fallback: decode data URI
-    const base64 = photo.storagePath.split(',')[1];
-    return Buffer.from(base64, 'base64');
+    return this.storage.download(photo.storagePath);
   }
 
   async delete(practiceId: string, userId: string, id: string) {
     const photo = await this.findById(practiceId, id);
 
-    if (this.supabase && !photo.storagePath.startsWith('data:')) {
-      await this.supabase.storage
-        .from('encrypted-photos')
-        .remove([photo.storagePath]);
-    }
-
+    await this.storage.remove([photo.storagePath]);
     await this.prisma.treatmentPhoto.delete({ where: { id } });
 
     await this.audit.log({
@@ -192,15 +158,7 @@ export class PhotoService implements OnModuleInit {
       select: { storagePath: true },
     });
 
-    if (this.supabase) {
-      const paths = photos
-        .map((p) => p.storagePath)
-        .filter((p) => !p.startsWith('data:'));
-      if (paths.length > 0) {
-        await this.supabase.storage.from('encrypted-photos').remove(paths);
-      }
-    }
-
+    await this.storage.remove(photos.map((p) => p.storagePath));
     await this.prisma.treatmentPhoto.deleteMany({
       where: { patientId, practiceId },
     });
