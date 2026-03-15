@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useFormatter } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 import { useAuthFetch } from '@/lib/auth-fetch';
@@ -32,6 +32,7 @@ interface PracticeListResponse {
 
 export default function AdminPracticesPage() {
   const t = useTranslations('admin');
+  const format = useFormatter();
   const router = useRouter();
   const authFetch = useAuthFetch();
   const [search, setSearch] = useState('');
@@ -152,7 +153,7 @@ export default function AdminPracticesPage() {
                     )}
                   </td>
                   <td className="px-5 py-3 text-muted-foreground">
-                    {new Date(practice.createdAt).toLocaleDateString()}
+                    {format.dateTime(new Date(practice.createdAt), { dateStyle: 'medium' })}
                   </td>
                   <td className="px-5 py-3">
                     <button

@@ -185,11 +185,15 @@ export default function BillingPage() {
                   <Button className="w-full" onClick={() => handleCheckout(tier.priceId!)}>
                     {t('select')}
                   </Button>
-                ) : (
+                ) : tier.plan === 'ENTERPRISE' ? (
                   <Button className="w-full" variant="outline" asChild>
                     <a href="mailto:enterprise@dermaconsent.de?subject=Enterprise%20Plan%20Inquiry">
                       {t('contactUs')}
                     </a>
+                  </Button>
+                ) : (
+                  <Button className="w-full" variant="outline" disabled>
+                    {t('comingSoon')}
                   </Button>
                 )}
               </CardContent>

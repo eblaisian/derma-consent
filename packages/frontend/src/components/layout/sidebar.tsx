@@ -37,8 +37,8 @@ interface NavItem {
 const navItems: NavItem[] = [
   { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard, roles: ['ADMIN', 'ARZT', 'EMPFANG'], section: 'overview' },
   { href: '/patients', labelKey: 'patients', icon: User, roles: ['ADMIN', 'ARZT'], section: 'overview' },
-  { href: '/communications', labelKey: 'communications', icon: MessageSquare, roles: ['ADMIN', 'ARZT', 'EMPFANG'], section: 'overview', aiFeature: 'communications' },
-  { href: '/analytics', labelKey: 'analytics', icon: BarChart3, roles: ['ADMIN'], section: 'management' },
+  { href: '/communications', labelKey: 'communications', icon: MessageSquare, roles: ['ADMIN', 'ARZT', 'EMPFANG'], section: 'overview' },
+  { href: '/analytics', labelKey: 'analytics', icon: BarChart3, roles: ['ADMIN', 'ARZT'], section: 'management' },
   { href: '/team', labelKey: 'team', icon: Users, roles: ['ADMIN'], section: 'management' },
   { href: '/audit', labelKey: 'audit', icon: ScrollText, roles: ['ADMIN'], section: 'management' },
   { href: '/billing', labelKey: 'billing', icon: CreditCard, roles: ['ADMIN'], section: 'system' },
@@ -172,14 +172,14 @@ export function Sidebar() {
       {/* User profile footer */}
       {session?.user && (
         <div className="border-t border-sidebar-border px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2.5 min-w-0">
+          <Link href="/profile" className="flex items-center gap-2.5 min-w-0 hover:opacity-80 transition-default">
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-xs font-medium text-primary">
               {(session.user.name || session.user.email || '?')[0].toUpperCase()}
             </div>
             <span className="text-sm text-sidebar-foreground truncate">
               {session.user.name || session.user.email}
             </span>
-          </div>
+          </Link>
           <button
             onClick={() => signOut({ callbackUrl: '/login' })}
             className="text-muted-foreground hover:text-foreground transition-default shrink-0"

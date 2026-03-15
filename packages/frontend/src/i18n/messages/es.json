@@ -1186,5 +1186,32 @@
     "refresh": "Actualizar",
     "loading": "Analizando...",
     "noAi": "Información IA no disponible"
+  },
+  "profile": {
+    "title": "Configuración de cuenta",
+    "description": "Gestione sus ajustes personales de cuenta y preferencias de seguridad.",
+    "nameLabel": "Nombre",
+    "emailLabel": "Correo electrónico",
+    "roleLabel": "Rol",
+    "memberSince": "Miembro desde",
+    "saveName": "Guardar nombre",
+    "saving": "Guardando...",
+    "nameSaved": "Nombre actualizado correctamente.",
+    "saveError": "Algo salió mal. Por favor, inténtelo de nuevo.",
+    "changePasswordTitle": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar nueva contraseña",
+    "changePasswordBtn": "Cambiar contraseña",
+    "changingPassword": "Cambiando contraseña...",
+    "passwordChanged": "Contraseña cambiada correctamente.",
+    "passwordMismatch": "Las nuevas contraseñas no coinciden.",
+    "exportTitle": "Exportación de datos",
+    "exportDescription": "Descargue una copia de todos sus datos personales en formato JSON (RGPD Art. 20).",
+    "exportBtn": "Exportar mis datos",
+    "exporting": "Exportando...",
+    "roleBadge_ADMIN": "Administrador",
+    "roleBadge_ARZT": "Médico",
+    "roleBadge_EMPFANG": "Recepción"
   }
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useVault } from '@/hooks/use-vault';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, Lock, Image, UserPlus, FileSignature, X } from 'lucide-react';
@@ -11,6 +10,7 @@ interface OnboardingChecklistProps {
   hasConsents: boolean;
   teamCount: number;
   hasLogo: boolean;
+  hasKeypair: boolean;
   onDismiss: () => void;
 }
 
@@ -23,14 +23,11 @@ interface Step {
   actionKey: string;
 }
 
-export function OnboardingChecklist({ hasConsents, teamCount, hasLogo, onDismiss }: OnboardingChecklistProps) {
+export function OnboardingChecklist({ hasConsents, teamCount, hasLogo, hasKeypair, onDismiss }: OnboardingChecklistProps) {
   const t = useTranslations('onboarding');
-  const { isUnlocked } = useVault();
-
-  const vaultEverUnlocked = typeof window !== 'undefined' && localStorage.getItem('vault-ever-unlocked') === 'true';
 
   const steps: Step[] = [
-    { id: 'vault', icon: Lock, labelKey: 'step_vault', complete: vaultEverUnlocked || isUnlocked, href: '#', actionKey: 'action_vault' },
+    { id: 'vault', icon: Lock, labelKey: 'step_vault', complete: hasKeypair, href: '#', actionKey: 'action_vault' },
     { id: 'logo', icon: Image, labelKey: 'step_logo', complete: hasLogo, href: '/settings', actionKey: 'action_logo' },
     { id: 'team', icon: UserPlus, labelKey: 'step_team', complete: teamCount > 1, href: '/team', actionKey: 'action_team' },
     { id: 'consent', icon: FileSignature, labelKey: 'step_consent', complete: hasConsents, href: '/dashboard', actionKey: 'action_consent' },

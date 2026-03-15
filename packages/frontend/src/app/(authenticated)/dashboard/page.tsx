@@ -19,15 +19,18 @@ export default function DashboardPage() {
   const t = useTranslations('dashboard');
   const router = useRouter();
   const { data: session } = useSession();
-  const { practiceId, isLoading: practiceLoading } = usePractice();
+  const { practiceId, practice, isLoading: practiceLoading } = usePractice();
   const [statusFilter, setStatusFilter] = useState('ALL');
+
+  const isAdmin = session?.user?.role === 'ADMIN';
+  const isAdminOrDoctor = isAdmin || session?.user?.role === 'ARZT';
 
   const {
     data: consentsData,
     isLoading: consentsLoading,
     mutate: refreshConsents,
   } = useSWR<{ items: ConsentFormSummary[] }>(
-    practiceId && session?.accessToken
+    isAdminOrDoctor && practiceId && session?.accessToken
       ? `${API_URL}/api/consent/practice`
       : null,
     createAuthFetcher(session?.accessToken),
@@ -35,13 +38,11 @@ export default function DashboardPage() {
   const consents = consentsData?.items;
 
   const { data: patientsData } = useSWR<{ total: number }>(
-    practiceId && session?.accessToken
+    isAdminOrDoctor && practiceId && session?.accessToken
       ? `${API_URL}/api/patients?page=1&limit=1`
       : null,
     createAuthFetcher(session?.accessToken),
   );
-
-  const isAdmin = session?.user?.role === 'ADMIN';
 
   const { data: settingsData } = useSWR<{ logoUrl?: string }>(
     isAdmin && practiceId && session?.accessToken
@@ -117,6 +118,7 @@ export default function DashboardPage() {
           hasConsents={(consents?.length ?? 0) > 0}
           teamCount={teamCount}
           hasLogo={!!settingsData?.logoUrl}
+          hasKeypair={!!practice?.publicKey}
           onDismiss={dismissOnboarding}
         />
       )}
@@ -129,7 +131,7 @@ export default function DashboardPage() {
             {t('welcomeBack', { name: userName })}
           </p>
         </div>
-        <NewConsentDialog onCreated={() => refreshConsents()} />
+        {isAdminOrDoctor && <NewConsentDialog onCreated={() => refreshConsents()} />}
       </div>
 
       {/* Stat cards with stagger animation */}

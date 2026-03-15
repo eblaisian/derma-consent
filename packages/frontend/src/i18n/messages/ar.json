@@ -1186,5 +1186,32 @@
     "refresh": "تحديث",
     "loading": "جارٍ التحليل...",
     "noAi": "تحليلات الذكاء الاصطناعي غير متاحة"
+  },
+  "profile": {
+    "title": "إعدادات الحساب",
+    "description": "إدارة إعدادات حسابك الشخصي وتفضيلات الأمان.",
+    "nameLabel": "الاسم",
+    "emailLabel": "البريد الإلكتروني",
+    "roleLabel": "الدور",
+    "memberSince": "عضو منذ",
+    "saveName": "حفظ الاسم",
+    "saving": "جارٍ الحفظ...",
+    "nameSaved": "تم تحديث الاسم بنجاح.",
+    "saveError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "changePasswordTitle": "تغيير كلمة المرور",
+    "currentPassword": "كلمة المرور الحالية",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmPassword": "تأكيد كلمة المرور الجديدة",
+    "changePasswordBtn": "تغيير كلمة المرور",
+    "changingPassword": "جارٍ تغيير كلمة المرور...",
+    "passwordChanged": "تم تغيير كلمة المرور بنجاح.",
+    "passwordMismatch": "كلمات المرور الجديدة غير متطابقة.",
+    "exportTitle": "تصدير البيانات",
+    "exportDescription": "قم بتنزيل نسخة من جميع بياناتك الشخصية بتنسيق JSON (اللائحة العامة لحماية البيانات المادة 20).",
+    "exportBtn": "تصدير بياناتي",
+    "exporting": "جارٍ التصدير...",
+    "roleBadge_ADMIN": "مسؤول",
+    "roleBadge_ARZT": "طبيب",
+    "roleBadge_EMPFANG": "استقبال"
   }
 }

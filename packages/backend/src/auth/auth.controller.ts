@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Body,
   Headers,
   UseGuards,
@@ -12,7 +13,7 @@ import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { TwoFactorService } from './two-factor.service';
 import { SyncUserDto } from './auth.dto';
-import { RegisterDto, LoginDto, ForgotPasswordDto, ResetPasswordDto, VerifyEmailDto } from './credentials.dto';
+import { RegisterDto, LoginDto, ForgotPasswordDto, ResetPasswordDto, VerifyEmailDto, UpdateProfileDto, ChangePasswordDto } from './credentials.dto';
 import { TwoFactorTokenDto, TwoFactorVerifyLoginDto } from './two-factor.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CurrentUser, CurrentUserPayload } from './current-user.decorator';
@@ -108,6 +109,37 @@ export class AuthController {
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   async verify2FA(@Body() dto: TwoFactorVerifyLoginDto) {
     return this.authService.verifyTwoFactorLogin(dto.tempToken, dto.token);
+  }
+
+  @Post('refresh-token')
+  @UseGuards(JwtAuthGuard)
+  async refreshToken(@CurrentUser() user: CurrentUserPayload) {
+    return this.authService.refreshToken(user.userId);
+  }
+
+  @Get('account/profile')
+  @UseGuards(JwtAuthGuard)
+  async getProfile(@CurrentUser() user: CurrentUserPayload) {
+    return this.authService.getProfile(user.userId);
+  }
+
+  @Patch('account/profile')
+  @UseGuards(JwtAuthGuard)
+  async updateProfile(
+    @CurrentUser() user: CurrentUserPayload,
+    @Body() dto: UpdateProfileDto,
+  ) {
+    return this.authService.updateProfile(user.userId, dto);
+  }
+
+  @Post('account/change-password')
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  async changePassword(
+    @CurrentUser() user: CurrentUserPayload,
+    @Body() dto: ChangePasswordDto,
+  ) {
+    return this.authService.changePassword(user.userId, dto.currentPassword, dto.newPassword);
   }
 
   /** GDPR Art. 15 — Data Subject Access Request (DSAR) */

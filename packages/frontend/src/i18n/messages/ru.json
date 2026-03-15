@@ -1186,5 +1186,32 @@
     "refresh": "Обновить",
     "loading": "Анализ...",
     "noAi": "ИИ-аналитика недоступна"
+  },
+  "profile": {
+    "title": "Настройки аккаунта",
+    "description": "Управляйте личными настройками аккаунта и предпочтениями безопасности.",
+    "nameLabel": "Имя",
+    "emailLabel": "Электронная почта",
+    "roleLabel": "Роль",
+    "memberSince": "Участник с",
+    "saveName": "Сохранить имя",
+    "saving": "Сохранение...",
+    "nameSaved": "Имя успешно обновлено.",
+    "saveError": "Что-то пошло не так. Пожалуйста, попробуйте снова.",
+    "changePasswordTitle": "Изменить пароль",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "confirmPassword": "Подтвердите новый пароль",
+    "changePasswordBtn": "Изменить пароль",
+    "changingPassword": "Изменение пароля...",
+    "passwordChanged": "Пароль успешно изменён.",
+    "passwordMismatch": "Новые пароли не совпадают.",
+    "exportTitle": "Экспорт данных",
+    "exportDescription": "Скачайте копию всех ваших персональных данных в формате JSON (GDPR Ст. 20).",
+    "exportBtn": "Экспортировать мои данные",
+    "exporting": "Экспорт...",
+    "roleBadge_ADMIN": "Администратор",
+    "roleBadge_ARZT": "Врач",
+    "roleBadge_EMPFANG": "Ресепшн"
   }
 }

@@ -1186,5 +1186,32 @@
     "refresh": "Yenile",
     "loading": "Analiz ediliyor...",
     "noAi": "Yapay zeka analizleri mevcut değil"
+  },
+  "profile": {
+    "title": "Hesap Ayarları",
+    "description": "Kişisel hesap ayarlarınızı ve güvenlik tercihlerinizi yönetin.",
+    "nameLabel": "Ad",
+    "emailLabel": "E-posta",
+    "roleLabel": "Rol",
+    "memberSince": "Üyelik tarihi",
+    "saveName": "Adı kaydet",
+    "saving": "Kaydediliyor...",
+    "nameSaved": "Ad başarıyla güncellendi.",
+    "saveError": "Bir hata oluştu. Lütfen tekrar deneyin.",
+    "changePasswordTitle": "Şifre Değiştir",
+    "currentPassword": "Mevcut şifre",
+    "newPassword": "Yeni şifre",
+    "confirmPassword": "Yeni şifreyi onayla",
+    "changePasswordBtn": "Şifreyi değiştir",
+    "changingPassword": "Şifre değiştiriliyor...",
+    "passwordChanged": "Şifre başarıyla değiştirildi.",
+    "passwordMismatch": "Yeni şifreler eşleşmiyor.",
+    "exportTitle": "Veri Dışa Aktarma",
+    "exportDescription": "Tüm kişisel verilerinizin bir kopyasını JSON formatında indirin (KVKK Madde 20).",
+    "exportBtn": "Verilerimi dışa aktar",
+    "exporting": "Dışa aktarılıyor...",
+    "roleBadge_ADMIN": "Yönetici",
+    "roleBadge_ARZT": "Doktor",
+    "roleBadge_EMPFANG": "Resepsiyon"
   }
 }

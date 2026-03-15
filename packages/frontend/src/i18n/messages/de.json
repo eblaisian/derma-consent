@@ -517,6 +517,7 @@
     "select": "Wählen",
     "currentPlanBadge": "Aktueller Tarif",
     "contactUs": "Kontakt aufnehmen",
+    "comingSoon": "Demnächst verfügbar",
     "connectTitle": "Zahlungsabwicklung",
     "connectDescription": "Verbinden Sie Ihr Stripe-Konto, um Zahlungen von Patienten zu akzeptieren.",
     "connectError": "Fehler bei der Stripe-Verbindung",
@@ -608,7 +609,8 @@
     "TREATMENT_PLAN_VIEWED": "{actor} hat einen Behandlungsplan angesehen",
     "LOGIN_SUCCESS": "{actor} hat sich angemeldet",
     "LOGIN_FAILED": "Fehlgeschlagener Anmeldeversuch für {actor}",
-    "ACCOUNT_LOCKED": "Konto gesperrt für {actor}"
+    "ACCOUNT_LOCKED": "Konto gesperrt für {actor}",
+    "CONSENT_EXPLAINER_REQUESTED": "{actor} hat eine Einwilligungserklärung angefordert"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -1120,7 +1122,8 @@
     "ACCOUNT_LOCKED": "Konto gesperrt",
     "PHOTO_VIEWED": "Foto angesehen",
     "TREATMENT_PLAN_CREATED": "Behandlungsplan erstellt",
-    "TREATMENT_PLAN_VIEWED": "Behandlungsplan angesehen"
+    "TREATMENT_PLAN_VIEWED": "Behandlungsplan angesehen",
+    "CONSENT_EXPLAINER_REQUESTED": "Einwilligungserklärung angefordert"
   },
   "noShowRisk": {
     "LOW": "Niedrig",
@@ -1186,5 +1189,32 @@
     "refresh": "Aktualisieren",
     "loading": "Wird analysiert...",
     "noAi": "KI-Einblicke nicht verfügbar"
+  },
+  "profile": {
+    "title": "Kontoeinstellungen",
+    "description": "Verwalten Sie Ihre persönlichen Kontoeinstellungen und Sicherheitspräferenzen.",
+    "nameLabel": "Name",
+    "emailLabel": "E-Mail",
+    "roleLabel": "Rolle",
+    "memberSince": "Mitglied seit",
+    "saveName": "Name speichern",
+    "saving": "Wird gespeichert...",
+    "nameSaved": "Name erfolgreich aktualisiert.",
+    "saveError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "changePasswordTitle": "Passwort ändern",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "confirmPassword": "Neues Passwort bestätigen",
+    "changePasswordBtn": "Passwort ändern",
+    "changingPassword": "Passwort wird geändert...",
+    "passwordChanged": "Passwort erfolgreich geändert.",
+    "passwordMismatch": "Die neuen Passwörter stimmen nicht überein.",
+    "exportTitle": "Datenexport",
+    "exportDescription": "Laden Sie eine Kopie aller Ihrer persönlichen Daten im JSON-Format herunter (DSGVO Art. 20).",
+    "exportBtn": "Meine Daten exportieren",
+    "exporting": "Wird exportiert...",
+    "roleBadge_ADMIN": "Administrator",
+    "roleBadge_ARZT": "Arzt",
+    "roleBadge_EMPFANG": "Empfang"
   }
 }

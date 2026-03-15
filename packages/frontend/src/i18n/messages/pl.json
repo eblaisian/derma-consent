@@ -1186,5 +1186,32 @@
     "refresh": "Odśwież",
     "loading": "Analizowanie...",
     "noAi": "Analizy AI niedostępne"
+  },
+  "profile": {
+    "title": "Ustawienia konta",
+    "description": "Zarządzaj ustawieniami konta i preferencjami bezpieczeństwa.",
+    "nameLabel": "Imię i nazwisko",
+    "emailLabel": "E-mail",
+    "roleLabel": "Rola",
+    "memberSince": "Członek od",
+    "saveName": "Zapisz imię",
+    "saving": "Zapisywanie...",
+    "nameSaved": "Imię zostało zaktualizowane.",
+    "saveError": "Coś poszło nie tak. Spróbuj ponownie.",
+    "changePasswordTitle": "Zmiana hasła",
+    "currentPassword": "Aktualne hasło",
+    "newPassword": "Nowe hasło",
+    "confirmPassword": "Potwierdź nowe hasło",
+    "changePasswordBtn": "Zmień hasło",
+    "changingPassword": "Zmienianie hasła...",
+    "passwordChanged": "Hasło zostało zmienione.",
+    "passwordMismatch": "Nowe hasła nie pasują do siebie.",
+    "exportTitle": "Eksport danych",
+    "exportDescription": "Pobierz kopię wszystkich swoich danych osobowych w formacie JSON (RODO Art. 20).",
+    "exportBtn": "Eksportuj moje dane",
+    "exporting": "Eksportowanie...",
+    "roleBadge_ADMIN": "Administrator",
+    "roleBadge_ARZT": "Lekarz",
+    "roleBadge_EMPFANG": "Recepcja"
   }
 }

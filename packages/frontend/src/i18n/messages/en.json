@@ -166,7 +166,7 @@
     "title": "Create account",
     "description": "Register for DermaConsent.",
     "name": "Name",
-    "namePlaceholder": "Dr. Smith",
+    "namePlaceholder": "Your full name",
     "email": "Email",
     "emailPlaceholder": "name@example.com",
     "password": "Password",
@@ -191,7 +191,7 @@
     "title": "Register practice",
     "description": "Set up your practice for DermaConsent. Encryption keys will be generated to encrypt patient data end-to-end.",
     "practiceName": "Practice name *",
-    "practiceNamePlaceholder": "e.g. Dermatology Practice Dr. Smith",
+    "practiceNamePlaceholder": "e.g. Dermatologie Praxis Dr. Mustermann",
     "dsgvoContact": "GDPR contact email *",
     "dsgvoContactPlaceholder": "privacy@practice.com",
     "masterPassword": "Master password *",
@@ -517,6 +517,7 @@
     "select": "Select",
     "currentPlanBadge": "Current plan",
     "contactUs": "Contact us",
+    "comingSoon": "Coming soon",
     "connectTitle": "Payment Processing",
     "connectDescription": "Connect your Stripe account to accept payments from patients.",
     "connectError": "Error connecting to Stripe",
@@ -608,7 +609,8 @@
     "TREATMENT_PLAN_VIEWED": "{actor} viewed a treatment plan",
     "LOGIN_SUCCESS": "{actor} signed in",
     "LOGIN_FAILED": "Failed sign-in attempt for {actor}",
-    "ACCOUNT_LOCKED": "Account locked for {actor}"
+    "ACCOUNT_LOCKED": "Account locked for {actor}",
+    "CONSENT_EXPLAINER_REQUESTED": "{actor} requested a consent explainer"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -1120,7 +1122,8 @@
     "ACCOUNT_LOCKED": "Account locked",
     "PHOTO_VIEWED": "Photo viewed",
     "TREATMENT_PLAN_CREATED": "Treatment plan created",
-    "TREATMENT_PLAN_VIEWED": "Treatment plan viewed"
+    "TREATMENT_PLAN_VIEWED": "Treatment plan viewed",
+    "CONSENT_EXPLAINER_REQUESTED": "Consent explainer requested"
   },
   "noShowRisk": {
     "LOW": "Low",
@@ -1186,5 +1189,32 @@
     "refresh": "Refresh",
     "loading": "Analysing...",
     "noAi": "AI insights not available"
+  },
+  "profile": {
+    "title": "Account Settings",
+    "description": "Manage your personal account settings and security preferences.",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "roleLabel": "Role",
+    "memberSince": "Member since",
+    "saveName": "Save name",
+    "saving": "Saving...",
+    "nameSaved": "Name updated successfully.",
+    "saveError": "Something went wrong. Please try again.",
+    "changePasswordTitle": "Change Password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "changePasswordBtn": "Change password",
+    "changingPassword": "Changing password...",
+    "passwordChanged": "Password changed successfully.",
+    "passwordMismatch": "New passwords do not match.",
+    "exportTitle": "Data Export",
+    "exportDescription": "Download a copy of all your personal data in JSON format (GDPR Art. 20).",
+    "exportBtn": "Export my data",
+    "exporting": "Exporting...",
+    "roleBadge_ADMIN": "Administrator",
+    "roleBadge_ARZT": "Doctor",
+    "roleBadge_EMPFANG": "Reception"
   }
 }

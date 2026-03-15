@@ -61,6 +61,7 @@ const auditActionKeys = [
   'PHOTO_VIEWED',
   'TREATMENT_PLAN_CREATED',
   'TREATMENT_PLAN_VIEWED',
+  'CONSENT_EXPLAINER_REQUESTED',
 ] as const;
 
 function isSignificantIp(ip: string | null): boolean {
