@@ -6,6 +6,7 @@ import {
   IsDateString,
   IsObject,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export enum PhotoType {
   BEFORE = 'BEFORE',
@@ -53,10 +54,12 @@ export class UploadPhotoDto {
   treatmentPlanId?: string;
 
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? JSON.parse(value) : value))
   @IsObject()
   encryptedMetadata?: { iv: string; ciphertext: string };
 
   @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
   @IsBoolean()
   photoConsentGranted?: boolean;
 }

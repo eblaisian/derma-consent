@@ -40,7 +40,12 @@ export class PhotoController {
     @CurrentUser() user: CurrentUserPayload,
   ) {
     const maxSize = 10 * 1024 * 1024; // 10 MB
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+    // Photos are encrypted client-side before upload, so the server receives
+    // ciphertext (application/octet-stream), not raw image data.
+    const allowedMimes = [
+      'image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif',
+      'application/octet-stream', // encrypted photo blob
+    ];
 
     if (!file) {
       throw new BadRequestException('No file provided');
@@ -49,7 +54,7 @@ export class PhotoController {
       throw new BadRequestException('File size exceeds 10 MB limit');
     }
     if (!allowedMimes.includes(file.mimetype)) {
-      throw new BadRequestException('Invalid file type. Allowed: JPEG, PNG, WebP, HEIC');
+      throw new BadRequestException('Invalid file type');
     }
 
     return this.photoService.upload(
