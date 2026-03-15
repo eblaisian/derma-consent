@@ -1,13 +1,14 @@
-import { Injectable, Logger, ServiceUnavailableException, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import Stripe from 'stripe';
 
 @Injectable()
-export class StripeConnectService implements OnModuleInit {
+export class StripeConnectService {
   private readonly logger = new Logger(StripeConnectService.name);
   private stripe: Stripe | null = null;
+  private stripeKeyHash: string | null = null;
 
   constructor(
     private readonly config: ConfigService,
@@ -15,21 +16,22 @@ export class StripeConnectService implements OnModuleInit {
     private readonly platformConfig: PlatformConfigService,
   ) {}
 
-  async onModuleInit() {
+  private async getStripe(): Promise<Stripe> {
     const stripeKey = await this.platformConfig.get('stripe.secretKey');
-    this.stripe = stripeKey ? new Stripe(stripeKey) : null;
-  }
-
-  private getStripe(): Stripe {
-    if (!this.stripe) {
+    if (!stripeKey) {
       throw new ServiceUnavailableException(
-        'Stripe is not configured. Set STRIPE_SECRET_KEY in .env',
+        'Stripe is not configured. Set stripe.secretKey in Admin → Settings.',
       );
+    }
+    if (!this.stripe || this.stripeKeyHash !== stripeKey) {
+      this.stripe = new Stripe(stripeKey);
+      this.stripeKeyHash = stripeKey;
     }
     return this.stripe;
   }
 
   async createConnectAccount(practiceId: string, email: string): Promise<{ url: string }> {
+    const stripe = await this.getStripe();
     const practice = await this.prisma.practice.findUniqueOrThrow({
       where: { id: practiceId },
       select: { stripeConnectId: true, name: true },
@@ -38,7 +40,7 @@ export class StripeConnectService implements OnModuleInit {
     let accountId = practice.stripeConnectId;
 
     if (!accountId) {
-      const account = await this.getStripe().accounts.create({
+      const account = await stripe.accounts.create({
         type: 'express',
         email,
         country: 'DE',
@@ -62,7 +64,7 @@ export class StripeConnectService implements OnModuleInit {
 
     // Create account link for onboarding
     const frontendUrl = this.config.get('FRONTEND_URL') || 'http://localhost:3000';
-    const accountLink = await this.getStripe().accountLinks.create({
+    const accountLink = await stripe.accountLinks.create({
       account: accountId,
       refresh_url: `${frontendUrl}/billing?connect=refresh`,
       return_url: `${frontendUrl}/billing?connect=complete`,
@@ -92,7 +94,8 @@ export class StripeConnectService implements OnModuleInit {
       };
     }
 
-    const account = await this.getStripe().accounts.retrieve(practice.stripeConnectId);
+    const stripe = await this.getStripe();
+    const account = await stripe.accounts.retrieve(practice.stripeConnectId);
 
     const chargesEnabled = account.charges_enabled ?? false;
     const payoutsEnabled = account.payouts_enabled ?? false;
@@ -115,7 +118,8 @@ export class StripeConnectService implements OnModuleInit {
       throw new ServiceUnavailableException('Stripe Connect account not set up');
     }
 
-    const loginLink = await this.getStripe().accounts.createLoginLink(
+    const stripe = await this.getStripe();
+    const loginLink = await stripe.accounts.createLoginLink(
       practice.stripeConnectId,
     );
 

@@ -1,25 +1,26 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import Stripe from 'stripe';
 
 @Injectable()
-export class StripeService implements OnModuleInit {
+export class StripeService {
   private stripe: Stripe | null = null;
+  private stripeKeyHash: string | null = null;
 
   constructor(
     private readonly config: ConfigService,
     private readonly platformConfig: PlatformConfigService,
   ) {}
 
-  async onModuleInit() {
+  private async getStripe(): Promise<Stripe> {
     const stripeKey = await this.platformConfig.get('stripe.secretKey');
-    this.stripe = stripeKey ? new Stripe(stripeKey) : null;
-  }
-
-  private getStripe(): Stripe {
-    if (!this.stripe) {
+    if (!stripeKey) {
       throw new Error('Stripe is not configured. Set stripe.secretKey in Admin → Settings.');
+    }
+    if (!this.stripe || this.stripeKeyHash !== stripeKey) {
+      this.stripe = new Stripe(stripeKey);
+      this.stripeKeyHash = stripeKey;
     }
     return this.stripe;
   }
@@ -32,6 +33,7 @@ export class StripeService implements OnModuleInit {
     consentType: string;
     amountCents: number;
   }): Promise<Stripe.Checkout.Session> {
+    const stripe = await this.getStripe();
     const frontendUrl =
       this.config.get('FRONTEND_URL') || 'http://localhost:3000';
 
@@ -44,7 +46,7 @@ export class StripeService implements OnModuleInit {
       params.amountCents * (platformFeePercent / 100),
     );
 
-    return this.getStripe().checkout.sessions.create({
+    return stripe.checkout.sessions.create({
       mode: 'payment',
       line_items: [
         {
@@ -75,18 +77,20 @@ export class StripeService implements OnModuleInit {
   }
 
   async retrievePaymentIntent(paymentIntentId: string): Promise<Stripe.PaymentIntent> {
-    return this.getStripe().paymentIntents.retrieve(paymentIntentId);
+    const stripe = await this.getStripe();
+    return stripe.paymentIntents.retrieve(paymentIntentId);
   }
 
   async constructWebhookEvent(
     payload: Buffer,
     signature: string,
   ): Promise<Stripe.Event> {
+    const stripe = await this.getStripe();
     const webhookSecret = await this.platformConfig.get('stripe.webhookSecret');
     if (!webhookSecret) {
       throw new Error('Stripe webhook secret not configured');
     }
-    return this.getStripe().webhooks.constructEvent(
+    return stripe.webhooks.constructEvent(
       payload,
       signature,
       webhookSecret,

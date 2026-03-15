@@ -38,16 +38,29 @@ export class SubscriptionGuard implements CanActivate {
       throw new ForbiddenException('Kein Abonnement gefunden');
     }
 
+    const now = new Date();
+
     // Allow trialing within trial period
     if (subscription.status === 'TRIALING') {
-      if (subscription.trialEndsAt && subscription.trialEndsAt > new Date()) {
+      if (subscription.trialEndsAt && subscription.trialEndsAt > now) {
         return true;
       }
       throw new ForbiddenException('Testphase abgelaufen');
     }
 
-    // Allow active subscriptions
+    // Allow active subscriptions (including those pending cancellation — access until period end)
     if (subscription.status === 'ACTIVE') {
+      return true;
+    }
+
+    // Allow past-due subscriptions — Stripe retries payment automatically.
+    // Only block when Stripe gives up and fires subscription.deleted (→ CANCELLED).
+    if (subscription.status === 'PAST_DUE') {
+      return true;
+    }
+
+    // Grace period: cancelled but still within the paid billing period
+    if (subscription.status === 'CANCELLED' && subscription.currentPeriodEnd && subscription.currentPeriodEnd > now) {
       return true;
     }
 

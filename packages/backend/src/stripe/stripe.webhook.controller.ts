@@ -1,14 +1,13 @@
 import {
   Controller,
   Post,
-  Req,
   Headers,
   HttpCode,
   Logger,
   BadRequestException,
+  RawBody,
 } from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
-import { Request } from 'express';
 import { StripeService } from './stripe.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { PdfService } from '../pdf/pdf.service';
@@ -28,14 +27,13 @@ export class StripeWebhookController {
   @Post('webhook')
   @HttpCode(200)
   async handleWebhook(
-    @Req() req: Request,
+    @RawBody() rawBody: Buffer,
     @Headers('stripe-signature') signature: string,
   ) {
     if (!signature) {
       throw new BadRequestException('Missing stripe-signature header');
     }
 
-    const rawBody = (req as Request & { rawBody?: Buffer }).rawBody;
     if (!rawBody) {
       throw new BadRequestException('Missing raw body');
     }

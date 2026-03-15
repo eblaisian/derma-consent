@@ -1,13 +1,14 @@
-import { Injectable, Logger, NotFoundException, ServiceUnavailableException, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, BadRequestException, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import Stripe from 'stripe';
 
 @Injectable()
-export class BillingService implements OnModuleInit {
+export class BillingService {
   private readonly logger = new Logger(BillingService.name);
   private stripe: Stripe | null = null;
+  private stripeKeyHash: string | null = null;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -15,16 +16,16 @@ export class BillingService implements OnModuleInit {
     private readonly platformConfig: PlatformConfigService,
   ) {}
 
-  async onModuleInit() {
+  private async getStripe(): Promise<Stripe> {
     const stripeKey = await this.platformConfig.get('stripe.secretKey');
-    this.stripe = stripeKey ? new Stripe(stripeKey) : null;
-  }
-
-  private getStripe(): Stripe {
-    if (!this.stripe) {
+    if (!stripeKey) {
       throw new ServiceUnavailableException(
         'Billing is not configured. Set stripe.secretKey in Admin → Settings.',
       );
+    }
+    if (!this.stripe || this.stripeKeyHash !== stripeKey) {
+      this.stripe = new Stripe(stripeKey);
+      this.stripeKeyHash = stripeKey;
     }
     return this.stripe;
   }
@@ -41,11 +42,24 @@ export class BillingService implements OnModuleInit {
     return subscription;
   }
 
+  /**
+   * Handles both new subscriptions AND plan changes.
+   *
+   * - No active subscription → Stripe Checkout (new subscription)
+   * - Active subscription, different price → Stripe subscription update (plan change)
+   * - Active subscription, cancel pending → Reactivate (undo cancel)
+   */
   async createCheckoutSession(
     practiceId: string,
     priceId: string,
     email: string,
   ) {
+    // Validate the price ID against known plans
+    const validPriceIds = await this.getValidPriceIds();
+    if (!validPriceIds.includes(priceId)) {
+      throw new BadRequestException('Invalid price ID');
+    }
+
     let subscription = await this.prisma.subscription.findUnique({
       where: { practiceId },
     });
@@ -54,9 +68,73 @@ export class BillingService implements OnModuleInit {
       throw new NotFoundException('No subscription found');
     }
 
+    const stripe = await this.getStripe();
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+
+    // ── Case 1: Active subscription with cancel pending → reactivate ──
+    if (
+      subscription.stripeSubscriptionId &&
+      subscription.status === 'ACTIVE' &&
+      subscription.cancelAtPeriodEnd
+    ) {
+      // Undo the cancellation — Stripe will continue billing
+      await stripe.subscriptions.update(subscription.stripeSubscriptionId, {
+        cancel_at_period_end: false,
+      });
+
+      // The webhook will update our DB, but also update immediately for fast UI feedback
+      await this.prisma.subscription.update({
+        where: { practiceId },
+        data: { cancelAtPeriodEnd: false },
+      });
+
+      this.logger.log(`Reactivated subscription ${subscription.stripeSubscriptionId} for practice ${practiceId}`);
+      return { url: `${frontendUrl}/billing?success=true`, action: 'reactivated' };
+    }
+
+    // ── Case 2: Active subscription → plan change (upgrade/downgrade) ──
+    if (
+      subscription.stripeSubscriptionId &&
+      (subscription.status === 'ACTIVE' || subscription.status === 'PAST_DUE')
+    ) {
+      // Retrieve the current subscription to get the subscription item ID
+      const stripeSub = await stripe.subscriptions.retrieve(subscription.stripeSubscriptionId);
+      const currentItem = stripeSub.items.data[0];
+
+      if (!currentItem) {
+        throw new ServiceUnavailableException('Could not find subscription item');
+      }
+
+      // If already on this price, no-op
+      if (currentItem.price.id === priceId) {
+        return { url: `${frontendUrl}/billing`, action: 'no_change' };
+      }
+
+      // Update the subscription item to the new price
+      // proration_behavior: 'create_prorations' gives the user credit for unused time
+      await stripe.subscriptions.update(subscription.stripeSubscriptionId, {
+        items: [{
+          id: currentItem.id,
+          price: priceId,
+        }],
+        proration_behavior: 'create_prorations',
+        metadata: { practiceId },
+      });
+
+      this.logger.log(
+        `Plan change for practice ${practiceId}: ${currentItem.price.id} → ${priceId}`,
+      );
+
+      // Webhook will update the DB with the new plan
+      return { url: `${frontendUrl}/billing?success=true`, action: 'plan_changed' };
+    }
+
+    // ── Case 3: No active subscription → new Stripe Checkout ──
+    // (FREE_TRIAL, CANCELLED, EXPIRED)
+
     // Create Stripe customer if not exists
     if (!subscription.stripeCustomerId) {
-      const customer = await this.getStripe().customers.create({
+      const customer = await stripe.customers.create({
         email,
         metadata: { practiceId },
       });
@@ -67,10 +145,9 @@ export class BillingService implements OnModuleInit {
       });
     }
 
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
-
-    const session = await this.getStripe().checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
       customer: subscription.stripeCustomerId!,
+      customer_update: { address: 'auto', name: 'auto' },
       payment_method_types: ['card'],
       mode: 'subscription',
       line_items: [{ price: priceId, quantity: 1 }],
@@ -84,7 +161,7 @@ export class BillingService implements OnModuleInit {
       metadata: { practiceId },
     });
 
-    return { url: session.url };
+    return { url: session.url, action: 'checkout' };
   }
 
   async createPortalSession(practiceId: string) {
@@ -98,7 +175,8 @@ export class BillingService implements OnModuleInit {
 
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
 
-    const session = await this.getStripe().billingPortal.sessions.create({
+    const stripe = await this.getStripe();
+    const session = await stripe.billingPortal.sessions.create({
       customer: subscription.stripeCustomerId,
       return_url: `${frontendUrl}/billing`,
     });
@@ -118,16 +196,27 @@ export class BillingService implements OnModuleInit {
           (sub.items.data[0]?.price.id) ?? '',
         );
 
+        // In Stripe API 2026+, current_period_end was removed.
+        // Use billing_cycle_anchor + 1 interval as an approximation.
+        const periodEnd = (sub as any).current_period_end
+          ? new Date((sub as any).current_period_end * 1000)
+          : sub.billing_cycle_anchor
+            ? new Date(sub.billing_cycle_anchor * 1000 + 30 * 24 * 60 * 60 * 1000)
+            : null;
+
+        const trialEnd = sub.trial_end
+          ? new Date(sub.trial_end * 1000)
+          : null;
+
         await this.prisma.subscription.update({
           where: { practiceId },
           data: {
             stripeSubscriptionId: sub.id,
             status: this.mapStripeStatus(sub.status),
             plan,
-            currentPeriodEnd: new Date(sub.current_period_end * 1000),
-            ...(sub.trial_end && {
-              trialEndsAt: new Date(sub.trial_end * 1000),
-            }),
+            cancelAtPeriodEnd: sub.cancel_at_period_end ?? false,
+            ...(periodEnd && { currentPeriodEnd: periodEnd }),
+            ...(trialEnd && { trialEndsAt: trialEnd }),
           },
         });
         break;
@@ -138,11 +227,19 @@ export class BillingService implements OnModuleInit {
         const practiceId = sub.metadata.practiceId;
         if (!practiceId) break;
 
+        const periodEnd = (sub as any).current_period_end
+          ? new Date((sub as any).current_period_end * 1000)
+          : sub.billing_cycle_anchor
+            ? new Date(sub.billing_cycle_anchor * 1000 + 30 * 24 * 60 * 60 * 1000)
+            : null;
+
         await this.prisma.subscription.update({
           where: { practiceId },
           data: {
             status: 'CANCELLED',
             stripeSubscriptionId: null,
+            cancelAtPeriodEnd: false,
+            ...(periodEnd && { currentPeriodEnd: periodEnd }),
           },
         });
         break;
@@ -184,8 +281,18 @@ export class BillingService implements OnModuleInit {
     if (priceId === proMonthly || priceId === proYearly) return 'PROFESSIONAL';
     if (priceId === enterpriseMonthly || priceId === enterpriseYearly) return 'ENTERPRISE';
 
-    this.logger.warn(`Unknown Stripe price ID: ${priceId} — defaulting to PROFESSIONAL`);
-    return 'PROFESSIONAL';
+    this.logger.error(`Unknown Stripe price ID: ${priceId} — rejecting`);
+    throw new Error(`Unknown Stripe price ID: ${priceId}`);
+  }
+
+  private async getValidPriceIds(): Promise<string[]> {
+    const keys = [
+      'stripe.starterMonthlyPriceId', 'stripe.starterYearlyPriceId',
+      'stripe.professionalMonthlyPriceId', 'stripe.professionalYearlyPriceId',
+      'stripe.enterpriseMonthlyPriceId', 'stripe.enterpriseYearlyPriceId',
+    ];
+    const values = await Promise.all(keys.map((k) => this.platformConfig.get(k)));
+    return values.filter((v): v is string => !!v);
   }
 
   async constructWebhookEvent(payload: Buffer, signature: string): Promise<Stripe.Event> {
@@ -195,6 +302,7 @@ export class BillingService implements OnModuleInit {
         'Billing webhooks are not configured. Set stripe.subscriptionWebhookSecret in Admin → Settings.',
       );
     }
-    return this.getStripe().webhooks.constructEvent(payload, signature, secret);
+    const stripe = await this.getStripe();
+    return stripe.webhooks.constructEvent(payload, signature, secret);
   }
 }

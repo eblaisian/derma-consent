@@ -1,4 +1,4 @@
-.PHONY: dev setup install db db-stop migrate migrate-deploy generate test test-backend test-frontend load-test build clean seed kill-ports help docs docs-build docs-preview
+.PHONY: dev setup install db db-stop migrate migrate-deploy generate test test-backend test-frontend load-test build clean seed kill-ports help docs docs-build docs-preview stripe-setup
 
 # Helper: source .env then run a command
 # Usage: $(call dotenv,my_command)
@@ -59,6 +59,9 @@ generate: .env ## Generate Prisma client
 
 seed: setup ## Seed DB with practice + consents (password: Test1234!)
 	@$(call dotenv,cd packages/backend && npx tsx prisma/seed.ts)
+
+stripe-setup: db ## Setup Stripe sandbox (products, prices, DB config)
+	@./scripts/setup-stripe.sh --no-listen
 
 # ── Testing ─────────────────────────────────────────────────────────
 

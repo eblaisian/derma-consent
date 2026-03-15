@@ -28,14 +28,20 @@ export class BillingWebhookController {
       throw new BadRequestException('Missing stripe-signature header');
     }
 
-    const rawBody = (req as Request & { rawBody?: Buffer }).rawBody;
+    const rawBody = (req as any).rawBody as Buffer | undefined;
     if (!rawBody) {
       throw new BadRequestException('Missing raw body');
     }
 
-    const event = await this.billingService.constructWebhookEvent(rawBody, signature);
-    this.logger.log(`Billing webhook: ${event.type}`);
+    let event;
+    try {
+      event = await this.billingService.constructWebhookEvent(rawBody, signature);
+    } catch (err) {
+      this.logger.error(`Webhook signature failed: ${(err as Error).message}`);
+      throw new BadRequestException(`Webhook verification failed: ${(err as Error).message}`);
+    }
 
+    this.logger.log(`Billing webhook verified: ${event.type}`);
     await this.billingService.handleWebhookEvent(event);
 
     return { received: true };
