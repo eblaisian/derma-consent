@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import useSWR from 'swr';
 import { API_URL, fetcher } from '@/lib/api';
@@ -30,6 +30,8 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
   const tTypes = useTranslations('consentTypes');
   const tConsent = useTranslations('consent');
   const { decryptForm, isUnlocked } = useVault();
+  const decryptFormRef = useRef(decryptForm);
+  decryptFormRef.current = decryptForm;
   const [decryptedData, setDecryptedData] = useState<Record<string, unknown> | null>(null);
   const [decryptError, setDecryptError] = useState<string | null>(null);
   const [isDecrypting, setIsDecrypting] = useState(false);
@@ -52,7 +54,7 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
 
     let cancelled = false;
     setIsDecrypting(true);
-    decryptForm({
+    decryptFormRef.current({
       encryptedSessionKey: sessionKey,
       iv: encrypted.iv,
       ciphertext: encrypted.ciphertext,
@@ -67,7 +69,7 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
         if (!cancelled) setIsDecrypting(false);
       });
     return () => { cancelled = true; };
-  }, [consent, isUnlocked, decryptForm, decryptedData, isDecrypting, t]);
+  }, [consent, isUnlocked, decryptedData, isDecrypting, t]);
 
   const consentType = consent?.type as ConsentType | undefined;
   const fields = consentType ? getFormFields(consentType) : [];

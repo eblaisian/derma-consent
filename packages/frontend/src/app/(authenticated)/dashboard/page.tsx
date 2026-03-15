@@ -24,13 +24,14 @@ export default function DashboardPage() {
 
   const isAdmin = session?.user?.role === 'ADMIN';
   const isAdminOrDoctor = isAdmin || session?.user?.role === 'ARZT';
+  const canViewConsents = isAdminOrDoctor || session?.user?.role === 'EMPFANG';
 
   const {
     data: consentsData,
     isLoading: consentsLoading,
     mutate: refreshConsents,
   } = useSWR<{ items: ConsentFormSummary[] }>(
-    isAdminOrDoctor && practiceId && session?.accessToken
+    canViewConsents && practiceId && session?.accessToken
       ? `${API_URL}/api/consent/practice`
       : null,
     createAuthFetcher(session?.accessToken),
@@ -38,7 +39,7 @@ export default function DashboardPage() {
   const consents = consentsData?.items;
 
   const { data: patientsData } = useSWR<{ total: number }>(
-    isAdminOrDoctor && practiceId && session?.accessToken
+    canViewConsents && practiceId && session?.accessToken
       ? `${API_URL}/api/patients?page=1&limit=1`
       : null,
     createAuthFetcher(session?.accessToken),
@@ -129,7 +130,7 @@ export default function DashboardPage() {
             {t('welcomeBack', { name: userName })}
           </p>
         </div>
-        {isAdminOrDoctor && <NewConsentDialog onCreated={() => refreshConsents()} />}
+        {canViewConsents && <NewConsentDialog onCreated={() => refreshConsents()} />}
       </div>
 
       {/* Stat cards with stagger animation */}
