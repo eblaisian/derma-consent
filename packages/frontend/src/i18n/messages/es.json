@@ -32,7 +32,7 @@
     "securityDescription": "Todos los datos de pacientes se cifran en su navegador antes de llegar a nuestros servidores. Su contraseña maestra nunca sale de su dispositivo. Incluso si nuestra base de datos fuera vulnerada, el atacante solo obtendría ruido cifrado.",
     "zeroKnowledge": "Zero Knowledge",
     "pricingTitle": "Precios simples y transparentes",
-    "pricingSubtitle": "14 días de prueba gratuita. Sin tarjeta de crédito.",
+    "pricingSubtitle": "30 días de prueba gratuita. Sin tarjeta de crédito.",
     "starterPlan": "Starter",
     "starterDescription": "Para consultas pequeñas",
     "starterPrice": "49 EUR/mes",

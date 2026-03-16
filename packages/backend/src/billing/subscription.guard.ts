@@ -45,6 +45,11 @@ export class SubscriptionGuard implements CanActivate {
       if (subscription.trialEndsAt && subscription.trialEndsAt > now) {
         return true;
       }
+      // Trial expired — update status so frontend shows correct UI
+      await this.prisma.subscription.update({
+        where: { practiceId: user.practiceId },
+        data: { status: 'EXPIRED' },
+      });
       throw new ForbiddenException('Testphase abgelaufen');
     }
 

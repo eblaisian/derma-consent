@@ -32,7 +32,7 @@
     "securityDescription": "All patient data is encrypted in your browser before it reaches our servers. Your master password never leaves your device. Even if our database were breached, the attacker would get only encrypted noise.",
     "zeroKnowledge": "Zero Knowledge",
     "pricingTitle": "Simple, transparent pricing",
-    "pricingSubtitle": "14-day free trial. No credit card required.",
+    "pricingSubtitle": "30-day free trial. No credit card required.",
     "starterPlan": "Starter",
     "starterDescription": "For small practices",
     "starterPrice": "EUR 49/mo",
