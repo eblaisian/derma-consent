@@ -95,16 +95,24 @@ export class PhotoController {
     @CurrentUser() user: CurrentUserPayload,
     @Res() res: Response,
   ) {
-    const buffer = await this.photoService.download(
-      user.practiceId!,
-      user.userId,
-      id,
-    );
-    res.set({
-      'Content-Type': 'application/octet-stream',
-      'Content-Disposition': `attachment; filename="${id}.enc"`,
-    });
-    res.send(buffer);
+    try {
+      const buffer = await this.photoService.download(
+        user.practiceId!,
+        user.userId,
+        id,
+      );
+      res.set({
+        'Content-Type': 'application/octet-stream',
+        'Content-Disposition': `attachment; filename="${id}.enc"`,
+      });
+      res.send(buffer);
+    } catch (err) {
+      if (!res.headersSent) {
+        const status = (err as { status?: number }).status || 500;
+        const message = err instanceof Error ? err.message : 'Download failed';
+        res.status(status).json({ statusCode: status, message });
+      }
+    }
   }
 
   @Delete(':id')
