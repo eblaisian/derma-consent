@@ -36,13 +36,14 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
   const [decryptError, setDecryptError] = useState<string | null>(null);
   const [isDecrypting, setIsDecrypting] = useState(false);
 
-  const { data: consent, error: fetchError } = useSWR(
+  const { data: consent, error: fetchError, isLoading: isFetching } = useSWR(
     token ? `${API_URL}/api/consent/${token}` : null,
     fetcher,
   );
 
   useEffect(() => {
-    if (!consent || !isUnlocked || decryptedData || isDecrypting) return;
+    // Guard: skip if data not ready, vault locked, already decrypted, currently decrypting, or errored
+    if (!consent || !isUnlocked || decryptedData || isDecrypting || decryptError) return;
 
     const encrypted = consent.encryptedResponses;
     const sessionKey = consent.encryptedSessionKey;
@@ -69,7 +70,7 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
         if (!cancelled) setIsDecrypting(false);
       });
     return () => { cancelled = true; };
-  }, [consent, isUnlocked, decryptedData, isDecrypting, t]);
+  }, [consent, isUnlocked, decryptedData, decryptError, t]);
 
   const consentType = consent?.type as ConsentType | undefined;
   const fields = consentType ? getFormFields(consentType) : [];
@@ -97,6 +98,8 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
       : strVal;
   };
 
+  const isLoading = isFetching || isDecrypting;
+
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
@@ -118,7 +121,7 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
           <p className="text-sm text-destructive">{decryptError}</p>
         )}
 
-        {isDecrypting && (
+        {isLoading && (
           <div className="flex items-center justify-center py-8">
             <span className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           </div>

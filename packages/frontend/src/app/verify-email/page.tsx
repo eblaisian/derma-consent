@@ -47,12 +47,12 @@ function VerifyEmailContent() {
   return (
     <div className="text-center space-y-4">
       {status === 'loading' && (
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
+        <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
       )}
       {status === 'success' && (
         <>
-          <CheckCircle className="h-12 w-12 text-green-500 mx-auto" />
-          <p className="text-sm text-muted-foreground">{t('success')}</p>
+          <CheckCircle className="size-12 text-green-500 mx-auto" />
+          <p className="text-pretty text-sm text-muted-foreground">{t('success')}</p>
           <Button asChild>
             <Link href="/login">{t('backToLogin')}</Link>
           </Button>
@@ -60,7 +60,7 @@ function VerifyEmailContent() {
       )}
       {status === 'error' && (
         <>
-          <XCircle className="h-12 w-12 text-destructive mx-auto" />
+          <XCircle className="size-12 text-destructive mx-auto" />
           <p className="text-sm text-destructive">{t('error')}</p>
           <Button variant="outline" asChild>
             <Link href="/login">{t('backToLogin')}</Link>
@@ -75,16 +75,16 @@ export default function VerifyEmailPage() {
   const t = useTranslations('verifyEmail');
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center p-4">
+    <div className="relative flex min-h-dvh items-center justify-center p-4">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.02]" aria-hidden="true" />
 
-      <Card className="relative w-full max-w-md shadow-[var(--shadow-lg)] animate-scale-in">
+      <Card className="relative w-full max-w-md border-border/50 shadow-lg animate-scale-in">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl tracking-tight">{t('title')}</CardTitle>
-          <CardDescription>{t('description')}</CardDescription>
+          <CardTitle className="text-balance text-2xl tracking-tight">{t('title')}</CardTitle>
+          <CardDescription className="text-pretty">{t('description')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <Suspense fallback={<div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />}>
+          <Suspense fallback={<div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />}>
             <VerifyEmailContent />
           </Suspense>
         </CardContent>

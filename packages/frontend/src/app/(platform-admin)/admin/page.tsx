@@ -39,7 +39,7 @@ export default function AdminDashboardPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-500 border-t-transparent" />
+        <div className="size-8 animate-spin rounded-full border-4 border-violet-500 border-t-transparent" />
       </div>
     );
   }
@@ -67,7 +67,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">{t('dashboard')}</h1>
+      <h1 className="text-page-title text-balance">{t('dashboard')}</h1>
 
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -75,7 +75,7 @@ export default function AdminDashboardPage() {
           <div key={card.label} className="rounded-lg border bg-card p-5">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">{card.label}</p>
-              <card.icon className={`h-5 w-5 ${card.color}`} />
+              <card.icon className={`size-5 ${card.color}`} />
             </div>
             <p className="mt-2 text-3xl font-bold">{card.value.toLocaleString()}</p>
           </div>

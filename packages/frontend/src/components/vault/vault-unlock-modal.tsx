@@ -84,17 +84,17 @@ export function VaultUnlockModal() {
           // Already unlocked — show status + lock button
           <>
             <DialogHeader>
-              <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-success-subtle">
-                <Shield className="h-6 w-6 text-success" />
+              <div className="mx-auto mb-2 flex size-12 items-center justify-center rounded-full bg-success-subtle">
+                <Shield className="size-6 text-success" />
               </div>
               <DialogTitle className="text-center">{t('unlockedTitle')}</DialogTitle>
-              <DialogDescription className="text-center">
+              <DialogDescription className="text-center text-pretty">
                 {t('unlockedDescription')}
               </DialogDescription>
             </DialogHeader>
             <div className="flex justify-center">
               <Button variant="outline" onClick={handleLock}>
-                <Lock className="mr-2 h-4 w-4" />
+                <Lock className="mr-2 size-4" />
                 {t('lock')}
               </Button>
             </div>
@@ -105,20 +105,20 @@ export function VaultUnlockModal() {
             <DialogHeader>
               <div
                 className={cn(
-                  'mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300',
+                  'mx-auto mb-2 flex size-12 items-center justify-center rounded-full transition-all duration-300',
                   success
                     ? 'bg-success-subtle animate-vault-success'
                     : 'bg-primary-subtle',
                 )}
               >
                 {success ? (
-                  <Shield className="h-6 w-6 text-success" />
+                  <Shield className="size-6 text-success" />
                 ) : (
-                  <Shield className="h-6 w-6 text-primary" />
+                  <Shield className="size-6 text-primary" />
                 )}
               </div>
               <DialogTitle className="text-center">{t('modalTitle')}</DialogTitle>
-              <DialogDescription className="text-center">
+              <DialogDescription className="text-center text-pretty">
                 {t('modalDescription')}
               </DialogDescription>
             </DialogHeader>
@@ -153,7 +153,7 @@ export function VaultUnlockModal() {
                 >
                   {isLoading ? (
                     <span className="flex items-center gap-2">
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                     </span>
                   ) : (
                     t('unlock')

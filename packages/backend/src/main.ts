@@ -1,6 +1,7 @@
 import './sentry';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import express from 'express';
 import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
@@ -11,6 +12,15 @@ async function bootstrap() {
     rawBody: true,
     bufferLogs: true,
   });
+
+  // Raise JSON body limit from the 100KB default — encrypted consent payloads
+  // include a high-DPI signature PNG inside the AES ciphertext, which can exceed
+  // 100KB on mobile devices with 2-3× devicePixelRatio.
+  const rawBodyHandler = (req: express.Request & { rawBody?: Buffer }, _res: express.Response, buf: Buffer) => {
+    req.rawBody = buf;
+  };
+  app.use(express.json({ limit: '5mb', verify: rawBodyHandler }));
+  app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
   app.useLogger(app.get(Logger));
 

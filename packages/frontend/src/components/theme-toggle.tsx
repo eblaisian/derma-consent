@@ -26,9 +26,9 @@ export function ThemeToggle() {
       onClick={cycle}
       aria-label={`Toggle theme (current: ${themeLabels[theme] || theme})`}
     >
-      {theme === 'system' && <Monitor className="h-4 w-4" />}
-      {theme === 'light' && <Sun className="h-4 w-4" />}
-      {theme === 'dark' && <Moon className="h-4 w-4" />}
+      {theme === 'system' && <Monitor className="size-4" />}
+      {theme === 'light' && <Sun className="size-4" />}
+      {theme === 'dark' && <Moon className="size-4" />}
     </Button>
   );
 }

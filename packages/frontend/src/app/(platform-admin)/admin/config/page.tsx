@@ -151,12 +151,12 @@ function getCategoryStatus(configs: ConfigEntry[] | undefined): 'configured' | '
 
 function StatusDot({ status }: { status: 'configured' | 'partial' | 'unconfigured' }) {
   if (status === 'configured') {
-    return <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" /><span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" /></span>;
+    return <span className="relative flex size-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" /><span className="relative inline-flex size-2 rounded-full bg-emerald-500" /></span>;
   }
   if (status === 'partial') {
-    return <span className="inline-flex h-2 w-2 rounded-full bg-amber-500" />;
+    return <span className="inline-flex size-2 rounded-full bg-amber-500" />;
   }
-  return <span className="inline-flex h-2 w-2 rounded-full bg-muted-foreground/30" />;
+  return <span className="inline-flex size-2 rounded-full bg-muted-foreground/30" />;
 }
 
 export default function AdminConfigPage() {
@@ -318,15 +318,15 @@ export default function AdminConfigPage() {
         {/* Page header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-page-title">{t('configuration')}</h1>
-            <p className="text-muted-foreground mt-1">{t('configurationDescription')}</p>
+            <h1 className="text-page-title text-balance">{t('configuration')}</h1>
+            <p className="text-muted-foreground mt-1 text-pretty">{t('configurationDescription')}</p>
           </div>
           <Button
             onClick={handleHealthCheck}
             disabled={healthCheckLoading}
             className="gap-2 shrink-0"
           >
-            <Activity className={`h-4 w-4 ${healthCheckLoading ? 'animate-pulse' : ''}`} />
+            <Activity className={`size-4 ${healthCheckLoading ? 'animate-pulse' : ''}`} />
             {t('systemHealthCheck')}
           </Button>
         </div>
@@ -347,7 +347,7 @@ export default function AdminConfigPage() {
               const status = getCategoryStatus(categoryFetchers[cat].data);
               return (
                 <TabsTrigger key={cat} value={cat} className="gap-2">
-                  <CatIcon className="h-4 w-4" />
+                  <CatIcon className="size-4" />
                   <span className="hidden sm:inline">{t(catMeta.labelKey as Parameters<typeof t>[0])}</span>
                   <StatusDot status={status} />
                 </TabsTrigger>
@@ -362,8 +362,8 @@ export default function AdminConfigPage() {
                 <CardHeader>
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-950">
-                        <Icon className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-950">
+                        <Icon className="size-5 text-violet-600 dark:text-violet-400" />
                       </div>
                       <div>
                         <CardTitle>{t(meta.labelKey as Parameters<typeof t>[0])}</CardTitle>
@@ -375,19 +375,19 @@ export default function AdminConfigPage() {
                       {/* Status badge */}
                       {categoryStatus === 'configured' && (
                         <Badge variant="secondary" className="gap-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
-                          <CheckCircle2 className="h-3 w-3" />
+                          <CheckCircle2 className="size-3" />
                           Configured
                         </Badge>
                       )}
                       {categoryStatus === 'partial' && (
                         <Badge variant="secondary" className="gap-1 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400">
-                          <AlertCircle className="h-3 w-3" />
+                          <AlertCircle className="size-3" />
                           Partial
                         </Badge>
                       )}
                       {categoryStatus === 'unconfigured' && (
                         <Badge variant="outline" className="gap-1 text-muted-foreground">
-                          <Circle className="h-3 w-3" />
+                          <Circle className="size-3" />
                           Not configured
                         </Badge>
                       )}
@@ -470,7 +470,7 @@ export default function AdminConfigPage() {
               ) : error ? (
                 <Card>
                   <CardContent className="flex flex-col items-center justify-center py-12 space-y-3">
-                    <AlertCircle className="h-8 w-8 text-muted-foreground/50" />
+                    <AlertCircle className="size-8 text-muted-foreground/50" />
                     <p className="text-sm text-muted-foreground">{t('errorLoading')}</p>
                     <Button variant="outline" size="sm" onClick={() => mutate()}>
                       {t('retry')}
@@ -480,7 +480,7 @@ export default function AdminConfigPage() {
               ) : configs && configs.length === 0 ? (
                 <Card>
                   <CardContent className="flex flex-col items-center justify-center py-12 space-y-2">
-                    <Info className="h-8 w-8 text-muted-foreground/40" />
+                    <Info className="size-8 text-muted-foreground/40" />
                     <p className="text-sm text-muted-foreground">{t('noConfigKeys')}</p>
                   </CardContent>
                 </Card>
@@ -637,7 +637,7 @@ function ConfigRow({
         {!isBoolean && !isEditing && (
           <div className="flex items-center gap-1.5 shrink-0">
             <Button size="xs" variant="ghost" onClick={onStartEdit} className="gap-1">
-              <Pencil className="h-3 w-3" />
+              <Pencil className="size-3" />
               {t('edit')}
             </Button>
             {config.source === 'database' && (
@@ -647,7 +647,7 @@ function ConfigRow({
                 onClick={onReset}
                 className="gap-1 text-destructive hover:text-destructive hover:bg-destructive/10"
               >
-                <Trash2 className="h-3 w-3" />
+                <Trash2 className="size-3" />
                 {t('reset')}
               </Button>
             )}
@@ -697,7 +697,7 @@ function ConfigRow({
               onClick={onReset}
               className="gap-1 text-destructive hover:text-destructive hover:bg-destructive/10 ml-auto"
             >
-              <Trash2 className="h-3 w-3" />
+              <Trash2 className="size-3" />
               {t('reset')}
             </Button>
           )}
@@ -830,13 +830,13 @@ function ConfigSkeleton() {
 function ValidationStatusIcon({ status }: { status: ServiceValidation['status'] }) {
   switch (status) {
     case 'healthy':
-      return <CheckCircle2 className="h-4 w-4 text-emerald-500" />;
+      return <CheckCircle2 className="size-4 text-emerald-500" />;
     case 'degraded':
-      return <AlertCircle className="h-4 w-4 text-amber-500" />;
+      return <AlertCircle className="size-4 text-amber-500" />;
     case 'error':
-      return <AlertCircle className="h-4 w-4 text-red-500" />;
+      return <AlertCircle className="size-4 text-red-500" />;
     case 'unconfigured':
-      return <Circle className="h-4 w-4 text-muted-foreground" />;
+      return <Circle className="size-4 text-muted-foreground" />;
   }
 }
 
@@ -925,9 +925,9 @@ function ServiceValidationCard({
                     {result.requirements.filter((r) => r.required).map((req) => (
                       <div key={req.key} className="flex items-start gap-2 text-sm">
                         {req.configured ? (
-                          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                          <CheckCircle2 className="size-4 text-emerald-500 shrink-0 mt-0.5" />
                         ) : (
-                          <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+                          <AlertCircle className="size-4 text-red-500 shrink-0 mt-0.5" />
                         )}
                         <div className="min-w-0">
                           <span className="font-medium">{req.label}</span>
@@ -951,9 +951,9 @@ function ServiceValidationCard({
                     {result.checks.map((check) => (
                       <div key={check.name} className="flex items-start gap-2 text-sm">
                         {check.passed ? (
-                          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                          <CheckCircle2 className="size-4 text-emerald-500 shrink-0 mt-0.5" />
                         ) : (
-                          <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+                          <AlertCircle className="size-4 text-red-500 shrink-0 mt-0.5" />
                         )}
                         <div className="min-w-0">
                           <span className="font-medium">{check.name}</span>
@@ -1013,7 +1013,7 @@ function HealthCheckDialog({
       <DialogContent className="sm:max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5" />
+            <Activity className="size-5" />
             {t('systemHealthCheck')}
           </DialogTitle>
           <DialogDescription>
@@ -1023,7 +1023,7 @@ function HealthCheckDialog({
 
         {loading && !report ? (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <RotateCw className="h-8 w-8 animate-spin text-muted-foreground" />
+            <RotateCw className="size-8 animate-spin text-muted-foreground" />
             <p className="text-sm text-muted-foreground">{t('runningHealthCheck')}</p>
           </div>
         ) : report ? (
@@ -1037,7 +1037,7 @@ function HealthCheckDialog({
                     <div>
                       <p className="font-semibold">{overallLabels[report.overall]}</p>
                       <p className="text-xs opacity-75 flex items-center gap-1 mt-0.5">
-                        <Clock className="h-3 w-3" />
+                        <Clock className="size-3" />
                         {new Date(report.timestamp).toLocaleString()}
                       </p>
                     </div>
@@ -1098,7 +1098,7 @@ function HealthCheckServiceCard({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <IconComponent className="h-4 w-4 text-muted-foreground" />
+              <IconComponent className="size-4 text-muted-foreground" />
               <span className="text-sm font-medium">{label}</span>
               <ValidationStatusBadge status={service.status} />
               <span className="text-xs text-muted-foreground">{service.durationMs}ms</span>

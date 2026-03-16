@@ -57,6 +57,11 @@ export function Sidebar() {
   const userRole = session?.user?.role || 'EMPFANG';
   const { features: aiFeatures } = useAiStatus();
 
+  const { data: settingsData } = useSWR<{ logoUrl?: string }>(
+    practiceId && session?.accessToken ? `${API_URL}/api/settings` : null,
+    createAuthFetcher(session?.accessToken),
+  );
+
   const { data: consentsData } = useSWR<{ items: Array<{ status: string }> }>(
     practiceId && session?.accessToken ? `${API_URL}/api/consent/practice` : null,
     createAuthFetcher(session?.accessToken),
@@ -81,9 +86,13 @@ export function Sidebar() {
     <aside className="hidden md:flex md:w-[260px] md:flex-col border-r bg-sidebar">
       {/* Logo */}
       <div className="flex h-14 items-center border-b border-sidebar-border px-5">
-        <Link href="/dashboard" className="flex items-center gap-2.5 font-semibold text-sidebar-foreground">
-          <FileSignature className="h-5 w-5 text-sidebar-primary" />
-          <span>DermaConsent</span>
+        <Link href="/dashboard" className="flex items-center gap-2.5 font-semibold text-sidebar-foreground min-w-0">
+          {settingsData?.logoUrl ? (
+            <img src={settingsData.logoUrl} alt="" className="h-7 w-auto shrink-0 rounded" />
+          ) : (
+            <FileSignature className="size-5 text-sidebar-primary shrink-0" />
+          )}
+          <span className="truncate">DermaConsent</span>
         </Link>
       </div>
 
@@ -116,7 +125,7 @@ export function Sidebar() {
                       {isActive && (
                         <span className="absolute inset-y-1.5 start-0 w-0.5 rounded-full bg-sidebar-primary" />
                       )}
-                      <item.icon className={cn('h-5 w-5 shrink-0', isActive ? 'text-sidebar-primary' : 'text-muted-foreground')} />
+                      <item.icon className={cn('size-5 shrink-0', isActive ? 'text-sidebar-primary' : 'text-muted-foreground')} />
                       <span className="flex-1">{t(item.labelKey)}</span>
                       {item.href === '/dashboard' && pendingCount > 0 && (
                         <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground px-1">
@@ -137,7 +146,7 @@ export function Sidebar() {
         {isUnlocked ? (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <Shield className="h-4 w-4 text-success shrink-0" />
+              <Shield className="size-4 text-success shrink-0" />
               <div className="min-w-0">
                 <div className="text-xs font-medium text-sidebar-foreground">{tSidebar('vaultActive')}</div>
                 <div className="text-[11px] text-muted-foreground">
@@ -152,7 +161,7 @@ export function Sidebar() {
               className="text-muted-foreground hover:text-foreground transition-default shrink-0"
               aria-label={tSidebar('lockVault')}
             >
-              <Lock className="h-4 w-4" />
+              <Lock className="size-4" />
             </button>
           </div>
         ) : (
@@ -160,7 +169,7 @@ export function Sidebar() {
             onClick={requestUnlock}
             className="flex w-full items-center gap-2.5 rounded-md p-0 text-left transition-default hover:opacity-80"
           >
-            <Lock className="h-4 w-4 text-warning shrink-0" />
+            <Lock className="size-4 text-warning shrink-0" />
             <div className="min-w-0">
               <div className="text-xs font-medium text-sidebar-foreground">{tSidebar('vaultLocked')}</div>
               <div className="text-[11px] text-muted-foreground">{tSidebar('vaultLockedHint')}</div>
@@ -173,7 +182,7 @@ export function Sidebar() {
       {session?.user && (
         <div className="border-t border-sidebar-border px-4 py-3 flex items-center justify-between">
           <Link href="/profile" className="flex items-center gap-2.5 min-w-0 hover:opacity-80 transition-default">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-xs font-medium text-primary">
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-xs font-medium text-primary">
               {(session.user.name || session.user.email || '?')[0].toUpperCase()}
             </div>
             <span className="text-sm text-sidebar-foreground truncate">
@@ -185,7 +194,7 @@ export function Sidebar() {
             className="text-muted-foreground hover:text-foreground transition-default shrink-0"
             aria-label={tSidebar('signOut')}
           >
-            <LogOut className="h-4 w-4" />
+            <LogOut className="size-4" />
           </button>
         </div>
       )}

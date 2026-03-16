@@ -70,7 +70,7 @@ function ResetPasswordForm() {
 
   return success ? (
     <div className="text-center space-y-4">
-      <p className="text-sm text-muted-foreground">{t('success')}</p>
+      <p className="text-pretty text-sm text-muted-foreground">{t('success')}</p>
       <Button asChild>
         <Link href="/login">{t('backToLogin')}</Link>
       </Button>
@@ -117,10 +117,10 @@ export default function ResetPasswordPage() {
     <AuthLayout>
       <div className="space-y-6">
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground">{t('description')}</p>
+          <h1 className="text-balance text-2xl font-semibold tracking-tight">{t('title')}</h1>
+          <p className="text-pretty text-sm text-muted-foreground">{t('description')}</p>
         </div>
-        <Suspense fallback={<div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />}>
+        <Suspense fallback={<div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />}>
           <ResetPasswordForm />
         </Suspense>
       </div>

@@ -125,14 +125,14 @@ export default function BillingPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
-        <p className="text-sm text-muted-foreground">{t('description')}</p>
+        <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
+        <p className="text-sm text-muted-foreground text-pretty">{t('description')}</p>
       </div>
 
       {/* Cancellation pending banner */}
       {isCancelPending && subscription?.currentPeriodEnd && (
         <div className="flex items-center gap-3 rounded-lg border border-yellow-500/50 bg-yellow-50 dark:bg-yellow-500/5 p-4">
-          <Clock className="h-5 w-5 text-yellow-600 shrink-0" />
+          <Clock className="size-5 text-yellow-600 shrink-0" />
           <div>
             <p className="text-sm font-medium text-yellow-800 dark:text-yellow-500">{t('cancelPendingTitle')}</p>
             <p className="text-sm text-muted-foreground">
@@ -148,7 +148,7 @@ export default function BillingPage() {
       {/* Past due warning */}
       {isPastDue && (
         <div className="flex items-center gap-3 rounded-lg border border-destructive/50 bg-destructive/5 p-4">
-          <AlertTriangle className="h-5 w-5 text-destructive shrink-0" />
+          <AlertTriangle className="size-5 text-destructive shrink-0" />
           <div>
             <p className="text-sm font-medium text-destructive">{t('pastDueTitle')}</p>
             <p className="text-sm text-muted-foreground">{t('pastDueDescription')}</p>
@@ -162,7 +162,7 @@ export default function BillingPage() {
       {/* Cancelled/expired banner */}
       {isInactive && (
         <div className="flex items-center gap-3 rounded-lg border border-muted p-4">
-          <XCircle className="h-5 w-5 text-muted-foreground shrink-0" />
+          <XCircle className="size-5 text-muted-foreground shrink-0" />
           <div>
             <p className="text-sm font-medium">{isCancelled ? t('cancelledTitle') : t('expiredTitle')}</p>
             <p className="text-sm text-muted-foreground">{isCancelled ? t('cancelledDescription') : t('expiredDescription')}</p>
@@ -173,16 +173,22 @@ export default function BillingPage() {
       {/* Plan + Usage row */}
       <div className="grid gap-4 md:grid-cols-2">
         {/* Current plan card */}
-        <Card>
+        <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">{t('currentPlan')}</CardTitle>
               {statusKey && (
-                <Badge variant={statusVariants[subscription!.status] || 'outline'}>
+                <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                  subscription!.status === 'ACTIVE' || subscription!.status === 'TRIALING'
+                    ? 'bg-success-subtle text-success'
+                    : subscription!.status === 'PAST_DUE'
+                      ? 'bg-destructive-subtle text-destructive'
+                      : 'bg-muted text-muted-foreground'
+                }`}>
                   {isCancelPending
                     ? t('cancelPendingBadge')
                     : tStatus.has(statusKey) ? tStatus(statusKey) : subscription!.status}
-                </Badge>
+                </span>
               )}
             </div>
           </CardHeader>
@@ -190,7 +196,7 @@ export default function BillingPage() {
             {isLoading ? (
               <Skeleton className="h-8 w-40" />
             ) : (
-              <p className="text-2xl font-bold">
+              <p className="text-2xl font-semibold">
                 {subscription ? (
                   tPlans.has(subscription.plan as keyof IntlMessages['subscriptionPlans'])
                     ? tPlans(subscription.plan as keyof IntlMessages['subscriptionPlans'])
@@ -213,7 +219,7 @@ export default function BillingPage() {
 
             {showManagePayments && (
               <Button variant="outline" size="sm" onClick={handlePortal}>
-                <CreditCard className="mr-2 h-4 w-4" />
+                <CreditCard className="mr-2 size-4" />
                 {t('managePayments')}
               </Button>
             )}
@@ -221,11 +227,11 @@ export default function BillingPage() {
         </Card>
 
         {/* Usage card */}
-        <Card>
+        <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">{t('usageTitle')}</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <FileText className="size-4 text-muted-foreground" />
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -234,7 +240,7 @@ export default function BillingPage() {
             ) : usage.limit ? (
               <>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold">{usage.used}</span>
+                  <span className="text-2xl font-semibold tabular-nums">{usage.used}</span>
                   <span className="text-sm text-muted-foreground">/ {usage.limit} {t('consentsThisMonth')}</span>
                 </div>
                 <div className="space-y-1.5">
@@ -256,7 +262,7 @@ export default function BillingPage() {
               </>
             ) : (
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-bold">{usage.used}</span>
+                <span className="text-2xl font-semibold tabular-nums">{usage.used}</span>
                 <span className="text-sm text-muted-foreground">{t('consentsThisMonth')}</span>
                 <Badge variant="secondary" className="ml-2 text-xs">{t('unlimited')}</Badge>
               </div>
@@ -299,19 +305,21 @@ export default function BillingPage() {
             ] as const).map((tier) => {
               const isCurrent = subscription?.plan === tier.plan && !isInactive;
               return (
-                <Card key={tier.plan} className={`flex flex-col ${tier.highlighted ? 'border-primary' : ''}`}>
+                <Card key={tier.plan} className={`flex flex-col rounded-xl border border-border/50 shadow-[var(--shadow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-border ${
+                  tier.highlighted ? 'border-primary ring-1 ring-primary/20' : ''
+                } ${tier.plan === 'ENTERPRISE' ? 'bg-gradient-to-br from-primary/[0.03] to-transparent' : ''}`}>
                   <CardHeader>
                     <CardTitle>{tPlans(tier.plan as keyof IntlMessages['subscriptionPlans'])}</CardTitle>
                     <CardDescription>{tPlans(`${tier.plan.toLowerCase()}Description` as keyof IntlMessages['subscriptionPlans'])}</CardDescription>
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col gap-4">
-                    <p className="text-2xl font-bold">
+                    <p className="text-2xl font-semibold tabular-nums">
                       {tier.priceKey ? t(tier.priceKey) : t('onRequest')}
                     </p>
                     <ul className="flex-1 space-y-1 text-sm text-muted-foreground">
                       {tier.features.map((fKey) => (
                         <li key={fKey} className="flex items-center gap-2">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                          <CheckCircle2 className="size-3.5 text-primary shrink-0" />
                           {tPlans(fKey)}
                         </li>
                       ))}
@@ -324,7 +332,7 @@ export default function BillingPage() {
                     ) : tier.priceId ? (
                       <Button className="w-full" onClick={() => handleCheckout(tier.priceId!)}>
                         {isInactive ? t('resubscribe') : isFreeTrial ? t('select') : t('upgrade')}
-                        <ArrowUpRight className="ml-1 h-4 w-4" />
+                        <ArrowUpRight className="ml-1 size-4" />
                       </Button>
                     ) : tier.plan === 'ENTERPRISE' ? (
                       <Button className="w-full" variant="outline" asChild>
@@ -347,10 +355,10 @@ export default function BillingPage() {
 
       {/* Already on Professional and active — show compact info */}
       {subscription?.plan === 'PROFESSIONAL' && !isInactive && (
-        <Card>
+        <Card className="rounded-xl border border-border/50 bg-gradient-to-r from-primary/[0.03] to-transparent shadow-[var(--shadow-sm)]">
           <CardContent className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="h-5 w-5 text-primary" />
+              <CheckCircle2 className="size-5 text-primary" />
               <div>
                 <p className="text-sm font-medium">{t('onProfessional')}</p>
                 <p className="text-sm text-muted-foreground">{t('onProfessionalDescription')}</p>

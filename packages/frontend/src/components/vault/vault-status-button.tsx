@@ -30,8 +30,8 @@ export function VaultStatusButton() {
         title={t('lockedTitle')}
         className="relative"
       >
-        <Lock className="h-4 w-4" />
-        <span className="absolute -top-0.5 -end-0.5 h-2 w-2 rounded-full bg-warning" />
+        <Lock className="size-4" />
+        <span className="absolute -top-0.5 -end-0.5 size-2 rounded-full bg-warning" />
         <span className="sr-only">{t('lockedTitle')}</span>
       </Button>
     );
@@ -48,15 +48,15 @@ export function VaultStatusButton() {
           title={t('unlockedTitle')}
           className="relative"
         >
-          <Shield className="h-4 w-4" />
-          <span className="absolute -top-0.5 -end-0.5 h-2 w-2 rounded-full bg-success" />
+          <Shield className="size-4" />
+          <span className="absolute -top-0.5 -end-0.5 size-2 rounded-full bg-success" />
           <span className="sr-only">{t('unlockedTitle')}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-56 p-3" align="end">
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-success shrink-0" />
+            <Shield className="size-4 text-success shrink-0" />
             <span className="text-sm font-medium">{t('unlockedTitle')}</span>
           </div>
           {minutes != null && (
@@ -70,7 +70,7 @@ export function VaultStatusButton() {
             className="w-full"
             onClick={handleLock}
           >
-            <Lock className="mr-2 h-3.5 w-3.5" />
+            <Lock className="mr-2 size-3.5" />
             {t('lock')}
           </Button>
         </div>

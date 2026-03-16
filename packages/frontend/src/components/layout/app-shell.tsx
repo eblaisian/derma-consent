@@ -22,7 +22,11 @@ import {
   Settings,
   MessageSquare,
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import useSWR from 'swr';
+import { API_URL, createAuthFetcher } from '@/lib/api';
+import { usePractice } from '@/hooks/use-practice';
+import { computeBrandTokens } from '@/lib/brand-color';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
@@ -44,7 +48,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const tNav = useTranslations('nav');
   const { data: session } = useSession();
   const userRole = session?.user?.role || 'EMPFANG';
+  const { practiceId } = usePractice();
   const { features: aiFeatures } = useAiStatus();
+
+  const { data: settingsData } = useSWR<{ logoUrl?: string; brandColor?: string }>(
+    practiceId && session?.accessToken ? `${API_URL}/api/settings` : null,
+    createAuthFetcher(session?.accessToken),
+  );
+
+  // Apply practice brand color as scoped CSS variable overrides (accent-only, contrast-safe)
+  const brandStyle = useMemo(
+    () => computeBrandTokens(settingsData?.brandColor) as React.CSSProperties | undefined,
+    [settingsData?.brandColor],
+  );
+
   const filteredMobileNav = mobileNavItems.filter((item) => {
     if (!item.roles.includes(userRole)) return false;
     if (item.aiFeature && !aiFeatures[item.aiFeature as keyof typeof aiFeatures]) return false;
@@ -60,7 +77,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <VaultProvider>
     <TooltipProvider delayDuration={300}>
-    <div className="flex h-screen">
+    <div className="flex h-dvh" style={brandStyle}>
       {/* Skip to content link */}
       <a
         href="#main-content"
@@ -85,12 +102,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               aria-controls="mobile-nav"
             >
               {mobileMenuOpen ? (
-                <X className="h-5 w-5" />
+                <X className="size-5" />
               ) : (
-                <Menu className="h-5 w-5" />
+                <Menu className="size-5" />
               )}
             </Button>
-            <span className="text-sm font-medium text-foreground md:hidden">DermaConsent</span>
+            <span className="flex items-center gap-2 text-sm font-medium text-foreground md:hidden">
+              {settingsData?.logoUrl ? (
+                <img src={settingsData.logoUrl} alt="" className="h-6 w-auto rounded" />
+              ) : null}
+              DermaConsent
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -98,7 +120,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="icon" asChild aria-label={tNav('helpCenter')}>
                   <a href="https://docs.consent.eblaisian.com" target="_blank" rel="noopener noreferrer">
-                    <CircleHelp className="h-4 w-4" />
+                    <CircleHelp className="size-4" />
                   </a>
                 </Button>
               </TooltipTrigger>
@@ -117,7 +139,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <>
             {/* Backdrop overlay */}
             <div
-              className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm md:hidden animate-fade-in"
+              className="fixed inset-0 z-40 bg-background/60 md:hidden animate-fade-in"
               onClick={() => setMobileMenuOpen(false)}
               aria-hidden="true"
             />
@@ -145,7 +167,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       )}
                       aria-current={isActive ? 'page' : undefined}
                     >
-                      <Icon className="h-4 w-4 shrink-0" />
+                      <Icon className="size-4 shrink-0" />
                       {tNav(item.labelKey)}
                     </Link>
                   );
@@ -157,9 +179,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Main content */}
         <main id="main-content" className="flex-1 overflow-y-auto p-4 md:p-6">
-          <div className="animate-fade-in-up">
-            {children}
-          </div>
+          {children}
         </main>
       </div>
 

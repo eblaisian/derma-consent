@@ -15,7 +15,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div className="relative flex min-h-dvh">
       {/* Left brand panel — hidden on mobile */}
-      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] shrink-0 flex-col justify-between bg-primary p-10 text-primary-foreground">
+      <div className="hidden lg:flex lg:w-md xl:w-lg shrink-0 flex-col justify-between bg-primary p-10 text-primary-foreground">
         <div>
           <div className="flex items-center gap-2.5">
             <ShieldCheck className="size-7" strokeWidth={1.75} />
@@ -34,7 +34,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
           </div>
         </div>
 
-        <p className="text-sm text-primary-foreground/60">
+        <p className="text-pretty text-sm text-primary-foreground/60">
           {tLanding('copyright')}
         </p>
       </div>
@@ -52,7 +52,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
           <span className="text-lg font-semibold tracking-tight">DermaConsent</span>
         </div>
 
-        <div className="w-full max-w-[400px]">
+        <div className="w-full max-w-sm">
           {children}
         </div>
       </div>

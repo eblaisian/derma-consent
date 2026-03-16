@@ -100,7 +100,7 @@ export default function DashboardPage() {
   if (needsSetup || practiceLoading || !practiceId) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     );
   }
@@ -125,8 +125,8 @@ export default function DashboardPage() {
       {/* Welcome banner */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-page-title">{t('title')}</h1>
-          <p className="mt-1 text-sm text-foreground-secondary leading-relaxed">
+          <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed text-pretty">
             {t('welcomeBack', { name: userName })}
           </p>
         </div>
@@ -135,35 +135,35 @@ export default function DashboardPage() {
 
       {/* Stat cards with stagger animation */}
       {consentsLoading ? (
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-[110px] rounded-xl" />
           ))}
         </div>
       ) : stats && (
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 stagger-children">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 stagger-children">
           <StatCard
             title={t('statTotal')}
             value={stats.total}
-            icon={<FileSignature className="h-4 w-4" />}
+            icon={<FileSignature className="size-4" />}
             accent="primary"
           />
           <StatCard
             title={t('statPending')}
             value={stats.pending}
-            icon={<Clock className="h-4 w-4" />}
+            icon={<Clock className="size-4" />}
             accent="warning"
           />
           <StatCard
             title={t('statCompleted')}
             value={stats.completedThisMonth}
-            icon={<CheckCircle className="h-4 w-4" />}
+            icon={<CheckCircle className="size-4" />}
             accent="success"
           />
           <StatCard
             title={t('statPatients')}
             value={patientsData?.total ?? 0}
-            icon={<User className="h-4 w-4" />}
+            icon={<User className="size-4" />}
             accent="info"
           />
         </div>
@@ -171,17 +171,17 @@ export default function DashboardPage() {
 
       {/* Needs Attention */}
       {stats && (stats.pending > 0 || stats.expiringSoon > 0 || stats.recentlySigned > 0) && (
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-3">
           {stats.pending > 0 && (
             <button
               onClick={() => setStatusFilter('PENDING')}
-              className="flex items-center gap-3 rounded-xl border border-warning/20 bg-warning/5 px-4 py-3 text-start transition-colors hover:bg-warning/10"
+              className="group flex items-center gap-3 rounded-xl border border-border/50 border-l-2 border-l-warning bg-card px-4 py-3 text-start shadow-[var(--shadow-sm)] cursor-pointer transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-warning/30 hover:border-l-warning"
             >
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-warning/10">
-                <Clock className="size-4 text-warning" />
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-warning/[0.06]">
+                <Clock className="size-4 text-warning transition-transform duration-150 group-hover:scale-110" />
               </div>
               <div>
-                <p className="text-xl font-bold tabular-nums">{stats.pending}</p>
+                <p className="text-xl font-semibold tabular-nums">{stats.pending}</p>
                 <p className="text-xs text-muted-foreground">{t('chipPendingLabel')}</p>
               </div>
             </button>
@@ -189,13 +189,13 @@ export default function DashboardPage() {
           {stats.expiringSoon > 0 && (
             <button
               onClick={() => setStatusFilter('PENDING')}
-              className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-start transition-colors hover:bg-destructive/10"
+              className="group flex items-center gap-3 rounded-xl border border-border/50 border-l-2 border-l-destructive bg-card px-4 py-3 text-start shadow-[var(--shadow-sm)] cursor-pointer transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-destructive/30 hover:border-l-destructive"
             >
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-destructive/10">
-                <AlertCircle className="size-4 text-destructive" />
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-destructive/[0.06]">
+                <AlertCircle className="size-4 text-destructive transition-transform duration-150 group-hover:scale-110" />
               </div>
               <div>
-                <p className="text-xl font-bold tabular-nums">{stats.expiringSoon}</p>
+                <p className="text-xl font-semibold tabular-nums">{stats.expiringSoon}</p>
                 <p className="text-xs text-muted-foreground">{t('chipExpiringSoonLabel')}</p>
               </div>
             </button>
@@ -203,13 +203,13 @@ export default function DashboardPage() {
           {stats.recentlySigned > 0 && (
             <button
               onClick={() => setStatusFilter('SIGNED')}
-              className="flex items-center gap-3 rounded-xl border border-success/20 bg-success/5 px-4 py-3 text-start transition-colors hover:bg-success/10"
+              className="group flex items-center gap-3 rounded-xl border border-border/50 border-l-2 border-l-success bg-card px-4 py-3 text-start shadow-[var(--shadow-sm)] cursor-pointer transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-success/30 hover:border-l-success"
             >
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-success/10">
-                <CheckCircle className="size-4 text-success" />
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-success/[0.06]">
+                <CheckCircle className="size-4 text-success transition-transform duration-150 group-hover:scale-110" />
               </div>
               <div>
-                <p className="text-xl font-bold tabular-nums">{stats.recentlySigned}</p>
+                <p className="text-xl font-semibold tabular-nums">{stats.recentlySigned}</p>
                 <p className="text-xs text-muted-foreground">{t('chipRecentlySignedLabel')}</p>
               </div>
             </button>
@@ -218,18 +218,18 @@ export default function DashboardPage() {
       )}
 
       {/* Consent table in a raised surface */}
-      <div className="surface-raised p-6">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-section-head">{t('recentConsents')}</h2>
+      <div className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
+        <div className="px-6 pt-5 pb-4">
+          <h2 className="text-lg font-semibold">{t('recentConsents')}</h2>
         </div>
         {consentsLoading ? (
-          <div className="space-y-3">
+          <div className="space-y-3 px-6 pb-6">
             {[...Array(5)].map((_, i) => (
               <Skeleton key={i} className="h-12 rounded-lg" />
             ))}
           </div>
         ) : (
-          <div className="overflow-x-auto -mx-6 px-6">
+          <div className="px-6 pb-6 overflow-x-auto">
             <ConsentTable
               consents={consents || []}
               onRefresh={() => refreshConsents()}

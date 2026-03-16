@@ -12,30 +12,23 @@ interface StatCardProps {
   className?: string;
 }
 
-const accentStyles = {
-  primary: 'border-l-primary/60',
-  warning: 'border-l-warning/60',
-  success: 'border-l-success/60',
-  info: 'border-l-info/60',
-};
-
 const iconBgStyles = {
-  primary: 'bg-primary/10 text-primary',
-  warning: 'bg-warning/10 text-warning',
-  success: 'bg-success/10 text-success',
-  info: 'bg-info/10 text-info',
+  primary: 'bg-primary/[0.06] text-primary',
+  warning: 'bg-warning/[0.06] text-warning',
+  success: 'bg-success/[0.06] text-success',
+  info: 'bg-info/[0.06] text-info',
 };
 
 export function StatCard({ title, value, subtitle, trend, icon, accent, className }: StatCardProps) {
   return (
     <Card className={cn(
-      'relative overflow-hidden animate-fade-in-up transition-shadow hover:shadow-sm',
-      accent && `border-l-[3px] ${accentStyles[accent]}`,
+      'relative overflow-hidden rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)] animate-fade-in-up',
+      'transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-border',
       className,
     )}>
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
-          <span className="text-label text-foreground-secondary">{title}</span>
+          <span className="text-label text-foreground-secondary text-pretty">{title}</span>
           {trend && (
             <span className={cn(
               'inline-flex items-center gap-0.5 text-xs font-medium rounded-full px-1.5 py-0.5',
@@ -43,7 +36,7 @@ export function StatCard({ title, value, subtitle, trend, icon, accent, classNam
                 ? 'text-success bg-success-subtle'
                 : 'text-destructive bg-destructive-subtle'
             )}>
-              {trend.isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+              {trend.isPositive ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
               {Math.abs(trend.value)}%
             </span>
           )}

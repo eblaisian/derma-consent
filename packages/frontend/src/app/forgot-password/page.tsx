@@ -45,13 +45,13 @@ export default function ForgotPasswordPage() {
     <AuthLayout>
       <div className="space-y-6">
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground">{t('description')}</p>
+          <h1 className="text-balance text-2xl font-semibold tracking-tight">{t('title')}</h1>
+          <p className="text-pretty text-sm text-muted-foreground">{t('description')}</p>
         </div>
 
         {sent ? (
           <div className="text-center space-y-4">
-            <p className="text-sm text-muted-foreground">{t('sent')}</p>
+            <p className="text-pretty text-sm text-muted-foreground">{t('sent')}</p>
             <Button variant="outline" asChild>
               <Link href="/login">{t('backToLogin')}</Link>
             </Button>

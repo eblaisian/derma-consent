@@ -85,8 +85,8 @@ export default function RegisterPage() {
     <AuthLayout>
       <div className="space-y-6">
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground">{t('description')}</p>
+          <h1 className="text-balance text-2xl font-semibold tracking-tight">{t('title')}</h1>
+          <p className="text-pretty text-sm text-muted-foreground">{t('description')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -164,7 +164,7 @@ export default function RegisterPage() {
               id="tos"
               checked={tosAccepted}
               onChange={(e) => setTosAccepted(e.target.checked)}
-              className="mt-1 h-4 w-4 shrink-0 rounded border-input accent-primary"
+              className="mt-1 size-4 shrink-0 rounded border-input accent-primary"
             />
             <label htmlFor="tos" className="text-xs text-muted-foreground leading-snug cursor-pointer">
               {t('tosLabel')}{' '}

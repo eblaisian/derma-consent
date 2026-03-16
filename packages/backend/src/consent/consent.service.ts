@@ -6,6 +6,7 @@ import { NotificationService } from '../notifications/notification.service';
 import { PdfService } from '../pdf/pdf.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { CreateConsentDto, SubmitConsentDto } from './consent.dto';
+import { StorageService } from '../storage/storage.service';
 import { ConsentStatus } from '@prisma/client';
 import { computeNoShowRisk, type NoShowRisk } from './no-show-risk';
 
@@ -19,6 +20,7 @@ export class ConsentService {
     private readonly notificationService: NotificationService,
     private readonly pdfService: PdfService,
     private readonly platformConfig: PlatformConfigService,
+    private readonly storage: StorageService,
     @Optional() private readonly auditService?: AuditService,
   ) {}
 
@@ -144,7 +146,14 @@ export class ConsentService {
     const educationVideos = (settings?.educationVideos as Record<string, string> | null) ?? null;
     const videoUrl = educationVideos?.[consent.type] ?? null;
 
-    return { ...consent, brandColor: settings?.brandColor ?? null, logoUrl: settings?.logoUrl ?? null, videoUrl };
+    // Resolve logo storage path to a public URL (same logic as SettingsController)
+    const rawLogoUrl = settings?.logoUrl ?? null;
+    let logoUrl: string | null = rawLogoUrl;
+    if (rawLogoUrl && !rawLogoUrl.startsWith('data:') && !rawLogoUrl.startsWith('http')) {
+      logoUrl = await this.storage.getPublicUrl(rawLogoUrl) ?? null;
+    }
+
+    return { ...consent, brandColor: settings?.brandColor ?? null, logoUrl, videoUrl };
   }
 
   async submit(token: string, dto: SubmitConsentDto, ip: string, userAgent: string) {

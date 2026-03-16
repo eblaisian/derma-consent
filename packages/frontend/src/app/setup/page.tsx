@@ -101,8 +101,8 @@ export default function SetupPage() {
     <AuthLayout>
       <div className="space-y-6">
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground">{t('description')}</p>
+          <h1 className="text-balance text-2xl font-semibold tracking-tight">{t('title')}</h1>
+          <p className="text-pretty text-sm text-muted-foreground">{t('description')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -155,7 +155,7 @@ export default function SetupPage() {
             />
           </div>
 
-          <div className="rounded-lg border border-warning/50 bg-warning/10 p-3 text-sm text-warning-foreground">
+          <div className="rounded-lg border border-border/50 bg-warning/10 p-3 text-pretty text-sm text-warning-foreground">
             <strong>{t('important')}</strong> {t('passwordWarning')}
           </div>
 
@@ -166,7 +166,7 @@ export default function SetupPage() {
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
               <span className="flex items-center gap-2">
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                 {t('generatingKeys')}
               </span>
             ) : (

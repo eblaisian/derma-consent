@@ -13,20 +13,41 @@ export default function CommunicationsPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-[300px] rounded-xl" />
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-56" />
+          <Skeleton className="h-4 w-72" />
+        </div>
+        <div className="surface-raised p-6 space-y-5">
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-3 w-48" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Skeleton className="h-10 rounded-md" />
+            <Skeleton className="h-10 rounded-md" />
+          </div>
+          <Skeleton className="h-10 w-36 rounded-md" />
+        </div>
       </div>
     );
   }
 
   if (!features.communications) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
-        <Sparkles className="h-12 w-12 text-muted-foreground mb-4" />
-        <h2 className="text-lg font-semibold">{t('pageTitle')}</h2>
-        <p className="text-muted-foreground mt-2 max-w-md">
-          {t('errorUnavailable')}
-        </p>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-page-title font-display font-light text-balance">{t('pageTitle')}</h1>
+          <p className="text-foreground-secondary mt-1 text-sm text-pretty">{t('pageSubtitle')}</p>
+        </div>
+        <div className="surface-raised p-8 sm:p-12 flex flex-col items-center text-center">
+          <div className="flex size-16 items-center justify-center rounded-full bg-primary-subtle mb-6">
+            <Sparkles className="size-7 text-primary" strokeWidth={1.5} />
+          </div>
+          <h2 className="text-lg font-semibold tracking-tight text-balance">{t('pageTitle')}</h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-md leading-relaxed text-pretty">
+            {t('errorUnavailable')}
+          </p>
+        </div>
       </div>
     );
   }
@@ -34,8 +55,8 @@ export default function CommunicationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-page-title">{t('pageTitle')}</h1>
-        <p className="text-foreground-secondary mt-1">{t('pageSubtitle')}</p>
+        <h1 className="text-page-title font-display font-light text-balance">{t('pageTitle')}</h1>
+        <p className="text-foreground-secondary mt-1 text-sm text-pretty">{t('pageSubtitle')}</p>
       </div>
       <MessageComposer />
     </div>

@@ -115,9 +115,9 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
 
   return (
     <>
-      <div className="mb-4">
+      <div className="mb-3">
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-48">
+          <SelectTrigger className="w-48 h-9">
             <SelectValue placeholder={t('filterByStatus')} />
           </SelectTrigger>
           <SelectContent>
@@ -144,7 +144,7 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
         </TableHeader>
         <TableBody className="stagger-children">
           {filteredConsents.map((consent) => (
-            <TableRow key={consent.id} className="border-border-subtle transition-default animate-fade-in-up">
+            <TableRow key={consent.id} className="border-border/50 transition-colors duration-150 hover:bg-muted/30 animate-fade-in-up">
               <TableCell className="font-medium">
                 {tTypes.has(consent.type as ConsentType) ? tTypes(consent.type as ConsentType) : consent.type}
               </TableCell>
@@ -179,7 +179,7 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
                         onClick={() => handleCopyLink(consent.token)}
                         aria-label={t('link')}
                       >
-                        <LinkIcon className="h-3.5 w-3.5" />
+                        <LinkIcon className="size-3.5" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>{t('link')}</TooltipContent>
@@ -200,7 +200,7 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
                           }}
                           aria-label={t('decrypt')}
                         >
-                          <Eye className="h-3.5 w-3.5" />
+                          <Eye className="size-3.5" />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>{t('decrypt')}</TooltipContent>
@@ -217,7 +217,7 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
                           onClick={() => setRevokeToken(consent.token)}
                           aria-label={t('revoke')}
                         >
-                          <Ban className="h-3.5 w-3.5" />
+                          <Ban className="size-3.5" />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>{t('revoke')}</TooltipContent>

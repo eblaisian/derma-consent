@@ -9,7 +9,6 @@ import { useAuthFetch } from '@/lib/auth-fetch';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from '@/components/ui/card';
@@ -99,26 +98,29 @@ export default function TeamPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
+          <p className="text-sm text-muted-foreground text-pretty">
             {t('description')}
           </p>
         </div>
         <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
           <DialogTrigger asChild>
             <Button>
-              <UserPlus className="mr-2 h-4 w-4" />
+              <UserPlus className="mr-2 size-4" />
               {t('invite')}
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>{t('inviteTitle')}</DialogTitle>
-              <DialogDescription>
+              <div className="mx-auto mb-2 flex size-12 items-center justify-center rounded-full bg-primary-subtle">
+                <UserPlus className="size-5 text-primary" />
+              </div>
+              <DialogTitle className="text-center">{t('inviteTitle')}</DialogTitle>
+              <DialogDescription className="text-center">
                 {t('inviteDescription')}
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4">
+            <div className="space-y-4 pt-2">
               <div className="space-y-2">
                 <Label>{t('email')}</Label>
                 <Input
@@ -149,7 +151,7 @@ export default function TeamPage() {
         </Dialog>
       </div>
 
-      <Card>
+      <Card className="rounded-xl border border-border/50 shadow-[var(--shadow-sm)]">
         <CardHeader>
           <CardTitle>{t('members')}</CardTitle>
           <CardDescription>{t('memberCount', { count: members?.length || 0 })}</CardDescription>
@@ -170,18 +172,50 @@ export default function TeamPage() {
                   <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                   <TableCell><Skeleton className="h-4 w-40" /></TableCell>
                   <TableCell><Skeleton className="h-8 w-32" /></TableCell>
-                  <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                  <TableCell className="text-right"><Skeleton className="size-8 ml-auto" /></TableCell>
                 </TableRow>
               ))}
+              {members?.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={4} className="py-12 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="flex size-12 items-center justify-center rounded-full bg-primary-subtle">
+                        <UserPlus className="size-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">{t('members')}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{t('description')}</p>
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
               {members?.map((member) => (
                 <TableRow key={member.id}>
-                  <TableCell className="font-medium">
-                    {member.name || '—'}
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      {member.image ? (
+                        <img src={member.image} alt="" className="size-8 rounded-full object-cover" />
+                      ) : (
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-xs font-medium text-primary">
+                          {(member.name || member.email).charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <span className="font-medium">{member.name || '—'}</span>
+                    </div>
                   </TableCell>
-                  <TableCell>{member.email}</TableCell>
+                  <TableCell className="text-muted-foreground">{member.email}</TableCell>
                   <TableCell>
                     {member.id === session?.user?.id ? (
-                      <Badge variant="secondary">{tRoles(member.role as 'ADMIN' | 'ARZT' | 'EMPFANG')}</Badge>
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        member.role === 'ADMIN'
+                          ? 'bg-primary-subtle text-primary'
+                          : member.role === 'ARZT'
+                            ? 'bg-info-subtle text-info'
+                            : 'bg-muted text-muted-foreground'
+                      }`}>
+                        {tRoles(member.role as 'ADMIN' | 'ARZT' | 'EMPFANG')}
+                      </span>
                     ) : (
                       <Select
                         value={member.role}
@@ -209,7 +243,7 @@ export default function TeamPage() {
                             onClick={() => setMemberToRemove(member)}
                             aria-label={t('removeMember')}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="size-4" />
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>{t('removeMember')}</TooltipContent>

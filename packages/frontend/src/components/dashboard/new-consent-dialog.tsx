@@ -109,7 +109,7 @@ export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t('title')}</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-pretty">
             {t('description')}
           </DialogDescription>
         </DialogHeader>
@@ -218,7 +218,7 @@ export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
             <Button className="w-full" onClick={handleCreate} disabled={!type || isCreating}>
               {isCreating ? (
                 <span className="flex items-center gap-2">
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                   {t('creating')}
                 </span>
               ) : (

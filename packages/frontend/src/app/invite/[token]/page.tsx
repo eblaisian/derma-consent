@@ -17,7 +17,7 @@ export default function InvitePage() {
   const tRoles = useTranslations('roles');
   const { token } = useParams<{ token: string }>();
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
   const authFetch = useAuthFetch();
   const [isAccepting, setIsAccepting] = useState(false);
 
@@ -34,7 +34,25 @@ export default function InvitePage() {
 
     setIsAccepting(true);
     try {
-      await authFetch(`/api/team/invite/${token}/accept`, { method: 'POST' });
+      const result = await authFetch(`/api/team/invite/${token}/accept`, { method: 'POST' });
+
+      // Refresh the backend JWT so it includes the newly assigned practiceId and role,
+      // then propagate those values into the NextAuth session. Without this the dashboard
+      // sees practiceId: null in the session and immediately redirects back to /setup.
+      let newAccessToken: string | undefined;
+      try {
+        const refreshed = await authFetch('/api/auth/refresh-token', { method: 'POST' });
+        newAccessToken = refreshed.accessToken;
+      } catch {
+        // Token refresh failed — session will have stale practiceId. User will need to
+        // re-login. This is an edge case; the invite itself was accepted successfully.
+      }
+
+      await updateSession({
+        practiceId: result.practiceId,
+        ...(newAccessToken && { accessToken: newAccessToken }),
+      });
+
       toast.success(t('accepted'));
       router.push('/dashboard');
     } catch (err) {
@@ -46,7 +64,7 @@ export default function InvitePage() {
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="flex min-h-dvh items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>{t('invalidTitle')}</CardTitle>
@@ -61,14 +79,14 @@ export default function InvitePage() {
 
   if (!invite) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-dvh">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
+    <div className="flex min-h-dvh items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>{t('title')}</CardTitle>

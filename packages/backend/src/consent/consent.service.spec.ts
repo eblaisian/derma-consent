@@ -7,6 +7,7 @@ import { AuditService } from '../audit/audit.service';
 import { NotificationService } from '../notifications/notification.service';
 import { PdfService } from '../pdf/pdf.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
+import { StorageService } from '../storage/storage.service';
 import { ConsentType } from './consent.dto';
 
 describe('ConsentService', () => {
@@ -34,6 +35,7 @@ describe('ConsentService', () => {
   const mockNotification = { sendConsentLinkViaSms: jest.fn(), sendConsentLink: jest.fn() };
   const mockPdf = { generateConsentPdf: jest.fn().mockResolvedValue(undefined) };
   const mockPlatformConfig = { get: jest.fn().mockResolvedValue('-1') };
+  const mockStorage = { getPublicUrl: jest.fn().mockResolvedValue('https://public-url/logo.png') };
 
   const mockPractice = { id: 'practice-1', name: 'Test Practice' };
 
@@ -58,6 +60,7 @@ describe('ConsentService', () => {
         { provide: AuditService, useValue: mockAudit },
         { provide: PdfService, useValue: mockPdf },
         { provide: PlatformConfigService, useValue: mockPlatformConfig },
+        { provide: StorageService, useValue: mockStorage },
       ],
     }).compile();
 

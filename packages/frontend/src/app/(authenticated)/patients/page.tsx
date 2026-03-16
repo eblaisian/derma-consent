@@ -113,10 +113,10 @@ export default function PatientsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed text-pretty">
             {t('description')}
           </p>
         </div>
@@ -138,7 +138,7 @@ export default function PatientsPage() {
               />
             </div>
             <Button variant="outline" onClick={handleSearch}>
-              <Search className="h-4 w-4" />
+              <Search className="size-4" />
             </Button>
           </div>
         </CardContent>
@@ -187,15 +187,15 @@ export default function PatientsPage() {
                 </TableHeader>
                 <TableBody>
                   {patientsData.items.map((patient) => (
-                    <TableRow key={patient.id}>
+                    <TableRow key={patient.id} className="cursor-pointer transition-colors hover:bg-muted/40">
                       <TableCell className="font-medium">
                         {decryptedNames[patient.id] ? (
                           decryptedNames[patient.id]
                         ) : isDecrypting ? (
                           <span className="inline-block h-4 w-32 animate-pulse rounded bg-muted" />
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-                            <Lock className="size-3" />
+                          <span className="inline-flex items-center gap-1.5 text-muted-foreground italic">
+                            <Lock className="size-3 shrink-0" />
                             {t('encrypted')}
                           </span>
                         )}
@@ -206,7 +206,7 @@ export default function PatientsPage() {
                       <TableCell className="text-right">
                         <Button variant="ghost" size="sm" asChild>
                           <Link href={`/patients/${patient.id}`}>
-                            <Eye className="mr-1 h-4 w-4" />
+                            <Eye className="mr-1 size-4" />
                             {t('details')}
                           </Link>
                         </Button>

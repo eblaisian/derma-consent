@@ -171,7 +171,7 @@ export default function PatientDetailPage() {
   if (!patient) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        <div className="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
@@ -183,13 +183,13 @@ export default function PatientDetailPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" asChild>
-          <Link href="/patients"><ArrowLeft className="h-4 w-4" /></Link>
+          <Link href="/patients"><ArrowLeft className="size-4" /></Link>
         </Button>
         <div className="flex-1">
-          <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
+          <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
         </div>
         <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>
-          <Trash2 className="mr-2 h-4 w-4" />
+          <Trash2 className="mr-2 size-4" />
           {t('delete')}
         </Button>
       </div>
@@ -290,7 +290,7 @@ export default function PatientDetailPage() {
               )}
               {practice && (
                 <Button size="sm" onClick={() => { setSelectedTemplate(null); setEditorOpen(true); }}>
-                  <Plus className="mr-2 h-4 w-4" />
+                  <Plus className="mr-2 size-4" />
                   {tPlan('newPlan')}
                 </Button>
               )}
@@ -371,13 +371,13 @@ export default function PatientDetailPage() {
             <div className="flex gap-2">
               {photos.length >= 2 && (
                 <Button variant="outline" size="sm" onClick={() => setComparisonOpen(true)}>
-                  <Columns2 className="mr-2 h-4 w-4" />
+                  <Columns2 className="mr-2 size-4" />
                   {tPhotos('compare')}
                 </Button>
               )}
               {practice && (
                 <Button size="sm" onClick={() => setUploadOpen(true)}>
-                  <Upload className="mr-2 h-4 w-4" />
+                  <Upload className="mr-2 size-4" />
                   {tPhotos('upload')}
                 </Button>
               )}

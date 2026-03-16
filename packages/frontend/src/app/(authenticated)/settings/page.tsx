@@ -181,10 +181,10 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-page-title">{t('title')}</h1>
-        <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+        <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
+        <p className="mt-1 text-sm text-muted-foreground leading-relaxed text-pretty">
           {t('description')}
         </p>
       </div>
@@ -213,12 +213,12 @@ export default function SettingsPage() {
               <Label>{t('dsgvoContact')}</Label>
               <Input type="email" value={dsgvoContact} onChange={(e) => setDsgvoContact(e.target.value)} />
             </div>
-            <div>
+            <div className="flex items-center gap-3 pt-2">
               <Button onClick={handleSavePractice} disabled={isSavingPractice || !isPracticeDirty}>
                 {isSavingPractice ? t('saving') : t('savePracticeInfo')}
               </Button>
               {!isPracticeDirty && !isSavingPractice && (
-                <p className="text-xs text-muted-foreground mt-1.5">{t('noChanges')}</p>
+                <p className="text-xs text-muted-foreground">{t('noChanges')}</p>
               )}
             </div>
           </div>
@@ -284,26 +284,35 @@ export default function SettingsPage() {
             </div>
             <div className="space-y-2">
               <Label>{t('brandColor')}</Label>
-              <div className="flex gap-2">
-                <Input
-                  type="color"
-                  value={brandColor || '#0f172a'}
-                  onChange={(e) => setBrandColor(e.target.value)}
-                  className="w-16 h-10"
-                />
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <Input
+                    type="color"
+                    value={brandColor || '#0f172a'}
+                    onChange={(e) => setBrandColor(e.target.value)}
+                    className="size-10 cursor-pointer rounded-lg border border-border/50 p-0.5"
+                  />
+                </div>
                 <Input
                   value={brandColor}
                   onChange={(e) => setBrandColor(e.target.value)}
                   placeholder="#0f172a"
+                  className="max-w-48 font-mono text-sm"
                 />
+                {brandColor && (
+                  <div
+                    className="size-6 shrink-0 rounded-md border border-border/50"
+                    style={{ backgroundColor: brandColor }}
+                  />
+                )}
               </div>
             </div>
-            <div>
+            <div className="flex items-center gap-3 pt-2">
               <Button onClick={handleSaveSettings} disabled={isSaving || !isConsentDirty}>
                 {isSaving ? t('saving') : t('save')}
               </Button>
               {!isConsentDirty && !isSaving && (
-                <p className="text-xs text-muted-foreground mt-1.5">{t('noChanges')}</p>
+                <p className="text-xs text-muted-foreground">{t('noChanges')}</p>
               )}
             </div>
           </div>
@@ -320,18 +329,18 @@ export default function SettingsPage() {
                     type="checkbox"
                     checked={enabledTypes.includes(type)}
                     onChange={() => toggleConsentType(type)}
-                    className="h-4 w-4 rounded border-input"
+                    className="size-4 rounded border-input"
                   />
                   <span className="text-sm">{tTypes(type as Parameters<typeof tTypes>[0])}</span>
                 </label>
               ))}
             </div>
-            <div>
+            <div className="flex items-center gap-3 pt-2">
               <Button onClick={handleSaveConsentTypes} disabled={isSavingTypes || !isTypesDirty}>
                 {isSavingTypes ? t('saving') : t('saveConsentTypes')}
               </Button>
               {!isTypesDirty && !isSavingTypes && (
-                <p className="text-xs text-muted-foreground mt-1.5">{t('noChanges')}</p>
+                <p className="text-xs text-muted-foreground">{t('noChanges')}</p>
               )}
             </div>
           </div>
@@ -357,12 +366,12 @@ export default function SettingsPage() {
                 />
               </div>
             ))}
-            <div>
+            <div className="flex items-center gap-3 pt-2">
               <Button onClick={handleSaveVideos} disabled={isSavingVideos || !isVideosDirty}>
                 {isSavingVideos ? t('saving') : t('save')}
               </Button>
               {!isVideosDirty && !isSavingVideos && (
-                <p className="text-xs text-muted-foreground mt-1.5">{t('noChanges')}</p>
+                <p className="text-xs text-muted-foreground">{t('noChanges')}</p>
               )}
             </div>
           </div>

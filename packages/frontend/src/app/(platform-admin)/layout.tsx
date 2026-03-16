@@ -37,8 +37,8 @@ export default function PlatformAdminLayout({
 
   if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-500 border-t-transparent" />
+      <div className="flex items-center justify-center min-h-dvh">
+        <div className="size-8 animate-spin rounded-full border-4 border-violet-500 border-t-transparent" />
       </div>
     );
   }
@@ -46,7 +46,7 @@ export default function PlatformAdminLayout({
   if (!session || session.user?.role !== 'PLATFORM_ADMIN') return null;
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-dvh">
       <AdminSidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
         <header className="flex h-14 items-center justify-between border-b px-4">
@@ -61,13 +61,13 @@ export default function PlatformAdminLayout({
               aria-controls="admin-mobile-nav"
             >
               {mobileMenuOpen ? (
-                <X className="h-5 w-5" />
+                <X className="size-5" />
               ) : (
-                <Menu className="h-5 w-5" />
+                <Menu className="size-5" />
               )}
             </Button>
             <Link href="/admin" className="flex items-center gap-2 font-semibold text-foreground">
-              <Shield className="h-4 w-4 text-violet-500" />
+              <Shield className="size-4 text-violet-500" />
               <span className="text-sm">DermaConsent</span>
               <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-violet-700 dark:bg-violet-900 dark:text-violet-300">
                 {t('adminBadge')}
@@ -90,7 +90,7 @@ export default function PlatformAdminLayout({
           <>
             {/* Backdrop */}
             <div
-              className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm md:hidden animate-fade-in"
+              className="fixed inset-0 z-40 bg-background/60 md:hidden animate-fade-in"
               onClick={() => setMobileMenuOpen(false)}
               aria-hidden="true"
             />
@@ -121,7 +121,7 @@ export default function PlatformAdminLayout({
                       )}
                       aria-current={isActive ? 'page' : undefined}
                     >
-                      <Icon className={cn('h-4 w-4 shrink-0', isActive ? 'text-violet-500' : 'text-muted-foreground')} />
+                      <Icon className={cn('size-4 shrink-0', isActive ? 'text-violet-500' : 'text-muted-foreground')} />
                       {t(item.labelKey)}
                     </Link>
                   );

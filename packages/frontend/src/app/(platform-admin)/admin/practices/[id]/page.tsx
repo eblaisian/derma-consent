@@ -86,7 +86,7 @@ export default function PracticeDetailPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-500 border-t-transparent" />
+        <div className="size-8 animate-spin rounded-full border-4 border-violet-500 border-t-transparent" />
       </div>
     );
   }
@@ -133,11 +133,11 @@ export default function PracticeDetailPage() {
       {/* Back + title */}
       <div className="flex items-center gap-3">
         <Link href="/admin/practices" className="text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="size-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">{practice.name}</h1>
-          <p className="text-sm text-muted-foreground">{practice.dsgvoContact}</p>
+          <h1 className="text-page-title text-balance">{practice.name}</h1>
+          <p className="text-sm text-muted-foreground text-pretty">{practice.dsgvoContact}</p>
         </div>
         <div className="ml-auto">
           <button

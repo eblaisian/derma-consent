@@ -8,6 +8,7 @@ import { API_URL, createAuthFetcher } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from '@/components/ui/card';
@@ -19,7 +20,7 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { Download } from 'lucide-react';
+import { Download, ScrollText, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface AuditLogEntry {
   id: string;
@@ -71,6 +72,19 @@ function isSignificantIp(ip: string | null): boolean {
   return true;
 }
 
+function getActionBadgeVariant(action: string): 'default' | 'secondary' | 'destructive' | 'outline' {
+  if (action.includes('REVOKED') || action.includes('REMOVED') || action.includes('DELETED') || action.includes('FAILED') || action.includes('LOCKED') || action.includes('CANCELLED')) {
+    return 'destructive';
+  }
+  if (action.includes('CREATED') || action.includes('SUBMITTED') || action.includes('SUCCESS') || action.includes('UNLOCKED')) {
+    return 'default';
+  }
+  if (action.includes('UPDATED') || action.includes('CHANGED') || action.includes('INVITED')) {
+    return 'secondary';
+  }
+  return 'outline';
+}
+
 export default function AuditPage() {
   const t = useTranslations('audit');
   const tActions = useTranslations('auditActions');
@@ -114,118 +128,147 @@ export default function AuditPage() {
     }
   };
 
+  const hasSignificantIps = data?.items.some((e) => isSignificantIp(e.ipAddress)) ?? false;
+
   return (
     <div className="space-y-6">
+      {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
+          <p className="mt-1 text-sm text-muted-foreground leading-relaxed text-pretty">
             {t('description')}
           </p>
         </div>
-        <Button variant="outline" onClick={handleExport}>
-          <Download className="mr-2 h-4 w-4" />
+        <Button variant="outline" onClick={handleExport} className="gap-2">
+          <Download className="size-4" />
           {t('exportCsv')}
         </Button>
       </div>
 
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-wrap gap-4">
-            <div className="space-y-1">
-              <Label className="text-xs">{t('actionFilter')}</Label>
-              <Select value={actionFilter} onValueChange={(v) => { setActionFilter(v === 'all' ? '' : v); setPage(1); }}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder={t('allActions')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t('allActions')}</SelectItem>
-                  {auditActionKeys.map((key) => (
-                    <SelectItem key={key} value={key}>
-                      {tActionLabels.has(key) ? tActionLabels(key) : key}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1">
-              <Label className="text-xs">{t('dateFrom')}</Label>
-              <Input
-                type="date"
-                value={startDate}
-                onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
-                className="w-40"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-xs">{t('dateTo')}</Label>
-              <Input
-                type="date"
-                value={endDate}
-                onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
-                className="w-40"
-              />
-            </div>
+      {/* Filter toolbar */}
+      <div className="surface-raised p-4">
+        <div className="flex flex-wrap items-end gap-4">
+          <div className="space-y-1.5 min-w-48">
+            <Label className="text-xs text-muted-foreground">{t('actionFilter')}</Label>
+            <Select value={actionFilter} onValueChange={(v) => { setActionFilter(v === 'all' ? '' : v); setPage(1); }}>
+              <SelectTrigger>
+                <SelectValue placeholder={t('allActions')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('allActions')}</SelectItem>
+                {auditActionKeys.map((key) => (
+                  <SelectItem key={key} value={key}>
+                    {tActionLabels.has(key) ? tActionLabels(key) : key}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-        </CardContent>
-      </Card>
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">{t('dateFrom')}</Label>
+            <Input
+              type="date"
+              value={startDate}
+              onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
+              className="w-40"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">{t('dateTo')}</Label>
+            <Input
+              type="date"
+              value={endDate}
+              onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
+              className="w-40"
+            />
+          </div>
+        </div>
+      </div>
 
+      {/* Entries table */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('entries')}</CardTitle>
-          <CardDescription>{t('totalEntries', { count: data?.total || 0 })}</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('entries')}</CardTitle>
+              <CardDescription>{t('totalEntries', { count: data?.total || 0 })}</CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t('timestamp')}</TableHead>
+                <TableHead className="w-44">{t('timestamp')}</TableHead>
                 <TableHead>{t('action')}</TableHead>
-                <TableHead>{t('entity')}</TableHead>
-                {data?.items.some((e) => isSignificantIp(e.ipAddress)) && (
-                  <TableHead>{t('ip')}</TableHead>
+                <TableHead className="w-32">{t('entity')}</TableHead>
+                {hasSignificantIps && (
+                  <TableHead className="w-36">{t('ip')}</TableHead>
                 )}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && Array.from({ length: 5 }).map((_, i) => (
+              {isLoading && Array.from({ length: 6 }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`}>
                   <TableCell><Skeleton className="h-4 w-28" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-48" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-48 rounded-full" /></TableCell>
                   <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                  {hasSignificantIps && (
+                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  )}
                 </TableRow>
               ))}
               {data?.items.map((entry) => {
                 const actor = entry.user?.name || entry.user?.email || t('unknownUser');
                 return (
-                  <TableRow key={entry.id}>
-                    <TableCell className="text-sm text-muted-foreground">
+                  <TableRow key={entry.id} className="hover:bg-muted/30 transition-colors duration-150">
+                    <TableCell className="text-sm text-muted-foreground tabular-nums">
                       {format.dateTime(new Date(entry.createdAt), {
                         dateStyle: 'medium',
                         timeStyle: 'short',
                         timeZone: 'Europe/Berlin',
                       })}
                     </TableCell>
-                    <TableCell className="text-sm">
-                      {tActions.has(entry.action as typeof auditActionKeys[number])
-                        ? tActions(entry.action as typeof auditActionKeys[number], { actor })
-                        : `${actor}: ${entry.action}`}
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={getActionBadgeVariant(entry.action)} className="text-xs font-normal">
+                          {entry.action.split('_').slice(0, 2).join('_')}
+                        </Badge>
+                        <span className="text-sm">
+                          {tActions.has(entry.action as typeof auditActionKeys[number])
+                            ? tActions(entry.action as typeof auditActionKeys[number], { actor })
+                            : `${actor}: ${entry.action}`}
+                        </span>
+                      </div>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {entry.entityType || '—'}
                     </TableCell>
-                    {data.items.some((e) => isSignificantIp(e.ipAddress)) && (
-                      <TableCell className="text-sm text-muted-foreground">
+                    {hasSignificantIps && (
+                      <TableCell className="text-sm text-muted-foreground font-mono text-xs">
                         {isSignificantIp(entry.ipAddress) ? entry.ipAddress : ''}
                       </TableCell>
                     )}
                   </TableRow>
                 );
               })}
-              {(!data?.items || data.items.length === 0) && (
+              {!isLoading && (!data?.items || data.items.length === 0) && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                    {t('noEntries')}
+                  <TableCell colSpan={hasSignificantIps ? 4 : 3} className="h-48">
+                    <div className="flex flex-col items-center justify-center gap-3 text-center">
+                      <div className="flex size-12 items-center justify-center rounded-full bg-muted">
+                        <ScrollText className="size-5 text-muted-foreground" strokeWidth={1.5} />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium">{t('noEntries')}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {actionFilter || startDate || endDate
+                            ? t('description')
+                            : t('description')}
+                        </p>
+                      </div>
+                    </div>
                   </TableCell>
                 </TableRow>
               )}
@@ -233,26 +276,34 @@ export default function AuditPage() {
           </Table>
 
           {data && data.totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 pt-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(page - 1)}
-                disabled={page <= 1}
-              >
-                {t('previous')}
-              </Button>
-              <span className="text-sm text-muted-foreground">
+            <div className="flex items-center justify-between border-t pt-4 mt-4">
+              <p className="text-sm text-muted-foreground">
                 {t('pageOf', { page: data.page, totalPages: data.totalPages })}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(page + 1)}
-                disabled={page >= data.totalPages}
-              >
-                {t('next')}
-              </Button>
+              </p>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setPage(page - 1)}
+                  disabled={page <= 1}
+                  aria-label={t('previous')}
+                  className="gap-1"
+                >
+                  <ChevronLeft className="size-4" />
+                  {t('previous')}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setPage(page + 1)}
+                  disabled={page >= data.totalPages}
+                  aria-label={t('next')}
+                  className="gap-1"
+                >
+                  {t('next')}
+                  <ChevronRight className="size-4" />
+                </Button>
+              </div>
             </div>
           )}
         </CardContent>

@@ -77,13 +77,17 @@ export function MessageComposer() {
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            {t('title')}
-          </CardTitle>
-          <CardDescription>{t('subtitle')}</CardDescription>
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-primary-subtle">
+              <Sparkles className="size-4.5 text-primary" />
+            </div>
+            <div>
+              <CardTitle>{t('title')}</CardTitle>
+              <CardDescription>{t('subtitle')}</CardDescription>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-5">
+        <CardContent className="space-y-6">
           {/* Context + Language pickers */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
@@ -125,17 +129,17 @@ export function MessageComposer() {
             disabled={!context || loading}
             className="gap-2"
           >
-            <Sparkles className="h-4 w-4" />
+            <Sparkles className="size-4" />
             {loading ? t('generating') : t('generateButton')}
           </Button>
 
           {/* Loading skeleton */}
           {loading && (
-            <div className="space-y-2">
+            <div className="rounded-lg border border-border-subtle bg-muted/30 p-4 space-y-2.5">
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-11/12" />
               <Skeleton className="h-4 w-10/12" />
-              <Skeleton className="h-4 w-9/12" />
+              <Skeleton className="h-4 w-8/12" />
             </div>
           )}
 
@@ -147,16 +151,16 @@ export function MessageComposer() {
                 value={draft}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDraft(e.target.value)}
                 rows={8}
-                className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm leading-relaxed resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex w-full rounded-lg border border-input bg-background px-4 py-3 text-sm leading-relaxed resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors duration-150"
               />
 
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={handleCopy} className="gap-2">
-                  {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                  {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
                   {copied ? t('copied') : t('copyButton')}
                 </Button>
                 <Button size="sm" onClick={() => setSendOpen(true)} className="gap-2">
-                  <Send className="h-3.5 w-3.5" />
+                  <Send className="size-3.5" />
                   {t('sendButton')}
                 </Button>
               </div>

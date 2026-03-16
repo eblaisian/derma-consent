@@ -6,7 +6,6 @@ import { useTranslations, useFormatter } from 'next-intl';
 import useSWR from 'swr';
 import { API_URL, createAuthFetcher } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import {
   XAxis,
   YAxis,
@@ -104,21 +103,25 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[28px] font-semibold leading-tight tracking-tight">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
+          <p className="text-sm text-muted-foreground text-pretty">
             {t('description')}
           </p>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="inline-flex items-center gap-0.5 rounded-lg border border-border/50 bg-muted/50 p-0.5">
           {(['7d', '30d', '90d'] as const).map((range) => (
-            <Button
+            <button
               key={range}
-              variant={dateRange === range ? 'default' : 'outline'}
-              size="sm"
+              type="button"
+              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-150 ${
+                dateRange === range
+                  ? 'bg-card text-foreground shadow-[var(--shadow-sm)]'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
               onClick={() => setDateRange(range)}
             >
               {range === '7d' ? t('last7Days') : range === '30d' ? t('last30Days') : t('last90Days')}
-            </Button>
+            </button>
           ))}
         </div>
       </div>
@@ -128,46 +131,37 @@ export default function AnalyticsPage() {
         {isLoading ? (
           <>
             {Array.from({ length: 4 }).map((_, i) => (
-              <Card key={i}>
-                <CardHeader className="pb-2">
+              <Card key={i} className="rounded-xl border border-border/50 shadow-[var(--shadow-sm)]">
+                <CardContent className="p-5">
                   <Skeleton className="h-4 w-20" />
-                  <Skeleton className="h-9 w-16 mt-1" />
-                </CardHeader>
+                  <Skeleton className="h-9 w-16 mt-2" />
+                </CardContent>
               </Card>
             ))}
           </>
         ) : (
           <>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardDescription>{t('total')}</CardDescription>
-                <CardTitle className="text-3xl">{overview?.total ?? '—'}</CardTitle>
-              </CardHeader>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardDescription>{t('pending')}</CardDescription>
-                <CardTitle className="text-3xl">{overview?.pending ?? '—'}</CardTitle>
-              </CardHeader>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardDescription>{t('signed')}</CardDescription>
-                <CardTitle className="text-3xl">{overview?.signed ?? '—'}</CardTitle>
-              </CardHeader>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardDescription>{t('patients')}</CardDescription>
-                <CardTitle className="text-3xl">{overview?.patients ?? '—'}</CardTitle>
-              </CardHeader>
-            </Card>
+            {[
+              { label: t('total'), value: overview?.total },
+              { label: t('pending'), value: overview?.pending },
+              { label: t('signed'), value: overview?.signed },
+              { label: t('patients'), value: overview?.patients },
+            ].map((stat) => (
+              <Card key={stat.label} className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-border">
+                <CardContent className="p-5">
+                  <span className="text-sm text-muted-foreground">{stat.label}</span>
+                  <div className="mt-2 text-3xl font-bold tabular-nums tracking-tight">
+                    {stat.value ?? '—'}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </>
         )}
       </div>
 
       {/* Revenue */}
-      <Card>
+      <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
         <CardHeader>
           <CardTitle>{t('revenue')}</CardTitle>
           <CardDescription>{t('revenueDescription')}</CardDescription>
@@ -185,10 +179,11 @@ export default function AnalyticsPage() {
             </div>
           ) : (
             <>
-              <p className="text-3xl font-bold">
-                EUR {revenue?.totalRevenue?.toFixed(2) ?? '0.00'}
+              <p className="text-3xl font-bold tabular-nums tracking-tight">
+                <span className="text-sm font-normal text-muted-foreground">EUR</span>{' '}
+                {revenue?.totalRevenue?.toFixed(2) ?? '0.00'}
               </p>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-sm text-muted-foreground mt-1 tabular-nums">
                 {revenue?.transactionCount ?? 0} {t('transactions')} | {t('avg')} EUR {revenue?.averageTransaction?.toFixed(2) ?? '0.00'}
               </p>
             </>
@@ -198,7 +193,7 @@ export default function AnalyticsPage() {
 
       {/* Conversion */}
       {conversion && (
-        <Card>
+        <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
           <CardHeader>
             <CardTitle>{t('conversionRate')}</CardTitle>
             <CardDescription>
@@ -225,7 +220,7 @@ export default function AnalyticsPage() {
 
       <div className="grid gap-4 md:grid-cols-2">
         {/* By Type */}
-        <Card>
+        <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
           <CardHeader>
             <CardTitle>{t('byType')}</CardTitle>
           </CardHeader>
@@ -266,7 +261,7 @@ export default function AnalyticsPage() {
         </Card>
 
         {/* By Period */}
-        <Card>
+        <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
           <CardHeader>
             <CardTitle>
               {dateRange === '7d' ? t('last7Days') : dateRange === '30d' ? t('last30Days') : t('last90Days')}

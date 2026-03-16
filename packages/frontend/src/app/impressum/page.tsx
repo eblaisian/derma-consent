@@ -5,7 +5,7 @@ import { company } from '@/lib/company';
 
 export default function ImpressumPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <Button variant="ghost" size="sm" className="mb-8" asChild>
           <Link href="/"><ArrowLeft className="h-4 w-4 me-2" />Zurück</Link>

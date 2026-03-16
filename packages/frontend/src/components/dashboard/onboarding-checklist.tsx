@@ -40,11 +40,11 @@ export function OnboardingChecklist({ hasConsents, teamCount, hasLogo, hasKeypai
   if (allComplete) return null;
 
   return (
-    <Card className="border-primary/20 bg-gradient-to-br from-primary/[0.03] to-transparent">
+    <Card className="rounded-xl border border-primary/20 bg-primary/[0.02] shadow-[var(--shadow-sm)]">
       <CardHeader className="flex flex-row items-start justify-between pb-3">
         <div className="space-y-1.5">
-          <CardTitle className="text-lg">{t('checklistTitle')}</CardTitle>
-          <CardDescription>{t('stepsComplete', { done, total: steps.length })}</CardDescription>
+          <CardTitle className="text-lg text-balance">{t('checklistTitle')}</CardTitle>
+          <CardDescription className="text-pretty">{t('stepsComplete', { done, total: steps.length })}</CardDescription>
         </div>
         <Button variant="ghost" size="icon" onClick={onDismiss} aria-label={t('dismiss')} className="shrink-0">
           <X className="size-4" />
@@ -52,7 +52,7 @@ export function OnboardingChecklist({ hasConsents, teamCount, hasLogo, hasKeypai
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Progress bar */}
-        <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+        <div className="h-1 w-full rounded-full bg-muted/60 overflow-hidden">
           <div
             className="h-full rounded-full bg-primary transition-[width] duration-500 ease-out"
             style={{ width: `${progress}%` }}
@@ -66,13 +66,13 @@ export function OnboardingChecklist({ hasConsents, teamCount, hasLogo, hasKeypai
               <div
                 key={step.id}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors ${
-                  step.complete ? 'opacity-60' : 'bg-background/60'
+                  step.complete ? 'opacity-50' : 'bg-muted/30'
                 }`}
               >
                 {step.complete ? (
                   <CheckCircle2 className="size-5 shrink-0 text-success" />
                 ) : (
-                  <div className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-primary/30">
+                  <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/[0.06]">
                     <Icon className="size-3 text-primary" />
                   </div>
                 )}

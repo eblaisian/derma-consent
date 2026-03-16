@@ -76,11 +76,11 @@ export default function AdminPracticesPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">{t('practices')}</h1>
+      <h1 className="text-page-title text-balance">{t('practices')}</h1>
 
       {/* Search */}
       <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <input
           type="text"
           placeholder={`${t('practiceName')}...`}
@@ -117,7 +117,7 @@ export default function AdminPracticesPage() {
             {isLoading ? (
               <tr>
                 <td colSpan={7} className="px-5 py-8 text-center">
-                  <div className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-violet-500 border-t-transparent" />
+                  <div className="inline-block size-5 animate-spin rounded-full border-2 border-violet-500 border-t-transparent" />
                 </td>
               </tr>
             ) : data?.items.length === 0 ? (

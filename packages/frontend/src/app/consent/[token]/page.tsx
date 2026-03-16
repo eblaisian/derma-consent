@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { ConsentForm } from '@/components/consent-form/consent-form';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useVault } from '@/hooks/use-vault';
-import { Shield, CheckCircle, FileSignature, XCircle, Clock } from 'lucide-react';
+import { Shield, CheckCircle, FileSignature, XCircle, Clock, Lock, Server } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { ConsentType } from '@/components/consent-form/form-fields';
 
@@ -18,6 +18,38 @@ const fetcher = (url: string) => fetch(url).then((res) => {
   if (!res.ok) throw new Error('Consent form not found or expired');
   return res.json();
 });
+
+function StatusPage({
+  icon,
+  title,
+  message,
+  variant = 'neutral',
+}: {
+  icon: React.ReactNode;
+  title: string;
+  message: string;
+  variant?: 'success' | 'error' | 'neutral';
+}) {
+  const ringColor = {
+    success: 'ring-success/20 bg-success-subtle',
+    error: 'ring-destructive/20 bg-destructive-subtle',
+    neutral: 'ring-border bg-muted',
+  }[variant];
+
+  return (
+    <div className="flex items-center justify-center min-h-dvh bg-background">
+      <div className="text-center space-y-6 max-w-sm px-6">
+        <div className={`mx-auto flex size-20 items-center justify-center rounded-full ring-1 ${ringColor}`}>
+          {icon}
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-xl font-semibold tracking-tight text-balance">{title}</h1>
+          <p className="text-sm text-muted-foreground leading-relaxed text-pretty">{message}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function ConsentPage({
   params,
@@ -63,7 +95,6 @@ export default function ConsentPage({
             ciphertext: encrypted.ciphertext,
           },
           encryptedSessionKey: encrypted.encryptedSessionKey,
-          signatureData: submission.signatureData,
           ...(submission.comprehensionScore !== undefined && {
             comprehensionScore: submission.comprehensionScore,
           }),
@@ -92,11 +123,25 @@ export default function ConsentPage({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="max-w-[680px] mx-auto px-4 py-8 space-y-6">
-          <Skeleton className="h-10 w-48" />
+      <div className="min-h-dvh bg-background">
+        <header className="border-b border-border-subtle">
+          <div className="mx-auto max-w-2xl px-4 md:px-6 flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <Skeleton className="size-9 rounded-lg" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+            <Skeleton className="h-8 w-20 rounded-md" />
+          </div>
+        </header>
+        <div className="mx-auto max-w-2xl px-4 md:px-6 py-10 space-y-6">
+          <Skeleton className="h-8 w-64" />
           <Skeleton className="h-1 w-full rounded-full" />
-          <Skeleton className="h-[400px] rounded-xl" />
+          <div className="space-y-4">
+            <Skeleton className="h-12 w-full rounded-lg" />
+            <Skeleton className="h-12 w-full rounded-lg" />
+            <Skeleton className="h-12 w-full rounded-lg" />
+          </div>
+          <Skeleton className="h-48 w-full rounded-xl" />
         </div>
       </div>
     );
@@ -104,81 +149,71 @@ export default function ConsentPage({
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-center space-y-3 max-w-md px-4">
-          <FileSignature className="h-12 w-12 text-muted-foreground mx-auto" strokeWidth={1.5} />
-          <h1 className="text-xl font-semibold">{t('error')}</h1>
-          <p className="text-foreground-secondary">
-            {t('notFoundOrExpired')}
-          </p>
-        </div>
-      </div>
+      <StatusPage
+        icon={<FileSignature className="size-8 text-muted-foreground" strokeWidth={1.5} />}
+        title={t('error')}
+        message={t('notFoundOrExpired')}
+        variant="neutral"
+      />
     );
   }
 
   if (submitted) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-center space-y-4 max-w-md px-4">
-          <CheckCircle className="h-16 w-16 text-success mx-auto" strokeWidth={1.5} />
-          <h1 className="text-xl font-semibold">{t('thankYou')}</h1>
-          <p className="text-foreground-secondary">
-            {t('successMessage')}
-          </p>
-        </div>
-      </div>
+      <StatusPage
+        icon={<CheckCircle className="size-8 text-success" strokeWidth={1.5} />}
+        title={t('thankYou')}
+        message={t('successMessage')}
+        variant="success"
+      />
     );
   }
 
   if (stripeUrl) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-center space-y-3">
-          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
-          <p className="text-foreground-secondary">
-            {t('redirectingToPayment')}
-          </p>
+      <div className="flex items-center justify-center min-h-dvh bg-background">
+        <div className="text-center space-y-4">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary-subtle">
+            <div className="animate-spin size-6 border-2 border-primary border-t-transparent rounded-full" />
+          </div>
+          <p className="text-sm text-muted-foreground">{t('redirectingToPayment')}</p>
         </div>
       </div>
     );
   }
 
-  // Status-aware rendering for non-PENDING consents
   const consentStatus = data?.status as ConsentStatus;
 
   if (consentStatus === 'REVOKED') {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-center space-y-4 max-w-md px-4">
-          <XCircle className="h-16 w-16 text-destructive mx-auto" strokeWidth={1.5} />
-          <h1 className="text-xl font-semibold">{t('revokedTitle')}</h1>
-          <p className="text-foreground-secondary">{t('revokedMessage')}</p>
-        </div>
-      </div>
+      <StatusPage
+        icon={<XCircle className="size-8 text-destructive" strokeWidth={1.5} />}
+        title={t('revokedTitle')}
+        message={t('revokedMessage')}
+        variant="error"
+      />
     );
   }
 
   if (consentStatus === 'EXPIRED' || (data?.expiresAt && new Date(data.expiresAt) < new Date())) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-center space-y-4 max-w-md px-4">
-          <Clock className="h-16 w-16 text-muted-foreground mx-auto" strokeWidth={1.5} />
-          <h1 className="text-xl font-semibold">{t('expiredTitle')}</h1>
-          <p className="text-foreground-secondary">{t('expiredMessage')}</p>
-        </div>
-      </div>
+      <StatusPage
+        icon={<Clock className="size-8 text-muted-foreground" strokeWidth={1.5} />}
+        title={t('expiredTitle')}
+        message={t('expiredMessage')}
+        variant="neutral"
+      />
     );
   }
 
   if (consentStatus === 'SIGNED' || consentStatus === 'PAID' || consentStatus === 'COMPLETED') {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-center space-y-4 max-w-md px-4">
-          <CheckCircle className="h-16 w-16 text-success mx-auto" strokeWidth={1.5} />
-          <h1 className="text-xl font-semibold">{t('thankYou')}</h1>
-          <p className="text-foreground-secondary">{t('alreadyCompletedMessage')}</p>
-        </div>
-      </div>
+      <StatusPage
+        icon={<CheckCircle className="size-8 text-success" strokeWidth={1.5} />}
+        title={t('thankYou')}
+        message={t('alreadyCompletedMessage')}
+        variant="success"
+      />
     );
   }
 
@@ -188,26 +223,34 @@ export default function ConsentPage({
 
   return (
     <div
-      className="min-h-screen bg-background"
+      className="min-h-dvh bg-background flex flex-col"
       style={brandColor ? { '--brand-color': brandColor } as React.CSSProperties : undefined}
     >
-      {/* Minimal header */}
-      <header className="border-b">
-        <div className="max-w-[680px] mx-auto px-4 md:px-6 flex items-center justify-between h-14">
-          <div className="flex items-center gap-2.5">
+      {/* Branded header */}
+      <header className="border-b border-border-subtle bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="mx-auto max-w-2xl px-4 md:px-6 flex items-center justify-between h-16">
+          <div className="flex items-center gap-3">
             {logoUrl ? (
-              <img src={logoUrl} alt={data.practice?.name || 'Practice'} className="h-8 w-auto" />
+              <img
+                src={logoUrl}
+                alt={data.practice?.name || 'Practice'}
+                className="h-9 w-auto rounded-lg"
+              />
             ) : (
-              <FileSignature className="h-5 w-5 text-primary" />
+              <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
+                <FileSignature className="size-4.5 text-primary" />
+              </div>
             )}
-            <span className="text-sm font-medium">{data.practice?.name || 'DermaConsent'}</span>
+            <span className="text-sm font-semibold tracking-tight">
+              {data.practice?.name || 'DermaConsent'}
+            </span>
           </div>
           <LanguageSwitcher />
         </div>
       </header>
 
       {/* Form content */}
-      <div className="max-w-[680px] mx-auto px-4 md:px-6 py-8">
+      <main className="flex-1 mx-auto w-full max-w-2xl px-4 md:px-6 py-10">
         <ConsentForm
           consentType={data.type as ConsentType}
           practiceName={data.practice?.name || 'Praxis'}
@@ -216,22 +259,22 @@ export default function ConsentPage({
           brandColor={brandColor ?? undefined}
           videoUrl={videoUrl ?? undefined}
         />
-      </div>
+      </main>
 
-      {/* Security / GDPR footer */}
-      <footer className="border-t py-6">
-        <div className="max-w-[680px] mx-auto px-4 md:px-6">
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <Shield className="h-3.5 w-3.5 text-success" />
+      {/* Security trust bar */}
+      <footer className="border-t border-border-subtle bg-card/30 py-5">
+        <div className="mx-auto max-w-2xl px-4 md:px-6">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <Lock className="size-3.5 text-success" />
               {t('footerEncrypted')}
             </span>
-            <span className="inline-flex items-center gap-1">
-              <Shield className="h-3.5 w-3.5 text-success" />
+            <span className="inline-flex items-center gap-1.5">
+              <Shield className="size-3.5 text-success" />
               {t('footerGdpr')}
             </span>
-            <span className="inline-flex items-center gap-1">
-              <Shield className="h-3.5 w-3.5 text-success" />
+            <span className="inline-flex items-center gap-1.5">
+              <Server className="size-3.5 text-success" />
               {t('footerEu')}
             </span>
           </div>

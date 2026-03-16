@@ -41,8 +41,9 @@ export class SubmitConsentDto {
   @IsString()
   encryptedSessionKey!: string;
 
+  @IsOptional()
   @IsString()
-  signatureData!: string; // base64 PNG from signature pad
+  signatureData?: string; // deprecated: signature is inside encrypted blob only
 
   @IsOptional()
   @IsNumber()
