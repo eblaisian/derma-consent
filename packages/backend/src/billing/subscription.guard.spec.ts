@@ -13,6 +13,7 @@ describe('SubscriptionGuard', () => {
     },
     subscription: {
       findUnique: jest.fn(),
+      update: jest.fn(),
     },
   };
 
