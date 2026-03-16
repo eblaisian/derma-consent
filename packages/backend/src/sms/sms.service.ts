@@ -14,6 +14,11 @@ interface SevenSmsResponse {
   }>;
 }
 
+/** Mask phone number for logging — show only last 4 digits */
+function maskPhone(phone: string): string {
+  return phone.length > 4 ? `***${phone.slice(-4)}` : '****';
+}
+
 @Injectable()
 export class SmsService implements OnModuleInit {
   private readonly logger = new Logger(SmsService.name);
@@ -66,7 +71,7 @@ export class SmsService implements OnModuleInit {
 
     // seven.io does not support WhatsApp yet — log and skip
     if (channel === 'whatsapp') {
-      this.logger.warn(`WhatsApp not supported by seven.io — skipping message to ${phone}`);
+      this.logger.warn(`WhatsApp not supported by seven.io — skipping message to ${maskPhone(phone)}`);
       return;
     }
 
@@ -95,7 +100,7 @@ export class SmsService implements OnModuleInit {
         throw new Error(`seven.io returned error code ${errorCode}`);
       }
     } catch (error) {
-      this.logger.error(`Failed to send SMS to ${phone}`, error);
+      this.logger.error(`Failed to send SMS to ${maskPhone(phone)}`, error);
       throw error;
     }
   }

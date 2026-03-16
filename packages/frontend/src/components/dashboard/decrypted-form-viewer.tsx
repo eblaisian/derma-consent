@@ -31,7 +31,7 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
   const tConsent = useTranslations('consent');
   const { decryptForm, isUnlocked } = useVault();
   const decryptFormRef = useRef(decryptForm);
-  decryptFormRef.current = decryptForm;
+  useEffect(() => { decryptFormRef.current = decryptForm; }, [decryptForm]);
   const [decryptedData, setDecryptedData] = useState<Record<string, unknown> | null>(null);
   const [decryptError, setDecryptError] = useState<string | null>(null);
   const [isDecrypting, setIsDecrypting] = useState(false);
