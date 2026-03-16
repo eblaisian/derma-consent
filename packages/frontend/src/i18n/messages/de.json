@@ -238,7 +238,11 @@
     "accepting": "Wird angenommen...",
     "accept": "Einladung annehmen",
     "accepted": "Einladung angenommen",
-    "acceptError": "Fehler beim Annehmen"
+    "acceptError": "Fehler beim Annehmen",
+    "noAccount": "Noch kein Konto?",
+    "createAccount": "Konto erstellen",
+    "emailMismatch": "Diese Einladung wurde an eine andere E-Mail-Adresse gesendet.",
+    "alreadyInPractice": "Sie sind bereits Mitglied einer anderen Praxis. Bitte verlassen Sie zuerst Ihre aktuelle Praxis."
   },
   "consent": {
     "error": "Fehler",

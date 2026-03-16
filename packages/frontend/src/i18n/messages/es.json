@@ -238,7 +238,11 @@
     "accepting": "Aceptando...",
     "accept": "Aceptar invitación",
     "accepted": "Invitación aceptada",
-    "acceptError": "Error al aceptar la invitación"
+    "acceptError": "Error al aceptar la invitación",
+    "noAccount": "¿No tienes cuenta?",
+    "createAccount": "Crear cuenta",
+    "emailMismatch": "Esta invitación fue enviada a otra dirección de correo electrónico.",
+    "alreadyInPractice": "Ya eres miembro de otra clínica. Por favor, abandona primero tu clínica actual."
   },
   "consent": {
     "error": "Error",

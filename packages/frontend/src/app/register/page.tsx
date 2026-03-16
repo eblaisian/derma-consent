@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AuthLayout } from '@/components/auth/auth-layout';
 import { PasswordInput } from '@/components/auth/password-input';
@@ -12,9 +13,18 @@ import { Label } from '@/components/ui/label';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
+/** Only allow relative paths to prevent open-redirect attacks */
+function getSafeCallbackUrl(raw: string | null): string | null {
+  if (!raw) return null;
+  if (raw.startsWith('/') && !raw.startsWith('//')) return raw;
+  return null;
+}
+
 export default function RegisterPage() {
   const t = useTranslations('register');
   const tLogin = useTranslations('login');
+  const searchParams = useSearchParams();
+  const callbackUrl = getSafeCallbackUrl(searchParams.get('callbackUrl'));
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -70,7 +80,7 @@ export default function RegisterPage() {
       });
 
       if (result?.ok) {
-        window.location.href = '/setup';
+        window.location.href = callbackUrl || '/setup';
       } else {
         setError(t('genericError'));
       }
@@ -181,7 +191,7 @@ export default function RegisterPage() {
           </Button>
           <p className="text-center text-sm text-muted-foreground">
             {t('hasAccount')}{' '}
-            <Link href="/login" className="text-primary underline underline-offset-4 hover:text-primary/80">
+            <Link href={callbackUrl ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}` : '/login'} className="text-primary underline underline-offset-4 hover:text-primary/80">
               {t('signIn')}
             </Link>
           </p>

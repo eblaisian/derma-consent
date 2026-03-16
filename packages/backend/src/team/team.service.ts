@@ -220,6 +220,34 @@ export class TeamService {
   async acceptInvite(token: string, userId: string) {
     const invite = await this.getInviteByToken(token);
 
+    // Verify the accepting user's email matches the invite email
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { email: true, practiceId: true },
+    });
+
+    if (user.email.toLowerCase() !== invite.email.toLowerCase()) {
+      throw new ForbiddenException(
+        'Diese Einladung wurde an eine andere E-Mail-Adresse gesendet',
+      );
+    }
+
+    // If user already belongs to the invited practice, just mark invite as accepted
+    if (user.practiceId === invite.practiceId) {
+      await this.prisma.invite.update({
+        where: { id: invite.id },
+        data: { status: 'ACCEPTED' },
+      });
+      return { success: true, practiceId: invite.practiceId };
+    }
+
+    // Prevent overwriting membership in a different practice
+    if (user.practiceId) {
+      throw new BadRequestException(
+        'Sie sind bereits Mitglied einer anderen Praxis. Bitte verlassen Sie zuerst Ihre aktuelle Praxis.',
+      );
+    }
+
     await this.prisma.$transaction([
       this.prisma.user.update({
         where: { id: userId },

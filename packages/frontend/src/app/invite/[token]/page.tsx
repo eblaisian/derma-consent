@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import useSWR from 'swr';
 import { API_URL, fetcher } from '@/lib/api';
 import { useAuthFetch } from '@/lib/auth-fetch';
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -26,9 +27,15 @@ export default function InvitePage() {
     fetcher,
   );
 
+  const inviteCallbackUrl = `/invite/${token}`;
+
+  const handleSignIn = () => {
+    signIn(undefined, { callbackUrl: inviteCallbackUrl });
+  };
+
   const handleAccept = async () => {
     if (!session) {
-      signIn(undefined, { callbackUrl: `/invite/${token}` });
+      handleSignIn();
       return;
     }
 
@@ -110,6 +117,17 @@ export default function InvitePage() {
                 ? t('accepting')
                 : t('accept')}
           </Button>
+          {!session && (
+            <p className="text-center text-sm text-muted-foreground">
+              {t('noAccount')}{' '}
+              <Link
+                href={`/register?callbackUrl=${encodeURIComponent(inviteCallbackUrl)}`}
+                className="text-primary underline underline-offset-4 hover:text-primary/80"
+              >
+                {t('createAccount')}
+              </Link>
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>

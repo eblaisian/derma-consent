@@ -238,7 +238,11 @@
     "accepting": "Acceptation...",
     "accept": "Accepter l'invitation",
     "accepted": "Invitation acceptée",
-    "acceptError": "Erreur lors de l'acceptation"
+    "acceptError": "Erreur lors de l'acceptation",
+    "noAccount": "Pas encore de compte ?",
+    "createAccount": "Créer un compte",
+    "emailMismatch": "Cette invitation a été envoyée à une autre adresse e-mail.",
+    "alreadyInPractice": "Vous êtes déjà membre d'un autre cabinet. Veuillez d'abord quitter votre cabinet actuel."
   },
   "consent": {
     "error": "Erreur",

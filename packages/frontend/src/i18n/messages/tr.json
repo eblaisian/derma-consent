@@ -238,7 +238,11 @@
     "accepting": "Kabul ediliyor...",
     "accept": "Daveti kabul et",
     "accepted": "Davet kabul edildi",
-    "acceptError": "Davet kabul edilirken hata oluştu"
+    "acceptError": "Davet kabul edilirken hata oluştu",
+    "noAccount": "Hesabınız yok mu?",
+    "createAccount": "Hesap oluştur",
+    "emailMismatch": "Bu davet başka bir e-posta adresine gönderildi.",
+    "alreadyInPractice": "Zaten başka bir kliniğin üyesisiniz. Lütfen önce mevcut kliniğinizden ayrılın."
   },
   "consent": {
     "error": "Hata",

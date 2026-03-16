@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { API_URL } from '@/lib/api';
 import { AuthLayout } from '@/components/auth/auth-layout';
@@ -11,6 +12,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+/** Only allow relative paths to prevent open-redirect attacks */
+function getSafeCallbackUrl(raw: string | null): string | null {
+  if (!raw) return null;
+  if (raw.startsWith('/') && !raw.startsWith('//')) return raw;
+  return null;
+}
 
 interface Props {
   enabledProviders: {
@@ -23,6 +31,8 @@ interface Props {
 
 export function LoginForm({ enabledProviders }: Props) {
   const t = useTranslations('login');
+  const searchParams = useSearchParams();
+  const callbackUrl = getSafeCallbackUrl(searchParams.get('callbackUrl'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -61,9 +71,13 @@ export function LoginForm({ enabledProviders }: Props) {
           setError(t('invalidCredentials'));
         }
       } else if (result?.ok) {
-        const sessionRes = await fetch('/api/auth/session');
-        const session = await sessionRes.json();
-        window.location.href = session?.user?.role === 'PLATFORM_ADMIN' ? '/admin' : '/dashboard';
+        if (callbackUrl) {
+          window.location.href = callbackUrl;
+        } else {
+          const sessionRes = await fetch('/api/auth/session');
+          const session = await sessionRes.json();
+          window.location.href = session?.user?.role === 'PLATFORM_ADMIN' ? '/admin' : '/dashboard';
+        }
       }
     } catch {
       setError(t('invalidCredentials'));
@@ -85,9 +99,13 @@ export function LoginForm({ enabledProviders }: Props) {
       if (result?.error) {
         setError(t('invalid2FACode'));
       } else if (result?.ok) {
-        const sessionRes = await fetch('/api/auth/session');
-        const session = await sessionRes.json();
-        window.location.href = session?.user?.role === 'PLATFORM_ADMIN' ? '/admin' : '/dashboard';
+        if (callbackUrl) {
+          window.location.href = callbackUrl;
+        } else {
+          const sessionRes = await fetch('/api/auth/session');
+          const session = await sessionRes.json();
+          window.location.href = session?.user?.role === 'PLATFORM_ADMIN' ? '/admin' : '/dashboard';
+        }
       }
     } catch {
       setError(t('invalid2FACode'));
@@ -180,7 +198,7 @@ export function LoginForm({ enabledProviders }: Props) {
             </Button>
             <p className="text-center text-sm text-muted-foreground">
               {t('noAccount')}{' '}
-              <Link href="/register" className="text-primary underline underline-offset-4 hover:text-primary/80">
+              <Link href={callbackUrl ? `/register?callbackUrl=${encodeURIComponent(callbackUrl)}` : '/register'} className="text-primary underline underline-offset-4 hover:text-primary/80">
                 {t('createAccount')}
               </Link>
             </p>
@@ -243,7 +261,7 @@ export function LoginForm({ enabledProviders }: Props) {
           <Button
             className="w-full"
             variant="outline"
-            onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+            onClick={() => signIn('google', { callbackUrl: callbackUrl || '/dashboard' })}
           >
             <GoogleIcon />
             {t('signInWithGoogle')}
@@ -254,7 +272,7 @@ export function LoginForm({ enabledProviders }: Props) {
           <Button
             className="w-full"
             variant="outline"
-            onClick={() => signIn('microsoft-entra-id', { callbackUrl: '/dashboard' })}
+            onClick={() => signIn('microsoft-entra-id', { callbackUrl: callbackUrl || '/dashboard' })}
           >
             <MicrosoftIcon />
             {t('signInWithMicrosoft')}
@@ -265,7 +283,7 @@ export function LoginForm({ enabledProviders }: Props) {
           <Button
             className="w-full"
             variant="outline"
-            onClick={() => signIn('apple', { callbackUrl: '/dashboard' })}
+            onClick={() => signIn('apple', { callbackUrl: callbackUrl || '/dashboard' })}
           >
             <AppleIcon />
             {t('signInWithApple')}

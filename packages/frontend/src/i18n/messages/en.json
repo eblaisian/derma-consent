@@ -238,7 +238,11 @@
     "accepting": "Accepting...",
     "accept": "Accept invitation",
     "accepted": "Invitation accepted",
-    "acceptError": "Error accepting invitation"
+    "acceptError": "Error accepting invitation",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create account",
+    "emailMismatch": "This invitation was sent to a different email address.",
+    "alreadyInPractice": "You are already a member of another practice. Please leave your current practice first."
   },
   "consent": {
     "error": "Error",

@@ -238,7 +238,11 @@
     "accepting": "Akceptowanie...",
     "accept": "Zaakceptuj zaproszenie",
     "accepted": "Zaproszenie zaakceptowane",
-    "acceptError": "Błąd akceptowania zaproszenia"
+    "acceptError": "Błąd akceptowania zaproszenia",
+    "noAccount": "Nie masz konta?",
+    "createAccount": "Utwórz konto",
+    "emailMismatch": "To zaproszenie zostało wysłane na inny adres e-mail.",
+    "alreadyInPractice": "Jesteś już członkiem innej praktyki. Najpierw opuść swoją obecną praktykę."
   },
   "consent": {
     "error": "Błąd",
