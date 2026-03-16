@@ -268,6 +268,13 @@
     "explainerError": "تعذّر تحميل الشرح. يرجى المحاولة مرة أخرى.",
     "explainerRetry": "إعادة المحاولة",
     "explainerDisclaimer": "هذا الشرح مولّد بالذكاء الاصطناعي لأغراض تعليمية ولا يغني عن المشورة الطبية.",
+    "explainerCopy": "نسخ",
+    "explainerCopied": "تم النسخ!",
+    "explainerReadAloud": "قراءة بصوت عالٍ",
+    "explainerStopReading": "إيقاف",
+    "explainerRegenerate": "إعادة التوليد",
+    "explainerSummary": "ملخص سريع",
+    "explainerFull": "شرح كامل",
     "stepForm": "النموذج",
     "stepQuiz": "اختبار",
     "stepSignature": "التوقيع",
@@ -294,7 +301,14 @@
     "recentSunExposure": "التعرض المكثف الأخير لأشعة الشمس",
     "peelType": "نوع التقشير",
     "activeInfections": "التهابات جلدية نشطة في منطقة العلاج",
-    "bloodDisorders": "اضطرابات تخثر الدم المعروفة"
+    "bloodDisorders": "اضطرابات تخثر الدم المعروفة",
+    "noneKnown": "لا، لا توجد",
+    "yesIHave": "نعم، لدي",
+    "noMedications": "لا توجد أدوية",
+    "yesTakingMeds": "نعم، أتناول أدوية",
+    "searchMedication": "البحث عن اسم الدواء...",
+    "searching": "جاري البحث...",
+    "conditionNotes": "هل هناك شيء آخر يجب أن يعرفه طبيبك؟ (اختياري)"
   },
   "medicalOptions": {
     "forehead": "الجبهة (العضلة الجبهية)",
@@ -326,7 +340,32 @@
     "deep": "عميق",
     "scalp": "فروة الرأس",
     "scalpHairLoss": "فروة الرأس (تساقط الشعر)",
-    "joints": "المفاصل"
+    "joints": "المفاصل",
+    "penicillin": "البنسلين",
+    "latex": "اللاتكس",
+    "nickel": "النيكل",
+    "fragrances": "العطور",
+    "preservatives": "المواد الحافظة (البارابين)",
+    "localAnesthetics": "التخدير الموضعي (الليدوكايين)",
+    "sulfonamides": "السلفوناميدات",
+    "nsaids": "مسكنات الالتهاب (الإيبوبروفين، الأسبرين)",
+    "addOther": "أخرى",
+    "otherPlaceholder": "اكتب حساسيتك...",
+    "hypertension": "ارتفاع ضغط الدم",
+    "heartDisease": "أمراض القلب",
+    "diabetes": "السكري",
+    "thyroid": "اضطراب الغدة الدرقية",
+    "eczema": "الأكزيما",
+    "psoriasis": "الصدفية",
+    "rosacea": "الوردية",
+    "keloidScarring": "تندب الجدرة",
+    "coldSores": "قرح البرد (HSV)",
+    "lupus": "الذئبة الحمراء",
+    "rheumatoidArthritis": "الروماتويد",
+    "immunosuppression": "نقص المناعة",
+    "cancer": "سوابق السرطان",
+    "bloodClotting": "اضطراب تجلط الدم",
+    "noneOfAbove": "لا شيء مما سبق"
   },
   "dashboard": {
     "title": "لوحة التحكم",
@@ -710,7 +749,8 @@
     "channelWhatsApp": "WhatsApp",
     "patientPhone": "هاتف المريض (اختياري)",
     "patientPhonePlaceholder": "+966 50 123 4567",
-    "patientPhoneInfo": "إذا تم تقديمه، سيتم إرسال رابط الموافقة عبر SMS أو WhatsApp."
+    "patientPhoneInfo": "إذا تم تقديمه، سيتم إرسال رابط الموافقة عبر SMS أو WhatsApp.",
+    "comingSoon": "قريبًا"
   },
   "vault": {
     "unlockedTitle": "الخزنة مفتوحة",
@@ -1109,13 +1149,24 @@
     "notificationsConfig": "الإشعارات",
     "sendTestEmail": "إرسال بريد تجريبي",
     "sendTestSms": "إرسال رسالة قصيرة تجريبية",
+    "sendTestWhatsapp": "إرسال واتساب تجريبي",
     "enterTestPhone": "أدخل رقم الهاتف لاختبار الرسائل القصيرة:",
     "enterTestEmail": "أدخل عنوان البريد الإلكتروني للبريد التجريبي:",
     "configurationDescription": "إدارة تكاملات المنصة وبيانات الاعتماد وإعدادات الإشعارات.",
     "valueRequired": "يرجى إدخال قيمة",
     "resetConfirm": "إعادة تعيين هذا الإعداد إلى القيمة الافتراضية؟ لا يمكن التراجع عن هذا الإجراء.",
     "resetSuccess": "تمت إعادة التعيين إلى القيمة الافتراضية",
-    "enterNewValue": "أدخل قيمة جديدة..."
+    "enterNewValue": "أدخل قيمة جديدة...",
+    "systemHealthCheck": "فحص صحة النظام",
+    "healthCheckDescription": "التحقق من جميع تكاملات الخدمات — حالة الإعداد والاتصال.",
+    "runningHealthCheck": "جارٍ تشغيل فحوصات الصحة على جميع الخدمات...",
+    "recheckAll": "إعادة فحص الكل",
+    "close": "إغلاق",
+    "details": "التفاصيل",
+    "setupProgress": "تقدم الإعداد",
+    "requirements": "المتطلبات",
+    "checks": "الفحوصات",
+    "whatsappComingSoon": "واتساب (قريبًا)"
   },
   "pagination": {
     "showing": "عرض {start}–{end} من {total}",
@@ -1172,6 +1223,7 @@
     "recipientLabel": "المستلم",
     "channelEmail": "بريد إلكتروني",
     "channelSms": "رسالة قصيرة",
+    "channelWhatsApp": "WhatsApp",
     "sendAction": "إرسال الآن",
     "sending": "جارٍ الإرسال...",
     "sendSuccess": "تم إرسال الرسالة بنجاح",
@@ -1186,7 +1238,8 @@
       "RESULT_READY": "النتائج جاهزة",
       "GENERAL": "رسالة عامة"
     },
-    "fillPlaceholders": "أكمل البيانات قبل الإرسال:"
+    "fillPlaceholders": "أكمل البيانات قبل الإرسال:",
+    "comingSoon": "قريبًا"
   },
   "aftercare": {
     "dialogTitle": "تعليمات الرعاية اللاحقة",

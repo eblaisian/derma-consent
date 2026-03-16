@@ -14,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { Progress } from '@/components/ui/progress';
 import {
   Eye,
   EyeOff,
@@ -36,6 +37,10 @@ import {
   Circle,
   ShieldCheck,
   Info,
+  Activity,
+  ChevronDown,
+  ChevronUp,
+  Clock,
 } from 'lucide-react';
 
 interface ConfigEntry {
@@ -47,13 +52,45 @@ interface ConfigEntry {
   source: 'database' | 'environment' | 'default';
 }
 
+interface ConfigRequirement {
+  key: string;
+  label: string;
+  required: boolean;
+  configured: boolean;
+  instruction: string;
+}
+
+interface ServiceCheck {
+  name: string;
+  passed: boolean;
+  detail: string;
+}
+
+interface ServiceValidation {
+  category: string;
+  status: 'healthy' | 'degraded' | 'error' | 'unconfigured';
+  message: string;
+  success: boolean;
+  setupComplete: boolean;
+  setupProgress: { configured: number; required: number };
+  requirements: ConfigRequirement[];
+  checks: ServiceCheck[];
+  durationMs: number;
+}
+
+interface SystemHealthReport {
+  overall: 'healthy' | 'degraded' | 'error';
+  timestamp: string;
+  services: ServiceValidation[];
+}
+
 const CATEGORIES = ['stripe', 'email', 'sms', 'storage', 'plans', 'ai', 'notifications'] as const;
 type Category = (typeof CATEGORIES)[number];
 
 const CATEGORY_META: Record<Category, { labelKey: string; icon: typeof CreditCard; description: string }> = {
   stripe: { labelKey: 'stripeConfig', icon: CreditCard, description: 'Payment processing and billing configuration' },
   email: { labelKey: 'emailConfig', icon: Mail, description: 'Email delivery service (Resend) settings' },
-  sms: { labelKey: 'smsConfig', icon: Smartphone, description: 'SMS notifications via Twilio' },
+  sms: { labelKey: 'smsConfig', icon: Smartphone, description: 'SMS notifications via seven.io' },
   storage: { labelKey: 'storageConfig', icon: HardDrive, description: 'File storage (Supabase) configuration' },
   plans: { labelKey: 'plansConfig', icon: Tag, description: 'Subscription plan limits and pricing' },
   ai: { labelKey: 'aiConfig', icon: Brain, description: 'AI explainer and language model settings' },
@@ -130,9 +167,14 @@ export default function AdminConfigPage() {
   const [editValue, setEditValue] = useState('');
   const [showEditSecret, setShowEditSecret] = useState(false);
   const [testingCategory, setTestingCategory] = useState<string | null>(null);
+  const [testResult, setTestResult] = useState<ServiceValidation | null>(null);
+  const [testResultExpanded, setTestResultExpanded] = useState(false);
   const [testingSend, setTestingSend] = useState<string | null>(null);
-  const [testDialog, setTestDialog] = useState<{ open: boolean; channel: 'email' | 'sms' }>({ open: false, channel: 'email' });
+  const [testDialog, setTestDialog] = useState<{ open: boolean; channel: 'email' | 'sms' | 'whatsapp' }>({ open: false, channel: 'email' });
   const [testRecipient, setTestRecipient] = useState('');
+  const [healthCheckOpen, setHealthCheckOpen] = useState(false);
+  const [healthCheckLoading, setHealthCheckLoading] = useState(false);
+  const [healthReport, setHealthReport] = useState<SystemHealthReport | null>(null);
 
   // Fetch all categories for status dots
   const categoryFetchers = Object.fromEntries(
@@ -200,8 +242,12 @@ export default function AdminConfigPage() {
 
   const handleTestConnection = useCallback(async (category: string) => {
     setTestingCategory(category);
+    setTestResult(null);
+    setTestResultExpanded(false);
     try {
-      const result = await authFetch(`/api/admin/config/test/${category}`, { method: 'POST' });
+      const result: ServiceValidation = await authFetch(`/api/admin/config/test/${category}`, { method: 'POST' });
+      setTestResult(result);
+      setTestResultExpanded(true);
       if (result.success) {
         toast.success(result.message);
       } else {
@@ -214,7 +260,21 @@ export default function AdminConfigPage() {
     }
   }, [authFetch, t]);
 
-  const handleSendTest = useCallback(async (channel: 'email' | 'sms', recipient?: string) => {
+  const handleHealthCheck = useCallback(async () => {
+    setTestResult(null);
+    setHealthCheckLoading(true);
+    setHealthCheckOpen(true);
+    try {
+      const report: SystemHealthReport = await authFetch('/api/admin/config/validate-all', { method: 'POST' });
+      setHealthReport(report);
+    } catch {
+      toast.error(t('testFailed'));
+    } finally {
+      setHealthCheckLoading(false);
+    }
+  }, [authFetch, t]);
+
+  const handleSendTest = useCallback(async (channel: 'email' | 'sms' | 'whatsapp', recipient?: string) => {
     setTestingSend(channel);
     try {
       const body: Record<string, string> = { channel };
@@ -256,9 +316,19 @@ export default function AdminConfigPage() {
     <TooltipProvider delayDuration={300}>
       <div className="space-y-6">
         {/* Page header */}
-        <div>
-          <h1 className="text-page-title">{t('configuration')}</h1>
-          <p className="text-muted-foreground mt-1">{t('configurationDescription')}</p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-page-title">{t('configuration')}</h1>
+            <p className="text-muted-foreground mt-1">{t('configurationDescription')}</p>
+          </div>
+          <Button
+            onClick={handleHealthCheck}
+            disabled={healthCheckLoading}
+            className="gap-2 shrink-0"
+          >
+            <Activity className={`h-4 w-4 ${healthCheckLoading ? 'animate-pulse' : ''}`} />
+            {t('systemHealthCheck')}
+          </Button>
         </div>
 
         {/* Category tabs */}
@@ -267,6 +337,7 @@ export default function AdminConfigPage() {
           onValueChange={(value) => {
             setActiveCategory(value as Category);
             cancelEdit();
+            setTestResult(null);
           }}
         >
           <TabsList variant="line" className="w-full justify-start overflow-x-auto">
@@ -349,21 +420,49 @@ export default function AdminConfigPage() {
                       )}
 
                       {activeCategory === 'sms' && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => { setTestRecipient(''); setTestDialog({ open: true, channel: 'sms' }); }}
-                          disabled={testingSend === 'sms'}
-                          className="gap-2"
-                        >
-                          <MessageSquare className={`h-3.5 w-3.5 ${testingSend === 'sms' ? 'animate-pulse' : ''}`} />
-                          {t('sendTestSms')}
-                        </Button>
+                        <>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => { setTestRecipient(''); setTestDialog({ open: true, channel: 'sms' }); }}
+                            disabled={testingSend === 'sms'}
+                            className="gap-2"
+                          >
+                            <MessageSquare className={`h-3.5 w-3.5 ${testingSend === 'sms' ? 'animate-pulse' : ''}`} />
+                            {t('sendTestSms')}
+                          </Button>
+                          {(() => {
+                            const smsConfigs = categoryFetchers.sms.data;
+                            const isWhatsappOn = smsConfigs?.find((c) => c.key === 'sms.whatsappEnabled')?.value === 'true';
+                            return (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => { setTestRecipient(''); setTestDialog({ open: true, channel: 'whatsapp' }); }}
+                                disabled={testingSend === 'whatsapp' || !isWhatsappOn}
+                                className="gap-2"
+                              >
+                                <MessageSquare className={`h-3.5 w-3.5 ${testingSend === 'whatsapp' ? 'animate-pulse' : ''}`} />
+                                {isWhatsappOn ? t('sendTestWhatsapp') : t('whatsappComingSoon')}
+                              </Button>
+                            );
+                          })()}
+                        </>
                       )}
                     </div>
                   </div>
                 </CardHeader>
               </Card>
+
+              {/* Inline test result */}
+              {testResult && testResult.category === cat && (
+                <ServiceValidationCard
+                  result={testResult}
+                  expanded={testResultExpanded}
+                  onToggleExpand={() => setTestResultExpanded(!testResultExpanded)}
+                  t={t}
+                />
+              )}
 
               {/* Config entries */}
               {isLoading ? (
@@ -425,12 +524,22 @@ export default function AdminConfigPage() {
           ))}
         </Tabs>
       </div>
+      {/* System Health Check Dialog */}
+      <HealthCheckDialog
+        open={healthCheckOpen}
+        onOpenChange={setHealthCheckOpen}
+        loading={healthCheckLoading}
+        report={healthReport}
+        onRecheck={handleHealthCheck}
+        t={t}
+      />
+
       {/* Send test notification dialog */}
       <Dialog open={testDialog.open} onOpenChange={(open) => setTestDialog((prev) => ({ ...prev, open }))}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {testDialog.channel === 'email' ? t('sendTestEmail') : t('sendTestSms')}
+              {testDialog.channel === 'email' ? t('sendTestEmail') : testDialog.channel === 'whatsapp' ? t('sendTestWhatsapp') : t('sendTestSms')}
             </DialogTitle>
             <DialogDescription>
               {testDialog.channel === 'email' ? t('enterTestEmail') : t('enterTestPhone')}
@@ -714,5 +823,353 @@ function ConfigSkeleton() {
         </Card>
       ))}
     </div>
+  );
+}
+
+/** Status icon for validation results */
+function ValidationStatusIcon({ status }: { status: ServiceValidation['status'] }) {
+  switch (status) {
+    case 'healthy':
+      return <CheckCircle2 className="h-4 w-4 text-emerald-500" />;
+    case 'degraded':
+      return <AlertCircle className="h-4 w-4 text-amber-500" />;
+    case 'error':
+      return <AlertCircle className="h-4 w-4 text-red-500" />;
+    case 'unconfigured':
+      return <Circle className="h-4 w-4 text-muted-foreground" />;
+  }
+}
+
+/** Status badge for validation results */
+function ValidationStatusBadge({ status }: { status: ServiceValidation['status'] }) {
+  const styles: Record<ServiceValidation['status'], string> = {
+    healthy: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400',
+    degraded: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400',
+    error: 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400',
+    unconfigured: 'bg-muted text-muted-foreground',
+  };
+  const labels: Record<ServiceValidation['status'], string> = {
+    healthy: 'Healthy',
+    degraded: 'Degraded',
+    error: 'Error',
+    unconfigured: 'Not Configured',
+  };
+
+  return (
+    <Badge variant="secondary" className={`gap-1 ${styles[status]}`}>
+      <ValidationStatusIcon status={status} />
+      {labels[status]}
+    </Badge>
+  );
+}
+
+/** Inline service validation result card */
+function ServiceValidationCard({
+  result,
+  expanded,
+  onToggleExpand,
+  t,
+}: {
+  result: ServiceValidation;
+  expanded: boolean;
+  onToggleExpand: () => void;
+  t: ReturnType<typeof useTranslations<'admin'>>;
+}) {
+  return (
+    <Card className={`border-l-4 ${
+      result.status === 'healthy' ? 'border-l-emerald-500' :
+      result.status === 'degraded' ? 'border-l-amber-500' :
+      result.status === 'error' ? 'border-l-red-500' :
+      'border-l-muted-foreground/30'
+    }`}>
+      <CardContent className="py-4">
+        <div className="space-y-3">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <ValidationStatusBadge status={result.status} />
+              <span className="text-sm text-muted-foreground">
+                {result.durationMs}ms
+              </span>
+            </div>
+            <Button variant="ghost" size="sm" onClick={onToggleExpand} className="gap-1">
+              {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+              {t('details')}
+            </Button>
+          </div>
+
+          {/* Setup progress */}
+          {result.setupProgress.required > 0 && (
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>{t('setupProgress')}</span>
+                <span>{result.setupProgress.configured}/{result.setupProgress.required}</span>
+              </div>
+              <Progress value={(result.setupProgress.configured / result.setupProgress.required) * 100} className="h-1.5" />
+            </div>
+          )}
+
+          {/* Message */}
+          <p className="text-sm">{result.message}</p>
+
+          {/* Expanded details */}
+          {expanded && (
+            <div className="space-y-4 pt-2">
+              {/* Requirements */}
+              {result.requirements.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t('requirements')}
+                  </h4>
+                  <div className="space-y-1.5">
+                    {result.requirements.filter((r) => r.required).map((req) => (
+                      <div key={req.key} className="flex items-start gap-2 text-sm">
+                        {req.configured ? (
+                          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                        ) : (
+                          <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+                        )}
+                        <div className="min-w-0">
+                          <span className="font-medium">{req.label}</span>
+                          {!req.configured && (
+                            <p className="text-xs text-muted-foreground mt-0.5">{req.instruction}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Checks */}
+              {result.checks.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t('checks')}
+                  </h4>
+                  <div className="space-y-1.5">
+                    {result.checks.map((check) => (
+                      <div key={check.name} className="flex items-start gap-2 text-sm">
+                        {check.passed ? (
+                          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                        ) : (
+                          <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+                        )}
+                        <div className="min-w-0">
+                          <span className="font-medium">{check.name}</span>
+                          <p className="text-xs text-muted-foreground mt-0.5">{check.detail}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+/** Health Check Dialog — full system health report */
+function HealthCheckDialog({
+  open,
+  onOpenChange,
+  loading,
+  report,
+  onRecheck,
+  t,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  loading: boolean;
+  report: SystemHealthReport | null;
+  onRecheck: () => void;
+  t: ReturnType<typeof useTranslations<'admin'>>;
+}) {
+  const overallStyles: Record<string, string> = {
+    healthy: 'bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800',
+    degraded: 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800',
+    error: 'bg-red-50 text-red-800 border-red-200 dark:bg-red-950/50 dark:text-red-300 dark:border-red-800',
+  };
+
+  const overallLabels: Record<string, string> = {
+    healthy: 'All Systems Operational',
+    degraded: 'Some Services Need Attention',
+    error: 'Service Issues Detected',
+  };
+
+  const categoryLabels: Record<string, string> = {
+    stripe: 'Stripe (Payments)',
+    email: 'Email (Resend)',
+    sms: 'SMS (seven.io)',
+    storage: 'Storage',
+    ai: 'AI / Explainer',
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Activity className="h-5 w-5" />
+            {t('systemHealthCheck')}
+          </DialogTitle>
+          <DialogDescription>
+            {t('healthCheckDescription')}
+          </DialogDescription>
+        </DialogHeader>
+
+        {loading && !report ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-3">
+            <RotateCw className="h-8 w-8 animate-spin text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">{t('runningHealthCheck')}</p>
+          </div>
+        ) : report ? (
+          <div className="flex-1 overflow-y-auto -mx-6 px-6 min-h-0">
+            <div className="space-y-4 pb-4">
+              {/* Overall status banner */}
+              <div className={`rounded-lg border p-4 ${overallStyles[report.overall]}`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <ValidationStatusIcon status={report.overall as ServiceValidation['status']} />
+                    <div>
+                      <p className="font-semibold">{overallLabels[report.overall]}</p>
+                      <p className="text-xs opacity-75 flex items-center gap-1 mt-0.5">
+                        <Clock className="h-3 w-3" />
+                        {new Date(report.timestamp).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Per-service cards */}
+              {report.services.map((service) => (
+                <HealthCheckServiceCard
+                  key={service.category}
+                  service={service}
+                  label={categoryLabels[service.category] || service.category}
+                  icon={CATEGORY_META[service.category as Category]?.icon}
+                />
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+          >
+            {t('close')}
+          </Button>
+          <Button
+            onClick={onRecheck}
+            disabled={loading}
+            className="gap-2"
+          >
+            <RotateCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
+            {t('recheckAll')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** Individual service card in the health check dialog */
+function HealthCheckServiceCard({
+  service,
+  label,
+  icon: Icon,
+}: {
+  service: ServiceValidation;
+  label: string;
+  icon?: typeof CreditCard;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const IconComponent = Icon || Circle;
+
+  return (
+    <Card>
+      <CardContent className="py-3">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <IconComponent className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium">{label}</span>
+              <ValidationStatusBadge status={service.status} />
+              <span className="text-xs text-muted-foreground">{service.durationMs}ms</span>
+            </div>
+            {(service.checks.length > 0 || service.requirements.length > 0) && (
+              <Button variant="ghost" size="xs" onClick={() => setExpanded(!expanded)}>
+                {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+              </Button>
+            )}
+          </div>
+
+          {/* Setup progress bar */}
+          {service.setupProgress.required > 0 && (
+            <div className="flex items-center gap-3">
+              <Progress
+                value={(service.setupProgress.configured / service.setupProgress.required) * 100}
+                className="h-1 flex-1"
+              />
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {service.setupProgress.configured}/{service.setupProgress.required}
+              </span>
+            </div>
+          )}
+
+          <p className="text-xs text-muted-foreground">{service.message}</p>
+
+          {expanded && (
+            <div className="space-y-3 pt-2 border-t">
+              {/* Requirements */}
+              {service.requirements.filter((r) => r.required).length > 0 && (
+                <div className="space-y-1">
+                  {service.requirements.filter((r) => r.required).map((req) => (
+                    <div key={req.key} className="flex items-start gap-2 text-xs">
+                      {req.configured ? (
+                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                      ) : (
+                        <AlertCircle className="h-3.5 w-3.5 text-red-500 shrink-0 mt-0.5" />
+                      )}
+                      <div>
+                        <span className="font-medium">{req.label}</span>
+                        {!req.configured && (
+                          <p className="text-muted-foreground mt-0.5">{req.instruction}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Checks */}
+              {service.checks.length > 0 && (
+                <div className="space-y-1">
+                  {service.checks.map((check) => (
+                    <div key={check.name} className="flex items-start gap-2 text-xs">
+                      {check.passed ? (
+                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                      ) : (
+                        <AlertCircle className="h-3.5 w-3.5 text-red-500 shrink-0 mt-0.5" />
+                      )}
+                      <div>
+                        <span className="font-medium">{check.name}</span>
+                        <span className="text-muted-foreground ml-1">— {check.detail}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

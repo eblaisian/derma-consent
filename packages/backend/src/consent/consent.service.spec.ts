@@ -4,7 +4,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { ConsentService } from './consent.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
-import { SmsService } from '../sms/sms.service';
+import { NotificationService } from '../notifications/notification.service';
 import { PdfService } from '../pdf/pdf.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { ConsentType } from './consent.dto';
@@ -31,7 +31,7 @@ describe('ConsentService', () => {
 
   const mockAudit = { log: jest.fn() };
   const mockConfig = { get: jest.fn().mockReturnValue('http://localhost:3000') };
-  const mockSms = { sendConsentLink: jest.fn() };
+  const mockNotification = { sendConsentLinkViaSms: jest.fn(), sendConsentLink: jest.fn() };
   const mockPdf = { generateConsentPdf: jest.fn().mockResolvedValue(undefined) };
   const mockPlatformConfig = { get: jest.fn().mockResolvedValue('-1') };
 
@@ -54,7 +54,7 @@ describe('ConsentService', () => {
         ConsentService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: ConfigService, useValue: mockConfig },
-        { provide: SmsService, useValue: mockSms },
+        { provide: NotificationService, useValue: mockNotification },
         { provide: AuditService, useValue: mockAudit },
         { provide: PdfService, useValue: mockPdf },
         { provide: PlatformConfigService, useValue: mockPlatformConfig },

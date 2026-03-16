@@ -58,7 +58,7 @@ export class CommunicationsService {
 
   async sendMessage(
     practiceId: string,
-    channel: 'email' | 'sms',
+    channel: 'email' | 'sms' | 'whatsapp',
     recipient: string,
     message: string,
     subject: string,

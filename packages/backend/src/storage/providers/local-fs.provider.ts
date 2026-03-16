@@ -41,12 +41,20 @@ export class LocalFsProvider implements IStorageProvider {
   }
 
   async test(): Promise<{ success: boolean; message: string }> {
+    const testData = Buffer.from('dermaconsent-health-check');
+    const testPath = `.health-check-${Date.now()}`;
+    const testFile = path.join(LOCAL_STORAGE_DIR, testPath);
     try {
       await fs.mkdir(LOCAL_STORAGE_DIR, { recursive: true });
-      const testFile = path.join(LOCAL_STORAGE_DIR, '.test');
-      await fs.writeFile(testFile, 'ok');
+      await fs.writeFile(testFile, testData);
+      const downloaded = await fs.readFile(testFile);
       await fs.unlink(testFile);
-      return { success: true, message: `Local filesystem storage at ${LOCAL_STORAGE_DIR}` };
+
+      if (!downloaded.equals(testData)) {
+        return { success: false, message: 'Local storage roundtrip failed: data mismatch' };
+      }
+
+      return { success: true, message: `Local filesystem storage healthy (${LOCAL_STORAGE_DIR}, upload/download/delete roundtrip OK)` };
     } catch (err) {
       return { success: false, message: `Local FS error: ${err}` };
     }

@@ -24,3 +24,4 @@ docs/.vitepress/cache/
 .agents/
 skills-lock.json
 .secrets/
+packages/backend/.local-storage/

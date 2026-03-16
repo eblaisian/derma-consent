@@ -126,6 +126,15 @@ export class NotificationService {
   }): Promise<void> {
     if (!(await this.isEnabled('consentLink'))) return;
 
+    // Block WhatsApp sends when feature is disabled
+    if (opts.channel === 'whatsapp') {
+      const whatsappEnabled = await this.platformConfig.get('sms.whatsappEnabled');
+      if (whatsappEnabled !== 'true') {
+        this.logger.warn('WhatsApp delivery requested but feature is disabled — skipping');
+        return;
+      }
+    }
+
     const logId = await this.logSend({
       practiceId: opts.practiceId,
       recipientType: 'patient',
@@ -331,10 +340,19 @@ export class NotificationService {
     practiceId: string;
     recipientEmail?: string;
     recipientPhone?: string;
-    channel: 'email' | 'sms';
+    channel: 'email' | 'sms' | 'whatsapp';
     message: string;
     subject?: string;
   }): Promise<void> {
+    // Block WhatsApp sends when feature is disabled
+    if (opts.channel === 'whatsapp') {
+      const whatsappEnabled = await this.platformConfig.get('sms.whatsappEnabled');
+      if (whatsappEnabled !== 'true') {
+        this.logger.warn('WhatsApp message requested but feature is disabled — skipping');
+        return;
+      }
+    }
+
     const logId = await this.logSend({
       practiceId: opts.practiceId,
       recipientType: 'patient',
@@ -352,6 +370,8 @@ export class NotificationService {
         );
       } else if (opts.channel === 'sms' && opts.recipientPhone) {
         await this.smsService.sendMessage(opts.recipientPhone, opts.message);
+      } else if (opts.channel === 'whatsapp' && opts.recipientPhone) {
+        await this.smsService.sendMessage(opts.recipientPhone, opts.message, 'whatsapp');
       }
       await this.markSent(logId);
     } catch (err) {

@@ -268,6 +268,13 @@
     "explainerError": "Açıklama yüklenemedi. Lütfen tekrar deneyin.",
     "explainerRetry": "Tekrar dene",
     "explainerDisclaimer": "Bu açıklama, eğitim amaçlı yapay zeka tarafından oluşturulmuştur ve doktorunuzun tıbbi tavsiyesinin yerini tutmaz.",
+    "explainerCopy": "Kopyala",
+    "explainerCopied": "Kopyalandı!",
+    "explainerReadAloud": "Sesli oku",
+    "explainerStopReading": "Durdur",
+    "explainerRegenerate": "Yeniden oluştur",
+    "explainerSummary": "Kısa özet",
+    "explainerFull": "Tam açıklama",
     "stepForm": "Form",
     "stepQuiz": "Quiz",
     "stepSignature": "İmza",
@@ -294,7 +301,14 @@
     "recentSunExposure": "Yakın zamanda yoğun güneş maruziyeti",
     "peelType": "Peeling türü",
     "activeInfections": "Tedavi bölgesinde aktif cilt enfeksiyonları",
-    "bloodDisorders": "Bilinen kan pıhtılaşma bozuklukları"
+    "bloodDisorders": "Bilinen kan pıhtılaşma bozuklukları",
+    "noneKnown": "Hayır, hiçbiri yok",
+    "yesIHave": "Evet, var",
+    "noMedications": "İlaç yok",
+    "yesTakingMeds": "Evet, ilaç kullanıyorum",
+    "searchMedication": "İlaç adı ara...",
+    "searching": "Aranıyor...",
+    "conditionNotes": "Doktorunuzun bilmesi gereken başka bir şey var mı? (isteğe bağlı)"
   },
   "medicalOptions": {
     "forehead": "Alın (Frontalis)",
@@ -326,7 +340,32 @@
     "deep": "Derin",
     "scalp": "Saçlı deri",
     "scalpHairLoss": "Saçlı deri (Saç dökülmesi)",
-    "joints": "Eklemler"
+    "joints": "Eklemler",
+    "penicillin": "Penisilin",
+    "latex": "Lateks",
+    "nickel": "Nikel",
+    "fragrances": "Parfümler",
+    "preservatives": "Koruyucular (Parabentler)",
+    "localAnesthetics": "Lokal anestezikler (Lidokain)",
+    "sulfonamides": "Sulfonamidler",
+    "nsaids": "NSAID'ler (İbuprofen, Aspirin)",
+    "addOther": "Diğer",
+    "otherPlaceholder": "Alerjinizi yazın...",
+    "hypertension": "Yüksek kan basıncı",
+    "heartDisease": "Kalp hastalığı",
+    "diabetes": "Diyabet",
+    "thyroid": "Tiroid bozukluğu",
+    "eczema": "Egzema",
+    "psoriasis": "Sedef",
+    "rosacea": "Rosacea",
+    "keloidScarring": "Keloid skar",
+    "coldSores": "Uçuk (HSV)",
+    "lupus": "Lupus",
+    "rheumatoidArthritis": "Romatoid artrit",
+    "immunosuppression": "İmmünosüpresyon",
+    "cancer": "Kanser geçmişi",
+    "bloodClotting": "Kan pıhtılaşma bozukluğu",
+    "noneOfAbove": "Yukarıdakilerden hiçbiri"
   },
   "dashboard": {
     "title": "Kontrol Paneli",
@@ -710,7 +749,8 @@
     "channelWhatsApp": "WhatsApp",
     "patientPhone": "Hasta telefonu (isteğe bağlı)",
     "patientPhonePlaceholder": "+90 532 123 4567",
-    "patientPhoneInfo": "Belirtilirse onam bağlantısı SMS veya WhatsApp ile gönderilecektir."
+    "patientPhoneInfo": "Belirtilirse onam bağlantısı SMS veya WhatsApp ile gönderilecektir.",
+    "comingSoon": "Yakında"
   },
   "vault": {
     "unlockedTitle": "Kasa açık",
@@ -1109,13 +1149,24 @@
     "notificationsConfig": "Bildirimler",
     "sendTestEmail": "Test e-postasi gonder",
     "sendTestSms": "Test SMS gönder",
+    "sendTestWhatsapp": "Test WhatsApp gönder",
     "enterTestPhone": "Test SMS için telefon numarası girin (örn. +491234567890):",
     "enterTestEmail": "Test e-postasi icin e-posta adresini girin:",
     "configurationDescription": "Platform entegrasyonlarını, kimlik bilgilerini ve bildirim ayarlarını yönetin.",
     "valueRequired": "Lütfen bir değer girin",
     "resetConfirm": "Bu ayarı varsayılan değerine sıfırlansın mı? Bu işlem geri alınamaz.",
     "resetSuccess": "Varsayılana sıfırlandı",
-    "enterNewValue": "Yeni değer girin..."
+    "enterNewValue": "Yeni değer girin...",
+    "systemHealthCheck": "Sistem Sağlık Kontrolü",
+    "healthCheckDescription": "Tüm servis entegrasyonlarını doğrular — kurulum durumu ve bağlantı.",
+    "runningHealthCheck": "Tüm servislerde sağlık kontrolleri çalıştırılıyor...",
+    "recheckAll": "Tümünü Tekrar Kontrol Et",
+    "close": "Kapat",
+    "details": "Detaylar",
+    "setupProgress": "Kurulum ilerlemesi",
+    "requirements": "Gereksinimler",
+    "checks": "Kontroller",
+    "whatsappComingSoon": "WhatsApp (yakında)"
   },
   "pagination": {
     "showing": "{total} içinden {start}–{end} gösteriliyor",
@@ -1172,6 +1223,7 @@
     "recipientLabel": "Alıcı",
     "channelEmail": "E-posta",
     "channelSms": "SMS",
+    "channelWhatsApp": "WhatsApp",
     "sendAction": "Şimdi gönder",
     "sending": "Gönderiliyor...",
     "sendSuccess": "Mesaj başarıyla gönderildi",
@@ -1186,7 +1238,8 @@
       "RESULT_READY": "Sonuçlar hazır bildirimi",
       "GENERAL": "Genel mesaj"
     },
-    "fillPlaceholders": "Göndermeden önce bilgileri doldurun:"
+    "fillPlaceholders": "Göndermeden önce bilgileri doldurun:",
+    "comingSoon": "Yakında"
   },
   "aftercare": {
     "dialogTitle": "Bakım Talimatları",

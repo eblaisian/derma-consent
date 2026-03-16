@@ -268,6 +268,13 @@
     "explainerError": "Nie można załadować wyjaśnienia. Spróbuj ponownie.",
     "explainerRetry": "Spróbuj ponownie",
     "explainerDisclaimer": "To wyjaśnienie zostało wygenerowane przez AI w celach edukacyjnych i nie zastępuje porady medycznej lekarza.",
+    "explainerCopy": "Kopiuj",
+    "explainerCopied": "Skopiowano!",
+    "explainerReadAloud": "Czytaj na głos",
+    "explainerStopReading": "Zatrzymaj",
+    "explainerRegenerate": "Wygeneruj ponownie",
+    "explainerSummary": "Krótkie podsumowanie",
+    "explainerFull": "Pełne wyjaśnienie",
     "stepForm": "Formularz",
     "stepQuiz": "Quiz",
     "stepSignature": "Podpis",
@@ -294,7 +301,14 @@
     "recentSunExposure": "Niedawna intensywna ekspozycja na słońce",
     "peelType": "Rodzaj peelingu",
     "activeInfections": "Aktywne infekcje skóry w obszarze zabiegowym",
-    "bloodDisorders": "Znane zaburzenia krzepnięcia krwi"
+    "bloodDisorders": "Znane zaburzenia krzepnięcia krwi",
+    "noneKnown": "Nie, żadne",
+    "yesIHave": "Tak, mam",
+    "noMedications": "Brak leków",
+    "yesTakingMeds": "Tak, biorę leki",
+    "searchMedication": "Wyszukaj nazwę leku...",
+    "searching": "Wyszukiwanie...",
+    "conditionNotes": "Czy jest jeszcze coś, co lekarz powinien wiedzieć? (opcjonalnie)"
   },
   "medicalOptions": {
     "forehead": "Czoło (Frontalis)",
@@ -326,7 +340,32 @@
     "deep": "Głęboki",
     "scalp": "Skóra głowy",
     "scalpHairLoss": "Skóra głowy (Łysienie)",
-    "joints": "Stawy"
+    "joints": "Stawy",
+    "penicillin": "Penicylina",
+    "latex": "Lateks",
+    "nickel": "Nikiel",
+    "fragrances": "Zapachy",
+    "preservatives": "Konserwanty (Parabeny)",
+    "localAnesthetics": "Znieczulenie lokalne (Lidokaina)",
+    "sulfonamides": "Sulfonamidy",
+    "nsaids": "NLPZ (Ibuprofen, Aspiryna)",
+    "addOther": "Inne",
+    "otherPlaceholder": "Wpisz swoją alergię...",
+    "hypertension": "Wysokie ciśnienie krwi",
+    "heartDisease": "Choroba serca",
+    "diabetes": "Cukrzyca",
+    "thyroid": "Zaburzenia tarczycy",
+    "eczema": "Egzema",
+    "psoriasis": "Łuszczyca",
+    "rosacea": "Trądzik różowaty",
+    "keloidScarring": "Bliznowiec",
+    "coldSores": "Opryszczka (HSV)",
+    "lupus": "Toczeń",
+    "rheumatoidArthritis": "Reumatoidalne zapalenie stawów",
+    "immunosuppression": "Immunosupresja",
+    "cancer": "Historia nowotworowa",
+    "bloodClotting": "Zaburzenie krzepnięcia krwi",
+    "noneOfAbove": "Żaden z powyższych"
   },
   "dashboard": {
     "title": "Panel główny",
@@ -710,7 +749,8 @@
     "channelWhatsApp": "WhatsApp",
     "patientPhone": "Telefon pacjenta (opcjonalnie)",
     "patientPhonePlaceholder": "+48 512 345 678",
-    "patientPhoneInfo": "Jeśli podano, link do zgody zostanie wysłany przez SMS lub WhatsApp."
+    "patientPhoneInfo": "Jeśli podano, link do zgody zostanie wysłany przez SMS lub WhatsApp.",
+    "comingSoon": "Wkrótce"
   },
   "vault": {
     "unlockedTitle": "Sejf odblokowany",
@@ -1109,13 +1149,24 @@
     "notificationsConfig": "Powiadomienia",
     "sendTestEmail": "Wyslij testowy e-mail",
     "sendTestSms": "Wyślij testowy SMS",
+    "sendTestWhatsapp": "Wyślij testowy WhatsApp",
     "enterTestPhone": "Wpisz numer telefonu do testu SMS (np. +491234567890):",
     "enterTestEmail": "Wprowadz adres e-mail dla testowego e-maila:",
     "configurationDescription": "Zarządzaj integracjami platformy, danymi uwierzytelniania i ustawieniami powiadomień.",
     "valueRequired": "Wprowadź wartość",
     "resetConfirm": "Zresetować to ustawienie do wartości domyślnej? Tej operacji nie można cofnąć.",
     "resetSuccess": "Zresetowano do wartości domyślnej",
-    "enterNewValue": "Wpisz nową wartość..."
+    "enterNewValue": "Wpisz nową wartość...",
+    "systemHealthCheck": "Kontrola stanu systemu",
+    "healthCheckDescription": "Sprawdza wszystkie integracje usług — stan konfiguracji i łączność.",
+    "runningHealthCheck": "Uruchamianie kontroli stanu wszystkich usług...",
+    "recheckAll": "Sprawdź ponownie",
+    "close": "Zamknij",
+    "details": "Szczegóły",
+    "setupProgress": "Postęp konfiguracji",
+    "requirements": "Wymagania",
+    "checks": "Kontrole",
+    "whatsappComingSoon": "WhatsApp (wkrótce)"
   },
   "pagination": {
     "showing": "Wyświetlanie {start}–{end} z {total}",
@@ -1172,6 +1223,7 @@
     "recipientLabel": "Odbiorca",
     "channelEmail": "E-mail",
     "channelSms": "SMS",
+    "channelWhatsApp": "WhatsApp",
     "sendAction": "Wyślij teraz",
     "sending": "Wysyłanie...",
     "sendSuccess": "Wiadomość wysłana pomyślnie",
@@ -1186,7 +1238,8 @@
       "RESULT_READY": "Wyniki gotowe",
       "GENERAL": "Wiadomość ogólna"
     },
-    "fillPlaceholders": "Uzupełnij dane przed wysłaniem:"
+    "fillPlaceholders": "Uzupełnij dane przed wysłaniem:",
+    "comingSoon": "Wkrótce"
   },
   "aftercare": {
     "dialogTitle": "Instrukcje opieki",

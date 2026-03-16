@@ -106,11 +106,37 @@ export class SpacesProvider implements IStorageProvider {
   }
 
   async test(): Promise<{ success: boolean; message: string }> {
+    const testKey = `.health-check-${Date.now()}`;
+    const testData = Buffer.from('dermaconsent-health-check');
     try {
+      await this.client.send(new HeadBucketCommand({ Bucket: this.bucket }));
+
       await this.client.send(
-        new HeadBucketCommand({ Bucket: this.bucket }),
+        new PutObjectCommand({
+          Bucket: this.bucket,
+          Key: testKey,
+          Body: testData,
+          ContentType: 'text/plain',
+        }),
       );
-      return { success: true, message: `S3-compatible storage connection successful (bucket: ${this.bucket})` };
+
+      const getResponse = await this.client.send(
+        new GetObjectCommand({ Bucket: this.bucket, Key: testKey }),
+      );
+      const downloaded = Buffer.from(await getResponse.Body!.transformToByteArray());
+
+      await this.client.send(
+        new DeleteObjectsCommand({
+          Bucket: this.bucket,
+          Delete: { Objects: [{ Key: testKey }] },
+        }),
+      );
+
+      if (!downloaded.equals(testData)) {
+        return { success: false, message: 'Storage roundtrip failed: downloaded data does not match uploaded data' };
+      }
+
+      return { success: true, message: `S3-compatible storage healthy (bucket: ${this.bucket}, upload/download/delete roundtrip OK)` };
     } catch (error) {
       return { success: false, message: `Storage connection failed: ${(error as Error).message}` };
     }

@@ -14,6 +14,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlatformAdminGuard } from '../auth/platform-admin.guard';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { AuditService } from '../audit/audit.service';
+import { SmsService } from '../sms/sms.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { UpdateConfigDto } from './dto/admin.dto';
 
@@ -24,6 +25,7 @@ export class AdminConfigController {
   constructor(
     private readonly platformConfig: PlatformConfigService,
     private readonly auditService: AuditService,
+    private readonly smsService: SmsService,
   ) {}
 
   @Get()
@@ -52,6 +54,11 @@ export class AdminConfigController {
       entityId: key,
     });
 
+    // Reinitialize SMS service when seven.io config changes
+    if (key.startsWith('sms.')) {
+      await this.smsService.reinitialize();
+    }
+
     return { success: true };
   }
 
@@ -76,5 +83,10 @@ export class AdminConfigController {
   @Post('test/:category')
   async testConnection(@Param('category') category: string) {
     return this.platformConfig.testConnection(category);
+  }
+
+  @Post('validate-all')
+  async validateAll() {
+    return this.platformConfig.validateAllServices();
   }
 }

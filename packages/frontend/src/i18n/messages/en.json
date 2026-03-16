@@ -268,6 +268,13 @@
     "explainerError": "Could not load explanation. Please try again.",
     "explainerRetry": "Try again",
     "explainerDisclaimer": "This explanation is AI-generated for educational purposes. It does not replace the medical advice of your doctor.",
+    "explainerCopy": "Copy",
+    "explainerCopied": "Copied!",
+    "explainerReadAloud": "Read aloud",
+    "explainerStopReading": "Stop",
+    "explainerRegenerate": "Regenerate",
+    "explainerSummary": "Quick summary",
+    "explainerFull": "Full explanation",
     "stepForm": "Form",
     "stepQuiz": "Quiz",
     "stepSignature": "Sign",
@@ -294,7 +301,14 @@
     "recentSunExposure": "Recent intensive sun exposure",
     "peelType": "Peel type",
     "activeInfections": "Active skin infections in treatment area",
-    "bloodDisorders": "Known blood clotting disorders"
+    "bloodDisorders": "Known blood clotting disorders",
+    "noneKnown": "No, none",
+    "yesIHave": "Yes, I have",
+    "noMedications": "No medications",
+    "yesTakingMeds": "Yes, I take medications",
+    "searchMedication": "Search medication name...",
+    "searching": "Searching...",
+    "conditionNotes": "Anything else your doctor should know? (optional)"
   },
   "medicalOptions": {
     "forehead": "Forehead (Frontalis)",
@@ -326,7 +340,32 @@
     "deep": "Deep",
     "scalp": "Scalp",
     "scalpHairLoss": "Scalp (Hair loss)",
-    "joints": "Joints"
+    "joints": "Joints",
+    "penicillin": "Penicillin",
+    "latex": "Latex",
+    "nickel": "Nickel",
+    "fragrances": "Fragrances",
+    "preservatives": "Preservatives (Parabens)",
+    "localAnesthetics": "Local anesthetics (Lidocaine)",
+    "sulfonamides": "Sulfonamides",
+    "nsaids": "NSAIDs (Ibuprofen, Aspirin)",
+    "addOther": "Other",
+    "otherPlaceholder": "Type your allergy...",
+    "hypertension": "High blood pressure",
+    "heartDisease": "Heart disease",
+    "diabetes": "Diabetes",
+    "thyroid": "Thyroid disorder",
+    "eczema": "Eczema",
+    "psoriasis": "Psoriasis",
+    "rosacea": "Rosacea",
+    "keloidScarring": "Keloid scarring",
+    "coldSores": "Cold sores (HSV)",
+    "lupus": "Lupus",
+    "rheumatoidArthritis": "Rheumatoid arthritis",
+    "immunosuppression": "Immunosuppression",
+    "cancer": "Cancer history",
+    "bloodClotting": "Blood clotting disorder",
+    "noneOfAbove": "None of the above"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -712,7 +751,8 @@
     "channelWhatsApp": "WhatsApp",
     "patientPhone": "Patient phone (optional)",
     "patientPhonePlaceholder": "+49 170 1234567",
-    "patientPhoneInfo": "If provided, the consent link will be sent via SMS or WhatsApp."
+    "patientPhoneInfo": "If provided, the consent link will be sent via SMS or WhatsApp.",
+    "comingSoon": "Coming soon"
   },
   "vault": {
     "unlockedTitle": "Vault unlocked",
@@ -1111,13 +1151,24 @@
     "notificationsConfig": "Notifications",
     "sendTestEmail": "Send test email",
     "sendTestSms": "Send test SMS",
+    "sendTestWhatsapp": "Send test WhatsApp",
     "enterTestPhone": "Enter phone number for test SMS (e.g. +491234567890):",
     "enterTestEmail": "Enter email address for test email:",
     "configurationDescription": "Manage platform integrations, credentials, and notification settings.",
     "valueRequired": "Please enter a value",
     "resetConfirm": "Reset this setting to its default value? This cannot be undone.",
     "resetSuccess": "Reset to default",
-    "enterNewValue": "Enter new value..."
+    "enterNewValue": "Enter new value...",
+    "systemHealthCheck": "System Health Check",
+    "healthCheckDescription": "Validates all service integrations — setup completeness and connectivity.",
+    "runningHealthCheck": "Running health checks on all services...",
+    "recheckAll": "Recheck All",
+    "close": "Close",
+    "details": "Details",
+    "setupProgress": "Setup progress",
+    "requirements": "Requirements",
+    "checks": "Checks",
+    "whatsappComingSoon": "WhatsApp (coming soon)"
   },
   "pagination": {
     "showing": "Showing {start}–{end} of {total}",
@@ -1175,6 +1226,7 @@
     "recipientLabel": "Recipient",
     "channelEmail": "Email",
     "channelSms": "SMS",
+    "channelWhatsApp": "WhatsApp",
     "sendAction": "Send now",
     "sending": "Sending...",
     "sendSuccess": "Message sent successfully",
@@ -1189,7 +1241,8 @@
       "RESULT_READY": "Results ready notification",
       "GENERAL": "General message"
     },
-    "fillPlaceholders": "Fill in the details before sending:"
+    "fillPlaceholders": "Fill in the details before sending:",
+    "comingSoon": "Coming soon"
   },
   "aftercare": {
     "dialogTitle": "Aftercare Instructions",

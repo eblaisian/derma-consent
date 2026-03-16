@@ -268,6 +268,13 @@
     "explainerError": "Erklärung konnte nicht geladen werden. Bitte erneut versuchen.",
     "explainerRetry": "Erneut versuchen",
     "explainerDisclaimer": "Diese Erklärung wurde von einer KI generiert und dient nur zur Information. Sie ersetzt nicht die ärztliche Aufklärung.",
+    "explainerCopy": "Kopieren",
+    "explainerCopied": "Kopiert!",
+    "explainerReadAloud": "Vorlesen",
+    "explainerStopReading": "Stoppen",
+    "explainerRegenerate": "Neu generieren",
+    "explainerSummary": "Kurzzusammenfassung",
+    "explainerFull": "Ausführliche Erklärung",
     "stepForm": "Formular",
     "stepQuiz": "Quiz",
     "stepSignature": "Unterschrift",
@@ -294,7 +301,14 @@
     "recentSunExposure": "Kürzliche intensive Sonneneinstrahlung",
     "peelType": "Peeling-Typ",
     "activeInfections": "Aktive Hautinfektionen im Behandlungsbereich",
-    "bloodDisorders": "Bekannte Blutgerinnungsstörungen"
+    "bloodDisorders": "Bekannte Blutgerinnungsstörungen",
+    "noneKnown": "Nein, keine",
+    "yesIHave": "Ja, ich habe",
+    "noMedications": "Keine Medikamente",
+    "yesTakingMeds": "Ja, ich nehme Medikamente",
+    "searchMedication": "Medikamentenname suchen...",
+    "searching": "Suche...",
+    "conditionNotes": "Etwas anderes, das Ihr Arzt wissen sollte? (optional)"
   },
   "medicalOptions": {
     "forehead": "Stirn (Frontalis)",
@@ -326,7 +340,32 @@
     "deep": "Tief",
     "scalp": "Kopfhaut",
     "scalpHairLoss": "Kopfhaut (Haarausfall)",
-    "joints": "Gelenke"
+    "joints": "Gelenke",
+    "penicillin": "Penicillin",
+    "latex": "Latex",
+    "nickel": "Nickel",
+    "fragrances": "Duftstoffe",
+    "preservatives": "Konservierungsmittel (Parabene)",
+    "localAnesthetics": "Lokalanästhetika (Lidocain)",
+    "sulfonamides": "Sulfonamide",
+    "nsaids": "NSAR (Ibuprofen, Aspirin)",
+    "addOther": "Sonstiges",
+    "otherPlaceholder": "Allergie eingeben...",
+    "hypertension": "Bluthochdruck",
+    "heartDisease": "Herzerkrankung",
+    "diabetes": "Diabetes",
+    "thyroid": "Schilddrüsenerkrankung",
+    "eczema": "Ekzem",
+    "psoriasis": "Schuppenflechte",
+    "rosacea": "Rosazea",
+    "keloidScarring": "Keloidnarben",
+    "coldSores": "Herpes (HSV)",
+    "lupus": "Lupus",
+    "rheumatoidArthritis": "Rheumatoide Arthritis",
+    "immunosuppression": "Immunsuppression",
+    "cancer": "Krebserkrankung",
+    "bloodClotting": "Blutgerinnungsstörung",
+    "noneOfAbove": "Keines davon"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -712,7 +751,8 @@
     "channelWhatsApp": "WhatsApp",
     "patientPhone": "Telefonnummer des Patienten (optional)",
     "patientPhonePlaceholder": "+49 170 1234567",
-    "patientPhoneInfo": "Falls angegeben, wird der Einwilligungslink per SMS oder WhatsApp gesendet."
+    "patientPhoneInfo": "Falls angegeben, wird der Einwilligungslink per SMS oder WhatsApp gesendet.",
+    "comingSoon": "Demnächst"
   },
   "vault": {
     "unlockedTitle": "Tresor entsperrt",
@@ -1111,13 +1151,24 @@
     "notificationsConfig": "Benachrichtigungen",
     "sendTestEmail": "Test-E-Mail senden",
     "sendTestSms": "Test-SMS senden",
+    "sendTestWhatsapp": "Test-WhatsApp senden",
     "enterTestPhone": "Telefonnummer für Test-SMS eingeben (z.B. +491234567890):",
     "enterTestEmail": "E-Mail-Adresse fuer Test-E-Mail eingeben:",
     "configurationDescription": "Plattform-Integrationen, Zugangsdaten und Benachrichtigungseinstellungen verwalten.",
     "valueRequired": "Bitte geben Sie einen Wert ein",
     "resetConfirm": "Diese Einstellung auf den Standardwert zurücksetzen? Dies kann nicht rückgängig gemacht werden.",
     "resetSuccess": "Auf Standard zurückgesetzt",
-    "enterNewValue": "Neuen Wert eingeben..."
+    "enterNewValue": "Neuen Wert eingeben...",
+    "systemHealthCheck": "System-Gesundheitscheck",
+    "healthCheckDescription": "Überprüft alle Dienstintegrationen — Einrichtungsstatus und Konnektivität.",
+    "runningHealthCheck": "Führe Gesundheitschecks für alle Dienste durch...",
+    "recheckAll": "Alle erneut prüfen",
+    "close": "Schließen",
+    "details": "Details",
+    "setupProgress": "Einrichtungsfortschritt",
+    "requirements": "Anforderungen",
+    "checks": "Prüfungen",
+    "whatsappComingSoon": "WhatsApp (demnächst)"
   },
   "pagination": {
     "showing": "Zeige {start}–{end} von {total}",
@@ -1175,6 +1226,7 @@
     "recipientLabel": "Empfänger",
     "channelEmail": "E-Mail",
     "channelSms": "SMS",
+    "channelWhatsApp": "WhatsApp",
     "sendAction": "Jetzt senden",
     "sending": "Wird gesendet...",
     "sendSuccess": "Nachricht erfolgreich gesendet",
@@ -1189,7 +1241,8 @@
       "RESULT_READY": "Ergebnisse bereit",
       "GENERAL": "Allgemeine Nachricht"
     },
-    "fillPlaceholders": "Ergänzen Sie die Angaben vor dem Versand:"
+    "fillPlaceholders": "Ergänzen Sie die Angaben vor dem Versand:",
+    "comingSoon": "Demnächst"
   },
   "aftercare": {
     "dialogTitle": "Nachsorgeanweisungen",

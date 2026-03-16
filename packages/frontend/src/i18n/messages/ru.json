@@ -268,6 +268,13 @@
     "explainerError": "Не удалось загрузить объяснение. Попробуйте ещё раз.",
     "explainerRetry": "Попробовать снова",
     "explainerDisclaimer": "Это объяснение создано ИИ в образовательных целях и не заменяет медицинскую консультацию вашего врача.",
+    "explainerCopy": "Копировать",
+    "explainerCopied": "Скопировано!",
+    "explainerReadAloud": "Прочитать вслух",
+    "explainerStopReading": "Остановить",
+    "explainerRegenerate": "Сгенерировать заново",
+    "explainerSummary": "Краткое резюме",
+    "explainerFull": "Полное объяснение",
     "stepForm": "Форма",
     "stepQuiz": "Тест",
     "stepSignature": "Подпись",
@@ -294,7 +301,14 @@
     "recentSunExposure": "Недавнее интенсивное воздействие солнца",
     "peelType": "Тип пилинга",
     "activeInfections": "Активные кожные инфекции в зоне процедуры",
-    "bloodDisorders": "Известные нарушения свёртываемости крови"
+    "bloodDisorders": "Известные нарушения свёртываемости крови",
+    "noneKnown": "Нет, ни одной",
+    "yesIHave": "Да, у меня есть",
+    "noMedications": "Никаких лекарств",
+    "yesTakingMeds": "Да, я принимаю лекарства",
+    "searchMedication": "Поиск названия лекарства...",
+    "searching": "Поиск...",
+    "conditionNotes": "Есть ли еще что-то, что должен знать ваш врач? (необязательно)"
   },
   "medicalOptions": {
     "forehead": "Лоб (Фронтальная мышца)",
@@ -326,7 +340,32 @@
     "deep": "Глубокий",
     "scalp": "Кожа головы",
     "scalpHairLoss": "Кожа головы (Выпадение волос)",
-    "joints": "Суставы"
+    "joints": "Суставы",
+    "penicillin": "Пенициллин",
+    "latex": "Латекс",
+    "nickel": "Никель",
+    "fragrances": "Ароматизаторы",
+    "preservatives": "Консерванты (Парабены)",
+    "localAnesthetics": "Местные анестетики (Лидокаин)",
+    "sulfonamides": "Сульфаниламиды",
+    "nsaids": "НПВС (Ибупрофен, Аспирин)",
+    "addOther": "Другое",
+    "otherPlaceholder": "Введите вашу аллергию...",
+    "hypertension": "Высокое давление",
+    "heartDisease": "Болезнь сердца",
+    "diabetes": "Диабет",
+    "thyroid": "Заболевание щитовидной железы",
+    "eczema": "Экзема",
+    "psoriasis": "Псориаз",
+    "rosacea": "Розацеа",
+    "keloidScarring": "Келоидные рубцы",
+    "coldSores": "Герпес (HSV)",
+    "lupus": "Волчанка",
+    "rheumatoidArthritis": "Ревматоидный артрит",
+    "immunosuppression": "Иммуносупрессия",
+    "cancer": "История рака",
+    "bloodClotting": "Нарушение свертывания крови",
+    "noneOfAbove": "Ничего из вышеперечисленного"
   },
   "dashboard": {
     "title": "Панель управления",
@@ -710,7 +749,8 @@
     "channelWhatsApp": "WhatsApp",
     "patientPhone": "Телефон пациента (необязательно)",
     "patientPhonePlaceholder": "+7 912 345 6789",
-    "patientPhoneInfo": "Если указан, ссылка на согласие будет отправлена по SMS или WhatsApp."
+    "patientPhoneInfo": "Если указан, ссылка на согласие будет отправлена по SMS или WhatsApp.",
+    "comingSoon": "Скоро"
   },
   "vault": {
     "unlockedTitle": "Хранилище разблокировано",
@@ -1109,13 +1149,24 @@
     "notificationsConfig": "Уведомления",
     "sendTestEmail": "Отправить тестовое письмо",
     "sendTestSms": "Отправить тестовое SMS",
+    "sendTestWhatsapp": "Отправить тестовый WhatsApp",
     "enterTestPhone": "Введите номер для тестового SMS (напр. +491234567890):",
     "enterTestEmail": "Введите адрес электронной почты для тестового письма:",
     "configurationDescription": "Управление интеграциями платформы, учётными данными и настройками уведомлений.",
     "valueRequired": "Введите значение",
     "resetConfirm": "Сбросить эту настройку к значению по умолчанию? Это действие нельзя отменить.",
     "resetSuccess": "Сброшено к значению по умолчанию",
-    "enterNewValue": "Введите новое значение..."
+    "enterNewValue": "Введите новое значение...",
+    "systemHealthCheck": "Проверка состояния системы",
+    "healthCheckDescription": "Проверяет все интеграции сервисов — состояние настройки и подключение.",
+    "runningHealthCheck": "Выполняется проверка всех сервисов...",
+    "recheckAll": "Проверить всё заново",
+    "close": "Закрыть",
+    "details": "Подробности",
+    "setupProgress": "Прогресс настройки",
+    "requirements": "Требования",
+    "checks": "Проверки",
+    "whatsappComingSoon": "WhatsApp (скоро)"
   },
   "pagination": {
     "showing": "Показано {start}–{end} из {total}",
@@ -1172,6 +1223,7 @@
     "recipientLabel": "Получатель",
     "channelEmail": "Эл. почта",
     "channelSms": "SMS",
+    "channelWhatsApp": "WhatsApp",
     "sendAction": "Отправить сейчас",
     "sending": "Отправка...",
     "sendSuccess": "Сообщение успешно отправлено",
@@ -1186,7 +1238,8 @@
       "RESULT_READY": "Результаты готовы",
       "GENERAL": "Общее сообщение"
     },
-    "fillPlaceholders": "Заполните данные перед отправкой:"
+    "fillPlaceholders": "Заполните данные перед отправкой:",
+    "comingSoon": "Скоро"
   },
   "aftercare": {
     "dialogTitle": "Инструкции по уходу",

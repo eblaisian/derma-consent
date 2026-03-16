@@ -55,7 +55,7 @@ export class ConsentPublicController {
     @Param('token') token: string,
     @Body() dto: ExplainConsentDto,
   ) {
-    return this.explainerService.explain(token, dto.locale || 'de');
+    return this.explainerService.explain(token, dto.locale || 'de', dto.mode || 'full');
   }
 
 }

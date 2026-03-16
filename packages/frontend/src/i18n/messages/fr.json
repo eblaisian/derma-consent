@@ -268,6 +268,13 @@
     "explainerError": "Impossible de charger l'explication. Veuillez réessayer.",
     "explainerRetry": "Réessayer",
     "explainerDisclaimer": "Cette explication est générée par IA à titre éducatif et ne remplace pas l'avis médical de votre médecin.",
+    "explainerCopy": "Copier",
+    "explainerCopied": "Copié !",
+    "explainerReadAloud": "Lire à voix haute",
+    "explainerStopReading": "Arrêter",
+    "explainerRegenerate": "Régénérer",
+    "explainerSummary": "Résumé rapide",
+    "explainerFull": "Explication complète",
     "stepForm": "Formulaire",
     "stepQuiz": "Quiz",
     "stepSignature": "Signature",
@@ -294,7 +301,14 @@
     "recentSunExposure": "Exposition solaire intense récente",
     "peelType": "Type de peeling",
     "activeInfections": "Infections cutanées actives dans la zone de traitement",
-    "bloodDisorders": "Troubles de la coagulation connus"
+    "bloodDisorders": "Troubles de la coagulation connus",
+    "noneKnown": "Non, aucune",
+    "yesIHave": "Oui, j'en ai",
+    "noMedications": "Aucun médicament",
+    "yesTakingMeds": "Oui, je prends des médicaments",
+    "searchMedication": "Rechercher le nom du médicament...",
+    "searching": "Recherche en cours...",
+    "conditionNotes": "Y a-t-il autre chose que votre médecin devrait savoir ? (facultatif)"
   },
   "medicalOptions": {
     "forehead": "Front (Frontalis)",
@@ -326,7 +340,32 @@
     "deep": "Profond",
     "scalp": "Cuir chevelu",
     "scalpHairLoss": "Cuir chevelu (Alopécie)",
-    "joints": "Articulations"
+    "joints": "Articulations",
+    "penicillin": "Pénicilline",
+    "latex": "Latex",
+    "nickel": "Nickel",
+    "fragrances": "Parfums",
+    "preservatives": "Conservateurs (Parabènes)",
+    "localAnesthetics": "Anesthésiques locaux (Lidocaïne)",
+    "sulfonamides": "Sulfamides",
+    "nsaids": "AINS (Ibuprofène, Aspirine)",
+    "addOther": "Autre",
+    "otherPlaceholder": "Tapez votre allergie...",
+    "hypertension": "Hypertension artérielle",
+    "heartDisease": "Maladie cardiaque",
+    "diabetes": "Diabète",
+    "thyroid": "Trouble thyroïdien",
+    "eczema": "Eczéma",
+    "psoriasis": "Psoriasis",
+    "rosacea": "Rosacée",
+    "keloidScarring": "Cicatrices chéloïdes",
+    "coldSores": "Boutons de fièvre (HSV)",
+    "lupus": "Lupus",
+    "rheumatoidArthritis": "Polyarthrite rhumatoïde",
+    "immunosuppression": "Immunosuppression",
+    "cancer": "Antécédents de cancer",
+    "bloodClotting": "Trouble de la coagulation",
+    "noneOfAbove": "Aucune des réponses ci-dessus"
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -710,7 +749,8 @@
     "channelWhatsApp": "WhatsApp",
     "patientPhone": "Téléphone du patient (optionnel)",
     "patientPhonePlaceholder": "+33 6 12 34 56 78",
-    "patientPhoneInfo": "Si fourni, le lien sera envoyé par SMS ou WhatsApp."
+    "patientPhoneInfo": "Si fourni, le lien sera envoyé par SMS ou WhatsApp.",
+    "comingSoon": "Bientôt disponible"
   },
   "vault": {
     "unlockedTitle": "Coffre-fort déverrouillé",
@@ -1109,13 +1149,24 @@
     "notificationsConfig": "Notifications",
     "sendTestEmail": "Envoyer un e-mail de test",
     "sendTestSms": "Envoyer un SMS test",
+    "sendTestWhatsapp": "Envoyer un test WhatsApp",
     "enterTestPhone": "Entrez le numéro pour le SMS test (ex. +491234567890) :",
     "enterTestEmail": "Entrez l'adresse e-mail pour l'e-mail de test :",
     "configurationDescription": "Gérez les intégrations, les identifiants et les paramètres de notifications.",
     "valueRequired": "Veuillez entrer une valeur",
     "resetConfirm": "Réinitialiser ce paramètre à sa valeur par défaut ? Cette action est irréversible.",
     "resetSuccess": "Réinitialisé par défaut",
-    "enterNewValue": "Entrer une nouvelle valeur..."
+    "enterNewValue": "Entrer une nouvelle valeur...",
+    "systemHealthCheck": "Vérification du système",
+    "healthCheckDescription": "Valide toutes les intégrations de services — état de configuration et connectivité.",
+    "runningHealthCheck": "Vérification de tous les services en cours...",
+    "recheckAll": "Tout revérifier",
+    "close": "Fermer",
+    "details": "Détails",
+    "setupProgress": "Progression de la configuration",
+    "requirements": "Prérequis",
+    "checks": "Vérifications",
+    "whatsappComingSoon": "WhatsApp (bientôt)"
   },
   "pagination": {
     "showing": "Affichage {start}–{end} sur {total}",
@@ -1172,6 +1223,7 @@
     "recipientLabel": "Destinataire",
     "channelEmail": "E-mail",
     "channelSms": "SMS",
+    "channelWhatsApp": "WhatsApp",
     "sendAction": "Envoyer maintenant",
     "sending": "Envoi...",
     "sendSuccess": "Message envoyé avec succès",
@@ -1186,7 +1238,8 @@
       "RESULT_READY": "Résultats disponibles",
       "GENERAL": "Message général"
     },
-    "fillPlaceholders": "Complétez les informations avant d'envoyer :"
+    "fillPlaceholders": "Complétez les informations avant d'envoyer :",
+    "comingSoon": "Bientôt disponible"
   },
   "aftercare": {
     "dialogTitle": "Instructions post-traitement",

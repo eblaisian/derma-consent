@@ -34,11 +34,18 @@ export class ResendTransport implements IEmailTransport {
 
     try {
       const client = new Resend(apiKey);
-      const { error } = await client.domains.list();
+      const fromAddress = (await this.config.get('email.fromAddress')) || 'noreply@eblaisian.com';
+      const fromName = (await this.config.get('email.fromName')) || 'DermaConsent';
+      const { error } = await client.emails.send({
+        from: `${fromName} <${fromAddress}>`,
+        to: 'delivered@resend.dev',
+        subject: 'DermaConsent Connection Test',
+        html: '<p>This is a test email from DermaConsent platform health check.</p>',
+      });
       if (error) {
-        return { success: false, message: `Resend connection failed: ${error.message}` };
+        return { success: false, message: `Resend test failed: ${error.message}` };
       }
-      return { success: true, message: 'Resend API connection successful' };
+      return { success: true, message: 'Test email sent successfully to delivered@resend.dev' };
     } catch (error) {
       return { success: false, message: `Resend connection failed: ${(error as Error).message}` };
     }

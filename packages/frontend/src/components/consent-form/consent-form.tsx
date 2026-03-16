@@ -1,18 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { SignaturePad } from '@/components/signature-pad/signature-pad';
-import { Shield } from 'lucide-react';
+import { Shield, Check } from 'lucide-react';
 import {
   type ConsentType,
   getFormFields,
 } from './form-fields';
+import { YesNoChips, ConditionGrid, MedicationTags } from './fields';
 import { ComprehensionQuiz } from './comprehension-quiz';
 import { ConsentExplainer } from './consent-explainer';
 import { EducationVideo } from './education-video';
@@ -61,7 +62,7 @@ export function ConsentForm({
   const questions = quizQuestions[consentType] ?? [];
 
   const fields = getFormFields(consentType);
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm();
+  const { register, handleSubmit, getValues, control, formState: { errors } } = useForm();
 
   const resolveFieldLabel = (labelKey: string): string => {
     return tFields.has(labelKey as keyof IntlMessages['medicalFields'])
@@ -218,56 +219,160 @@ export function ConsentForm({
               )}
 
               {field.type === 'checkbox' && (
-                <div className="flex items-center gap-3 min-h-[44px]">
-                  <input
-                    type="checkbox"
-                    id={field.name}
-                    className="h-5 w-5 rounded border-input"
-                    {...register(field.name)}
-                  />
-                  <Label htmlFor={field.name} className="text-base font-normal">
-                    {t('yes')}
-                  </Label>
-                </div>
+                <Controller
+                  name={field.name}
+                  control={control}
+                  render={({ field: { value, onChange } }) => (
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => onChange(false)}
+                        className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3.5 text-sm font-medium transition-all ${
+                          value === false || !value
+                            ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-400 dark:bg-emerald-950/30 dark:text-emerald-400'
+                            : 'border-border hover:border-muted-foreground/30 text-muted-foreground'
+                        }`}
+                      >
+                        {(!value) && <Check className="h-4 w-4" />}
+                        {t('no')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onChange(true)}
+                        className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3.5 text-sm font-medium transition-all ${
+                          value === true
+                            ? 'border-amber-500 bg-amber-50 text-amber-700 dark:border-amber-400 dark:bg-amber-950/30 dark:text-amber-400'
+                            : 'border-border hover:border-muted-foreground/30 text-muted-foreground'
+                        }`}
+                      >
+                        {value === true && <Check className="h-4 w-4" />}
+                        {t('yes')}
+                      </button>
+                    </div>
+                  )}
+                />
               )}
 
               {field.type === 'select' && (
-                <select
-                  id={field.name}
-                  className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-base"
-                  {...register(field.name, { required: field.required })}
-                >
-                  <option value="">{t('selectPlaceholder')}</option>
-                  {field.optionKeys?.map((optKey) => (
-                    <option key={optKey} value={optKey}>
-                      {resolveOptionLabel(optKey)}
-                    </option>
-                  ))}
-                </select>
+                <Controller
+                  name={field.name}
+                  control={control}
+                  rules={{ required: field.required }}
+                  render={({ field: { value, onChange } }) => (
+                    <div className="flex flex-wrap gap-2">
+                      {field.optionKeys?.map((optKey) => {
+                        const isActive = value === optKey;
+                        return (
+                          <button
+                            key={optKey}
+                            type="button"
+                            onClick={() => onChange(optKey)}
+                            className={`inline-flex items-center gap-1.5 rounded-full border-2 px-4 py-2.5 text-sm transition-all ${
+                              isActive
+                                ? 'border-primary bg-primary/10 text-primary font-medium'
+                                : 'border-border text-muted-foreground hover:border-primary/30 hover:bg-muted'
+                            }`}
+                            style={isActive && brandColor ? { borderColor: brandColor, backgroundColor: `${brandColor}10`, color: brandColor } : undefined}
+                          >
+                            {isActive && <Check className="h-3.5 w-3.5" />}
+                            {resolveOptionLabel(optKey)}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                />
               )}
 
               {field.type === 'checkbox-group' && (
-                <div className="space-y-2">
-                  {field.optionKeys?.map((optKey) => (
-                    <div key={optKey} className="flex items-center gap-3 min-h-[44px]">
-                      <input
-                        type="checkbox"
-                        id={`${field.name}-${optKey}`}
-                        value={optKey}
-                        className="h-5 w-5 rounded border-input"
-                        {...register(field.name, {
-                          required: field.required,
+                <Controller
+                  name={field.name}
+                  control={control}
+                  rules={{ required: field.required }}
+                  render={({ field: { value, onChange } }) => {
+                    const selected = new Set<string>(Array.isArray(value) ? value : []);
+                    const toggle = (key: string) => {
+                      const next = new Set(selected);
+                      if (next.has(key)) next.delete(key);
+                      else next.add(key);
+                      onChange(Array.from(next));
+                    };
+                    return (
+                      <div className="flex flex-wrap gap-2">
+                        {field.optionKeys?.map((optKey) => {
+                          const isActive = selected.has(optKey);
+                          return (
+                            <button
+                              key={optKey}
+                              type="button"
+                              onClick={() => toggle(optKey)}
+                              className={`inline-flex items-center gap-1.5 rounded-full border-2 px-4 py-2.5 text-sm transition-all ${
+                                isActive
+                                  ? 'border-primary bg-primary/10 text-primary font-medium'
+                                  : 'border-border text-muted-foreground hover:border-primary/30 hover:bg-muted'
+                              }`}
+                              style={isActive && brandColor ? { borderColor: brandColor, backgroundColor: `${brandColor}10`, color: brandColor } : undefined}
+                            >
+                              {isActive && <Check className="h-3.5 w-3.5" />}
+                              {resolveOptionLabel(optKey)}
+                            </button>
+                          );
                         })}
-                      />
-                      <Label
-                        htmlFor={`${field.name}-${optKey}`}
-                        className="text-base font-normal"
-                      >
-                        {resolveOptionLabel(optKey)}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
+                      </div>
+                    );
+                  }}
+                />
+              )}
+
+              {field.type === 'yes-no-chips' && (
+                <Controller
+                  name={field.name}
+                  control={control}
+                  rules={{ required: field.required, validate: (v) => !field.required || (!!v && v !== '') }}
+                  render={({ field: { value, onChange } }) => (
+                    <YesNoChips
+                      name={field.name}
+                      chipKeys={field.chipKeys || []}
+                      required={field.required}
+                      value={value || ''}
+                      onChange={onChange}
+                      brandColor={brandColor}
+                    />
+                  )}
+                />
+              )}
+
+              {field.type === 'condition-grid' && (
+                <Controller
+                  name={field.name}
+                  control={control}
+                  rules={{ required: field.required, validate: (v) => !field.required || (!!v && v !== '') }}
+                  render={({ field: { value, onChange } }) => (
+                    <ConditionGrid
+                      name={field.name}
+                      conditionKeys={field.chipKeys || []}
+                      required={field.required}
+                      value={value || ''}
+                      onChange={onChange}
+                      brandColor={brandColor}
+                    />
+                  )}
+                />
+              )}
+
+              {field.type === 'medication-tags' && (
+                <Controller
+                  name={field.name}
+                  control={control}
+                  render={({ field: { value, onChange } }) => (
+                    <MedicationTags
+                      name={field.name}
+                      value={value || ''}
+                      onChange={onChange}
+                      brandColor={brandColor}
+                    />
+                  )}
+                />
               )}
 
               {errors[field.name] && (
@@ -325,14 +430,36 @@ export function ConsentForm({
           <div className="bg-muted/50 border rounded-lg p-4 space-y-3 text-base leading-relaxed">
             {Object.entries(getValues()).map(([key, value]) => {
               const field = fields.find((f) => f.name === key);
-              if (!field || value === '' || value === false) return null;
-              const displayValue = Array.isArray(value)
-                ? value.map((v: string) => resolveOptionLabel(v)).join(', ')
-                : typeof value === 'boolean'
-                  ? t('yes')
-                  : tOptions.has(String(value) as keyof IntlMessages['medicalOptions'])
-                    ? resolveOptionLabel(String(value))
-                    : String(value);
+              if (!field || value === '' || value === false || value === undefined || value === null) return null;
+
+              let displayValue: string;
+              if (Array.isArray(value)) {
+                displayValue = value.map((v: string) => resolveOptionLabel(v)).join(', ');
+              } else if (typeof value === 'boolean') {
+                displayValue = t('yes');
+              } else {
+                const strVal = String(value);
+                // Handle structured values from new field types
+                if (strVal === 'none') {
+                  displayValue = tFields('noneKnown' as keyof IntlMessages['medicalFields']);
+                } else if (field.type === 'yes-no-chips' || field.type === 'condition-grid') {
+                  displayValue = strVal
+                    .split(',')
+                    .filter((v) => v && !v.startsWith('notes:') && v !== 'noneOfAbove')
+                    .map((v) => resolveOptionLabel(v.startsWith('other:') ? v.slice(6) : v))
+                    .join(', ');
+                  const notes = strVal.split(',').find((v) => v.startsWith('notes:'));
+                  if (notes) displayValue += ` (${notes.slice(6)})`;
+                  if (!displayValue) displayValue = tFields('noneKnown' as keyof IntlMessages['medicalFields']);
+                } else if (field.type === 'medication-tags') {
+                  displayValue = strVal.split(',').filter(Boolean).join(', ');
+                } else if (tOptions.has(strVal as keyof IntlMessages['medicalOptions'])) {
+                  displayValue = resolveOptionLabel(strVal);
+                } else {
+                  displayValue = strVal;
+                }
+              }
+
               return (
                 <div key={key}>
                   <span className="font-medium">{resolveFieldLabel(field.labelKey)}:</span>{' '}
