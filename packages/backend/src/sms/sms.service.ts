@@ -1,34 +1,56 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 
+interface SevenSmsResponse {
+  success: string;
+  total_price: number;
+  balance: number;
+  messages: Array<{
+    id: string;
+    recipient: string;
+    text: string;
+    price: number;
+    success: boolean;
+  }>;
+}
+
+/** Mask phone number for logging — show only last 4 digits */
+function maskPhone(phone: string): string {
+  return phone.length > 4 ? `***${phone.slice(-4)}` : '****';
+}
+
 @Injectable()
 export class SmsService implements OnModuleInit {
   private readonly logger = new Logger(SmsService.name);
-  private client: import('twilio').Twilio | null = null;
-  private phoneNumber: string | undefined;
+  private apiKey: string | null = null;
+  private sender: string | undefined;
 
   constructor(private readonly platformConfig: PlatformConfigService) {}
 
   async onModuleInit() {
-    const accountSid = await this.platformConfig.get('sms.twilioAccountSid');
-    const authToken = await this.platformConfig.get('sms.twilioAuthToken');
-    this.phoneNumber = await this.platformConfig.get('sms.twilioPhoneNumber');
+    await this.reinitialize();
+  }
 
-    if (accountSid && authToken) {
-      // Dynamic import to avoid errors when Twilio is not configured
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const twilio = require('twilio') as (sid: string, token: string) => import('twilio').Twilio;
-      this.client = twilio(accountSid, authToken);
-      this.logger.log('Twilio client initialized');
+  /**
+   * Re-read seven.io credentials from PlatformConfig.
+   * Called at startup and after admin config changes.
+   */
+  async reinitialize(): Promise<void> {
+    this.platformConfig.invalidate('sms.sevenApiKey');
+    this.platformConfig.invalidate('sms.senderName');
+
+    this.apiKey = (await this.platformConfig.get('sms.sevenApiKey')) ?? null;
+    this.sender = (await this.platformConfig.get('sms.senderName')) ?? 'DermaConsent';
+
+    if (this.apiKey) {
+      this.logger.log('seven.io SMS client initialized');
     } else {
-      this.logger.warn(
-        'Twilio credentials not configured — SMS/WhatsApp delivery disabled',
-      );
+      this.logger.warn('seven.io API key not configured — SMS delivery disabled');
     }
   }
 
   get isConfigured(): boolean {
-    return this.client !== null;
+    return this.apiKey !== null;
   }
 
   async sendConsentLink(
@@ -37,48 +59,48 @@ export class SmsService implements OnModuleInit {
     link: string,
     practiceName: string,
   ): Promise<void> {
-    if (!this.client || !this.phoneNumber) {
-      this.logger.warn('Twilio not configured, skipping SMS/WhatsApp delivery');
-      return;
-    }
-
     const body = `${practiceName}: Please complete your consent form: ${link}`;
-
-    const to = channel === 'whatsapp' ? `whatsapp:${phone}` : phone;
-    const from =
-      channel === 'whatsapp'
-        ? `whatsapp:${this.phoneNumber}`
-        : this.phoneNumber;
-
-    try {
-      const message = await this.client.messages.create({ to, from, body });
-      this.logger.log(
-        `Consent link sent via ${channel} to ${phone} (SID: ${message.sid})`,
-      );
-    } catch (error) {
-      this.logger.error(
-        `Failed to send consent link via ${channel} to ${phone}`,
-        error,
-      );
-      throw error;
-    }
+    await this.sendMessage(phone, body, channel);
   }
 
-  async sendMessage(phone: string, body: string): Promise<void> {
-    if (!this.client || !this.phoneNumber) {
-      this.logger.log(`[NO-OP] SMS to ${phone}: ${body.substring(0, 50)}...`);
+  async sendMessage(phone: string, body: string, channel: 'sms' | 'whatsapp' = 'sms'): Promise<void> {
+    if (!this.apiKey) {
+      this.logger.log(`[NO-OP] ${channel.toUpperCase()} to ${phone}: ${body.substring(0, 50)}...`);
+      return;
+    }
+
+    // seven.io does not support WhatsApp yet — log and skip
+    if (channel === 'whatsapp') {
+      this.logger.warn(`WhatsApp not supported by seven.io — skipping message to ${maskPhone(phone)}`);
       return;
     }
 
     try {
-      const message = await this.client.messages.create({
-        to: phone,
-        from: this.phoneNumber,
-        body,
+      const response = await fetch('https://gateway.seven.io/api/sms', {
+        method: 'POST',
+        headers: {
+          'X-Api-Key': this.apiKey,
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          to: phone,
+          text: body,
+          from: this.sender || 'DermaConsent',
+        }),
       });
-      this.logger.log(`SMS sent to ${phone} (SID: ${message.sid})`);
+
+      const data = (await response.json()) as SevenSmsResponse;
+
+      if (data.success === '100') {
+        const msgId = data.messages?.[0]?.id ?? 'unknown';
+        this.logger.log(`SMS sent to ${phone} (ID: ${msgId}, cost: €${data.total_price})`);
+      } else {
+        const errorCode = data.success;
+        throw new Error(`seven.io returned error code ${errorCode}`);
+      }
     } catch (error) {
-      this.logger.error(`Failed to send SMS to ${phone}`, error);
+      this.logger.error(`Failed to send SMS to ${maskPhone(phone)}`, error);
       throw error;
     }
   }

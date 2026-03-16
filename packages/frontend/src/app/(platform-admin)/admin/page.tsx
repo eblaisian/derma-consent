@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useFormatter } from 'next-intl';
 import useSWR from 'swr';
 import { useAuthFetch } from '@/lib/auth-fetch';
 import {
@@ -29,6 +29,7 @@ interface DashboardData {
 
 export default function AdminDashboardPage() {
   const t = useTranslations('admin');
+  const format = useFormatter();
   const authFetch = useAuthFetch();
   const { data, isLoading, error, mutate } = useSWR<DashboardData>(
     '/api/admin/dashboard',
@@ -155,7 +156,7 @@ export default function AdminDashboardPage() {
                   <td className="px-5 py-3">{practice._count.users}</td>
                   <td className="px-5 py-3">{practice._count.consentForms}</td>
                   <td className="px-5 py-3 text-muted-foreground">
-                    {new Date(practice.createdAt).toLocaleDateString()}
+                    {format.dateTime(new Date(practice.createdAt), { dateStyle: 'medium' })}
                   </td>
                 </tr>
               ))}

@@ -63,14 +63,15 @@ export class ConsentExplainerService {
   async explain(
     token: string,
     locale: string,
+    mode: 'full' | 'summary' = 'full',
   ): Promise<{ explanation: string; cached: boolean }> {
     const safeLocale = SUPPORTED_LOCALES.includes(locale) ? locale : 'de';
 
     const consent = await this.consentService.findByToken(token);
     const consentType = consent.type;
 
-    // Check cache
-    const cacheKey = `${consentType}:${safeLocale}`;
+    // Check cache (keyed by type + locale + mode)
+    const cacheKey = `${consentType}:${safeLocale}:${mode}`;
     const cached = this.cache.get(cacheKey);
     if (cached && Date.now() - cached.cachedAt < CACHE_TTL_MS) {
       await this.logExplainerEvent(consent.practiceId, consentType, safeLocale, true);
@@ -82,20 +83,32 @@ export class ConsentExplainerService {
       throw new ServiceUnavailableException(`Unknown procedure type: ${consentType}`);
     }
 
-    const systemPrompt = [
-      'You are a caring and experienced dermatologist explaining a consent form to a patient.',
-      'Your goal is to help the patient understand what they are consenting to, in plain, non-medical language.',
-      'Be honest about risks but reassuring about the procedure.',
-      'Do NOT use headers, markdown formatting, or numbered lists.',
-      'Use simple bullet points (starting with •) separated by newlines.',
-      'Keep it to 5-7 bullet points covering: what the procedure is, what to expect, main risks, what to tell the doctor beforehand, and aftercare.',
-      `Respond entirely in ${LOCALE_NAMES[safeLocale] || 'German'}.`,
-    ].join(' ');
+    const isSummary = mode === 'summary';
+
+    const systemPrompt = isSummary
+      ? [
+          'You are a caring dermatologist giving a patient a very brief summary of what they are consenting to.',
+          'Write exactly 2-3 short sentences in plain, non-medical language.',
+          'Cover: what the procedure does, the most important risk, and that it is temporary/reversible if applicable.',
+          'Do NOT use bullet points, headers, or formatting. Just plain sentences.',
+          `Respond entirely in ${LOCALE_NAMES[safeLocale] || 'German'}.`,
+        ].join(' ')
+      : [
+          'You are a caring and experienced dermatologist explaining a consent form to a patient.',
+          'Your goal is to help the patient understand what they are consenting to, in plain, non-medical language.',
+          'Be honest about risks but reassuring about the procedure.',
+          'Do NOT use headers, markdown formatting, or numbered lists.',
+          'Use simple bullet points (starting with •) separated by newlines.',
+          'Keep it to 5-7 bullet points covering: what the procedure is, what to expect, main risks, what to tell the doctor beforehand, and aftercare.',
+          `Respond entirely in ${LOCALE_NAMES[safeLocale] || 'German'}.`,
+        ].join(' ');
 
     const userPrompt = [
       `The patient is about to sign a consent form for: ${procedure.name}`,
       `Procedure description: ${procedure.description}`,
-      'Please explain this in plain language so the patient understands what they are agreeing to.',
+      isSummary
+        ? 'Give a very brief 2-3 sentence summary so the patient quickly understands what this is about.'
+        : 'Please explain this in plain language so the patient understands what they are agreeing to.',
     ].join('\n');
 
     const explanation = await this.ai.chat(
@@ -103,7 +116,7 @@ export class ConsentExplainerService {
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
       ],
-      { maxTokens: 500, temperature: 0.3 },
+      { maxTokens: isSummary ? 150 : 500, temperature: 0.3 },
     );
 
     this.cache.set(cacheKey, { text: explanation, cachedAt: Date.now() });

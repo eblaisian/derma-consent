@@ -94,18 +94,11 @@ export class AuthService {
         email: dto.email,
         name: dto.name,
         passwordHash,
-        emailVerified: false,
+        emailVerified: true,
       },
     });
 
-    // Send verification + welcome emails (fire-and-forget — don't block registration)
-    const verifyToken = this.jwtService.sign(
-      { sub: user.id, type: 'email-verify' },
-      { expiresIn: '24h' },
-    );
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
-    const verifyLink = `${frontendUrl}/verify-email?token=${verifyToken}`;
-    this.notificationService.sendEmailVerification({ recipientEmail: user.email, verifyLink, userId: user.id }).catch(() => {});
+    // Send welcome email (fire-and-forget — don't block registration)
     this.notificationService.sendWelcome({ recipientEmail: user.email, userName: user.name || user.email, userId: user.id }).catch(() => {});
 
     return this.signAndReturn(user);
@@ -391,6 +384,60 @@ export class AuthService {
     } catch {
       // Audit logging should never break auth flow
     }
+  }
+
+  async refreshToken(userId: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { id: true, email: true, name: true, image: true, practiceId: true, role: true },
+    });
+    return this.signAndReturn(user);
+  }
+
+  async getProfile(userId: string) {
+    return this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        emailVerified: true,
+        twoFactorEnabled: true,
+        createdAt: true,
+      },
+    });
+  }
+
+  async updateProfile(userId: string, dto: { name?: string }) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { ...(dto.name !== undefined && { name: dto.name }) },
+      select: { id: true, email: true, name: true, role: true },
+    });
+  }
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+
+    if (!user.passwordHash) {
+      throw new UnauthorizedException('Account uses OAuth — password cannot be changed');
+    }
+
+    const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!valid) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+
+    return { message: 'Password changed successfully' };
   }
 
   private signAndReturn(user: {

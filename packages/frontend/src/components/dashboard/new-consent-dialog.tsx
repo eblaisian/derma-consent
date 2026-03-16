@@ -25,6 +25,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { useFeatureFlags } from '@/hooks/use-feature-flags';
 import { toast } from 'sonner';
 
 const allConsentTypes: ConsentType[] = ['BOTOX', 'FILLER', 'LASER', 'CHEMICAL_PEEL', 'MICRONEEDLING', 'PRP'];
@@ -38,6 +40,7 @@ export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
   const tTypes = useTranslations('consentTypes');
   const { data: session } = useSession();
   const authFetch = useAuthFetch();
+  const { whatsappEnabled } = useFeatureFlags();
 
   const { data: settings } = useSWR<{ enabledConsentTypes: string[] }>(
     session?.accessToken ? `${API_URL}/api/settings` : null,
@@ -166,7 +169,18 @@ export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
                 <SelectContent>
                   <SelectItem value="email">{t('channelEmail')}</SelectItem>
                   <SelectItem value="sms">{t('channelSms')}</SelectItem>
-                  <SelectItem value="whatsapp">{t('channelWhatsApp')}</SelectItem>
+                  {whatsappEnabled ? (
+                    <SelectItem value="whatsapp">{t('channelWhatsApp')}</SelectItem>
+                  ) : (
+                    <SelectItem value="whatsapp" disabled>
+                      <span className="flex items-center gap-2">
+                        {t('channelWhatsApp')}
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                          {t('comingSoon')}
+                        </Badge>
+                      </span>
+                    </SelectItem>
+                  )}
                 </SelectContent>
               </Select>
             </div>

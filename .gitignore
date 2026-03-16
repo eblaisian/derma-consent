@@ -23,4 +23,5 @@ docs/.vitepress/cache/
 .agent/
 .agents/
 skills-lock.json
-resend-api-key.txt
+.secrets/
+packages/backend/.local-storage/

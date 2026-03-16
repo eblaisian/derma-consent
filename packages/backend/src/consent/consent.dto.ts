@@ -62,4 +62,8 @@ export class ExplainConsentDto {
   @IsOptional()
   @IsString()
   locale?: string;
+
+  @IsOptional()
+  @IsString()
+  mode?: 'full' | 'summary';
 }

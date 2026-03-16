@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useVault } from '@/hooks/use-vault';
 import { VaultLockedPlaceholder } from '@/components/vault/vault-locked-placeholder';
@@ -15,6 +15,8 @@ interface Props {
 export function EncryptedPhotoViewer({ photo, className }: Props) {
   const { data: session } = useSession();
   const { isUnlocked, decryptPhoto } = useVault();
+  const decryptPhotoRef = useRef(decryptPhoto);
+  decryptPhotoRef.current = decryptPhoto;
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -23,6 +25,7 @@ export function EncryptedPhotoViewer({ photo, className }: Props) {
     if (!isUnlocked || !session?.accessToken) return;
 
     let revoke: string | null = null;
+    let cancelled = false;
 
     const loadPhoto = async () => {
       setLoading(true);
@@ -31,27 +34,38 @@ export function EncryptedPhotoViewer({ photo, className }: Props) {
         const res = await fetch(`${API_URL}/api/photos/${photo.id}/download`, {
           headers: { Authorization: `Bearer ${session.accessToken}` },
         });
-        if (!res.ok) throw new Error('Download failed');
+        if (!res.ok) throw new Error(`Download failed: ${res.status}`);
 
         const encryptedBlob = await res.arrayBuffer();
         const iv = photo.encryptedMetadata?.iv ?? '';
-        const decrypted = await decryptPhoto(encryptedBlob, iv, photo.encryptedSessionKey);
-        const url = URL.createObjectURL(new Blob([decrypted], { type: 'image/jpeg' }));
+        if (!iv || !photo.encryptedSessionKey) {
+          throw new Error('Missing IV or session key');
+        }
+        const decrypted = await decryptPhotoRef.current(encryptedBlob, iv, photo.encryptedSessionKey);
+        if (cancelled) return;
+        const url = URL.createObjectURL(new Blob([decrypted], { type: 'image/png' }));
         revoke = url;
         setObjectUrl(url);
-      } catch {
-        setError(true);
+      } catch (err) {
+        console.error('[PhotoViewer] Decryption error:', err, {
+          photoId: photo.id,
+          hasIv: !!photo.encryptedMetadata?.iv,
+          hasSessionKey: !!photo.encryptedSessionKey,
+          sessionKeyLen: photo.encryptedSessionKey?.length,
+        });
+        if (!cancelled) setError(true);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     loadPhoto();
 
     return () => {
+      cancelled = true;
       if (revoke) URL.revokeObjectURL(revoke);
     };
-  }, [isUnlocked, session?.accessToken, photo.id, photo.encryptedSessionKey, photo.encryptedMetadata?.iv, decryptPhoto]);
+  }, [isUnlocked, session?.accessToken, photo.id, photo.encryptedSessionKey, photo.encryptedMetadata?.iv]);
 
   if (!isUnlocked) {
     return <VaultLockedPlaceholder size="sm" className={className ?? 'h-40'} />;

@@ -42,7 +42,8 @@ export class SettingsController {
     // Resolve storage path to public URL at read time
     if (settings.logoUrl && !settings.logoUrl.startsWith('data:') && !settings.logoUrl.startsWith('http')) {
       const publicUrl = await this.storage.getPublicUrl(settings.logoUrl);
-      return { ...settings, logoUrl: publicUrl || settings.logoUrl };
+      // If storage can't resolve the path, return null rather than a raw path the browser can't render
+      return { ...settings, logoUrl: publicUrl || null };
     }
 
     return settings;

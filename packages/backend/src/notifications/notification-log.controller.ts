@@ -2,6 +2,7 @@ import { Controller, Get, Post, Query, Body, UseGuards } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
 import { SmsService } from '../sms/sms.service';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlatformAdminGuard } from '../auth/platform-admin.guard';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
@@ -9,8 +10,8 @@ import { PaginationDto } from '../common/pagination.dto';
 import { IsIn, IsOptional, IsString } from 'class-validator';
 
 class TestNotificationDto {
-  @IsIn(['email', 'sms'])
-  channel!: 'email' | 'sms';
+  @IsIn(['email', 'sms', 'whatsapp'])
+  channel!: 'email' | 'sms' | 'whatsapp';
 
   @IsOptional()
   @IsString()
@@ -24,6 +25,7 @@ export class NotificationLogController {
     private readonly prisma: PrismaService,
     private readonly emailService: EmailService,
     private readonly smsService: SmsService,
+    private readonly platformConfig: PlatformConfigService,
   ) {}
 
   @Get()
@@ -96,26 +98,40 @@ export class NotificationLogController {
   ) {
     const recipient = dto.recipient || user.email;
 
-    if (dto.channel === 'email') {
-      await this.emailService.sendCustomMessage(
-        recipient,
-        'DermaConsent — Test Email',
-        'This is a test email from DermaConsent.\n\nIf you are reading this, your email configuration is working correctly.\n\nNo action required.',
-      );
-      return { success: true, message: `Test email sent to ${recipient}` };
-    }
-
-    if (dto.channel === 'sms') {
-      if (!this.smsService.isConfigured) {
-        return { success: false, message: 'SMS is not configured. Set Twilio credentials in Admin > Config > SMS.' };
+    try {
+      if (dto.channel === 'email') {
+        await this.emailService.sendCustomMessage(
+          recipient,
+          'DermaConsent — Test Email',
+          'This is a test email from DermaConsent.\n\nIf you are reading this, your email configuration is working correctly.\n\nNo action required.',
+        );
+        return { success: true, message: `Test email sent to ${recipient}` };
       }
-      await this.smsService.sendMessage(
-        recipient,
-        'DermaConsent Test: Your SMS configuration is working correctly.',
-      );
-      return { success: true, message: `Test SMS sent to ${recipient}` };
-    }
 
-    return { success: false, message: `Unknown channel: ${dto.channel}` };
+      if (dto.channel === 'sms') {
+        if (!this.smsService.isConfigured) {
+          return { success: false, message: 'SMS is not configured. Configure the seven.io API key in Admin > Config > SMS.' };
+        }
+        await this.smsService.sendMessage(recipient, 'DermaConsent Test: Your SMS configuration is working correctly.');
+        return { success: true, message: `Test SMS sent to ${recipient}` };
+      }
+
+      if (dto.channel === 'whatsapp') {
+        const whatsappEnabled = await this.platformConfig.get('sms.whatsappEnabled');
+        if (whatsappEnabled !== 'true') {
+          return { success: false, message: 'WhatsApp is disabled. Enable it in Admin > Config > SMS > WhatsApp Enabled toggle.' };
+        }
+        if (!this.smsService.isConfigured) {
+          return { success: false, message: 'WhatsApp is not configured. Configure the seven.io API key in Admin > Config > SMS.' };
+        }
+        await this.smsService.sendMessage(recipient, 'DermaConsent Test: Your WhatsApp configuration is working correctly.', 'whatsapp');
+        return { success: true, message: `Test WhatsApp message sent to ${recipient}` };
+      }
+
+      return { success: false, message: `Unknown channel: ${dto.channel}` };
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      return { success: false, message: `Failed to send test ${dto.channel}: ${errorMsg}` };
+    }
   }
 }

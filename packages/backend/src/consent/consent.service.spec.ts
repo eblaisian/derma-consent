@@ -4,7 +4,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { ConsentService } from './consent.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
-import { SmsService } from '../sms/sms.service';
+import { NotificationService } from '../notifications/notification.service';
 import { PdfService } from '../pdf/pdf.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { ConsentType } from './consent.dto';
@@ -31,7 +31,7 @@ describe('ConsentService', () => {
 
   const mockAudit = { log: jest.fn() };
   const mockConfig = { get: jest.fn().mockReturnValue('http://localhost:3000') };
-  const mockSms = { sendConsentLink: jest.fn() };
+  const mockNotification = { sendConsentLinkViaSms: jest.fn(), sendConsentLink: jest.fn() };
   const mockPdf = { generateConsentPdf: jest.fn().mockResolvedValue(undefined) };
   const mockPlatformConfig = { get: jest.fn().mockResolvedValue('-1') };
 
@@ -54,7 +54,7 @@ describe('ConsentService', () => {
         ConsentService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: ConfigService, useValue: mockConfig },
-        { provide: SmsService, useValue: mockSms },
+        { provide: NotificationService, useValue: mockNotification },
         { provide: AuditService, useValue: mockAudit },
         { provide: PdfService, useValue: mockPdf },
         { provide: PlatformConfigService, useValue: mockPlatformConfig },
@@ -135,26 +135,20 @@ describe('ConsentService', () => {
       );
     });
 
-    it('should throw BadRequestException for expired token', async () => {
-      mockPrisma.consentForm.findUnique.mockResolvedValue({
-        ...mockConsent,
-        expiresAt: new Date('2020-01-01'),
-      });
+    it('should return consent with expired status for frontend rendering', async () => {
+      const expiredConsent = { ...mockConsent, expiresAt: new Date('2020-01-01') };
+      mockPrisma.consentForm.findUnique.mockResolvedValue(expiredConsent);
 
-      await expect(service.findByToken('abc-123-token')).rejects.toThrow(
-        BadRequestException,
-      );
+      const result = await service.findByToken('abc-123-token');
+      expect(result.expiresAt).toEqual(new Date('2020-01-01'));
     });
 
-    it('should throw BadRequestException for revoked consent', async () => {
-      mockPrisma.consentForm.findUnique.mockResolvedValue({
-        ...mockConsent,
-        status: 'REVOKED',
-      });
+    it('should return consent with revoked status for frontend rendering', async () => {
+      const revokedConsent = { ...mockConsent, status: 'REVOKED' };
+      mockPrisma.consentForm.findUnique.mockResolvedValue(revokedConsent);
 
-      await expect(service.findByToken('abc-123-token')).rejects.toThrow(
-        BadRequestException,
-      );
+      const result = await service.findByToken('abc-123-token');
+      expect(result.status).toBe('REVOKED');
     });
   });
 

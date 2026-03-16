@@ -21,9 +21,11 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [tosAccepted, setTosAccepted] = useState(false);
 
   const checks = [
     password.length >= 8,
+    /[a-z]/.test(password),
     /[A-Z]/.test(password),
     /[0-9]/.test(password),
   ];
@@ -125,12 +127,12 @@ export default function RegisterPage() {
             {password.length > 0 && (
               <div className="space-y-2">
                 <div className="flex gap-1">
-                  {Array.from({ length: 3 }).map((_, i) => (
+                  {Array.from({ length: 4 }).map((_, i) => (
                     <div
                       key={i}
                       className={`h-1 flex-1 rounded-full transition-colors ${
                         i < passed
-                          ? passed <= 1 ? 'bg-destructive' : passed === 2 ? 'bg-yellow-500' : 'bg-green-500'
+                          ? passed <= 1 ? 'bg-destructive' : passed <= 2 ? 'bg-yellow-500' : 'bg-green-500'
                           : 'bg-muted'
                       }`}
                     />
@@ -138,8 +140,9 @@ export default function RegisterPage() {
                 </div>
                 <ul className="text-xs text-muted-foreground space-y-0.5">
                   <li className={checks[0] ? 'text-green-600' : ''}>{t('minLength')}</li>
-                  <li className={checks[1] ? 'text-green-600' : ''}>{t('uppercase')}</li>
-                  <li className={checks[2] ? 'text-green-600' : ''}>{t('number')}</li>
+                  <li className={checks[1] ? 'text-green-600' : ''}>{t('lowercase')}</li>
+                  <li className={checks[2] ? 'text-green-600' : ''}>{t('uppercase')}</li>
+                  <li className={checks[3] ? 'text-green-600' : ''}>{t('number')}</li>
                 </ul>
               </div>
             )}
@@ -155,10 +158,25 @@ export default function RegisterPage() {
               autoComplete="new-password"
             />
           </div>
+          <div className="flex items-start gap-2">
+            <input
+              type="checkbox"
+              id="tos"
+              checked={tosAccepted}
+              onChange={(e) => setTosAccepted(e.target.checked)}
+              className="mt-1 h-4 w-4 shrink-0 rounded border-input accent-primary"
+            />
+            <label htmlFor="tos" className="text-xs text-muted-foreground leading-snug cursor-pointer">
+              {t('tosLabel')}{' '}
+              <Link href="/datenschutz" className="underline underline-offset-4 hover:text-primary">
+                {tLogin('privacyLink')}
+              </Link>
+            </label>
+          </div>
           {error && (
             <p id="register-error" className="text-sm text-destructive" role="alert">{error}</p>
           )}
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading || !tosAccepted}>
             {loading ? t('submitting') : t('submit')}
           </Button>
           <p className="text-center text-sm text-muted-foreground">
@@ -169,13 +187,6 @@ export default function RegisterPage() {
           </p>
         </form>
 
-        <p className="text-center text-xs text-muted-foreground">
-          {tLogin('privacyPrefix')}{' '}
-          <Link href="/datenschutz" className="underline underline-offset-4 hover:text-primary">
-            {tLogin('privacyLink')}
-          </Link>
-          .
-        </p>
       </div>
     </AuthLayout>
   );

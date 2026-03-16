@@ -1,4 +1,4 @@
-import { IsString, IsEmail, MinLength, IsOptional, Matches } from 'class-validator';
+import { IsString, IsEmail, MinLength, IsOptional, IsNotEmpty, Matches } from 'class-validator';
 
 export class RegisterDto {
   @IsEmail()
@@ -10,8 +10,8 @@ export class RegisterDto {
 
   @IsString()
   @MinLength(8)
-  @Matches(/(?=.*[A-Z])(?=.*[0-9])/, {
-    message: 'Password must contain at least one uppercase letter and one number',
+  @Matches(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/, {
+    message: 'Password must contain at least one lowercase letter, one uppercase letter, and one number',
   })
   password!: string;
 }
@@ -35,8 +35,8 @@ export class ResetPasswordDto {
 
   @IsString()
   @MinLength(8)
-  @Matches(/(?=.*[A-Z])(?=.*[0-9])/, {
-    message: 'Password must contain at least one uppercase letter and one number',
+  @Matches(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/, {
+    message: 'Password must contain at least one lowercase letter, one uppercase letter, and one number',
   })
   newPassword!: string;
 }
@@ -44,4 +44,23 @@ export class ResetPasswordDto {
 export class VerifyEmailDto {
   @IsString()
   token!: string;
+}
+
+export class UpdateProfileDto {
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  name?: string;
+}
+
+export class ChangePasswordDto {
+  @IsString()
+  currentPassword!: string;
+
+  @IsString()
+  @MinLength(8)
+  @Matches(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/, {
+    message: 'Password must contain at least one lowercase letter, one uppercase letter, and one number',
+  })
+  newPassword!: string;
 }

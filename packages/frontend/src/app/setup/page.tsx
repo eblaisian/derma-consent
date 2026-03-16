@@ -68,7 +68,22 @@ export default function SetupPage() {
         }),
       });
 
-      await updateSession({ practiceId: practice.id });
+      // Refresh the backend JWT to include the new practiceId
+      let newAccessToken: string | undefined;
+      try {
+        const refreshed = await authFetch('/api/auth/refresh-token', {
+          method: 'POST',
+        });
+        newAccessToken = refreshed.accessToken;
+      } catch {
+        // Token refresh failed — session will update practiceId client-side only.
+        // User may need to re-login for full functionality.
+      }
+
+      await updateSession({
+        practiceId: practice.id,
+        ...(newAccessToken && { accessToken: newAccessToken }),
+      });
       toast.success(t('success'));
       router.push('/dashboard');
     } catch (err) {

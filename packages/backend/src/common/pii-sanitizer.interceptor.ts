@@ -50,10 +50,18 @@ export class PiiSanitizerInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap({
         next: (data) => {
-          const sanitized = sanitizeValue(data);
-          this.logger.log(
-            `${method} ${url} -> ${JSON.stringify(sanitized).substring(0, 200)}`,
-          );
+          // Skip logging for raw binary responses (e.g. photo downloads)
+          if (Buffer.isBuffer(data) || data instanceof ArrayBuffer) {
+            this.logger.log(`${method} ${url} -> [binary ${Buffer.isBuffer(data) ? data.length : 0} bytes]`);
+            return;
+          }
+          try {
+            const sanitized = sanitizeValue(data);
+            const json = JSON.stringify(sanitized);
+            this.logger.log(`${method} ${url} -> ${json?.substring(0, 200) ?? '[empty]'}`);
+          } catch {
+            this.logger.log(`${method} ${url} -> [non-serializable response]`);
+          }
         },
         error: (error) => {
           this.logger.error(`${method} ${url} -> ${error.message}`);

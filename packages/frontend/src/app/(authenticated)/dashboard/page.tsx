@@ -19,15 +19,19 @@ export default function DashboardPage() {
   const t = useTranslations('dashboard');
   const router = useRouter();
   const { data: session } = useSession();
-  const { practiceId, isLoading: practiceLoading } = usePractice();
+  const { practiceId, practice, isLoading: practiceLoading } = usePractice();
   const [statusFilter, setStatusFilter] = useState('ALL');
+
+  const isAdmin = session?.user?.role === 'ADMIN';
+  const isAdminOrDoctor = isAdmin || session?.user?.role === 'ARZT';
+  const canViewConsents = isAdminOrDoctor || session?.user?.role === 'EMPFANG';
 
   const {
     data: consentsData,
     isLoading: consentsLoading,
     mutate: refreshConsents,
   } = useSWR<{ items: ConsentFormSummary[] }>(
-    practiceId && session?.accessToken
+    canViewConsents && practiceId && session?.accessToken
       ? `${API_URL}/api/consent/practice`
       : null,
     createAuthFetcher(session?.accessToken),
@@ -35,13 +39,11 @@ export default function DashboardPage() {
   const consents = consentsData?.items;
 
   const { data: patientsData } = useSWR<{ total: number }>(
-    practiceId && session?.accessToken
+    canViewConsents && practiceId && session?.accessToken
       ? `${API_URL}/api/patients?page=1&limit=1`
       : null,
     createAuthFetcher(session?.accessToken),
   );
-
-  const isAdmin = session?.user?.role === 'ADMIN';
 
   const { data: settingsData } = useSWR<{ logoUrl?: string }>(
     isAdmin && practiceId && session?.accessToken
@@ -66,16 +68,14 @@ export default function DashboardPage() {
     setOnboardingDismissed(true);
   };
 
-  // If user doesn't have a practice yet, redirect to setup (unless platform admin)
-  const isPlatformAdmin = session?.user?.role === 'PLATFORM_ADMIN';
-  const needsSetup = !practiceLoading && !practiceId && !!session && !isPlatformAdmin;
+  // If user doesn't have a practice yet, redirect to setup
+  // Note: PLATFORM_ADMIN redirect to /admin is handled by middleware
+  const needsSetup = !practiceLoading && !practiceId && !!session && session?.user?.role !== 'PLATFORM_ADMIN';
   useEffect(() => {
-    if (isPlatformAdmin) {
-      router.push('/admin');
-    } else if (needsSetup) {
+    if (needsSetup) {
       router.push('/setup');
     }
-  }, [needsSetup, isPlatformAdmin, router]);
+  }, [needsSetup, router]);
 
   // Compute stats
   const stats = useMemo(() => {
@@ -117,6 +117,7 @@ export default function DashboardPage() {
           hasConsents={(consents?.length ?? 0) > 0}
           teamCount={teamCount}
           hasLogo={!!settingsData?.logoUrl}
+          hasKeypair={!!practice?.publicKey}
           onDismiss={dismissOnboarding}
         />
       )}
@@ -129,7 +130,7 @@ export default function DashboardPage() {
             {t('welcomeBack', { name: userName })}
           </p>
         </div>
-        <NewConsentDialog onCreated={() => refreshConsents()} />
+        {canViewConsents && <NewConsentDialog onCreated={() => refreshConsents()} />}
       </div>
 
       {/* Stat cards with stagger animation */}

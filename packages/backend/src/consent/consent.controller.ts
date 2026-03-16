@@ -54,7 +54,7 @@ export class ConsentController {
   }
 
   @Get('practice')
-  @Roles('ADMIN', 'ARZT')
+  @Roles('ADMIN', 'ARZT', 'EMPFANG')
   findByPractice(
     @CurrentUser() user: CurrentUserPayload,
     @Query() pagination: PaginationDto,

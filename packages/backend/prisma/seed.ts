@@ -22,8 +22,57 @@ import {
   SubscriptionStatus,
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import * as fs from 'fs/promises';
+import * as nodePath from 'path';
 
 const prisma = new PrismaClient();
+
+// ── Storage helper (mirrors StorageService behavior) ──
+
+const LOCAL_STORAGE_DIR = nodePath.join(process.cwd(), '.local-storage');
+
+async function uploadToStorage(
+  filePath: string,
+  data: Buffer,
+  _contentType: string,
+): Promise<string> {
+  // Try S3-compatible storage if configured via platform_config
+  const getConfig = async (key: string): Promise<string | null> => {
+    const row = await prisma.platformConfig.findFirst({ where: { key } }).catch(() => null);
+    return (row?.value as string) ?? null;
+  };
+
+  const endpoint = await getConfig('storage.endpoint');
+  const accessKey = await getConfig('storage.accessKey');
+  const secretKey = await getConfig('storage.secretKey');
+
+  if (endpoint && accessKey && secretKey) {
+    // Dynamic import to avoid requiring @aws-sdk when not needed
+    const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
+    const region = (await getConfig('storage.region')) || 'fra1';
+    const bucket = (await getConfig('storage.bucket')) || 'derma-consent-bucket';
+    const s3 = new S3Client({
+      endpoint,
+      region,
+      credentials: { accessKeyId: accessKey, secretAccessKey: secretKey },
+      forcePathStyle: false,
+    });
+    await s3.send(new PutObjectCommand({
+      Bucket: bucket,
+      Key: filePath,
+      Body: data,
+      ContentType: _contentType,
+      ACL: 'private',
+    }));
+    return filePath;
+  }
+
+  // Dev fallback: write to local filesystem (same as LocalFsProvider)
+  const fullPath = nodePath.join(LOCAL_STORAGE_DIR, filePath);
+  await fs.mkdir(nodePath.dirname(fullPath), { recursive: true });
+  await fs.writeFile(fullPath, data);
+  return filePath;
+}
 
 // ── Crypto constants (mirror frontend crypto.ts) ──
 
@@ -120,6 +169,31 @@ async function encryptFormData(data: unknown, publicKey: CryptoKey) {
     encryptedSessionKey: arrayBufferToBase64(encryptedSessionKey),
     iv: arrayBufferToBase64(iv.buffer as ArrayBuffer),
     ciphertext: arrayBufferToBase64(ciphertext),
+  };
+}
+
+async function encryptBlob(data: ArrayBuffer, publicKey: CryptoKey) {
+  const sessionKey = await crypto.subtle.generateKey(
+    { name: 'AES-GCM', length: AES_KEY_LENGTH },
+    true,
+    ['encrypt'],
+  );
+  const rawSessionKey = await crypto.subtle.exportKey('raw', sessionKey);
+  const encryptedSessionKey = await crypto.subtle.encrypt(
+    { name: 'RSA-OAEP' },
+    publicKey,
+    rawSessionKey,
+  );
+  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    sessionKey,
+    data,
+  );
+  return {
+    encryptedSessionKey: arrayBufferToBase64(encryptedSessionKey),
+    iv: arrayBufferToBase64(iv.buffer as ArrayBuffer),
+    encryptedBlob: Buffer.from(ciphertext),
   };
 }
 
@@ -783,8 +857,16 @@ async function main() {
     const metadata = { description: `${ph.type} photo — ${ph.bodyRegion}`, camera: 'Canon EOS R5' };
     const encMeta = await encryptFormData(metadata, pubKey);
 
-    // Encrypt a session key for the photo itself (storage path is the tiny PNG placeholder)
-    const photoEnc = await encryptFormData({ placeholder: true }, pubKey);
+    // Encrypt the photo binary with AES-GCM (mirrors frontend encryptBlob)
+    const pngBuffer = Buffer.from(TINY_PNG_BASE64, 'base64');
+    const photoEnc = await encryptBlob(pngBuffer.buffer.slice(pngBuffer.byteOffset, pngBuffer.byteOffset + pngBuffer.byteLength), pubKey);
+
+    // Upload encrypted blob via storage (S3 in prod, data URI fallback in dev)
+    const storagePath = await uploadToStorage(
+      `photos/${practiceId}/${patientIds[ph.patientIdx]}/${Date.now()}.enc`,
+      photoEnc.encryptedBlob,
+      'application/octet-stream',
+    );
 
     await prisma.treatmentPhoto.create({
       data: {
@@ -795,8 +877,8 @@ async function main() {
         type: ph.type,
         bodyRegion: ph.bodyRegion,
         encryptedSessionKey: photoEnc.encryptedSessionKey,
-        storagePath: `data:image/png;base64,${TINY_PNG_BASE64}`,
-        encryptedMetadata: { iv: encMeta.iv, ciphertext: encMeta.ciphertext },
+        storagePath,
+        encryptedMetadata: { iv: photoEnc.iv, ciphertext: encMeta.ciphertext },
         photoConsentGranted: true,
         takenAt: daysAgo(ph.daysAgo),
         createdAt: daysAgo(ph.daysAgo),
@@ -935,6 +1017,7 @@ async function main() {
   console.log('  4. Browse patients, consent forms, treatment plans');
   console.log('  5. Open a PENDING consent link in incognito for patient flow');
   console.log('');
+
 }
 
 main()
@@ -942,4 +1025,6 @@ main()
     console.error('Seed failed:', err);
     process.exit(1);
   })
-  .finally(() => prisma.$disconnect());
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

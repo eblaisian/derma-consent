@@ -14,6 +14,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Response } from 'express';
 import { PhotoService } from './photo.service';
 import { UploadPhotoDto, UpdatePhotoConsentDto } from './photo.dto';
@@ -26,6 +27,7 @@ import { PaginationDto } from '../common/pagination.dto';
 
 @Controller('api/photos')
 @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
+@SkipThrottle()
 @Roles('ADMIN', 'ARZT')
 export class PhotoController {
   constructor(private readonly photoService: PhotoService) {}
@@ -38,7 +40,12 @@ export class PhotoController {
     @CurrentUser() user: CurrentUserPayload,
   ) {
     const maxSize = 10 * 1024 * 1024; // 10 MB
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+    // Photos are encrypted client-side before upload, so the server receives
+    // ciphertext (application/octet-stream), not raw image data.
+    const allowedMimes = [
+      'image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif',
+      'application/octet-stream', // encrypted photo blob
+    ];
 
     if (!file) {
       throw new BadRequestException('No file provided');
@@ -47,7 +54,7 @@ export class PhotoController {
       throw new BadRequestException('File size exceeds 10 MB limit');
     }
     if (!allowedMimes.includes(file.mimetype)) {
-      throw new BadRequestException('Invalid file type. Allowed: JPEG, PNG, WebP, HEIC');
+      throw new BadRequestException('Invalid file type');
     }
 
     return this.photoService.upload(
@@ -88,16 +95,24 @@ export class PhotoController {
     @CurrentUser() user: CurrentUserPayload,
     @Res() res: Response,
   ) {
-    const buffer = await this.photoService.download(
-      user.practiceId!,
-      user.userId,
-      id,
-    );
-    res.set({
-      'Content-Type': 'application/octet-stream',
-      'Content-Disposition': `attachment; filename="${id}.enc"`,
-    });
-    res.send(buffer);
+    try {
+      const buffer = await this.photoService.download(
+        user.practiceId!,
+        user.userId,
+        id,
+      );
+      res.set({
+        'Content-Type': 'application/octet-stream',
+        'Content-Disposition': `attachment; filename="${id}.enc"`,
+      });
+      res.send(buffer);
+    } catch (err) {
+      if (!res.headersSent) {
+        const status = (err as { status?: number }).status || 500;
+        const message = err instanceof Error ? err.message : 'Download failed';
+        res.status(status).json({ statusCode: status, message });
+      }
+    }
   }
 
   @Delete(':id')

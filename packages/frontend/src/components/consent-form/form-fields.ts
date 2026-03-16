@@ -9,29 +9,48 @@ export type ConsentType =
 export interface FormFieldConfig {
   name: string;
   labelKey: string;
-  type: 'text' | 'textarea' | 'checkbox' | 'select' | 'checkbox-group';
+  type: 'text' | 'textarea' | 'checkbox' | 'select' | 'checkbox-group' | 'yes-no-chips' | 'condition-grid' | 'medication-tags';
   required?: boolean;
   optionKeys?: string[];
+  /** Chip/condition keys for interactive field types */
+  chipKeys?: string[];
 }
+
+// Common allergens for dermatology
+const ALLERGY_CHIPS = [
+  'penicillin', 'latex', 'nickel', 'fragrances',
+  'preservatives', 'localAnesthetics', 'sulfonamides', 'nsaids',
+];
+
+// Common medical conditions relevant to dermatology procedures
+const CONDITION_KEYS = [
+  'hypertension', 'heartDisease', 'diabetes', 'thyroid',
+  'eczema', 'psoriasis', 'rosacea', 'keloidScarring', 'coldSores',
+  'lupus', 'rheumatoidArthritis', 'immunosuppression',
+  'cancer', 'bloodClotting',
+  'noneOfAbove',
+];
 
 const commonMedicalFields: FormFieldConfig[] = [
   {
     name: 'allergies',
     labelKey: 'allergies',
-    type: 'textarea',
+    type: 'yes-no-chips',
     required: true,
+    chipKeys: ALLERGY_CHIPS,
   },
   {
     name: 'medications',
     labelKey: 'medications',
-    type: 'textarea',
+    type: 'medication-tags',
     required: false,
   },
   {
     name: 'medicalHistory',
     labelKey: 'medicalHistory',
-    type: 'textarea',
+    type: 'condition-grid',
     required: true,
+    chipKeys: CONDITION_KEYS,
   },
   {
     name: 'pregnant',

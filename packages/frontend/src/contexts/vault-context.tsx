@@ -189,6 +189,15 @@ export function VaultProvider({ children }: { children: ReactNode }) {
           keyPair.privateKey,
           masterPassword,
         );
+
+        // Auto-unlock vault with the freshly generated private key
+        privateKeyRef.current = keyPair.privateKey;
+        lastActivityRef.current = Date.now();
+        warningShownRef.current = false;
+        setIsUnlocked(true);
+        localStorage.setItem('vault-ever-unlocked', 'true');
+        await persistToSession(keyPair.privateKey);
+
         return { publicKeyJwk, encryptedPrivateKey };
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Key generation failed';
@@ -198,7 +207,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     },
-    [],
+    [persistToSession],
   );
 
   const encryptForPractice = useCallback(

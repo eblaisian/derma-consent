@@ -9,7 +9,7 @@ export class PracticeService {
 
   async create(dto: CreatePracticeDto, userId: string) {
     const trialEndsAt = new Date();
-    trialEndsAt.setDate(trialEndsAt.getDate() + 14);
+    trialEndsAt.setDate(trialEndsAt.getDate() + 30);
 
     const practice = await this.prisma.practice.create({
       data: {

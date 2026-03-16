@@ -132,6 +132,7 @@ describe('BillingService', () => {
         data: {
           status: 'CANCELLED',
           stripeSubscriptionId: null,
+          cancelAtPeriodEnd: false,
         },
       });
     });
@@ -154,6 +155,26 @@ describe('BillingService', () => {
         where: { stripeCustomerId: 'cus_123' },
         data: { status: 'PAST_DUE' },
       });
+    });
+
+    it('should throw on unknown price ID instead of defaulting', async () => {
+      mockPrisma.subscription.update.mockResolvedValue({});
+
+      const event = {
+        type: 'customer.subscription.created',
+        data: {
+          object: {
+            id: 'sub_123',
+            metadata: { practiceId: 'practice-1' },
+            status: 'active',
+            current_period_end: Math.floor(Date.now() / 1000) + 86400,
+            items: { data: [{ price: { id: 'price_unknown_garbage' } }] },
+          },
+        },
+      } as unknown as Stripe.Event;
+
+      await expect(service.handleWebhookEvent(event)).rejects.toThrow('Unknown Stripe price ID');
+      expect(mockPrisma.subscription.update).not.toHaveBeenCalled();
     });
 
     it('should skip events without practiceId in metadata', async () => {

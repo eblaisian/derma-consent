@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException, BadRequestException, ForbiddenEx
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
-import { SmsService } from '../sms/sms.service';
+import { NotificationService } from '../notifications/notification.service';
 import { PdfService } from '../pdf/pdf.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { CreateConsentDto, SubmitConsentDto } from './consent.dto';
@@ -16,7 +16,7 @@ export class ConsentService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
-    private readonly smsService: SmsService,
+    private readonly notificationService: NotificationService,
     private readonly pdfService: PdfService,
     private readonly platformConfig: PlatformConfigService,
     @Optional() private readonly auditService?: AuditService,
@@ -99,10 +99,16 @@ export class ConsentService {
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     const link = `${frontendUrl}/consent/${result.token}`;
 
-    if (dto.deliveryChannel === 'sms' && dto.patientPhone) {
-      await this.smsService.sendConsentLink(dto.patientPhone, 'sms', link, practice.name);
-    } else if (dto.deliveryChannel === 'whatsapp' && dto.patientPhone) {
-      await this.smsService.sendConsentLink(dto.patientPhone, 'whatsapp', link, practice.name);
+    if ((dto.deliveryChannel === 'sms' || dto.deliveryChannel === 'whatsapp') && dto.patientPhone) {
+      this.notificationService.sendConsentLinkViaSms({
+        practiceId: dto.practiceId!,
+        phone: dto.patientPhone,
+        channel: dto.deliveryChannel,
+        link,
+        practiceName: practice.name,
+      }).catch((err) => {
+        this.logger.error(`Failed to send consent link via ${dto.deliveryChannel}: ${err}`);
+      });
     }
     // Email delivery is handled by the controller
 
@@ -127,13 +133,8 @@ export class ConsentService {
       throw new NotFoundException('Consent form not found');
     }
 
-    if (consent.expiresAt < new Date()) {
-      throw new BadRequestException('Consent link has expired');
-    }
-
-    if (consent.status === ConsentStatus.REVOKED) {
-      throw new BadRequestException('Consent has been revoked');
-    }
+    // Return consent with its status for all states — let the frontend render appropriately.
+    // Only the submit endpoint enforces status restrictions.
 
     const settings = await this.prisma.practiceSettings.findUnique({
       where: { practiceId: consent.practiceId },
@@ -148,6 +149,14 @@ export class ConsentService {
 
   async submit(token: string, dto: SubmitConsentDto, ip: string, userAgent: string) {
     const consent = await this.findByToken(token);
+
+    if (consent.expiresAt < new Date()) {
+      throw new BadRequestException('Consent link has expired');
+    }
+
+    if (consent.status === ConsentStatus.REVOKED) {
+      throw new BadRequestException('Consent has been revoked');
+    }
 
     if (consent.status !== ConsentStatus.PENDING) {
       throw new BadRequestException('Consent form has already been submitted');

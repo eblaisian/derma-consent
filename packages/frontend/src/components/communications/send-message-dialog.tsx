@@ -13,6 +13,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
+import { useFeatureFlags } from '@/hooks/use-feature-flags';
 import { Mail, MessageSquare, Send } from 'lucide-react';
 
 interface SendMessageDialogProps {
@@ -29,8 +31,9 @@ function extractPlaceholders(text: string): string[] {
 export function SendMessageDialog({ message, onClose }: SendMessageDialogProps) {
   const t = useTranslations('communications');
   const authFetch = useAuthFetch();
+  const { whatsappEnabled } = useFeatureFlags();
 
-  const [channel, setChannel] = useState<'email' | 'sms'>('email');
+  const [channel, setChannel] = useState<'email' | 'sms' | 'whatsapp'>('email');
   const [recipient, setRecipient] = useState('');
   const [sending, setSending] = useState(false);
 
@@ -126,6 +129,23 @@ export function SendMessageDialog({ message, onClose }: SendMessageDialogProps) 
               <MessageSquare className="h-4 w-4" />
               {t('channelSms')}
             </Button>
+            <Button
+              variant={channel === 'whatsapp' ? 'default' : 'outline'}
+              size="sm"
+              className="flex-1 gap-2"
+              disabled={!whatsappEnabled}
+              onClick={() => setChannel('whatsapp')}
+            >
+              <MessageSquare className="h-4 w-4" />
+              {whatsappEnabled ? t('channelWhatsApp') : (
+                <span className="flex items-center gap-1">
+                  {t('channelWhatsApp')}
+                  <Badge variant="outline" className="text-[9px] px-1 py-0">
+                    {t('comingSoon')}
+                  </Badge>
+                </span>
+              )}
+            </Button>
           </div>
 
           {/* Recipient input */}
@@ -133,7 +153,7 @@ export function SendMessageDialog({ message, onClose }: SendMessageDialogProps) 
             <label className="text-sm font-medium">{t('recipientLabel')}</label>
             <Input
               type={channel === 'email' ? 'email' : 'tel'}
-              placeholder={channel === 'email' ? 'patient@example.com' : '+49...'}
+              placeholder={channel === 'email' ? 'patient@example.com' : '+49 174 ...'}
               value={recipient}
               onChange={(e) => setRecipient(e.target.value)}
             />

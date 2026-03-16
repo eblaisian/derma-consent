@@ -28,8 +28,8 @@ export class SendMessageDto {
   @MaxLength(2000)
   message!: string;
 
-  @IsIn(['email', 'sms'])
-  channel!: 'email' | 'sms';
+  @IsIn(['email', 'sms', 'whatsapp'])
+  channel!: 'email' | 'sms' | 'whatsapp';
 
   @IsString()
   recipient!: string;

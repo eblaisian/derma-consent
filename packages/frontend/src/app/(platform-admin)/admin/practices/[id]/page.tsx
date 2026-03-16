@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useFormatter } from 'next-intl';
 import { useParams } from 'next/navigation';
 import useSWR from 'swr';
 import { useAuthFetch } from '@/lib/auth-fetch';
@@ -45,6 +45,7 @@ type Tab = 'overview' | 'users' | 'consents' | 'subscription';
 
 export default function PracticeDetailPage() {
   const t = useTranslations('admin');
+  const format = useFormatter();
   const { id } = useParams<{ id: string }>();
   const authFetch = useAuthFetch();
   const [tab, setTab] = useState<Tab>('overview');
@@ -155,7 +156,7 @@ export default function PracticeDetailPage() {
       {/* Status badge */}
       {practice.isSuspended && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
-          {t('suspended')} — {practice.suspendedAt ? new Date(practice.suspendedAt).toLocaleString() : ''}
+          {t('suspended')} — {practice.suspendedAt ? format.dateTime(new Date(practice.suspendedAt), { dateStyle: 'medium', timeStyle: 'short' }) : ''}
         </div>
       )}
 
@@ -197,7 +198,7 @@ export default function PracticeDetailPage() {
           </div>
           <div className="rounded-lg border bg-card p-4 sm:col-span-2">
             <p className="text-sm text-muted-foreground">{t('createdDate')}</p>
-            <p className="text-lg font-medium">{new Date(practice.createdAt).toLocaleDateString()}</p>
+            <p className="text-lg font-medium">{format.dateTime(new Date(practice.createdAt), { dateStyle: 'medium' })}</p>
           </div>
         </div>
       )}
@@ -222,7 +223,7 @@ export default function PracticeDetailPage() {
                     <span className="rounded-full bg-muted px-2 py-0.5 text-xs">{user.role}</span>
                   </td>
                   <td className="px-5 py-3 text-muted-foreground">
-                    {new Date(user.createdAt).toLocaleDateString()}
+                    {format.dateTime(new Date(user.createdAt), { dateStyle: 'medium' })}
                   </td>
                 </tr>
               ))}

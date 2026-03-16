@@ -227,57 +227,24 @@
 - `packages/backend/src/app.module.ts` — import SmsModule
 - `packages/frontend/src/components/dashboard/new-consent-dialog.tsx` — add phone number input and channel selector
 
-**Steps**:
+**Status**: COMPLETED — Implemented with seven.io (German SMS provider, GDPR-native).
 
-1. Install Twilio SDK: `cd packages/backend && pnpm add twilio`
-
-2. Create `packages/backend/src/sms/sms.module.ts` and `sms.service.ts`:
-   - Use Twilio API for SMS: `client.messages.create({ to, from, body })`
-   - Use Twilio WhatsApp: `client.messages.create({ to: 'whatsapp:+49...', from: 'whatsapp:+14155238886', body })`
-   - Graceful no-op if `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` not configured
-   - `sendConsentLink(phone: string, channel: 'sms' | 'whatsapp', link: string, practiceName: string)`
-
-3. Update `CreateConsentDto`:
-   ```typescript
-   @IsOptional()
-   @IsString()
-   patientPhone?: string;
-
-   @IsOptional()
-   @IsEnum(['email', 'sms', 'whatsapp'])
-   deliveryChannel?: 'email' | 'sms' | 'whatsapp';
-   ```
-
-4. In consent service `create()`, after generating the consent link:
-   ```typescript
-   if (dto.deliveryChannel === 'sms' && dto.patientPhone) {
-     await this.smsService.sendConsentLink(dto.patientPhone, 'sms', link, practice.name);
-   } else if (dto.deliveryChannel === 'whatsapp' && dto.patientPhone) {
-     await this.smsService.sendConsentLink(dto.patientPhone, 'whatsapp', link, practice.name);
-   } else if (dto.patientEmail) {
-     await this.emailService.sendConsentLink(dto.patientEmail, link, practice.name);
-   }
-   ```
-
-5. In the frontend "New Consent" dialog:
-   - Add delivery channel radio buttons: Email, SMS, WhatsApp
-   - Show phone number input when SMS or WhatsApp selected
-   - Show email input when Email selected
-
-6. Add env vars to `.env.example`:
-   ```
-   TWILIO_ACCOUNT_SID=
-   TWILIO_AUTH_TOKEN=
-   TWILIO_PHONE_NUMBER=
-   ```
+**What was built**:
+- `SmsService` uses seven.io REST API (`POST https://gateway.seven.io/api/sms`) — zero npm dependencies
+- API key stored encrypted in PlatformConfig DB, configurable via Admin > Config > SMS
+- WhatsApp gated behind `sms.whatsappEnabled` toggle (default off, coming soon)
+- Feature flags endpoint (`GET /api/features`) for frontend conditional rendering
+- Consent delivery via SMS, custom messages via Communications module
+- Full notification logging for all SMS sends
+- Sender name configurable (default "DermaConsent", max 11 alphanumeric chars)
 
 **Acceptance Criteria**:
-- [ ] Consent link can be sent via SMS
-- [ ] Consent link can be sent via WhatsApp
-- [ ] Email delivery still works as default
-- [ ] Phone number validated before sending
-- [ ] Graceful degradation when Twilio not configured
-- [ ] `make test-backend` passes
+- [x] Consent link can be sent via SMS
+- [ ] Consent link can be sent via WhatsApp (pending — toggle disabled until provider supports it)
+- [x] Email delivery still works as default
+- [x] Phone number validated before sending
+- [x] Graceful degradation when seven.io not configured
+- [x] `make test-backend` passes
 
 **Dependencies**: None
 
