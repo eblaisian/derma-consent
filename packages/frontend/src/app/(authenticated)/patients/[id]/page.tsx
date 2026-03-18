@@ -110,10 +110,20 @@ export default function PatientDetailPage() {
   const decryptPatientFields = useCallback(async () => {
     if (!isUnlocked || !patient) return;
 
+    // Extract the display value from decrypted data.
+    // Auto-created patients store { value: "..." }, legacy patients may store a plain string.
+    const extractValue = (decrypted: unknown): string => {
+      if (typeof decrypted === 'string') return decrypted;
+      if (decrypted && typeof decrypted === 'object' && 'value' in decrypted) {
+        return String((decrypted as { value: unknown }).value);
+      }
+      return JSON.stringify(decrypted);
+    };
+
     try {
       const namePayload = JSON.parse(patient.encryptedName);
       const name = await decryptForm(namePayload);
-      setDecryptedName(typeof name === 'string' ? name : JSON.stringify(name));
+      setDecryptedName(extractValue(name));
     } catch {
       setDecryptedName(tPatients('decryptionFailed'));
     }
@@ -122,7 +132,7 @@ export default function PatientDetailPage() {
       try {
         const dobPayload = JSON.parse(patient.encryptedDob);
         const dob = await decryptForm(dobPayload);
-        setDecryptedDob(typeof dob === 'string' ? dob : JSON.stringify(dob));
+        setDecryptedDob(extractValue(dob));
       } catch {
         setDecryptedDob(null);
       }
@@ -132,7 +142,7 @@ export default function PatientDetailPage() {
       try {
         const emailPayload = JSON.parse(patient.encryptedEmail);
         const email = await decryptForm(emailPayload);
-        setDecryptedEmail(typeof email === 'string' ? email : JSON.stringify(email));
+        setDecryptedEmail(extractValue(email));
       } catch {
         setDecryptedEmail(null);
       }
