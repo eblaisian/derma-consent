@@ -20,9 +20,15 @@ import { EducationVideo } from './education-video';
 import { quizQuestions } from './quiz-questions';
 import { usePublicAiStatus } from '@/hooks/use-ai-status';
 
-type Step = 'form' | 'quiz' | 'signature' | 'review' | 'submitting';
+type Step = 'personal' | 'form' | 'quiz' | 'signature' | 'review' | 'submitting';
 
-const STEPS = ['form', 'quiz', 'signature', 'review'] as const;
+const STEPS = ['personal', 'form', 'quiz', 'signature', 'review'] as const;
+
+export interface PatientIdentity {
+  fullName: string;
+  dateOfBirth: string;
+  email: string;
+}
 
 interface ConsentFormProps {
   consentType: ConsentType;
@@ -31,6 +37,7 @@ interface ConsentFormProps {
   onSubmit: (data: {
     formData: Record<string, unknown>;
     signatureData: string;
+    patientIdentity: PatientIdentity;
     comprehensionScore?: number;
     comprehensionAnswers?: Array<{ questionId: string; selectedIndex: number; correct: boolean }>;
   }) => Promise<void>;
@@ -51,9 +58,10 @@ export function ConsentForm({
   const tFields = useTranslations('medicalFields');
   const tOptions = useTranslations('medicalOptions');
   const { aiEnabled } = usePublicAiStatus();
-  const [step, setStep] = useState<Step>('form');
+  const [step, setStep] = useState<Step>('personal');
   const [signatureData, setSignatureData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [patientIdentity, setPatientIdentity] = useState<PatientIdentity>({ fullName: '', dateOfBirth: '', email: '' });
   const [comprehensionScore, setComprehensionScore] = useState<number | undefined>();
   const [comprehensionAnswers, setComprehensionAnswers] = useState<
     Array<{ questionId: string; selectedIndex: number; correct: boolean }> | undefined
@@ -74,6 +82,15 @@ export function ConsentForm({
     return tOptions.has(optionKey as keyof IntlMessages['medicalOptions'])
       ? tOptions(optionKey as keyof IntlMessages['medicalOptions'])
       : optionKey;
+  };
+
+  const handlePersonalNext = () => {
+    if (!patientIdentity.fullName.trim() || !patientIdentity.dateOfBirth) {
+      setError(t('fieldRequired'));
+      return;
+    }
+    setError(null);
+    setStep('form');
   };
 
   const handleFormNext = handleSubmit(() => {
@@ -103,6 +120,7 @@ export function ConsentForm({
       await onSubmit({
         formData: getValues(),
         signatureData,
+        patientIdentity,
         comprehensionScore,
         comprehensionAnswers,
       });
@@ -135,6 +153,7 @@ export function ConsentForm({
         <div className="flex items-center justify-between mb-3">
           {STEPS.map((s, i) => {
             const stepLabels = {
+              personal: t('stepPersonal'),
               form: t('stepForm'),
               quiz: t('stepQuiz'),
               signature: t('stepSignature'),
@@ -190,6 +209,65 @@ export function ConsentForm({
       {/* Education Video (shown above form when configured) */}
       {step === 'form' && videoUrl && (
         <EducationVideo url={videoUrl} />
+      )}
+
+      {/* Step 0: Personal Details */}
+      {step === 'personal' && (
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="patient-name" className="text-base">
+              {t('fullName')} <span className="text-destructive ml-1">*</span>
+            </Label>
+            <Input
+              id="patient-name"
+              className="h-11"
+              value={patientIdentity.fullName}
+              onChange={(e) => setPatientIdentity((p) => ({ ...p, fullName: e.target.value }))}
+              autoComplete="name"
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="patient-dob" className="text-base">
+              {t('dateOfBirth')} <span className="text-destructive ml-1">*</span>
+            </Label>
+            <Input
+              id="patient-dob"
+              type="date"
+              className="h-11"
+              value={patientIdentity.dateOfBirth}
+              onChange={(e) => setPatientIdentity((p) => ({ ...p, dateOfBirth: e.target.value }))}
+              autoComplete="bday"
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="patient-email" className="text-base">
+              {t('emailAddress')}
+            </Label>
+            <Input
+              id="patient-email"
+              type="email"
+              className="h-11"
+              value={patientIdentity.email}
+              onChange={(e) => setPatientIdentity((p) => ({ ...p, email: e.target.value }))}
+              autoComplete="email"
+            />
+          </div>
+
+          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+            <Shield className="size-3.5 text-success shrink-0" />
+            {t('personalDataNotice')}
+          </p>
+
+          <Separator />
+
+          <div className="flex justify-end pt-2">
+            <Button type="button" className="h-11 px-6" onClick={handlePersonalNext} style={primaryStyle}>
+              {t('nextToForm')}
+            </Button>
+          </div>
+        </div>
       )}
 
       {/* Step 1: Form Fields */}
@@ -385,7 +463,10 @@ export function ConsentForm({
 
           <Separator />
 
-          <div className="flex justify-end pt-2">
+          <div className="flex justify-between pt-2">
+            <Button variant="outline" className="h-11" type="button" onClick={() => setStep('personal')}>
+              {t('back')}
+            </Button>
             <Button type="submit" className="h-11 px-6" style={primaryStyle}>
               {questions.length > 0 ? t('nextToQuiz') : t('nextToSignature')}
             </Button>
@@ -428,6 +509,22 @@ export function ConsentForm({
         <div className="space-y-6">
           <h2 className="text-lg font-semibold">{t('reviewTitle')}</h2>
           <div className="bg-muted/50 border rounded-lg p-4 space-y-3 text-base leading-relaxed">
+            {patientIdentity.fullName && (
+              <div>
+                <span className="font-medium">{t('fullName')}:</span> {patientIdentity.fullName}
+              </div>
+            )}
+            {patientIdentity.dateOfBirth && (
+              <div>
+                <span className="font-medium">{t('dateOfBirth')}:</span> {patientIdentity.dateOfBirth}
+              </div>
+            )}
+            {patientIdentity.email && (
+              <div>
+                <span className="font-medium">{t('emailAddress')}:</span> {patientIdentity.email}
+              </div>
+            )}
+            <Separator className="my-2" />
             {Object.entries(getValues()).map(([key, value]) => {
               const field = fields.find((f) => f.name === key);
               if (!field || value === '' || value === false || value === undefined || value === null) return null;

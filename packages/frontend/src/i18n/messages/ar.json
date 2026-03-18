@@ -302,7 +302,13 @@
     "stepForm": "النموذج",
     "stepQuiz": "اختبار",
     "stepSignature": "التوقيع",
-    "stepReview": "مراجعة"
+    "stepReview": "مراجعة",
+    "stepPersonal": "التفاصيل",
+    "fullName": "الاسم الكامل",
+    "dateOfBirth": "تاريخ الميلاد",
+    "emailAddress": "البريد الإلكتروني (اختياري)",
+    "personalDataNotice": "يتم تخزين بياناتك مشفرة من طرف إلى طرف.",
+    "nextToForm": "متابعة"
   },
   "consentTypes": {
     "BOTOX": "Botox / توكسين البوتولينوم",

@@ -20,6 +20,12 @@ const PII_FIELDS = [
   'encrypted_session_key',
   'encryptedPrivKey',
   'encrypted_priv_key',
+  'patientLookupHash',
+  'encryptedPatientName',
+  'encryptedPatientDob',
+  'encryptedPatientEmail',
+  'lookupHash',
+  'lookup_hash',
 ];
 
 function sanitizeValue(obj: unknown): unknown {

@@ -302,7 +302,13 @@
     "stepForm": "Form",
     "stepQuiz": "Quiz",
     "stepSignature": "İmza",
-    "stepReview": "İncele"
+    "stepReview": "İncele",
+    "stepPersonal": "Detaylar",
+    "fullName": "Ad Soyad",
+    "dateOfBirth": "Doğum tarihi",
+    "emailAddress": "E-posta (isteğe bağlı)",
+    "personalDataNotice": "Bilgileriniz uçtan uca şifreli olarak saklanır.",
+    "nextToForm": "Devam"
   },
   "consentTypes": {
     "BOTOX": "Botox / Botulinum toksin",

@@ -302,7 +302,13 @@
     "stepForm": "Form",
     "stepQuiz": "Quiz",
     "stepSignature": "Sign",
-    "stepReview": "Review"
+    "stepReview": "Review",
+    "stepPersonal": "Details",
+    "fullName": "Full name",
+    "dateOfBirth": "Date of birth",
+    "emailAddress": "Email address (optional)",
+    "personalDataNotice": "Your details are stored end-to-end encrypted.",
+    "nextToForm": "Continue"
   },
   "consentTypes": {
     "BOTOX": "Botox / Botulinum toxin",

@@ -207,6 +207,19 @@ export class ConsentService {
       ipAddress: ip,
     });
 
+    // Auto-create or link patient record (best-effort — never blocks submission)
+    try {
+      const patientId = await this.upsertPatient(updated.practiceId, dto);
+      if (patientId) {
+        await this.prisma.consentForm.update({
+          where: { id: updated.id },
+          data: { patientId },
+        });
+      }
+    } catch (err) {
+      this.logger.error(`Patient upsert failed for consent ${updated.id}: ${err instanceof Error ? err.message : err}`);
+    }
+
     // Generate PDF immediately if no payment is required
     const practice = await this.prisma.practice.findUnique({
       where: { id: updated.practiceId },
@@ -297,5 +310,51 @@ export class ConsentService {
     }));
 
     return { items: enrichedItems, total, page, limit, totalPages: Math.ceil(total / limit) };
+  }
+
+  /** Find or create a Patient record from encrypted identity fields submitted with a consent form. */
+  private async upsertPatient(practiceId: string, dto: SubmitConsentDto): Promise<string | null> {
+    if (!dto.patientLookupHash || !dto.encryptedPatientName) return null;
+
+    // Try to find existing patient by lookup hash
+    const existing = await this.prisma.patient.findUnique({
+      where: { practiceId_lookupHash: { practiceId, lookupHash: dto.patientLookupHash } },
+      select: { id: true },
+    });
+    if (existing) return existing.id;
+
+    // Create new patient record
+    try {
+      const created = await this.prisma.patient.create({
+        data: {
+          practiceId,
+          lookupHash: dto.patientLookupHash,
+          encryptedName: dto.encryptedPatientName,
+          encryptedDob: dto.encryptedPatientDob ?? null,
+          encryptedEmail: dto.encryptedPatientEmail ?? null,
+        },
+        select: { id: true },
+      });
+
+      await this.auditService?.log({
+        practiceId,
+        action: 'PATIENT_CREATED',
+        entityType: 'Patient',
+        entityId: created.id,
+        metadata: { source: 'consent-submission' },
+      });
+
+      return created.id;
+    } catch (err) {
+      // Handle race condition: another concurrent submission created the same patient
+      if ((err as { code?: string }).code === 'P2002') {
+        const raced = await this.prisma.patient.findUnique({
+          where: { practiceId_lookupHash: { practiceId, lookupHash: dto.patientLookupHash } },
+          select: { id: true },
+        });
+        return raced?.id ?? null;
+      }
+      throw err;
+    }
   }
 }

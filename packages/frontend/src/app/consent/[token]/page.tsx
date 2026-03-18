@@ -4,8 +4,9 @@ import { use, useCallback, useState } from 'react';
 import useSWR from 'swr';
 import { useTranslations } from 'next-intl';
 import { ConsentForm } from '@/components/consent-form/consent-form';
+import type { PatientIdentity } from '@/components/consent-form/consent-form';
 import { LanguageSwitcher } from '@/components/language-switcher';
-import { useVault } from '@/hooks/use-vault';
+import { importPublicKey, encryptFormData } from '@/lib/crypto';
 import { Shield, CheckCircle, FileSignature, XCircle, Clock, Lock, Server } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { ConsentType } from '@/components/consent-form/form-fields';
@@ -58,7 +59,6 @@ export default function ConsentPage({
 }) {
   const { token } = use(params);
   const t = useTranslations('consent');
-  const { encryptForPractice } = useVault();
   const [submitted, setSubmitted] = useState(false);
   const [stripeUrl, setStripeUrl] = useState<string | null>(null);
 
@@ -71,6 +71,7 @@ export default function ConsentPage({
     async (submission: {
       formData: Record<string, unknown>;
       signatureData: string;
+      patientIdentity: PatientIdentity;
       comprehensionScore?: number;
       comprehensionAnswers?: Array<{ questionId: string; selectedIndex: number; correct: boolean }>;
     }) => {
@@ -78,13 +79,38 @@ export default function ConsentPage({
         throw new Error('Practice public key not available');
       }
 
-      const encrypted = await encryptForPractice(
+      const publicKey = await importPublicKey(data.practice.publicKey);
+
+      // Encrypt form data (medical questionnaire + signature)
+      const encrypted = await encryptFormData(
         {
           ...submission.formData,
           signatureData: submission.signatureData,
         },
-        data.practice.publicKey,
+        publicKey,
       );
+
+      // Compute patient lookup hash and encrypt identity fields
+      let patientFields: Record<string, string> = {};
+      const { fullName, dateOfBirth, email } = submission.patientIdentity;
+      if (fullName.trim()) {
+        const hashInput = fullName.trim().toLowerCase() + '|' + dateOfBirth;
+        const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(hashInput));
+        const lookupHash = Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
+
+        const encName = await encryptFormData({ value: fullName.trim() }, publicKey);
+        patientFields.patientLookupHash = lookupHash;
+        patientFields.encryptedPatientName = JSON.stringify({ iv: encName.iv, ciphertext: encName.ciphertext, encryptedSessionKey: encName.encryptedSessionKey });
+
+        if (dateOfBirth) {
+          const encDob = await encryptFormData({ value: dateOfBirth }, publicKey);
+          patientFields.encryptedPatientDob = JSON.stringify({ iv: encDob.iv, ciphertext: encDob.ciphertext, encryptedSessionKey: encDob.encryptedSessionKey });
+        }
+        if (email.trim()) {
+          const encEmail = await encryptFormData({ value: email.trim() }, publicKey);
+          patientFields.encryptedPatientEmail = JSON.stringify({ iv: encEmail.iv, ciphertext: encEmail.ciphertext, encryptedSessionKey: encEmail.encryptedSessionKey });
+        }
+      }
 
       const response = await fetch(`${API_URL}/api/consent/${token}/submit`, {
         method: 'POST',
@@ -101,6 +127,7 @@ export default function ConsentPage({
           ...(submission.comprehensionAnswers && {
             comprehensionAnswers: submission.comprehensionAnswers,
           }),
+          ...patientFields,
         }),
       });
 
@@ -118,7 +145,7 @@ export default function ConsentPage({
         setSubmitted(true);
       }
     },
-    [data, token, encryptForPractice],
+    [data, token],
   );
 
   if (isLoading) {

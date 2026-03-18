@@ -170,7 +170,6 @@ describe('ConsentService', () => {
       const dto = {
         encryptedResponses: { data: 'encrypted' },
         encryptedSessionKey: 'session-key-encrypted',
-        signatureData: 'data:image/png;base64,iVBOR...',
       };
 
       const result = await service.submit(
@@ -203,7 +202,7 @@ describe('ConsentService', () => {
       await expect(
         service.submit(
           'abc-123-token',
-          { encryptedResponses: {}, encryptedSessionKey: 'key', signatureData: 'data:image/png;base64,x' },
+          { encryptedResponses: {}, encryptedSessionKey: 'key' },
           '127.0.0.1',
           'Mozilla',
         ),

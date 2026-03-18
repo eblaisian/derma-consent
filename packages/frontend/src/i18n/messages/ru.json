@@ -302,7 +302,13 @@
     "stepForm": "Форма",
     "stepQuiz": "Тест",
     "stepSignature": "Подпись",
-    "stepReview": "Проверка"
+    "stepReview": "Проверка",
+    "stepPersonal": "Данные",
+    "fullName": "Полное имя",
+    "dateOfBirth": "Дата рождения",
+    "emailAddress": "Email (необязательно)",
+    "personalDataNotice": "Ваши данные хранятся в зашифрованном виде.",
+    "nextToForm": "Продолжить"
   },
   "consentTypes": {
     "BOTOX": "Ботокс / Ботулотоксин",

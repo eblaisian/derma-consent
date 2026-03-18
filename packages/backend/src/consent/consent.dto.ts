@@ -1,4 +1,4 @@
-import { IsEnum, IsString, IsOptional, IsObject, IsEmail, IsIn, IsNumber, IsArray } from 'class-validator';
+import { IsEnum, IsString, IsOptional, IsObject, IsEmail, IsIn, IsNumber, IsArray, Matches, MaxLength } from 'class-validator';
 
 export enum ConsentType {
   BOTOX = 'BOTOX',
@@ -42,16 +42,33 @@ export class SubmitConsentDto {
   encryptedSessionKey!: string;
 
   @IsOptional()
-  @IsString()
-  signatureData?: string; // deprecated: signature is inside encrypted blob only
-
-  @IsOptional()
   @IsNumber()
   comprehensionScore?: number;
 
   @IsOptional()
   @IsArray()
   comprehensionAnswers?: Array<{ questionId: string; selectedIndex: number; correct: boolean }>;
+
+  // Patient auto-creation fields (computed client-side from the personal details step)
+  @IsOptional()
+  @IsString()
+  @Matches(/^[a-f0-9]{64}$/)
+  patientLookupHash?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(10000)
+  encryptedPatientName?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(10000)
+  encryptedPatientDob?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(10000)
+  encryptedPatientEmail?: string;
 }
 
 export class RevokeConsentDto {
