@@ -235,7 +235,7 @@ export default function AuditPage() {
                         <Badge variant={getActionBadgeVariant(entry.action)} className="text-xs font-normal">
                           {tActionLabels.has(entry.action as typeof auditActionKeys[number])
                             ? tActionLabels(entry.action as typeof auditActionKeys[number])
-                            : entry.action.split('_').slice(0, 2).join(' ')}
+                            : entry.action.replace(/_/g, ' ')}
                         </Badge>
                         <span className="text-sm">
                           {tActions.has(entry.action as typeof auditActionKeys[number])
