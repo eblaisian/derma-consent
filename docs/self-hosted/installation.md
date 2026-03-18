@@ -9,7 +9,7 @@ For most deployments, [Docker Compose](/self-hosted/docker) is simpler. Use this
 ## 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-org/derma-consent.git
+git clone https://github.com/sohaibfaroukh/derma-consent.git
 cd derma-consent
 ```
 

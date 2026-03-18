@@ -9,7 +9,7 @@
 ## First-Time Setup
 
 ```bash
-git clone https://github.com/your-org/derma-consent.git
+git clone https://github.com/sohaibfaroukh/derma-consent.git
 cd derma-consent
 make dev
 ```

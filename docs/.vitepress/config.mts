@@ -3,7 +3,7 @@ import { withMermaid } from 'vitepress-plugin-mermaid'
 
 export default withMermaid(
   defineConfig({
-    title: 'Derma Consent',
+    title: 'DermaConsent',
     description: 'Zero-knowledge consent management for dermatology practices',
 
     head: [['link', { rel: 'icon', href: '/favicon.svg' }]],
@@ -12,16 +12,28 @@ export default withMermaid(
       /localhost/,
     ],
 
-    srcExclude: ['STRATEGY.md', 'TEST-CREDENTIALS.md'],
+    // Exclude internal docs from the public site
+    srcExclude: [
+      'STRATEGY.md',
+      'TEST-CREDENTIALS.md',
+      'LAUNCH_READINESS_REPORT.md',
+      'LAUNCH-ANALYSIS-2026-03-14.md',
+      'PRODUCT-AUDIT-2026-02-21.md',
+      'AI-ROADMAP.md',
+      'DESIGN_SYSTEM.md',
+      'plan/**',
+    ],
 
     themeConfig: {
       logo: '/favicon.svg',
+      siteTitle: 'DermaConsent Docs',
 
       nav: [
         { text: 'Guide', link: '/guide/' },
         { text: 'Self-Hosted', link: '/self-hosted/' },
         { text: 'Development', link: '/development/' },
         { text: 'Reference', link: '/reference/environment-variables' },
+        { text: 'App', link: 'https://consent.eblaisian.com' },
       ],
 
       sidebar: {
@@ -47,6 +59,7 @@ export default withMermaid(
               { text: 'Configuration', link: '/self-hosted/configuration' },
               { text: 'Docker Deployment', link: '/self-hosted/docker' },
               { text: 'Updating', link: '/self-hosted/updating' },
+              { text: 'Production Checklist', link: '/self-hosted/production-checklist' },
             ],
           },
         ],
@@ -80,23 +93,22 @@ export default withMermaid(
         ],
       },
 
-      socialLinks: [
-        { icon: 'github', link: 'https://github.com/your-org/derma-consent' },
-      ],
-
       search: {
         provider: 'local',
       },
 
       footer: {
-        message: 'Released under the MIT License.',
-        copyright: 'Copyright 2025-present Derma Consent',
+        message: 'DSGVO-konforme digitale Einwilligungen',
+        copyright: 'Copyright 2025-present DermaConsent',
+      },
+
+      editLink: {
+        pattern: 'https://github.com/sohaibfaroukh/derma-consent/edit/master/docs/:path',
+        text: 'Edit this page',
       },
     },
 
-    mermaid: {
-      // Mermaid config: https://mermaid.js.org/config/setup/modules/mermaidAPI.html
-    },
+    mermaid: {},
 
     vite: {
       optimizeDeps: {

@@ -12,7 +12,7 @@ Get Derma Consent running locally in 5 commands.
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/derma-consent.git
+git clone https://github.com/sohaibfaroukh/derma-consent.git
 cd derma-consent
 
 # 2. Start everything (installs deps, starts DB, runs migrations, launches dev servers)
@@ -36,7 +36,7 @@ To populate the database with sample practices, users, patients, and consent for
 make seed
 ```
 
-This creates two practices with users across all three roles. All accounts use password `Test1234!`. See [Test Credentials](https://github.com/your-org/derma-consent/blob/main/docs/TEST-CREDENTIALS.md) for the full list.
+This creates two practices with users across all three roles. All accounts use password `Test1234!`. See [Test Credentials](https://github.com/sohaibfaroukh/derma-consent/blob/main/docs/TEST-CREDENTIALS.md) for the full list.
 
 ## Open the App
 

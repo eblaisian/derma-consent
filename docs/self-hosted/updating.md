@@ -42,7 +42,7 @@ pm2 restart derma-backend derma-frontend
 ## Before Updating
 
 - **Back up your database** before any update
-- Check the [changelog](https://github.com/your-org/derma-consent/releases) for breaking changes
+- Check the [changelog](https://github.com/sohaibfaroukh/derma-consent/releases) for breaking changes
 - Test the update in a staging environment first if possible
 
 ## Database Migrations

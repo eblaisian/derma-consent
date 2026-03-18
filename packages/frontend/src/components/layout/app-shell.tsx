@@ -133,7 +133,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="icon" asChild aria-label={tNav('helpCenter')}>
-                  <a href="mailto:support@dermaconsent.de">
+                  <a href="https://docs.consent.eblaisian.com" target="_blank" rel="noopener noreferrer">
                     <CircleHelp className="size-4" />
                   </a>
                 </Button>
