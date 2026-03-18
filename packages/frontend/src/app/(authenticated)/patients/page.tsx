@@ -7,6 +7,7 @@ import useSWR from 'swr';
 import { API_URL, createAuthFetcher } from '@/lib/api';
 import { useAuthFetch } from '@/lib/auth-fetch';
 import { useVault } from '@/hooks/use-vault';
+import { extractDecryptedValue } from '@/lib/decrypt-utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -74,7 +75,7 @@ export default function PatientsPage() {
       try {
         const payload = JSON.parse(patient.encryptedName);
         const decrypted = await decryptForm(payload);
-        names[patient.id] = typeof decrypted === 'string' ? decrypted : JSON.stringify(decrypted);
+        names[patient.id] = extractDecryptedValue(decrypted);
       } catch {
         names[patient.id] = t('decryptionFailed');
       }

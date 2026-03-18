@@ -94,21 +94,23 @@ export default function ConsentPage({
       const patientFields: Record<string, string> = {};
       const { fullName, dateOfBirth, email } = submission.patientIdentity;
       if (fullName.trim()) {
-        const hashInput = fullName.trim().toLowerCase() + '|' + dateOfBirth;
+        // Use same separator as create-patient-dialog (:) for lookup hash deduplication
+        const hashInput = fullName.trim().toLowerCase() + ':' + dateOfBirth;
         const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(hashInput));
         const lookupHash = Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
 
-        const encName = await encryptFormData({ value: fullName.trim() }, publicKey);
+        // Encrypt raw strings (not wrapped objects) to match manual patient creation format
+        const encName = await encryptFormData(fullName.trim(), publicKey);
         patientFields.patientLookupHash = lookupHash;
-        patientFields.encryptedPatientName = JSON.stringify({ iv: encName.iv, ciphertext: encName.ciphertext, encryptedSessionKey: encName.encryptedSessionKey });
+        patientFields.encryptedPatientName = JSON.stringify(encName);
 
         if (dateOfBirth) {
-          const encDob = await encryptFormData({ value: dateOfBirth }, publicKey);
-          patientFields.encryptedPatientDob = JSON.stringify({ iv: encDob.iv, ciphertext: encDob.ciphertext, encryptedSessionKey: encDob.encryptedSessionKey });
+          const encDob = await encryptFormData(dateOfBirth, publicKey);
+          patientFields.encryptedPatientDob = JSON.stringify(encDob);
         }
         if (email.trim()) {
-          const encEmail = await encryptFormData({ value: email.trim() }, publicKey);
-          patientFields.encryptedPatientEmail = JSON.stringify({ iv: encEmail.iv, ciphertext: encEmail.ciphertext, encryptedSessionKey: encEmail.encryptedSessionKey });
+          const encEmail = await encryptFormData(email.trim(), publicKey);
+          patientFields.encryptedPatientEmail = JSON.stringify(encEmail);
         }
       }
 
