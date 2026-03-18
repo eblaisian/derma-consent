@@ -579,7 +579,6 @@ async function main() {
   await prisma.practiceSettings.create({
     data: {
       practiceId: PRACTICE_1_ID,
-      brandColor: '#2563EB',
       defaultConsentExpiry: 7,
       enabledConsentTypes: JSON.parse(
         '["BOTOX","FILLER","LASER","CHEMICAL_PEEL","MICRONEEDLING","PRP"]',
@@ -591,7 +590,6 @@ async function main() {
   await prisma.practiceSettings.create({
     data: {
       practiceId: PRACTICE_2_ID,
-      brandColor: '#059669',
       defaultConsentExpiry: 14,
       enabledConsentTypes: JSON.parse(
         '["BOTOX","FILLER","LASER","MICRONEEDLING"]',
