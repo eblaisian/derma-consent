@@ -240,39 +240,47 @@ export default function PatientDetailPage() {
           <CardTitle>{t('data')}</CardTitle>
           <CardDescription>{t('encryptedData')}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2">
-          <div>
-            <span className="text-sm text-muted-foreground">{t('nameLabel')}</span>
-            {decryptedName ? (
-              <span className="text-sm">{decryptedName}</span>
-            ) : isUnlocked ? (
-              <span className="inline-block h-4 w-24 animate-pulse rounded bg-muted align-middle" />
-            ) : (
-              <VaultLockedPlaceholder size="sm" className="inline-flex h-6 w-auto px-2 text-xs" />
-            )}
-          </div>
-          <div>
-            <span className="text-sm text-muted-foreground">{tPatients('dateOfBirth')}: </span>
-            {decryptedDob ? (
-              <span className="text-sm">{decryptedDob}</span>
-            ) : !isUnlocked ? (
-              <VaultLockedPlaceholder size="sm" className="inline-flex h-6 w-auto px-2 text-xs" />
-            ) : null}
-          </div>
-          <div>
-            <span className="text-sm text-muted-foreground">{tPatients('email')}: </span>
-            {decryptedEmail ? (
-              <span className="text-sm">{decryptedEmail}</span>
-            ) : !isUnlocked ? (
-              <VaultLockedPlaceholder size="sm" className="inline-flex h-6 w-auto px-2 text-xs" />
-            ) : null}
-          </div>
-          <div>
-            <span className="text-sm text-muted-foreground">{t('createdLabel')}</span>
-            <span className="text-sm">
-              {format.dateTime(new Date(patient.createdAt), { dateStyle: 'long' })}
-            </span>
-          </div>
+        <CardContent>
+          {!isUnlocked ? (
+            <VaultLockedPlaceholder size="lg" />
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm text-muted-foreground shrink-0">{t('nameLabel')}</span>
+                {decryptedName ? (
+                  <span className="text-sm font-medium">{decryptedName}</span>
+                ) : (
+                  <span className="inline-block h-4 w-32 animate-pulse rounded bg-muted" />
+                )}
+              </div>
+              {(decryptedDob || patient.encryptedDob) && (
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm text-muted-foreground shrink-0">{tPatients('dateOfBirth')}:</span>
+                  {decryptedDob ? (
+                    <span className="text-sm font-medium">{decryptedDob}</span>
+                  ) : (
+                    <span className="inline-block h-4 w-24 animate-pulse rounded bg-muted" />
+                  )}
+                </div>
+              )}
+              {(decryptedEmail || patient.encryptedEmail) && (
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm text-muted-foreground shrink-0">{tPatients('email')}:</span>
+                  {decryptedEmail ? (
+                    <span className="text-sm font-medium">{decryptedEmail}</span>
+                  ) : (
+                    <span className="inline-block h-4 w-40 animate-pulse rounded bg-muted" />
+                  )}
+                </div>
+              )}
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm text-muted-foreground shrink-0">{t('createdLabel')}</span>
+                <span className="text-sm font-medium">
+                  {format.dateTime(new Date(patient.createdAt), { dateStyle: 'long' })}
+                </span>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
