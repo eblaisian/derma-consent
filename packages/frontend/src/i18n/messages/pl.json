@@ -503,7 +503,8 @@
     "noPatients": "Brak pacjentów.",
     "found": "Znaleziono pacjenta: {id}",
     "notFound": "Pacjent nie znaleziony",
-    "noPatientsDescription": "Pacjenci są tworzeni automatycznie po przesłaniu formularzy zgody."
+    "noPatientsDescription": "Pacjenci są tworzeni automatycznie po przesłaniu formularzy zgody.",
+    "consents": "Zgody"
   },
   "patientDetail": {
     "title": "Szczegóły pacjenta",
@@ -825,7 +826,8 @@
     "fetchError": "Błąd ładowania zgody.",
     "signature": "Podpis",
     "signatureAlt": "Podpis pacjenta",
-    "close": "Zamknij"
+    "close": "Zamknij",
+    "patient": "Pacjent"
   },
   "onboarding": {
     "welcomeTitle": "Witaj w DermaConsent",

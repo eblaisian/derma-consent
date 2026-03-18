@@ -27,6 +27,7 @@ export class PatientService {
           encryptedEmail: true,
           lookupHash: true,
           createdAt: true,
+          _count: { select: { consentForms: true } },
         },
       }),
       this.prisma.patient.count({ where: { practiceId } }),

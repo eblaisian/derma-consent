@@ -503,7 +503,8 @@
     "noPatients": "Aún no hay pacientes.",
     "found": "Paciente encontrado: {id}",
     "notFound": "Paciente no encontrado",
-    "noPatientsDescription": "Los pacientes se crean automáticamente cuando se envían formularios de consentimiento."
+    "noPatientsDescription": "Los pacientes se crean automáticamente cuando se envían formularios de consentimiento.",
+    "consents": "Consentimientos"
   },
   "patientDetail": {
     "title": "Detalles del paciente",
@@ -825,7 +826,8 @@
     "fetchError": "Error al cargar el consentimiento.",
     "signature": "Firma",
     "signatureAlt": "Firma del paciente",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "patient": "Paciente"
   },
   "photos": {
     "uploadTitle": "Subir foto",

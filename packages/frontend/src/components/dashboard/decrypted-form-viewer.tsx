@@ -16,14 +16,19 @@ import {
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { EncryptionBadge } from '@/components/ui/encryption-badge';
+import Link from 'next/link';
+import { User } from 'lucide-react';
 
 interface DecryptedFormViewerProps {
   token: string;
   onClose: () => void;
+  patientName?: string;
+  patientId?: string;
 }
 
-export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps) {
+export function DecryptedFormViewer({ token, onClose, patientName, patientId }: DecryptedFormViewerProps) {
   const t = useTranslations('decryptedViewer');
   const tFields = useTranslations('medicalFields');
   const tOptions = useTranslations('medicalOptions');
@@ -112,6 +117,16 @@ export function DecryptedFormViewer({ token, onClose }: DecryptedFormViewerProps
             <EncryptionBadge />
           </DialogDescription>
         </DialogHeader>
+
+        {patientId && (
+          <div className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2">
+            <User className="size-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">{t('patient')}:</span>
+            <Link href={`/patients/${patientId}`} onClick={onClose} className="text-sm font-medium text-primary hover:underline underline-offset-4">
+              {patientName || patientId.slice(0, 8)}
+            </Link>
+          </div>
+        )}
 
         {fetchError && (
           <p className="text-sm text-destructive">{t('fetchError')}</p>

@@ -503,7 +503,8 @@
     "noPatients": "No patients yet.",
     "found": "Patient found: {id}",
     "notFound": "Patient not found",
-    "noPatientsDescription": "Patients are created automatically when consent forms are submitted."
+    "noPatientsDescription": "Patients are created automatically when consent forms are submitted.",
+    "consents": "Consents"
   },
   "patientDetail": {
     "title": "Patient details",
@@ -827,7 +828,8 @@
     "fetchError": "Error loading consent.",
     "signature": "Signature",
     "signatureAlt": "Patient signature",
-    "close": "Close"
+    "close": "Close",
+    "patient": "Patient"
   },
   "onboarding": {
     "welcomeTitle": "Welcome to DermaConsent",

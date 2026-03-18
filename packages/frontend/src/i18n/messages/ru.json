@@ -503,7 +503,8 @@
     "noPatients": "Пациентов пока нет.",
     "found": "Пациент найден: {id}",
     "notFound": "Пациент не найден",
-    "noPatientsDescription": "Пациенты создаются автоматически при отправке форм согласия."
+    "noPatientsDescription": "Пациенты создаются автоматически при отправке форм согласия.",
+    "consents": "Согласия"
   },
   "patientDetail": {
     "title": "Данные пациента",
@@ -825,7 +826,8 @@
     "fetchError": "Ошибка загрузки согласия.",
     "signature": "Подпись",
     "signatureAlt": "Подпись пациента",
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "patient": "Пациент"
   },
   "onboarding": {
     "welcomeTitle": "Добро пожаловать в DermaConsent",

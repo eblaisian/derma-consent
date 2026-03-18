@@ -503,7 +503,8 @@
     "noPatients": "Henüz hasta yok.",
     "found": "Hasta bulundu: {id}",
     "notFound": "Hasta bulunamadı",
-    "noPatientsDescription": "Hastalar, onam formları gönderildiğinde otomatik olarak oluşturulur."
+    "noPatientsDescription": "Hastalar, onam formları gönderildiğinde otomatik olarak oluşturulur.",
+    "consents": "Onamlar"
   },
   "patientDetail": {
     "title": "Hasta detayları",
@@ -825,7 +826,8 @@
     "fetchError": "Onam yüklenirken hata oluştu.",
     "signature": "İmza",
     "signatureAlt": "Hasta imzası",
-    "close": "Kapat"
+    "close": "Kapat",
+    "patient": "Hasta"
   },
   "onboarding": {
     "welcomeTitle": "DermaConsent'e Hoş Geldiniz",

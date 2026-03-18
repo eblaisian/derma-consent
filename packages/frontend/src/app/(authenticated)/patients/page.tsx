@@ -182,6 +182,7 @@ export default function PatientsPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>{t('name')}</TableHead>
+                    <TableHead>{t('consents')}</TableHead>
                     <TableHead>{t('createdAt')}</TableHead>
                     <TableHead className="text-right">{t('actions')}</TableHead>
                   </TableRow>
@@ -200,6 +201,11 @@ export default function PatientsPage() {
                             {t('encrypted')}
                           </span>
                         )}
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm tabular-nums text-muted-foreground">
+                          {(patient as unknown as { _count?: { consentForms: number } })._count?.consentForms ?? '—'}
+                        </span>
                       </TableCell>
                       <TableCell>
                         {format.dateTime(new Date(patient.createdAt), { dateStyle: 'medium' })}

@@ -503,7 +503,8 @@
     "noPatients": "لا يوجد مرضى بعد.",
     "found": "تم العثور على المريض: {id}",
     "notFound": "المريض غير موجود",
-    "noPatientsDescription": "يتم إنشاء المرضى تلقائياً عند تقديم نماذج الموافقة."
+    "noPatientsDescription": "يتم إنشاء المرضى تلقائياً عند تقديم نماذج الموافقة.",
+    "consents": "الموافقات"
   },
   "patientDetail": {
     "title": "تفاصيل المريض",
@@ -825,7 +826,8 @@
     "fetchError": "خطأ في تحميل الموافقة.",
     "signature": "التوقيع",
     "signatureAlt": "توقيع المريض",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "patient": "المريض"
   },
   "onboarding": {
     "welcomeTitle": "مرحباً بك في DermaConsent",

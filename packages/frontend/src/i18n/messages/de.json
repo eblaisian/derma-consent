@@ -503,7 +503,8 @@
     "noPatients": "Noch keine Patienten vorhanden.",
     "found": "Patient gefunden: {id}",
     "notFound": "Patient nicht gefunden",
-    "noPatientsDescription": "Patienten werden automatisch erstellt, wenn Einwilligungsformulare eingereicht werden."
+    "noPatientsDescription": "Patienten werden automatisch erstellt, wenn Einwilligungsformulare eingereicht werden.",
+    "consents": "Einwilligungen"
   },
   "patientDetail": {
     "title": "Patientendetails",
@@ -827,7 +828,8 @@
     "fetchError": "Fehler beim Laden der Einwilligung.",
     "signature": "Unterschrift",
     "signatureAlt": "Patientenunterschrift",
-    "close": "Schließen"
+    "close": "Schließen",
+    "patient": "Patient"
   },
   "onboarding": {
     "welcomeTitle": "Willkommen bei DermaConsent",

@@ -22,7 +22,11 @@ import { toast } from 'sonner';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { VaultUnlockBanner } from '@/components/vault/vault-unlock-banner';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Trash2, ArrowLeft, Upload, Plus, Columns2, FileSignature } from 'lucide-react';
+import { Trash2, ArrowLeft, Upload, Plus, Columns2, FileSignature, Eye, Link as LinkIcon, Ban } from 'lucide-react';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { DecryptedFormViewer } from '@/components/dashboard/decrypted-form-viewer';
+import { ConfirmDialog as RevokeConfirmDialog } from '@/components/ui/confirm-dialog';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PhotoGallery } from '@/components/photos/photo-gallery';
@@ -72,7 +76,7 @@ export default function PatientDetailPage() {
   const authFetch = useAuthFetch();
   const router = useRouter();
 
-  const { isUnlocked, decryptForm } = useVault();
+  const { isUnlocked, decryptForm, requestUnlock } = useVault();
 
   const [uploadOpen, setUploadOpen] = useState(false);
   const [comparisonOpen, setComparisonOpen] = useState(false);
@@ -81,6 +85,9 @@ export default function PatientDetailPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<TreatmentTemplateSummary | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [viewConsentToken, setViewConsentToken] = useState<string | null>(null);
+  const [revokeConsentToken, setRevokeConsentToken] = useState<string | null>(null);
+  const [isRevoking, setIsRevoking] = useState(false);
   const [decryptedName, setDecryptedName] = useState<string | null>(null);
   const [decryptedDob, setDecryptedDob] = useState<string | null>(null);
   const [decryptedEmail, setDecryptedEmail] = useState<string | null>(null);
@@ -150,6 +157,41 @@ export default function PatientDetailPage() {
       setDecryptedEmail(null);
     }
   }, [isUnlocked, patient, decryptPatientFields]);
+
+  const handleCopyConsentLink = async (token: string) => {
+    const link = `${window.location.origin}/consent/${token}`;
+    await navigator.clipboard.writeText(link);
+    toast.success(tTable('linkCopied'));
+  };
+
+  const handleViewConsent = (token: string) => {
+    if (isUnlocked) {
+      setViewConsentToken(token);
+    } else {
+      requestUnlock(() => setViewConsentToken(token));
+    }
+  };
+
+  const handleRevokeConsent = async () => {
+    if (!revokeConsentToken) return;
+    setIsRevoking(true);
+    try {
+      await authFetch(`/api/consent/${revokeConsentToken}/revoke`, { method: 'PATCH' });
+      toast.success(tTable('revoked'));
+      setRevokeConsentToken(null);
+      mutatePatient();
+    } catch {
+      toast.error(tTable('revokeError'));
+    } finally {
+      setIsRevoking(false);
+    }
+  };
+
+  const canRevoke = (status: string) =>
+    status === 'SIGNED' || status === 'COMPLETED' || status === 'PAID';
+
+  const hasDecryptableData = (status: string) =>
+    status === 'SIGNED' || status === 'PAID' || status === 'COMPLETED';
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -328,31 +370,59 @@ export default function PatientDetailPage() {
                 <TableHead>{tTable('type')}</TableHead>
                 <TableHead>{tTable('status')}</TableHead>
                 <TableHead>{tTable('createdAt')}</TableHead>
-                <TableHead>{tStatus('SIGNED')}</TableHead>
+                <TableHead className="text-end">{tTable('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {patient.consentForms.map((consent) => (
-                <TableRow key={consent.id}>
+                <TableRow key={consent.id} className="hover:bg-muted/30 transition-colors">
                   <TableCell className="font-medium">
                     {tTypes.has(consent.type as keyof IntlMessages['consentTypes'])
                       ? tTypes(consent.type as keyof IntlMessages['consentTypes'])
                       : consent.type}
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">
-                      {tStatus.has(consent.status as keyof IntlMessages['consentStatus'])
-                        ? tStatus(consent.status as keyof IntlMessages['consentStatus'])
-                        : consent.status}
-                    </Badge>
+                    <StatusBadge
+                      status={consent.status as import('@/lib/types').ConsentStatus}
+                      label={tStatus.has(consent.status as keyof IntlMessages['consentStatus']) ? tStatus(consent.status as keyof IntlMessages['consentStatus']) : undefined}
+                    />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-muted-foreground">
                     {format.dateTime(new Date(consent.createdAt), { dateStyle: 'medium' })}
                   </TableCell>
-                  <TableCell>
-                    {consent.signatureTimestamp
-                      ? format.dateTime(new Date(consent.signatureTimestamp), { dateStyle: 'medium', timeStyle: 'short' })
-                      : '—'}
+                  <TableCell className="text-end">
+                    <div className="flex justify-end gap-1">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="ghost" size="icon-xs" onClick={() => handleCopyConsentLink(consent.token)} aria-label={tTable('link')}>
+                            <LinkIcon className="size-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{tTable('link')}</TooltipContent>
+                      </Tooltip>
+
+                      {hasDecryptableData(consent.status) && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon-xs" onClick={() => handleViewConsent(consent.token)} aria-label={tTable('decrypt')}>
+                              <Eye className="size-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{tTable('decrypt')}</TooltipContent>
+                        </Tooltip>
+                      )}
+
+                      {canRevoke(consent.status) && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon-xs" className="text-destructive hover:text-destructive" onClick={() => setRevokeConsentToken(consent.token)} aria-label={tTable('revoke')}>
+                              <Ban className="size-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{tTable('revoke')}</TooltipContent>
+                        </Tooltip>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -370,6 +440,27 @@ export default function PatientDetailPage() {
               )}
             </TableBody>
           </Table>
+
+          <RevokeConfirmDialog
+            open={!!revokeConsentToken}
+            onOpenChange={(open) => !open && setRevokeConsentToken(null)}
+            title={tTable('revokeTitle')}
+            description={tTable('revokeDescription')}
+            confirmLabel={isRevoking ? tTable('revoking') : tTable('revoke')}
+            cancelLabel={tTable('cancel')}
+            onConfirm={handleRevokeConsent}
+            variant="destructive"
+            loading={isRevoking}
+          />
+
+          {viewConsentToken && (
+            <DecryptedFormViewer
+              token={viewConsentToken}
+              onClose={() => setViewConsentToken(null)}
+              patientName={decryptedName ?? undefined}
+              patientId={id}
+            />
+          )}
         </CardContent>
       </Card>
 
