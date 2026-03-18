@@ -37,14 +37,12 @@ export function VaultUnlockModal() {
     }
   }, [isModalOpen, isUnlocked]);
 
-  // Reset state when modal closes
-  useEffect(() => {
-    if (!isModalOpen) {
-      setPassword('');
-      setShaking(false);
-      setSuccess(false);
-    }
-  }, [isModalOpen]);
+  const handleClose = () => {
+    closeModal();
+    setPassword('');
+    setShaking(false);
+    setSuccess(false);
+  };
 
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,8 +58,7 @@ export function VaultUnlockModal() {
       toast.success(t('unlockSuccess'));
       // Auto-close after brief success animation
       setTimeout(() => {
-        closeModal();
-        setSuccess(false);
+        handleClose();
       }, 500);
     } catch {
       setShaking(true);
@@ -72,13 +69,13 @@ export function VaultUnlockModal() {
   const handleLock = () => {
     lock();
     toast.info(t('locked'));
-    closeModal();
+    handleClose();
   };
 
   if (!practice?.encryptedPrivKey) return null;
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={(open) => !open && closeModal()}>
+    <Dialog open={isModalOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="sm:max-w-md">
         {isUnlocked && !success ? (
           // Already unlocked — show status + lock button

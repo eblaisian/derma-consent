@@ -91,7 +91,7 @@ export default function ConsentPage({
       );
 
       // Compute patient lookup hash and encrypt identity fields
-      let patientFields: Record<string, string> = {};
+      const patientFields: Record<string, string> = {};
       const { fullName, dateOfBirth, email } = submission.patientIdentity;
       if (fullName.trim()) {
         const hashInput = fullName.trim().toLowerCase() + '|' + dateOfBirth;
