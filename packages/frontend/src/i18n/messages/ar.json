@@ -143,7 +143,8 @@
     "showPassword": "إظهار كلمة المرور",
     "hidePassword": "إخفاء كلمة المرور",
     "privacyPrefix": "بتسجيل الدخول، أنت توافق على",
-    "privacyLink": "سياسة الخصوصية"
+    "privacyLink": "سياسة الخصوصية",
+    "comingSoon": "قريباً"
   },
   "forgotPassword": {
     "title": "نسيت كلمة المرور",
@@ -204,7 +205,9 @@
     "uppercase": "حرف كبير واحد",
     "lowercase": "حرف صغير واحد",
     "number": "رقم واحد",
-    "tosLabel": "أوافق على شروط الخدمة و"
+    "tosLabel": "أوافق على شروط الخدمة و",
+    "inviteTitle": "أنشئ حسابك",
+    "inviteDescription": "قم بتعيين كلمة مرور للانضمام إلى العيادة."
   },
   "setup": {
     "title": "تسجيل العيادة",
@@ -498,7 +501,7 @@
   },
   "patientDetail": {
     "title": "تفاصيل المريض",
-    "delete": "حذف (GDPR المادة 17)",
+    "delete": "حذف",
     "deleteConfirm": "حذف جميع بيانات المريض والموافقات؟ (GDPR المادة 17)",
     "deleted": "تم حذف المريض",
     "deleteError": "خطأ في حذف المريض",
@@ -515,7 +518,7 @@
     "treatmentPlanCount": "{count} خطة علاج",
     "noConsentsDescription": "أرسل نموذج موافقة لهذا المريض للبدء.",
     "deleteConfirmTitle": "حذف المريض",
-    "deleteConfirmDescription": "سيؤدي هذا إلى حذف هذا المريض وجميع البيانات المرتبطة به بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
+    "deleteConfirmDescription": "سيؤدي هذا إلى حذف المريض وجميع البيانات المرتبطة (الموافقات، الصور، خطط العلاج) نهائياً وفقاً للمادة 17 من اللائحة العامة لحماية البيانات (حق المحو). لا يمكن التراجع عن هذا الإجراء.",
     "cancel": "إلغاء",
     "summaryTitle": "نظرة سريرية",
     "summaryConsents": "الموافقات",
@@ -558,7 +561,15 @@
     "removeMember": "إزالة عضو",
     "removeConfirmTitle": "إزالة عضو الفريق",
     "removeConfirmDescription": "هل أنت متأكد أنك تريد إزالة {name} من الفريق؟ سيفقد الوصول على الفور.",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "pendingInvites": "الدعوات المعلقة",
+    "pendingInvitesDescription": "{count} دعوة معلقة",
+    "pending": "معلق",
+    "resend": "إعادة إرسال الدعوة",
+    "revokeInvite": "إلغاء الدعوة",
+    "inviteResent": "تم إعادة إرسال الدعوة",
+    "inviteRevoked": "تم إلغاء الدعوة",
+    "status": "الحالة"
   },
   "roles": {
     "ADMIN": "مدير",
@@ -745,7 +756,9 @@
     "emptyAction": "إنشاء نموذج موافقة",
     "filterByStatus": "تصفية حسب الحالة",
     "allStatuses": "جميع الحالات",
-    "risk": "المخاطر"
+    "risk": "المخاطر",
+    "patient": "المريض",
+    "linked": "مرتبط"
   },
   "newConsent": {
     "button": "موافقة جديدة",
@@ -922,7 +935,9 @@
     "noAreasSelected": "لم يتم اختيار مناطق علاج",
     "areasCount": "{count} مناطق",
     "customize": "تخصيص",
-    "noPlansDescription": "قم بإنشاء خطة علاج لتوثيق نقاط الحقن والمنتجات."
+    "noPlansDescription": "قم بإنشاء خطة علاج لتوثيق نقاط الحقن والمنتجات.",
+    "viewDetails": "عرض التفاصيل",
+    "planDetails": "تفاصيل خطة العلاج"
   },
   "treatmentTemplate": {
     "pickTemplate": "اختر قالباً",
@@ -1311,5 +1326,54 @@
     "roleBadge_ADMIN": "مسؤول",
     "roleBadge_ARZT": "طبيب",
     "roleBadge_EMPFANG": "استقبال"
+  },
+  "apiErrors": {
+    "EMAIL_ALREADY_REGISTERED": "يوجد حساب بهذا البريد الإلكتروني بالفعل.",
+    "INVALID_CREDENTIALS": "بريد إلكتروني أو كلمة مرور غير صحيحة.",
+    "ACCOUNT_LOCKED": "الحساب مقفل. حاول مرة أخرى بعد {minutes} دقيقة.",
+    "ACCOUNT_LOCKED_TEMPORARY": "محاولات كثيرة. الحساب مقفل لمدة {minutes} دقيقة.",
+    "OAUTH_ACCOUNT_NO_PASSWORD": "هذا الحساب يستخدم تسجيل الدخول الاجتماعي — لا يمكن تغيير كلمة المرور.",
+    "CURRENT_PASSWORD_INCORRECT": "كلمة المرور الحالية غير صحيحة.",
+    "INVALID_RESET_TOKEN": "رابط إعادة التعيين غير صالح أو منتهي الصلاحية.",
+    "INVALID_TOKEN_TYPE": "رمز غير صالح.",
+    "INVALID_VERIFICATION_TOKEN": "رابط التحقق غير صالح أو منتهي الصلاحية.",
+    "TWO_FA_NOT_ENABLED": "المصادقة الثنائية غير مفعلة لهذا الحساب.",
+    "TWO_FA_INVALID_CODE": "رمز المصادقة الثنائية غير صالح.",
+    "TWO_FA_SETUP_NOT_INITIATED": "لم يتم بدء إعداد المصادقة الثنائية.",
+    "TWO_FA_SESSION_INVALID": "جلسة المصادقة الثنائية غير صالحة أو منتهية الصلاحية.",
+    "USER_ALREADY_MEMBER": "المستخدم عضو بالفعل في هذه العيادة.",
+    "INVITE_ALREADY_PENDING": "توجد دعوة لهذا البريد الإلكتروني بالفعل.",
+    "CANNOT_REMOVE_SELF": "لا يمكنك إزالة نفسك.",
+    "USER_NOT_FOUND": "المستخدم غير موجود.",
+    "CANNOT_CHANGE_OWN_ROLE": "لا يمكنك تغيير دورك الخاص.",
+    "LAST_ADMIN_CANNOT_CHANGE": "يجب أن يكون هناك مسؤول واحد على الأقل.",
+    "INVITE_NOT_FOUND": "الدعوة غير موجودة.",
+    "INVITE_ALREADY_USED_OR_EXPIRED": "هذه الدعوة تم استخدامها بالفعل أو انتهت صلاحيتها.",
+    "INVITE_EXPIRED": "انتهت صلاحية هذه الدعوة.",
+    "INVITE_EMAIL_MISMATCH": "تم إرسال هذه الدعوة إلى عنوان بريد إلكتروني آخر.",
+    "USER_ALREADY_IN_OTHER_PRACTICE": "أنت عضو بالفعل في عيادة أخرى. يرجى مغادرة عيادتك الحالية أولاً.",
+    "CONSENT_NOT_FOUND": "نموذج الموافقة غير موجود.",
+    "CONSENT_EXPIRED": "انتهت صلاحية رابط الموافقة هذا.",
+    "CONSENT_REVOKED": "تم إلغاء هذه الموافقة.",
+    "CONSENT_ALREADY_SUBMITTED": "تم تقديم نموذج الموافقة هذا بالفعل.",
+    "CONSENT_ALREADY_REVOKED": "تم إلغاء هذه الموافقة بالفعل.",
+    "CONSENT_LIMIT_REACHED": "تم الوصول إلى الحد الشهري للموافقات. يرجى ترقية خطتك.",
+    "PATIENT_NOT_FOUND": "المريض غير موجود.",
+    "PRACTICE_NOT_FOUND": "العيادة غير موجودة.",
+    "NO_SUBSCRIPTION_FOUND": "لم يتم العثور على اشتراك.",
+    "NO_PRACTICE_ASSIGNED": "لا توجد عيادة مخصصة.",
+    "PRACTICE_SUSPENDED": "تم تعليق هذه العيادة. يرجى الاتصال بالدعم.",
+    "NO_ACTIVE_SUBSCRIPTION": "لم يتم العثور على اشتراك نشط.",
+    "TRIAL_EXPIRED": "انتهت فترة التجربة.",
+    "SUBSCRIPTION_REQUIRED": "مطلوب اشتراك نشط.",
+    "TREATMENT_PLAN_NOT_FOUND": "خطة العلاج غير موجودة.",
+    "TREATMENT_TEMPLATE_NOT_FOUND": "القالب غير موجود.",
+    "PHOTO_NOT_FOUND": "الصورة غير موجودة.",
+    "PDF_NOT_FOUND": "ملف PDF غير موجود.",
+    "SETTINGS_NOT_FOUND": "الإعدادات غير موجودة.",
+    "NO_FILE_PROVIDED": "لم يتم توفير ملف.",
+    "FILE_TOO_LARGE": "حجم الملف يتجاوز الحد المسموح.",
+    "INVALID_FILE_TYPE": "نوع ملف غير صالح.",
+    "UNKNOWN_ERROR": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى."
   }
 }

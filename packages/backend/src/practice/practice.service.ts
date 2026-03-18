@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePracticeDto } from './practice.dto';
 import { UpdatePracticeDto } from './update-practice.dto';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 @Injectable()
 export class PracticeService {
@@ -53,7 +54,7 @@ export class PracticeService {
     });
 
     if (!practice) {
-      throw new NotFoundException('Practice not found');
+      throw new NotFoundException(errorPayload(ErrorCode.PRACTICE_NOT_FOUND));
     }
 
     return this.prisma.practice.update({
@@ -71,7 +72,7 @@ export class PracticeService {
     });
 
     if (!practice) {
-      throw new NotFoundException('Practice not found');
+      throw new NotFoundException(errorPayload(ErrorCode.PRACTICE_NOT_FOUND));
     }
 
     return this.prisma.practice.update({
@@ -87,7 +88,7 @@ export class PracticeService {
     });
 
     if (!practice) {
-      throw new NotFoundException('Practice not found');
+      throw new NotFoundException(errorPayload(ErrorCode.PRACTICE_NOT_FOUND));
     }
 
     return practice;

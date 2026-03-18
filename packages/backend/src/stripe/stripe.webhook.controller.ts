@@ -10,6 +10,7 @@ import {
 import { SkipThrottle } from '@nestjs/throttler';
 import { StripeService } from './stripe.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 import { PdfService } from '../pdf/pdf.service';
 import { ConsentStatus } from '@prisma/client';
 
@@ -31,11 +32,11 @@ export class StripeWebhookController {
     @Headers('stripe-signature') signature: string,
   ) {
     if (!signature) {
-      throw new BadRequestException('Missing stripe-signature header');
+      throw new BadRequestException(errorPayload(ErrorCode.MISSING_SIGNATURE_HEADER));
     }
 
     if (!rawBody) {
-      throw new BadRequestException('Missing raw body');
+      throw new BadRequestException(errorPayload(ErrorCode.MISSING_RAW_BODY));
     }
 
     const event = await this.stripeService.constructWebhookEvent(rawBody, signature);

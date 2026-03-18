@@ -13,6 +13,7 @@ import { RegisterDto, LoginDto } from './credentials.dto';
 import { TwoFactorService } from './two-factor.service';
 import { ConfigService } from '@nestjs/config';
 import { NotificationService } from '../notifications/notification.service';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 @Injectable()
 export class AuthService {
@@ -84,7 +85,7 @@ export class AuthService {
     });
 
     if (existing) {
-      throw new ConflictException('Email already registered');
+      throw new ConflictException(errorPayload(ErrorCode.EMAIL_ALREADY_REGISTERED));
     }
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
@@ -110,7 +111,7 @@ export class AuthService {
     });
 
     if (!user || !user.passwordHash) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException(errorPayload(ErrorCode.INVALID_CREDENTIALS));
     }
 
     // Check account lockout
@@ -119,7 +120,7 @@ export class AuthService {
         (user.lockedUntil.getTime() - Date.now()) / 60000,
       );
       throw new UnauthorizedException(
-        `Account is locked. Try again in ${minutesLeft} minute(s).`,
+        errorPayload(ErrorCode.ACCOUNT_LOCKED, `${minutesLeft}`),
       );
     }
 
@@ -156,12 +157,12 @@ export class AuthService {
       if (attempts >= MAX_ATTEMPTS) {
         await this.logAuthEvent(user, 'ACCOUNT_LOCKED');
         throw new UnauthorizedException(
-          `Too many failed attempts. Account locked for ${LOCKOUT_MINUTES} minutes.`,
+          errorPayload(ErrorCode.ACCOUNT_LOCKED_TEMPORARY, `${LOCKOUT_MINUTES}`),
         );
       }
 
       await this.logAuthEvent(user, 'LOGIN_FAILED');
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException(errorPayload(ErrorCode.INVALID_CREDENTIALS));
     }
 
     // Reset failed attempts on successful login
@@ -193,7 +194,7 @@ export class AuthService {
     });
 
     if (!user.twoFactorSecret || !user.twoFactorEnabled) {
-      throw new UnauthorizedException('2FA is not enabled for this user');
+      throw new UnauthorizedException(errorPayload(ErrorCode.TWO_FA_NOT_ENABLED));
     }
 
     const isValid = this.twoFactorService.verifyToken(
@@ -202,7 +203,7 @@ export class AuthService {
     );
 
     if (!isValid) {
-      throw new UnauthorizedException('Invalid 2FA code');
+      throw new UnauthorizedException(errorPayload(ErrorCode.TWO_FA_INVALID_CODE));
     }
 
     return this.signAndReturn(user);
@@ -235,11 +236,11 @@ export class AuthService {
     try {
       payload = this.jwtService.verify(token);
     } catch {
-      throw new BadRequestException('Invalid or expired reset token');
+      throw new BadRequestException(errorPayload(ErrorCode.INVALID_RESET_TOKEN));
     }
 
     if (payload.type !== 'password-reset') {
-      throw new BadRequestException('Invalid token type');
+      throw new BadRequestException(errorPayload(ErrorCode.INVALID_TOKEN_TYPE));
     }
 
     const passwordHash = await bcrypt.hash(newPassword, 12);
@@ -256,11 +257,11 @@ export class AuthService {
     try {
       payload = this.jwtService.verify(token);
     } catch {
-      throw new BadRequestException('Invalid or expired verification token');
+      throw new BadRequestException(errorPayload(ErrorCode.INVALID_VERIFICATION_TOKEN));
     }
 
     if (payload.type !== 'email-verify') {
-      throw new BadRequestException('Invalid token type');
+      throw new BadRequestException(errorPayload(ErrorCode.INVALID_TOKEN_TYPE));
     }
 
     await this.prisma.user.update({
@@ -423,12 +424,12 @@ export class AuthService {
     });
 
     if (!user.passwordHash) {
-      throw new UnauthorizedException('Account uses OAuth — password cannot be changed');
+      throw new UnauthorizedException(errorPayload(ErrorCode.OAUTH_ACCOUNT_NO_PASSWORD));
     }
 
     const valid = await bcrypt.compare(currentPassword, user.passwordHash);
     if (!valid) {
-      throw new UnauthorizedException('Current password is incorrect');
+      throw new UnauthorizedException(errorPayload(ErrorCode.CURRENT_PASSWORD_INCORRECT));
     }
 
     const passwordHash = await bcrypt.hash(newPassword, 12);

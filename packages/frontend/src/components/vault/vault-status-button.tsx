@@ -26,7 +26,7 @@ export function VaultStatusButton() {
       <Button
         variant="ghost"
         size="icon"
-        onClick={requestUnlock}
+        onClick={() => requestUnlock()}
         title={t('lockedTitle')}
         className="relative"
       >

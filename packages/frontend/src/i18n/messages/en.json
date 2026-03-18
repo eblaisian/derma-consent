@@ -143,7 +143,8 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "privacyPrefix": "By signing in you agree to our",
-    "privacyLink": "privacy policy"
+    "privacyLink": "privacy policy",
+    "comingSoon": "Coming soon"
   },
   "forgotPassword": {
     "title": "Forgot password",
@@ -204,7 +205,9 @@
     "uppercase": "One uppercase letter",
     "lowercase": "One lowercase letter",
     "number": "One number",
-    "tosLabel": "I accept the terms of service and"
+    "tosLabel": "I accept the terms of service and",
+    "inviteTitle": "Create your account",
+    "inviteDescription": "Set a password to join the practice."
   },
   "setup": {
     "title": "Register practice",
@@ -498,7 +501,7 @@
   },
   "patientDetail": {
     "title": "Patient details",
-    "delete": "Delete (GDPR Art. 17)",
+    "delete": "Delete",
     "deleteConfirm": "Delete all patient data and consents? (GDPR Art. 17)",
     "deleted": "Patient deleted",
     "deleteError": "Error deleting patient",
@@ -515,7 +518,7 @@
     "treatmentPlanCount": "{count} Treatment Plans",
     "noConsentsDescription": "Send a consent form to this patient to get started.",
     "deleteConfirmTitle": "Delete patient",
-    "deleteConfirmDescription": "This will permanently delete this patient and all associated data. This action cannot be undone.",
+    "deleteConfirmDescription": "This permanently deletes the patient and all associated data (consents, photos, treatment plans) per GDPR Article 17 (Right to Erasure). This action cannot be undone.",
     "cancel": "Cancel",
     "summaryTitle": "Clinical Overview",
     "summaryConsents": "Consents",
@@ -558,7 +561,15 @@
     "removeMember": "Remove member",
     "removeConfirmTitle": "Remove team member",
     "removeConfirmDescription": "Are you sure you want to remove {name} from the team? They will lose access immediately.",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "pendingInvites": "Pending invitations",
+    "pendingInvitesDescription": "{count} pending invitation(s)",
+    "pending": "Pending",
+    "resend": "Resend invitation",
+    "revokeInvite": "Revoke invitation",
+    "inviteResent": "Invitation resent",
+    "inviteRevoked": "Invitation revoked",
+    "status": "Status"
   },
   "roles": {
     "ADMIN": "Administrator",
@@ -747,7 +758,9 @@
     "emptyAction": "Create Consent Form",
     "filterByStatus": "Filter by status",
     "allStatuses": "All statuses",
-    "risk": "Risk"
+    "risk": "Risk",
+    "patient": "Patient",
+    "linked": "Linked"
   },
   "newConsent": {
     "button": "New consent",
@@ -924,7 +937,9 @@
     "noAreasSelected": "No treatment areas selected",
     "areasCount": "{count} areas",
     "customize": "Customize",
-    "noPlansDescription": "Create a treatment plan to document injection points and products."
+    "noPlansDescription": "Create a treatment plan to document injection points and products.",
+    "viewDetails": "View details",
+    "planDetails": "Treatment plan details"
   },
   "treatmentTemplate": {
     "pickTemplate": "Choose Template",
@@ -1314,5 +1329,54 @@
     "roleBadge_ADMIN": "Administrator",
     "roleBadge_ARZT": "Doctor",
     "roleBadge_EMPFANG": "Reception"
+  },
+  "apiErrors": {
+    "EMAIL_ALREADY_REGISTERED": "An account with this email already exists.",
+    "INVALID_CREDENTIALS": "Invalid email or password.",
+    "ACCOUNT_LOCKED": "Account is locked. Try again in {minutes} minute(s).",
+    "ACCOUNT_LOCKED_TEMPORARY": "Too many failed attempts. Account locked for {minutes} minutes.",
+    "OAUTH_ACCOUNT_NO_PASSWORD": "This account uses social login — password cannot be changed.",
+    "CURRENT_PASSWORD_INCORRECT": "Current password is incorrect.",
+    "INVALID_RESET_TOKEN": "Invalid or expired reset link.",
+    "INVALID_TOKEN_TYPE": "Invalid token.",
+    "INVALID_VERIFICATION_TOKEN": "Invalid or expired verification link.",
+    "TWO_FA_NOT_ENABLED": "2FA is not enabled for this account.",
+    "TWO_FA_INVALID_CODE": "Invalid 2FA code.",
+    "TWO_FA_SETUP_NOT_INITIATED": "2FA setup not started.",
+    "TWO_FA_SESSION_INVALID": "Invalid or expired 2FA session.",
+    "USER_ALREADY_MEMBER": "User is already a member of this practice.",
+    "INVITE_ALREADY_PENDING": "An invitation for this email already exists.",
+    "CANNOT_REMOVE_SELF": "You cannot remove yourself.",
+    "USER_NOT_FOUND": "User not found.",
+    "CANNOT_CHANGE_OWN_ROLE": "You cannot change your own role.",
+    "LAST_ADMIN_CANNOT_CHANGE": "There must be at least one admin.",
+    "INVITE_NOT_FOUND": "Invitation not found.",
+    "INVITE_ALREADY_USED_OR_EXPIRED": "This invitation has already been used or has expired.",
+    "INVITE_EXPIRED": "This invitation has expired.",
+    "INVITE_EMAIL_MISMATCH": "This invitation was sent to a different email address.",
+    "USER_ALREADY_IN_OTHER_PRACTICE": "You are already a member of another practice. Please leave your current practice first.",
+    "CONSENT_NOT_FOUND": "Consent form not found.",
+    "CONSENT_EXPIRED": "This consent link has expired.",
+    "CONSENT_REVOKED": "This consent has been revoked.",
+    "CONSENT_ALREADY_SUBMITTED": "This consent form has already been submitted.",
+    "CONSENT_ALREADY_REVOKED": "This consent has already been revoked.",
+    "CONSENT_LIMIT_REACHED": "Monthly consent limit reached. Please upgrade your plan.",
+    "PATIENT_NOT_FOUND": "Patient not found.",
+    "PRACTICE_NOT_FOUND": "Practice not found.",
+    "NO_SUBSCRIPTION_FOUND": "No subscription found.",
+    "NO_PRACTICE_ASSIGNED": "No practice assigned.",
+    "PRACTICE_SUSPENDED": "This practice has been suspended. Please contact support.",
+    "NO_ACTIVE_SUBSCRIPTION": "No active subscription found.",
+    "TRIAL_EXPIRED": "Trial period has expired.",
+    "SUBSCRIPTION_REQUIRED": "An active subscription is required.",
+    "TREATMENT_PLAN_NOT_FOUND": "Treatment plan not found.",
+    "TREATMENT_TEMPLATE_NOT_FOUND": "Template not found.",
+    "PHOTO_NOT_FOUND": "Photo not found.",
+    "PDF_NOT_FOUND": "PDF not found.",
+    "SETTINGS_NOT_FOUND": "Settings not found.",
+    "NO_FILE_PROVIDED": "No file provided.",
+    "FILE_TOO_LARGE": "File size exceeds the limit.",
+    "INVALID_FILE_TYPE": "Invalid file type.",
+    "UNKNOWN_ERROR": "An unexpected error occurred. Please try again."
   }
 }

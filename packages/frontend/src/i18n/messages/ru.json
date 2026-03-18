@@ -143,7 +143,8 @@
     "showPassword": "Показать пароль",
     "hidePassword": "Скрыть пароль",
     "privacyPrefix": "Входя в систему, вы соглашаетесь с нашей",
-    "privacyLink": "политикой конфиденциальности"
+    "privacyLink": "политикой конфиденциальности",
+    "comingSoon": "Скоро"
   },
   "forgotPassword": {
     "title": "Забыли пароль",
@@ -204,7 +205,9 @@
     "uppercase": "Одна заглавная буква",
     "lowercase": "Одна строчная буква",
     "number": "Одна цифра",
-    "tosLabel": "Я принимаю условия использования и"
+    "tosLabel": "Я принимаю условия использования и",
+    "inviteTitle": "Создайте аккаунт",
+    "inviteDescription": "Установите пароль для присоединения к клинике."
   },
   "setup": {
     "title": "Регистрация клиники",
@@ -498,7 +501,7 @@
   },
   "patientDetail": {
     "title": "Данные пациента",
-    "delete": "Удалить (GDPR ст. 17)",
+    "delete": "Удалить",
     "deleteConfirm": "Удалить все данные пациента и согласия? (GDPR ст. 17)",
     "deleted": "Пациент удалён",
     "deleteError": "Ошибка удаления пациента",
@@ -515,7 +518,7 @@
     "treatmentPlanCount": "{count} Планов процедур",
     "noConsentsDescription": "Отправьте этому пациенту форму согласия, чтобы начать работу.",
     "deleteConfirmTitle": "Удалить пациента",
-    "deleteConfirmDescription": "Это навсегда удалит этого пациента и все связанные данные. Это действие нельзя отменить.",
+    "deleteConfirmDescription": "Это навсегда удалит пациента и все связанные данные (согласия, фотографии, планы лечения) в соответствии со статьёй 17 GDPR (Право на удаление). Это действие нельзя отменить.",
     "cancel": "Отмена",
     "summaryTitle": "Клинический обзор",
     "summaryConsents": "Согласия",
@@ -558,7 +561,15 @@
     "removeMember": "Удалить участника",
     "removeConfirmTitle": "Удалить члена команды",
     "removeConfirmDescription": "Вы уверены, что хотите удалить {name} из команды? Доступ будет потерян немедленно.",
-    "cancel": "Отмена"
+    "cancel": "Отмена",
+    "pendingInvites": "Ожидающие приглашения",
+    "pendingInvitesDescription": "{count} ожидающих приглашений",
+    "pending": "Ожидает",
+    "resend": "Отправить повторно",
+    "revokeInvite": "Отозвать приглашение",
+    "inviteResent": "Приглашение отправлено повторно",
+    "inviteRevoked": "Приглашение отозвано",
+    "status": "Статус"
   },
   "roles": {
     "ADMIN": "Администратор",
@@ -745,7 +756,9 @@
     "emptyAction": "Создать форму согласия",
     "filterByStatus": "Фильтр по статусу",
     "allStatuses": "Все статусы",
-    "risk": "Риск"
+    "risk": "Риск",
+    "patient": "Пациент",
+    "linked": "Связан"
   },
   "newConsent": {
     "button": "Новое согласие",
@@ -922,7 +935,9 @@
     "noAreasSelected": "Области лечения не выбраны",
     "areasCount": "{count} областей",
     "customize": "Настроить",
-    "noPlansDescription": "Создайте план лечения для документирования точек инъекций и продуктов."
+    "noPlansDescription": "Создайте план лечения для документирования точек инъекций и продуктов.",
+    "viewDetails": "Подробности",
+    "planDetails": "Детали плана лечения"
   },
   "treatmentTemplate": {
     "pickTemplate": "Выбрать шаблон",
@@ -1311,5 +1326,54 @@
     "roleBadge_ADMIN": "Администратор",
     "roleBadge_ARZT": "Врач",
     "roleBadge_EMPFANG": "Ресепшн"
+  },
+  "apiErrors": {
+    "EMAIL_ALREADY_REGISTERED": "Аккаунт с этим email уже существует.",
+    "INVALID_CREDENTIALS": "Неверный email или пароль.",
+    "ACCOUNT_LOCKED": "Аккаунт заблокирован. Повторите попытку через {minutes} мин.",
+    "ACCOUNT_LOCKED_TEMPORARY": "Слишком много попыток. Аккаунт заблокирован на {minutes} мин.",
+    "OAUTH_ACCOUNT_NO_PASSWORD": "Этот аккаунт использует социальный вход — пароль изменить нельзя.",
+    "CURRENT_PASSWORD_INCORRECT": "Текущий пароль неверный.",
+    "INVALID_RESET_TOKEN": "Недействительная или просроченная ссылка для сброса.",
+    "INVALID_TOKEN_TYPE": "Недействительный токен.",
+    "INVALID_VERIFICATION_TOKEN": "Недействительная или просроченная ссылка для подтверждения.",
+    "TWO_FA_NOT_ENABLED": "2FA не включена для этого аккаунта.",
+    "TWO_FA_INVALID_CODE": "Неверный код 2FA.",
+    "TWO_FA_SETUP_NOT_INITIATED": "Настройка 2FA не начата.",
+    "TWO_FA_SESSION_INVALID": "Недействительная или просроченная сессия 2FA.",
+    "USER_ALREADY_MEMBER": "Пользователь уже является участником этой клиники.",
+    "INVITE_ALREADY_PENDING": "Приглашение для этого email уже существует.",
+    "CANNOT_REMOVE_SELF": "Вы не можете удалить себя.",
+    "USER_NOT_FOUND": "Пользователь не найден.",
+    "CANNOT_CHANGE_OWN_ROLE": "Вы не можете изменить свою роль.",
+    "LAST_ADMIN_CANNOT_CHANGE": "Должен быть хотя бы один администратор.",
+    "INVITE_NOT_FOUND": "Приглашение не найдено.",
+    "INVITE_ALREADY_USED_OR_EXPIRED": "Это приглашение уже использовано или истекло.",
+    "INVITE_EXPIRED": "Срок действия приглашения истёк.",
+    "INVITE_EMAIL_MISMATCH": "Это приглашение было отправлено на другой email.",
+    "USER_ALREADY_IN_OTHER_PRACTICE": "Вы уже являетесь участником другой клиники. Сначала покиньте текущую клинику.",
+    "CONSENT_NOT_FOUND": "Форма согласия не найдена.",
+    "CONSENT_EXPIRED": "Срок действия ссылки на согласие истёк.",
+    "CONSENT_REVOKED": "Это согласие было отозвано.",
+    "CONSENT_ALREADY_SUBMITTED": "Эта форма согласия уже отправлена.",
+    "CONSENT_ALREADY_REVOKED": "Это согласие уже отозвано.",
+    "CONSENT_LIMIT_REACHED": "Достигнут месячный лимит согласий. Обновите тарифный план.",
+    "PATIENT_NOT_FOUND": "Пациент не найден.",
+    "PRACTICE_NOT_FOUND": "Клиника не найдена.",
+    "NO_SUBSCRIPTION_FOUND": "Подписка не найдена.",
+    "NO_PRACTICE_ASSIGNED": "Клиника не назначена.",
+    "PRACTICE_SUSPENDED": "Эта клиника приостановлена. Обратитесь в поддержку.",
+    "NO_ACTIVE_SUBSCRIPTION": "Активная подписка не найдена.",
+    "TRIAL_EXPIRED": "Пробный период истёк.",
+    "SUBSCRIPTION_REQUIRED": "Требуется активная подписка.",
+    "TREATMENT_PLAN_NOT_FOUND": "План лечения не найден.",
+    "TREATMENT_TEMPLATE_NOT_FOUND": "Шаблон не найден.",
+    "PHOTO_NOT_FOUND": "Фото не найдено.",
+    "PDF_NOT_FOUND": "PDF не найден.",
+    "SETTINGS_NOT_FOUND": "Настройки не найдены.",
+    "NO_FILE_PROVIDED": "Файл не предоставлен.",
+    "FILE_TOO_LARGE": "Размер файла превышает лимит.",
+    "INVALID_FILE_TYPE": "Недопустимый тип файла.",
+    "UNKNOWN_ERROR": "Произошла непредвиденная ошибка. Попробуйте ещё раз."
   }
 }

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import Stripe from 'stripe';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 @Injectable()
 export class BillingService {
@@ -36,7 +37,7 @@ export class BillingService {
     });
 
     if (!subscription) {
-      throw new NotFoundException('No subscription found');
+      throw new NotFoundException(errorPayload(ErrorCode.NO_SUBSCRIPTION_FOUND));
     }
 
     return subscription;
@@ -57,7 +58,7 @@ export class BillingService {
     // Validate the price ID against known plans
     const validPriceIds = await this.getValidPriceIds();
     if (!validPriceIds.includes(priceId)) {
-      throw new BadRequestException('Invalid price ID');
+      throw new BadRequestException(errorPayload(ErrorCode.INVALID_PRICE_ID));
     }
 
     let subscription = await this.prisma.subscription.findUnique({
@@ -65,7 +66,7 @@ export class BillingService {
     });
 
     if (!subscription) {
-      throw new NotFoundException('No subscription found');
+      throw new NotFoundException(errorPayload(ErrorCode.NO_SUBSCRIPTION_FOUND));
     }
 
     const stripe = await this.getStripe();
@@ -170,7 +171,7 @@ export class BillingService {
     });
 
     if (!subscription?.stripeCustomerId) {
-      throw new NotFoundException('No Stripe customer found');
+      throw new NotFoundException(errorPayload(ErrorCode.NO_STRIPE_CUSTOMER));
     }
 
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';

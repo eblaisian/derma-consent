@@ -58,6 +58,33 @@ export class TeamController {
     return this.teamService.changeRole(user.practiceId!, userId, dto, user.userId);
   }
 
+  @Get('invites')
+  @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
+  @Roles('ADMIN')
+  listPendingInvites(@CurrentUser() user: CurrentUserPayload) {
+    return this.teamService.listPendingInvites(user.practiceId!);
+  }
+
+  @Patch('invites/:inviteId/resend')
+  @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
+  @Roles('ADMIN')
+  resendInvite(
+    @Param('inviteId') inviteId: string,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    return this.teamService.resendInvite(user.practiceId!, inviteId, user.userId);
+  }
+
+  @Delete('invites/:inviteId')
+  @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
+  @Roles('ADMIN')
+  revokeInvite(
+    @Param('inviteId') inviteId: string,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    return this.teamService.revokeInvite(user.practiceId!, inviteId, user.userId);
+  }
+
   // Public endpoints for invite acceptance
   @Get('invite/:token')
   getInvite(@Param('token') token: string) {

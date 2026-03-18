@@ -137,7 +137,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, account, user, profile, trigger, session: updateData }) {
       if (trigger === 'update' && updateData) {
-        // Session update from client — merge in new data (e.g. practiceId after setup)
+        // Session update from client — merge in new data (e.g. practiceId after setup, name after profile edit)
+        if (updateData.name !== undefined) {
+          token.name = updateData.name;
+        }
         if (updateData.accessToken !== undefined) {
           token.accessToken = updateData.accessToken;
         }

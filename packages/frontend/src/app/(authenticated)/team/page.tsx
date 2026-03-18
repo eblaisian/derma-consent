@@ -6,9 +6,11 @@ import { useTranslations } from 'next-intl';
 import useSWR from 'swr';
 import { API_URL, createAuthFetcher } from '@/lib/api';
 import { useAuthFetch } from '@/lib/auth-fetch';
+import { getApiErrorMessage } from '@/lib/api-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from '@/components/ui/card';
@@ -25,7 +27,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { Trash2, UserPlus } from 'lucide-react';
+import { Trash2, UserPlus, RefreshCw, X } from 'lucide-react';
 
 interface TeamMember {
   id: string;
@@ -36,9 +38,19 @@ interface TeamMember {
   createdAt: string;
 }
 
+interface PendingInvite {
+  id: string;
+  email: string;
+  role: string;
+  status: string;
+  expiresAt: string;
+  createdAt: string;
+}
+
 export default function TeamPage() {
   const t = useTranslations('team');
   const tRoles = useTranslations('roles');
+  const tErrors = useTranslations('apiErrors');
   const { data: session } = useSession();
   const authFetch = useAuthFetch();
   const [inviteOpen, setInviteOpen] = useState(false);
@@ -49,6 +61,11 @@ export default function TeamPage() {
 
   const { data: members, isLoading, mutate } = useSWR<TeamMember[]>(
     session?.accessToken ? `${API_URL}/api/team/members` : null,
+    createAuthFetcher(session?.accessToken),
+  );
+
+  const { data: pendingInvites, mutate: mutateInvites } = useSWR<PendingInvite[]>(
+    session?.accessToken ? `${API_URL}/api/team/invites` : null,
     createAuthFetcher(session?.accessToken),
   );
 
@@ -64,10 +81,31 @@ export default function TeamPage() {
       setInviteOpen(false);
       setInviteEmail('');
       mutate();
+      mutateInvites();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : t('inviteError'));
+      toast.error(getApiErrorMessage(err, tErrors));
     } finally {
       setIsInviting(false);
+    }
+  };
+
+  const handleResendInvite = async (inviteId: string) => {
+    try {
+      await authFetch(`/api/team/invites/${inviteId}/resend`, { method: 'PATCH' });
+      toast.success(t('inviteResent'));
+      mutateInvites();
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, tErrors));
+    }
+  };
+
+  const handleRevokeInvite = async (inviteId: string) => {
+    try {
+      await authFetch(`/api/team/invites/${inviteId}`, { method: 'DELETE' });
+      toast.success(t('inviteRevoked'));
+      mutateInvites();
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, tErrors));
     }
   };
 
@@ -77,7 +115,7 @@ export default function TeamPage() {
       toast.success(t('memberRemoved'));
       mutate();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : t('removeError'));
+      toast.error(getApiErrorMessage(err, tErrors));
     }
   };
 
@@ -90,7 +128,7 @@ export default function TeamPage() {
       toast.success(t('roleChanged'));
       mutate();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : t('roleChangeError'));
+      toast.error(getApiErrorMessage(err, tErrors));
     }
   };
 
@@ -151,6 +189,75 @@ export default function TeamPage() {
         </Dialog>
       </div>
 
+      {/* Pending Invites */}
+      {pendingInvites && pendingInvites.length > 0 && (
+        <Card className="rounded-xl border border-border/50 shadow-[var(--shadow-sm)]">
+          <CardHeader>
+            <CardTitle>{t('pendingInvites')}</CardTitle>
+            <CardDescription>{t('pendingInvitesDescription', { count: pendingInvites.length })}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t('emailColumn')}</TableHead>
+                  <TableHead>{t('roleColumn')}</TableHead>
+                  <TableHead>{t('status')}</TableHead>
+                  <TableHead className="text-right">{t('actionsColumn')}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {pendingInvites.map((invite) => (
+                  <TableRow key={invite.id}>
+                    <TableCell className="font-medium">{invite.email}</TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">
+                        {tRoles(invite.role as 'ADMIN' | 'ARZT' | 'EMPFANG')}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{t('pending')}</Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon-xs"
+                              onClick={() => handleResendInvite(invite.id)}
+                              aria-label={t('resend')}
+                            >
+                              <RefreshCw className="size-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{t('resend')}</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon-xs"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => handleRevokeInvite(invite.id)}
+                              aria-label={t('revokeInvite')}
+                            >
+                              <X className="size-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{t('revokeInvite')}</TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Active Members */}
       <Card className="rounded-xl border border-border/50 shadow-[var(--shadow-sm)]">
         <CardHeader>
           <CardTitle>{t('members')}</CardTitle>

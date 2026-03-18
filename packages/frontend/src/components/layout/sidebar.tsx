@@ -166,7 +166,7 @@ export function Sidebar() {
           </div>
         ) : (
           <button
-            onClick={requestUnlock}
+            onClick={() => requestUnlock()}
             className="flex w-full items-center gap-2.5 rounded-md p-0 text-left transition-default hover:opacity-80"
           >
             <Lock className="size-4 text-warning shrink-0" />

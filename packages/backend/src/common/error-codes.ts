@@ -1,0 +1,96 @@
+/**
+ * Machine-readable error codes returned by the API.
+ * The frontend maps these to translated user-facing messages.
+ * Never return human-readable error strings — let the client handle i18n.
+ */
+export enum ErrorCode {
+  // ── Auth ──────────────────────────────────────────
+  EMAIL_ALREADY_REGISTERED = 'EMAIL_ALREADY_REGISTERED',
+  INVALID_CREDENTIALS = 'INVALID_CREDENTIALS',
+  ACCOUNT_LOCKED = 'ACCOUNT_LOCKED',
+  ACCOUNT_LOCKED_TEMPORARY = 'ACCOUNT_LOCKED_TEMPORARY',
+  OAUTH_ACCOUNT_NO_PASSWORD = 'OAUTH_ACCOUNT_NO_PASSWORD',
+  CURRENT_PASSWORD_INCORRECT = 'CURRENT_PASSWORD_INCORRECT',
+  INVALID_RESET_TOKEN = 'INVALID_RESET_TOKEN',
+  INVALID_TOKEN_TYPE = 'INVALID_TOKEN_TYPE',
+  INVALID_VERIFICATION_TOKEN = 'INVALID_VERIFICATION_TOKEN',
+  EMAIL_NOT_VERIFIED = 'EMAIL_NOT_VERIFIED',
+  INVALID_AUTH_SECRET = 'INVALID_AUTH_SECRET',
+
+  // ── 2FA ───────────────────────────────────────────
+  TWO_FA_NOT_ENABLED = 'TWO_FA_NOT_ENABLED',
+  TWO_FA_INVALID_CODE = 'TWO_FA_INVALID_CODE',
+  TWO_FA_SETUP_NOT_INITIATED = 'TWO_FA_SETUP_NOT_INITIATED',
+  TWO_FA_SESSION_INVALID = 'TWO_FA_SESSION_INVALID',
+
+  // ── Team / Invites ────────────────────────────────
+  USER_ALREADY_MEMBER = 'USER_ALREADY_MEMBER',
+  INVITE_ALREADY_PENDING = 'INVITE_ALREADY_PENDING',
+  CANNOT_REMOVE_SELF = 'CANNOT_REMOVE_SELF',
+  USER_NOT_FOUND = 'USER_NOT_FOUND',
+  CANNOT_CHANGE_OWN_ROLE = 'CANNOT_CHANGE_OWN_ROLE',
+  LAST_ADMIN_CANNOT_CHANGE = 'LAST_ADMIN_CANNOT_CHANGE',
+  INVITE_NOT_FOUND = 'INVITE_NOT_FOUND',
+  INVITE_ALREADY_USED_OR_EXPIRED = 'INVITE_ALREADY_USED_OR_EXPIRED',
+  INVITE_EXPIRED = 'INVITE_EXPIRED',
+  INVITE_EMAIL_MISMATCH = 'INVITE_EMAIL_MISMATCH',
+  USER_ALREADY_IN_OTHER_PRACTICE = 'USER_ALREADY_IN_OTHER_PRACTICE',
+
+  // ── Consent ───────────────────────────────────────
+  CONSENT_NOT_FOUND = 'CONSENT_NOT_FOUND',
+  CONSENT_EXPIRED = 'CONSENT_EXPIRED',
+  CONSENT_REVOKED = 'CONSENT_REVOKED',
+  CONSENT_ALREADY_SUBMITTED = 'CONSENT_ALREADY_SUBMITTED',
+  CONSENT_ALREADY_REVOKED = 'CONSENT_ALREADY_REVOKED',
+  CONSENT_LIMIT_REACHED = 'CONSENT_LIMIT_REACHED',
+
+  // ── Patient ───────────────────────────────────────
+  PATIENT_NOT_FOUND = 'PATIENT_NOT_FOUND',
+
+  // ── Practice ──────────────────────────────────────
+  PRACTICE_NOT_FOUND = 'PRACTICE_NOT_FOUND',
+
+  // ── Billing / Subscription ────────────────────────
+  NO_SUBSCRIPTION_FOUND = 'NO_SUBSCRIPTION_FOUND',
+  INVALID_PRICE_ID = 'INVALID_PRICE_ID',
+  NO_STRIPE_CUSTOMER = 'NO_STRIPE_CUSTOMER',
+  NO_PRACTICE_ASSIGNED = 'NO_PRACTICE_ASSIGNED',
+  PRACTICE_SUSPENDED = 'PRACTICE_SUSPENDED',
+  NO_ACTIVE_SUBSCRIPTION = 'NO_ACTIVE_SUBSCRIPTION',
+  TRIAL_EXPIRED = 'TRIAL_EXPIRED',
+  SUBSCRIPTION_REQUIRED = 'SUBSCRIPTION_REQUIRED',
+
+  // ── Treatment Plans ───────────────────────────────
+  TREATMENT_PLAN_NOT_FOUND = 'TREATMENT_PLAN_NOT_FOUND',
+  TREATMENT_TEMPLATE_NOT_FOUND = 'TREATMENT_TEMPLATE_NOT_FOUND',
+
+  // ── Photos ────────────────────────────────────────
+  PHOTO_NOT_FOUND = 'PHOTO_NOT_FOUND',
+
+  // ── PDF ───────────────────────────────────────────
+  PDF_NOT_FOUND = 'PDF_NOT_FOUND',
+
+  // ── Settings ──────────────────────────────────────
+  SETTINGS_NOT_FOUND = 'SETTINGS_NOT_FOUND',
+
+  // ── File uploads ──────────────────────────────────
+  NO_FILE_PROVIDED = 'NO_FILE_PROVIDED',
+  FILE_TOO_LARGE = 'FILE_TOO_LARGE',
+  INVALID_FILE_TYPE = 'INVALID_FILE_TYPE',
+
+  // ── Webhook ───────────────────────────────────────
+  MISSING_SIGNATURE_HEADER = 'MISSING_SIGNATURE_HEADER',
+  MISSING_RAW_BODY = 'MISSING_RAW_BODY',
+  WEBHOOK_VERIFICATION_FAILED = 'WEBHOOK_VERIFICATION_FAILED',
+
+  // ── Access ────────────────────────────────────────
+  PLATFORM_ADMIN_REQUIRED = 'PLATFORM_ADMIN_REQUIRED',
+}
+
+/**
+ * Helper to throw NestJS HttpExceptions with an error code.
+ * Usage: throw new BadRequestException(errorPayload(ErrorCode.INVITE_EXPIRED))
+ */
+export function errorPayload(code: ErrorCode, detail?: string) {
+  return { errorCode: code, message: detail ?? code };
+}

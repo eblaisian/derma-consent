@@ -11,6 +11,7 @@ import { NotificationService } from '../notifications/notification.service';
 import { ConfigService } from '@nestjs/config';
 import { InviteDto, ChangeRoleDto } from './team.dto';
 import { UserRole } from '@prisma/client';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 @Injectable()
 export class TeamService {
@@ -43,20 +44,29 @@ export class TeamService {
     });
 
     if (existing?.practiceId === practiceId) {
-      throw new BadRequestException('Benutzer ist bereits Mitglied dieser Praxis');
+      throw new BadRequestException(errorPayload(ErrorCode.USER_ALREADY_MEMBER));
     }
 
-    // Check for existing pending invite
+    // Check for existing invites
     const existingInvite = await this.prisma.invite.findFirst({
       where: {
         practiceId,
         email: dto.email,
-        status: 'PENDING',
+        status: { in: ['PENDING', 'EXPIRED'] },
       },
+      orderBy: { createdAt: 'desc' },
     });
 
-    if (existingInvite) {
-      throw new BadRequestException('Einladung fuer diese E-Mail existiert bereits');
+    if (existingInvite?.status === 'PENDING') {
+      throw new BadRequestException(errorPayload(ErrorCode.INVITE_ALREADY_PENDING));
+    }
+
+    // Auto-supersede expired invites
+    if (existingInvite?.status === 'EXPIRED') {
+      await this.prisma.invite.update({
+        where: { id: existingInvite.id },
+        data: { status: 'EXPIRED' },
+      });
     }
 
     const expiresAt = new Date();
@@ -110,7 +120,7 @@ export class TeamService {
 
   async removeMember(practiceId: string, userId: string, currentUserId: string) {
     if (userId === currentUserId) {
-      throw new BadRequestException('Sie koennen sich nicht selbst entfernen');
+      throw new BadRequestException(errorPayload(ErrorCode.CANNOT_REMOVE_SELF));
     }
 
     const user = await this.prisma.user.findFirst({
@@ -118,7 +128,7 @@ export class TeamService {
     });
 
     if (!user) {
-      throw new NotFoundException('Benutzer nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.USER_NOT_FOUND));
     }
 
     await this.prisma.user.update({
@@ -145,7 +155,7 @@ export class TeamService {
     currentUserId: string,
   ) {
     if (userId === currentUserId) {
-      throw new BadRequestException('Sie koennen Ihre eigene Rolle nicht aendern');
+      throw new BadRequestException(errorPayload(ErrorCode.CANNOT_CHANGE_OWN_ROLE));
     }
 
     const user = await this.prisma.user.findFirst({
@@ -153,7 +163,7 @@ export class TeamService {
     });
 
     if (!user) {
-      throw new NotFoundException('Benutzer nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.USER_NOT_FOUND));
     }
 
     // Prevent demoting last admin
@@ -162,7 +172,7 @@ export class TeamService {
         where: { practiceId, role: UserRole.ADMIN },
       });
       if (adminCount <= 1) {
-        throw new ForbiddenException('Es muss mindestens einen Administrator geben');
+        throw new ForbiddenException(errorPayload(ErrorCode.LAST_ADMIN_CANNOT_CHANGE));
       }
     }
 
@@ -199,11 +209,11 @@ export class TeamService {
     });
 
     if (!invite) {
-      throw new NotFoundException('Einladung nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.INVITE_NOT_FOUND));
     }
 
     if (invite.status !== 'PENDING') {
-      throw new BadRequestException('Einladung wurde bereits verwendet oder ist abgelaufen');
+      throw new BadRequestException(errorPayload(ErrorCode.INVITE_ALREADY_USED_OR_EXPIRED));
     }
 
     if (invite.expiresAt < new Date()) {
@@ -211,7 +221,7 @@ export class TeamService {
         where: { id: invite.id },
         data: { status: 'EXPIRED' },
       });
-      throw new BadRequestException('Einladung ist abgelaufen');
+      throw new BadRequestException(errorPayload(ErrorCode.INVITE_EXPIRED));
     }
 
     return invite;
@@ -227,9 +237,7 @@ export class TeamService {
     });
 
     if (user.email.toLowerCase() !== invite.email.toLowerCase()) {
-      throw new ForbiddenException(
-        'Diese Einladung wurde an eine andere E-Mail-Adresse gesendet',
-      );
+      throw new ForbiddenException(errorPayload(ErrorCode.INVITE_EMAIL_MISMATCH));
     }
 
     // If user already belongs to the invited practice, just mark invite as accepted
@@ -243,9 +251,7 @@ export class TeamService {
 
     // Prevent overwriting membership in a different practice
     if (user.practiceId) {
-      throw new BadRequestException(
-        'Sie sind bereits Mitglied einer anderen Praxis. Bitte verlassen Sie zuerst Ihre aktuelle Praxis.',
-      );
+      throw new BadRequestException(errorPayload(ErrorCode.USER_ALREADY_IN_OTHER_PRACTICE));
     }
 
     await this.prisma.$transaction([
@@ -263,5 +269,93 @@ export class TeamService {
     ]);
 
     return { success: true, practiceId: invite.practiceId };
+  }
+
+  async listPendingInvites(practiceId: string) {
+    return this.prisma.invite.findMany({
+      where: { practiceId, status: 'PENDING' },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        token: true,
+        status: true,
+        expiresAt: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async resendInvite(practiceId: string, inviteId: string, userId?: string) {
+    const invite = await this.prisma.invite.findFirst({
+      where: { id: inviteId, practiceId, status: 'PENDING' },
+    });
+
+    if (!invite) {
+      throw new NotFoundException(errorPayload(ErrorCode.INVITE_NOT_FOUND));
+    }
+
+    // Reset expiry to 7 days from now
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    await this.prisma.invite.update({
+      where: { id: invite.id },
+      data: { expiresAt },
+    });
+
+    // Resend email
+    const practice = await this.prisma.practice.findUnique({
+      where: { id: practiceId },
+      select: { name: true },
+    });
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    const inviteLink = `${frontendUrl}/invite/${invite.token}`;
+
+    this.notificationService.sendTeamInvite({
+      practiceId,
+      recipientEmail: invite.email,
+      practiceName: practice?.name || 'Praxis',
+      role: invite.role,
+      inviteLink,
+    }).catch(() => {});
+
+    await this.auditService?.log({
+      practiceId,
+      userId,
+      action: 'TEAM_MEMBER_INVITED',
+      entityType: 'Invite',
+      entityId: invite.id,
+      metadata: { email: invite.email, role: invite.role, resend: true },
+    });
+
+    return { success: true };
+  }
+
+  async revokeInvite(practiceId: string, inviteId: string, userId?: string) {
+    const invite = await this.prisma.invite.findFirst({
+      where: { id: inviteId, practiceId, status: 'PENDING' },
+    });
+
+    if (!invite) {
+      throw new NotFoundException(errorPayload(ErrorCode.INVITE_NOT_FOUND));
+    }
+
+    await this.prisma.invite.update({
+      where: { id: invite.id },
+      data: { status: 'EXPIRED' },
+    });
+
+    await this.auditService?.log({
+      practiceId,
+      userId,
+      action: 'TEAM_MEMBER_REMOVED',
+      entityType: 'Invite',
+      entityId: invite.id,
+      metadata: { email: invite.email, revoked: true },
+    });
+
+    return { success: true };
   }
 }

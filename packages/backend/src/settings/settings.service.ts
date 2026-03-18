@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateSettingsDto } from './settings.dto';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 @Injectable()
 export class SettingsService {
@@ -55,7 +56,7 @@ export class SettingsService {
     });
 
     if (!settings) {
-      throw new NotFoundException('Settings not found');
+      throw new NotFoundException(errorPayload(ErrorCode.SETTINGS_NOT_FOUND));
     }
 
     return this.prisma.practiceSettings.update({

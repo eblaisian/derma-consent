@@ -7,6 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
 import { AuditService } from '../audit/audit.service';
 import { UploadPhotoDto } from './photo.dto';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 import { randomUUID } from 'crypto';
 
 @Injectable()
@@ -27,7 +28,7 @@ export class PhotoService {
       where: { id: dto.patientId, practiceId },
     });
     if (!patient) {
-      throw new NotFoundException('Patient nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.PATIENT_NOT_FOUND));
     }
 
     const path = `encrypted-photos/${practiceId}/${dto.patientId}/${randomUUID()}.enc`;
@@ -108,7 +109,7 @@ export class PhotoService {
       where: { id, practiceId },
     });
     if (!photo) {
-      throw new NotFoundException('Foto nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.PHOTO_NOT_FOUND));
     }
     return photo;
   }

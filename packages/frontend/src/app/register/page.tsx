@@ -25,8 +25,10 @@ export default function RegisterPage() {
   const tLogin = useTranslations('login');
   const searchParams = useSearchParams();
   const callbackUrl = getSafeCallbackUrl(searchParams.get('callbackUrl'));
+  const inviteEmail = searchParams.get('email') || '';
+  const isInviteFlow = !!inviteEmail && !!callbackUrl?.startsWith('/invite/');
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(inviteEmail);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -95,22 +97,28 @@ export default function RegisterPage() {
     <AuthLayout>
       <div className="space-y-6">
         <div className="space-y-2 text-center">
-          <h1 className="text-balance text-2xl font-semibold tracking-tight">{t('title')}</h1>
-          <p className="text-pretty text-sm text-muted-foreground">{t('description')}</p>
+          <h1 className="text-balance text-2xl font-semibold tracking-tight">
+            {isInviteFlow ? t('inviteTitle') : t('title')}
+          </h1>
+          <p className="text-pretty text-sm text-muted-foreground">
+            {isInviteFlow ? t('inviteDescription') : t('description')}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">{t('name')}</Label>
-            <Input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={t('namePlaceholder')}
-              autoComplete="name"
-            />
-          </div>
+          {!isInviteFlow && (
+            <div className="space-y-2">
+              <Label htmlFor="name">{t('name')}</Label>
+              <Input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={t('namePlaceholder')}
+                autoComplete="name"
+              />
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="email">{t('email')}</Label>
             <Input
@@ -121,6 +129,8 @@ export default function RegisterPage() {
               placeholder={t('emailPlaceholder')}
               required
               autoComplete="email"
+              readOnly={isInviteFlow}
+              className={isInviteFlow ? 'opacity-60' : ''}
             />
           </div>
           <div className="space-y-2">

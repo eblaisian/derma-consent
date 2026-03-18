@@ -32,6 +32,7 @@ import { TreatmentHistory } from '@/components/treatment-plan/treatment-history'
 import { TreatmentPlanEditor } from '@/components/treatment-plan/treatment-plan-editor';
 import { TemplatePickerDialog } from '@/components/treatment-plan/template-picker-dialog';
 import type { TreatmentPhotoSummary, TreatmentPlanSummary, TreatmentTemplateSummary } from '@/lib/types';
+import { NewConsentDialog } from '@/components/dashboard/new-consent-dialog';
 
 interface PatientDetail {
   id: string;
@@ -85,7 +86,7 @@ export default function PatientDetailPage() {
 
   const fetcher = createAuthFetcher(session?.accessToken);
 
-  const { data: patient } = useSWR<PatientDetail>(
+  const { data: patient, mutate: mutatePatient } = useSWR<PatientDetail>(
     session?.accessToken && id ? `${API_URL}/api/patients/${id}` : null,
     fetcher,
   );
@@ -304,9 +305,12 @@ export default function PatientDetailPage() {
 
       {/* Consents Section */}
       <Card>
-        <CardHeader>
-          <CardTitle>{t('consents')}</CardTitle>
-          <CardDescription>{t('consentCount', { count: patient.consentForms.length })}</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>{t('consents')}</CardTitle>
+            <CardDescription>{t('consentCount', { count: patient.consentForms.length })}</CardDescription>
+          </div>
+          <NewConsentDialog patientId={id} onCreated={() => mutatePatient()} />
         </CardHeader>
         <CardContent>
           <Table>

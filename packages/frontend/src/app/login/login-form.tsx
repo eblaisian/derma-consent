@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 
 /** Only allow relative paths to prevent open-redirect attacks */
 function getSafeCallbackUrl(raw: string | null): string | null {
@@ -244,7 +245,7 @@ export function LoginForm({ enabledProviders }: Props) {
           </form>
         )}
 
-        {enabledProviders.credentials && anyOAuthEnabled && (
+        {enabledProviders.credentials && (
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
@@ -257,7 +258,7 @@ export function LoginForm({ enabledProviders }: Props) {
           </div>
         )}
 
-        {enabledProviders.google && (
+        {enabledProviders.google ? (
           <Button
             className="w-full"
             variant="outline"
@@ -266,9 +267,15 @@ export function LoginForm({ enabledProviders }: Props) {
             <GoogleIcon />
             {t('signInWithGoogle')}
           </Button>
+        ) : (
+          <Button className="w-full" variant="outline" disabled>
+            <GoogleIcon />
+            {t('signInWithGoogle')}
+            <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">{t('comingSoon')}</Badge>
+          </Button>
         )}
 
-        {enabledProviders['microsoft-entra-id'] && (
+        {enabledProviders['microsoft-entra-id'] ? (
           <Button
             className="w-full"
             variant="outline"
@@ -276,6 +283,12 @@ export function LoginForm({ enabledProviders }: Props) {
           >
             <MicrosoftIcon />
             {t('signInWithMicrosoft')}
+          </Button>
+        ) : (
+          <Button className="w-full" variant="outline" disabled>
+            <MicrosoftIcon />
+            {t('signInWithMicrosoft')}
+            <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">{t('comingSoon')}</Badge>
           </Button>
         )}
 

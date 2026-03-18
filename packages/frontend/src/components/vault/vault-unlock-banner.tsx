@@ -30,7 +30,7 @@ export function VaultUnlockBanner({ className }: VaultUnlockBannerProps) {
         <p className="text-sm font-medium">{t('unlockBannerTitle')}</p>
         <p className="text-xs text-muted-foreground">{t('unlockBannerDescription')}</p>
       </div>
-      <Button size="sm" onClick={requestUnlock}>
+      <Button size="sm" onClick={() => requestUnlock()}>
         {t('unlockAction')}
       </Button>
     </div>

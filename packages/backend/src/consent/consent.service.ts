@@ -1,4 +1,5 @@
 import { Injectable, Logger, NotFoundException, BadRequestException, ForbiddenException, Optional } from '@nestjs/common';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
@@ -30,7 +31,7 @@ export class ConsentService {
     });
 
     if (!practice) {
-      throw new NotFoundException('Practice not found');
+      throw new NotFoundException(errorPayload(ErrorCode.PRACTICE_NOT_FOUND));
     }
 
     // Enforce subscription consent limits
@@ -60,9 +61,7 @@ export class ConsentService {
         });
 
         if (monthlyCount >= monthlyLimit) {
-          throw new ForbiddenException(
-            `Monthly consent limit reached (${monthlyLimit}). Please upgrade your plan.`,
-          );
+          throw new ForbiddenException(errorPayload(ErrorCode.CONSENT_LIMIT_REACHED));
         }
       }
     }
@@ -132,7 +131,7 @@ export class ConsentService {
     });
 
     if (!consent) {
-      throw new NotFoundException('Consent form not found');
+      throw new NotFoundException(errorPayload(ErrorCode.CONSENT_NOT_FOUND));
     }
 
     // Return consent with its status for all states — let the frontend render appropriately.
@@ -160,15 +159,15 @@ export class ConsentService {
     const consent = await this.findByToken(token);
 
     if (consent.expiresAt < new Date()) {
-      throw new BadRequestException('Consent link has expired');
+      throw new BadRequestException(errorPayload(ErrorCode.CONSENT_EXPIRED));
     }
 
     if (consent.status === ConsentStatus.REVOKED) {
-      throw new BadRequestException('Consent has been revoked');
+      throw new BadRequestException(errorPayload(ErrorCode.CONSENT_REVOKED));
     }
 
     if (consent.status !== ConsentStatus.PENDING) {
-      throw new BadRequestException('Consent form has already been submitted');
+      throw new BadRequestException(errorPayload(ErrorCode.CONSENT_ALREADY_SUBMITTED));
     }
 
     const now = new Date();
@@ -233,11 +232,11 @@ export class ConsentService {
     });
 
     if (!consent) {
-      throw new NotFoundException('Consent form not found');
+      throw new NotFoundException(errorPayload(ErrorCode.CONSENT_NOT_FOUND));
     }
 
     if (consent.status === ConsentStatus.REVOKED) {
-      throw new BadRequestException('Consent has already been revoked');
+      throw new BadRequestException(errorPayload(ErrorCode.CONSENT_ALREADY_REVOKED));
     }
 
     const revoked = await this.prisma.consentForm.update({
@@ -282,6 +281,9 @@ export class ConsentService {
           expiresAt: true,
           createdAt: true,
           signatureTimestamp: true,
+          patient: {
+            select: { id: true, encryptedName: true, lookupHash: true },
+          },
         },
       }),
       this.prisma.consentForm.count({ where: { practiceId } }),

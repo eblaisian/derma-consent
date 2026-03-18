@@ -121,7 +121,7 @@ export default function InvitePage() {
             <p className="text-center text-sm text-muted-foreground">
               {t('noAccount')}{' '}
               <Link
-                href={`/register?callbackUrl=${encodeURIComponent(inviteCallbackUrl)}`}
+                href={`/register?callbackUrl=${encodeURIComponent(inviteCallbackUrl)}&email=${encodeURIComponent(invite.email)}`}
                 className="text-primary underline underline-offset-4 hover:text-primary/80"
               >
                 {t('createAccount')}

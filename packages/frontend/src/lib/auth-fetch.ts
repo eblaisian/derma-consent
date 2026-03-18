@@ -33,7 +33,10 @@ export function useAuthFetch() {
 
       if (!res.ok) {
         const error = await res.json().catch(() => ({ message: 'Request failed' }));
-        throw new Error(error.message || 'Request failed');
+        const err = new Error(error.message || 'Request failed');
+        // Attach machine-readable error code for i18n-aware handling
+        (err as Error & { errorCode?: string }).errorCode = error.errorCode;
+        throw err;
       }
 
       return res.json();

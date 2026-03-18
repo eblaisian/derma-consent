@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
 import { CreatePatientDto } from './patient.dto';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 @Injectable()
 export class PatientService {
@@ -54,7 +55,7 @@ export class PatientService {
     });
 
     if (!patient) {
-      throw new NotFoundException('Patient nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.PATIENT_NOT_FOUND));
     }
 
     return patient;
@@ -102,7 +103,7 @@ export class PatientService {
     });
 
     if (!patient) {
-      throw new NotFoundException('Patient nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.PATIENT_NOT_FOUND));
     }
 
     return patient;
@@ -114,7 +115,7 @@ export class PatientService {
     });
 
     if (!patient) {
-      throw new NotFoundException('Patient nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.PATIENT_NOT_FOUND));
     }
 
     // DSGVO Art. 17 - Right to erasure

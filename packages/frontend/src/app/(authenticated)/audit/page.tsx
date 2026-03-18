@@ -233,7 +233,9 @@ export default function AuditPage() {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Badge variant={getActionBadgeVariant(entry.action)} className="text-xs font-normal">
-                          {entry.action.split('_').slice(0, 2).join('_')}
+                          {tActionLabels.has(entry.action as typeof auditActionKeys[number])
+                            ? tActionLabels(entry.action as typeof auditActionKeys[number])
+                            : entry.action.split('_').slice(0, 2).join(' ')}
                         </Badge>
                         <span className="text-sm">
                           {tActions.has(entry.action as typeof auditActionKeys[number])

@@ -19,6 +19,7 @@ import { SubscriptionGuard } from '../billing/subscription.guard';
 import { Roles } from '../auth/roles.decorator';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
 import { StorageService } from '../storage/storage.service';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 const MIME_TO_EXT: Record<string, string> = {
   'image/jpeg': 'jpg',
@@ -66,14 +67,14 @@ export class SettingsController {
     const maxSize = 10 * 1024 * 1024;
 
     if (!file) {
-      throw new BadRequestException('No file provided');
+      throw new BadRequestException(errorPayload(ErrorCode.NO_FILE_PROVIDED));
     }
     if (file.size > maxSize) {
-      throw new BadRequestException('File size exceeds 10 MB limit');
+      throw new BadRequestException(errorPayload(ErrorCode.FILE_TOO_LARGE));
     }
     const ext = MIME_TO_EXT[file.mimetype];
     if (!ext) {
-      throw new BadRequestException('Invalid file type. Allowed: JPEG, PNG, WebP');
+      throw new BadRequestException(errorPayload(ErrorCode.INVALID_FILE_TYPE));
     }
 
     // Delete old logo blob if exists

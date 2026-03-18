@@ -1,6 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 import { ConsentStatus } from '@prisma/client';
 import PDFDocument from 'pdfkit';
 import * as crypto from 'crypto';
@@ -168,7 +169,7 @@ export class PdfService {
     });
 
     if (!consent?.pdfStoragePath) {
-      throw new NotFoundException('PDF not found for this consent');
+      throw new NotFoundException(errorPayload(ErrorCode.PDF_NOT_FOUND));
     }
 
     const signedUrl = await this.storage.getSignedUrl(consent.pdfStoragePath, 900);

@@ -1,5 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 @Injectable()
 export class SubscriptionGuard implements CanActivate {
@@ -15,7 +16,7 @@ export class SubscriptionGuard implements CanActivate {
     }
 
     if (!user?.practiceId) {
-      throw new ForbiddenException('Keine Praxis zugeordnet');
+      throw new ForbiddenException(errorPayload(ErrorCode.NO_PRACTICE_ASSIGNED));
     }
 
     // Check if practice is suspended
@@ -25,9 +26,7 @@ export class SubscriptionGuard implements CanActivate {
     });
 
     if (practice?.isSuspended) {
-      throw new ForbiddenException(
-        'Diese Praxis wurde vorübergehend gesperrt. Bitte kontaktieren Sie den Support.',
-      );
+      throw new ForbiddenException(errorPayload(ErrorCode.PRACTICE_SUSPENDED));
     }
 
     const subscription = await this.prisma.subscription.findUnique({
@@ -35,7 +34,7 @@ export class SubscriptionGuard implements CanActivate {
     });
 
     if (!subscription) {
-      throw new ForbiddenException('Kein Abonnement gefunden');
+      throw new ForbiddenException(errorPayload(ErrorCode.NO_ACTIVE_SUBSCRIPTION));
     }
 
     const now = new Date();
@@ -50,7 +49,7 @@ export class SubscriptionGuard implements CanActivate {
         where: { practiceId: user.practiceId },
         data: { status: 'EXPIRED' },
       });
-      throw new ForbiddenException('Testphase abgelaufen');
+      throw new ForbiddenException(errorPayload(ErrorCode.TRIAL_EXPIRED));
     }
 
     // Allow active subscriptions (including those pending cancellation — access until period end)
@@ -69,6 +68,6 @@ export class SubscriptionGuard implements CanActivate {
       return true;
     }
 
-    throw new ForbiddenException('Aktives Abonnement erforderlich');
+    throw new ForbiddenException(errorPayload(ErrorCode.SUBSCRIPTION_REQUIRED));
   }
 }

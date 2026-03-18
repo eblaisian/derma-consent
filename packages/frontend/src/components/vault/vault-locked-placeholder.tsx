@@ -33,7 +33,7 @@ export function VaultLockedPlaceholder({
     <div
       role="button"
       tabIndex={0}
-      onClick={requestUnlock}
+      onClick={() => requestUnlock()}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();

@@ -18,6 +18,7 @@ import { RegisterDto, LoginDto, ForgotPasswordDto, ResetPasswordDto, VerifyEmail
 import { TwoFactorTokenDto, TwoFactorVerifyLoginDto } from './two-factor.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CurrentUser, CurrentUserPayload } from './current-user.decorator';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 @Controller('api/auth')
 export class AuthController {
@@ -34,7 +35,7 @@ export class AuthController {
   ) {
     const expectedSecret = this.configService.get<string>('AUTH_SECRET');
     if (!authSecret || authSecret !== expectedSecret) {
-      throw new UnauthorizedException('Invalid auth secret');
+      throw new UnauthorizedException(errorPayload(ErrorCode.INVALID_AUTH_SECRET));
     }
 
     return this.authService.syncUser(dto);

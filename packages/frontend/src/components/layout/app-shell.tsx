@@ -56,11 +56,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     createAuthFetcher(session?.accessToken),
   );
 
-  // Apply practice brand color as scoped CSS variable overrides (accent-only, contrast-safe)
-  const brandStyle = useMemo(
-    () => computeBrandTokens(settingsData?.brandColor) as React.CSSProperties | undefined,
+  // Apply practice brand color as root-level CSS variable overrides so portals (dialogs, popovers) inherit them
+  const brandTokens = useMemo(
+    () => computeBrandTokens(settingsData?.brandColor),
     [settingsData?.brandColor],
   );
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!brandTokens) return;
+    const entries = Object.entries(brandTokens) as [string, string][];
+    for (const [key, value] of entries) {
+      root.style.setProperty(key, value);
+    }
+    return () => {
+      for (const [key] of entries) {
+        root.style.removeProperty(key);
+      }
+    };
+  }, [brandTokens]);
 
   const filteredMobileNav = mobileNavItems.filter((item) => {
     if (!item.roles.includes(userRole)) return false;
@@ -77,7 +91,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <VaultProvider>
     <TooltipProvider delayDuration={300}>
-    <div className="flex h-dvh" style={brandStyle}>
+    <div className="flex h-dvh">
       {/* Skip to content link */}
       <a
         href="#main-content"
@@ -119,7 +133,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="icon" asChild aria-label={tNav('helpCenter')}>
-                  <a href="https://docs.consent.eblaisian.com" target="_blank" rel="noopener noreferrer">
+                  <a href="mailto:support@dermaconsent.de">
                     <CircleHelp className="size-4" />
                   </a>
                 </Button>

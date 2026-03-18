@@ -5,9 +5,9 @@ import { useState, useEffect, useCallback } from 'react';
 type Theme = 'light' | 'dark' | 'system';
 
 function getInitialTheme(): Theme {
-  if (typeof window === 'undefined') return 'system';
+  if (typeof window === 'undefined') return 'light';
   const stored = localStorage.getItem('theme') as Theme | null;
-  return stored && ['light', 'dark', 'system'].includes(stored) ? stored : 'system';
+  return stored && ['light', 'dark', 'system'].includes(stored) ? stored : 'light';
 }
 
 export function useTheme() {

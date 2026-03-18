@@ -143,7 +143,8 @@
     "showPassword": "Passwort anzeigen",
     "hidePassword": "Passwort verbergen",
     "privacyPrefix": "Mit der Anmeldung stimmen Sie unserer",
-    "privacyLink": "Datenschutzerklärung zu"
+    "privacyLink": "Datenschutzerklärung zu",
+    "comingSoon": "Demnächst verfügbar"
   },
   "forgotPassword": {
     "title": "Passwort vergessen",
@@ -204,7 +205,9 @@
     "uppercase": "Ein Großbuchstabe",
     "lowercase": "Ein Kleinbuchstabe",
     "number": "Eine Zahl",
-    "tosLabel": "Ich akzeptiere die AGB und"
+    "tosLabel": "Ich akzeptiere die AGB und",
+    "inviteTitle": "Konto erstellen",
+    "inviteDescription": "Legen Sie ein Passwort fest, um der Praxis beizutreten."
   },
   "setup": {
     "title": "Praxis registrieren",
@@ -498,7 +501,7 @@
   },
   "patientDetail": {
     "title": "Patientendetails",
-    "delete": "Löschen (DSGVO Art. 17)",
+    "delete": "Löschen",
     "deleteConfirm": "Alle Patientendaten und Einwilligungen löschen? (DSGVO Art. 17)",
     "deleted": "Patient gelöscht",
     "deleteError": "Fehler beim Löschen",
@@ -515,7 +518,7 @@
     "treatmentPlanCount": "{count} Behandlungspläne",
     "noConsentsDescription": "Senden Sie ein Einwilligungsformular an diesen Patienten, um zu beginnen.",
     "deleteConfirmTitle": "Patient löschen",
-    "deleteConfirmDescription": "Dies löscht diesen Patienten und alle zugehörigen Daten dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "deleteConfirmDescription": "Hiermit werden der Patient und alle zugehörigen Daten (Einwilligungen, Fotos, Behandlungspläne) gemäß DSGVO Art. 17 (Recht auf Löschung) dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
     "cancel": "Abbrechen",
     "summaryTitle": "Klinische Übersicht",
     "summaryConsents": "Einwilligungen",
@@ -558,7 +561,15 @@
     "removeMember": "Mitglied entfernen",
     "removeConfirmTitle": "Teammitglied entfernen",
     "removeConfirmDescription": "Möchten Sie {name} wirklich aus dem Team entfernen? Der Zugriff geht sofort verloren.",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "pendingInvites": "Ausstehende Einladungen",
+    "pendingInvitesDescription": "{count} ausstehende Einladung(en)",
+    "pending": "Ausstehend",
+    "resend": "Einladung erneut senden",
+    "revokeInvite": "Einladung widerrufen",
+    "inviteResent": "Einladung erneut gesendet",
+    "inviteRevoked": "Einladung widerrufen",
+    "status": "Status"
   },
   "roles": {
     "ADMIN": "Administrator",
@@ -747,7 +758,9 @@
     "emptyAction": "Einwilligung erstellen",
     "filterByStatus": "Nach Status filtern",
     "allStatuses": "Alle Status",
-    "risk": "Risiko"
+    "risk": "Risiko",
+    "patient": "Patient",
+    "linked": "Verknüpft"
   },
   "newConsent": {
     "button": "Neue Einwilligung",
@@ -924,7 +937,9 @@
     "noAreasSelected": "Keine Behandlungsbereiche ausgewählt",
     "areasCount": "{count} Bereiche",
     "customize": "Anpassen",
-    "noPlansDescription": "Erstellen Sie einen Behandlungsplan, um Injektionspunkte und Produkte zu dokumentieren."
+    "noPlansDescription": "Erstellen Sie einen Behandlungsplan, um Injektionspunkte und Produkte zu dokumentieren.",
+    "viewDetails": "Details anzeigen",
+    "planDetails": "Behandlungsplandetails"
   },
   "treatmentTemplate": {
     "pickTemplate": "Vorlage wählen",
@@ -1314,5 +1329,54 @@
     "roleBadge_ADMIN": "Administrator",
     "roleBadge_ARZT": "Arzt",
     "roleBadge_EMPFANG": "Empfang"
+  },
+  "apiErrors": {
+    "EMAIL_ALREADY_REGISTERED": "Ein Konto mit dieser E-Mail-Adresse existiert bereits.",
+    "INVALID_CREDENTIALS": "Ungültige E-Mail oder Passwort.",
+    "ACCOUNT_LOCKED": "Konto gesperrt. Versuchen Sie es in {minutes} Minute(n) erneut.",
+    "ACCOUNT_LOCKED_TEMPORARY": "Zu viele Fehlversuche. Konto für {minutes} Minuten gesperrt.",
+    "OAUTH_ACCOUNT_NO_PASSWORD": "Dieses Konto nutzt Social Login — Passwort kann nicht geändert werden.",
+    "CURRENT_PASSWORD_INCORRECT": "Aktuelles Passwort ist falsch.",
+    "INVALID_RESET_TOKEN": "Ungültiger oder abgelaufener Reset-Link.",
+    "INVALID_TOKEN_TYPE": "Ungültiger Token.",
+    "INVALID_VERIFICATION_TOKEN": "Ungültiger oder abgelaufener Verifizierungslink.",
+    "TWO_FA_NOT_ENABLED": "2FA ist für dieses Konto nicht aktiviert.",
+    "TWO_FA_INVALID_CODE": "Ungültiger 2FA-Code.",
+    "TWO_FA_SETUP_NOT_INITIATED": "2FA-Einrichtung nicht gestartet.",
+    "TWO_FA_SESSION_INVALID": "Ungültige oder abgelaufene 2FA-Sitzung.",
+    "USER_ALREADY_MEMBER": "Benutzer ist bereits Mitglied dieser Praxis.",
+    "INVITE_ALREADY_PENDING": "Eine Einladung für diese E-Mail existiert bereits.",
+    "CANNOT_REMOVE_SELF": "Sie können sich nicht selbst entfernen.",
+    "USER_NOT_FOUND": "Benutzer nicht gefunden.",
+    "CANNOT_CHANGE_OWN_ROLE": "Sie können Ihre eigene Rolle nicht ändern.",
+    "LAST_ADMIN_CANNOT_CHANGE": "Es muss mindestens einen Administrator geben.",
+    "INVITE_NOT_FOUND": "Einladung nicht gefunden.",
+    "INVITE_ALREADY_USED_OR_EXPIRED": "Diese Einladung wurde bereits verwendet oder ist abgelaufen.",
+    "INVITE_EXPIRED": "Diese Einladung ist abgelaufen.",
+    "INVITE_EMAIL_MISMATCH": "Diese Einladung wurde an eine andere E-Mail-Adresse gesendet.",
+    "USER_ALREADY_IN_OTHER_PRACTICE": "Sie sind bereits Mitglied einer anderen Praxis. Bitte verlassen Sie zuerst Ihre aktuelle Praxis.",
+    "CONSENT_NOT_FOUND": "Einwilligungsformular nicht gefunden.",
+    "CONSENT_EXPIRED": "Dieser Einwilligungslink ist abgelaufen.",
+    "CONSENT_REVOKED": "Diese Einwilligung wurde widerrufen.",
+    "CONSENT_ALREADY_SUBMITTED": "Dieses Einwilligungsformular wurde bereits eingereicht.",
+    "CONSENT_ALREADY_REVOKED": "Diese Einwilligung wurde bereits widerrufen.",
+    "CONSENT_LIMIT_REACHED": "Monatliches Einwilligungslimit erreicht. Bitte upgraden Sie Ihren Plan.",
+    "PATIENT_NOT_FOUND": "Patient nicht gefunden.",
+    "PRACTICE_NOT_FOUND": "Praxis nicht gefunden.",
+    "NO_SUBSCRIPTION_FOUND": "Kein Abonnement gefunden.",
+    "NO_PRACTICE_ASSIGNED": "Keine Praxis zugeordnet.",
+    "PRACTICE_SUSPENDED": "Diese Praxis wurde vorübergehend gesperrt. Bitte kontaktieren Sie den Support.",
+    "NO_ACTIVE_SUBSCRIPTION": "Kein aktives Abonnement gefunden.",
+    "TRIAL_EXPIRED": "Testphase abgelaufen.",
+    "SUBSCRIPTION_REQUIRED": "Ein aktives Abonnement ist erforderlich.",
+    "TREATMENT_PLAN_NOT_FOUND": "Behandlungsplan nicht gefunden.",
+    "TREATMENT_TEMPLATE_NOT_FOUND": "Vorlage nicht gefunden.",
+    "PHOTO_NOT_FOUND": "Foto nicht gefunden.",
+    "PDF_NOT_FOUND": "PDF nicht gefunden.",
+    "SETTINGS_NOT_FOUND": "Einstellungen nicht gefunden.",
+    "NO_FILE_PROVIDED": "Keine Datei bereitgestellt.",
+    "FILE_TOO_LARGE": "Dateigröße überschreitet das Limit.",
+    "INVALID_FILE_TYPE": "Ungültiger Dateityp.",
+    "UNKNOWN_ERROR": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
   }
 }

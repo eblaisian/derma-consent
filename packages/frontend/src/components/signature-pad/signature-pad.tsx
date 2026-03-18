@@ -29,7 +29,7 @@ export function SignaturePad({ onSignatureChange }: SignaturePadProps) {
 
   const handleEnd = useCallback(() => {
     if (sigRef.current && !sigRef.current.isEmpty()) {
-      const data = sigRef.current.toDataURL('image/jpeg', 0.85); // JPEG is ~5× smaller than PNG for signatures
+      const data = sigRef.current.toDataURL('image/png');
       onSignatureChange(data);
     }
   }, [onSignatureChange]);

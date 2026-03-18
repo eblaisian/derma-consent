@@ -1,5 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 @Injectable()
 export class PlatformAdminGuard implements CanActivate {
@@ -11,7 +12,7 @@ export class PlatformAdminGuard implements CanActivate {
     const { user } = context.switchToHttp().getRequest();
 
     if (user?.role !== 'PLATFORM_ADMIN') {
-      throw new ForbiddenException('Platform admin access required');
+      throw new ForbiddenException(errorPayload(ErrorCode.PLATFORM_ADMIN_REQUIRED));
     }
 
     // Warn if 2FA not enabled (will be enforced once 2FA onboarding flow is built)

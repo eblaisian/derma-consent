@@ -51,7 +51,7 @@ export interface VaultContextValue {
   encryptPhoto: (data: ArrayBuffer, publicKeyJwk: JsonWebKey) => Promise<EncryptedBlobPayload>;
   decryptPhoto: (blob: ArrayBuffer, iv: string, encryptedSessionKey: string) => Promise<ArrayBuffer>;
   lock: () => void;
-  requestUnlock: () => void;
+  requestUnlock: (onUnlocked?: () => void) => void;
   closeModal: () => void;
 }
 
@@ -69,6 +69,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   const lastActivityRef = useRef<number>(Date.now());
   const warningShownRef = useRef(false);
   const sessionRestoredRef = useRef(false);
+  const onUnlockedCallbackRef = useRef<(() => void) | null>(null);
 
   // --- Activity tracking ---
   useEffect(() => {
@@ -242,6 +243,11 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         setError(null);
         localStorage.setItem('vault-ever-unlocked', 'true');
         await persistToSession(privateKey);
+
+        // Fire the pending callback (e.g. open a consent viewer)
+        const cb = onUnlockedCallbackRef.current;
+        onUnlockedCallbackRef.current = null;
+        cb?.();
       } catch {
         setIsUnlocked(false);
         setIsLoading(false);
@@ -314,13 +320,15 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  const requestUnlock = useCallback(() => {
+  const requestUnlock = useCallback((onUnlocked?: () => void) => {
+    onUnlockedCallbackRef.current = onUnlocked ?? null;
     setIsModalOpen(true);
   }, []);
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setError(null);
+    onUnlockedCallbackRef.current = null;
   }, []);
 
   const value: VaultContextValue = {

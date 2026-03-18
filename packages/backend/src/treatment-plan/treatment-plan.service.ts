@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 import { AiService } from '../ai/ai.service';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 import {
   CreateTreatmentPlanDto,
   UpdateTreatmentPlanDto,
@@ -29,7 +30,7 @@ export class TreatmentPlanService {
       where: { id: dto.patientId, practiceId },
     });
     if (!patient) {
-      throw new NotFoundException('Patient nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.PATIENT_NOT_FOUND));
     }
 
     const plan = await this.prisma.treatmentPlan.create({
@@ -104,7 +105,7 @@ export class TreatmentPlanService {
       },
     });
     if (!plan) {
-      throw new NotFoundException('Behandlungsplan nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.TREATMENT_PLAN_NOT_FOUND));
     }
 
     await this.audit.log({
@@ -128,7 +129,7 @@ export class TreatmentPlanService {
       where: { id, practiceId },
     });
     if (!plan) {
-      throw new NotFoundException('Behandlungsplan nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.TREATMENT_PLAN_NOT_FOUND));
     }
 
     const updated = await this.prisma.treatmentPlan.update({
@@ -157,7 +158,7 @@ export class TreatmentPlanService {
       where: { id, practiceId },
     });
     if (!plan) {
-      throw new NotFoundException('Behandlungsplan nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.TREATMENT_PLAN_NOT_FOUND));
     }
 
     await this.prisma.treatmentPlan.delete({ where: { id } });
@@ -190,7 +191,7 @@ export class TreatmentPlanService {
       where: { id, practiceId },
     });
     if (!template) {
-      throw new NotFoundException('Vorlage nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.TREATMENT_TEMPLATE_NOT_FOUND));
     }
 
     return this.prisma.treatmentTemplate.update({
@@ -209,7 +210,7 @@ export class TreatmentPlanService {
       where: { id, practiceId },
     });
     if (!template) {
-      throw new NotFoundException('Vorlage nicht gefunden');
+      throw new NotFoundException(errorPayload(ErrorCode.TREATMENT_TEMPLATE_NOT_FOUND));
     }
 
     await this.prisma.treatmentTemplate.delete({ where: { id } });

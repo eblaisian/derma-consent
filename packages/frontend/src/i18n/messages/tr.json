@@ -143,7 +143,8 @@
     "showPassword": "Şifreyi göster",
     "hidePassword": "Şifreyi gizle",
     "privacyPrefix": "Giriş yaparak kabul etmiş olursunuz",
-    "privacyLink": "gizlilik politikamızı"
+    "privacyLink": "gizlilik politikamızı",
+    "comingSoon": "Yakında"
   },
   "forgotPassword": {
     "title": "Şifremi unuttum",
@@ -204,7 +205,9 @@
     "uppercase": "Bir büyük harf",
     "lowercase": "Bir küçük harf",
     "number": "Bir rakam",
-    "tosLabel": "Hizmet şartlarını ve"
+    "tosLabel": "Hizmet şartlarını ve",
+    "inviteTitle": "Hesabınızı oluşturun",
+    "inviteDescription": "Kliniğe katılmak için bir şifre belirleyin."
   },
   "setup": {
     "title": "Klinik kaydı",
@@ -498,7 +501,7 @@
   },
   "patientDetail": {
     "title": "Hasta detayları",
-    "delete": "Sil (GDPR Madde 17)",
+    "delete": "Sil",
     "deleteConfirm": "Tüm hasta verileri ve onamlar silinsin mi? (GDPR Madde 17)",
     "deleted": "Hasta silindi",
     "deleteError": "Hasta silinirken hata oluştu",
@@ -515,7 +518,7 @@
     "treatmentPlanCount": "{count} Tedavi Planı",
     "noConsentsDescription": "Başlamak için bu hastaya bir onam formu gönderin.",
     "deleteConfirmTitle": "Hastayı sil",
-    "deleteConfirmDescription": "Bu, bu hastayı ve tüm ilişkili verileri kalıcı olarak silecektir. Bu işlem geri alınamaz.",
+    "deleteConfirmDescription": "Bu işlem hastayı ve tüm ilişkili verileri (onamlar, fotoğraflar, tedavi planları) KVKK Madde 17 (Silme Hakkı) kapsamında kalıcı olarak siler. Bu işlem geri alınamaz.",
     "cancel": "İptal",
     "summaryTitle": "Klinik Özet",
     "summaryConsents": "Onamlar",
@@ -558,7 +561,15 @@
     "removeMember": "Üyeyi kaldır",
     "removeConfirmTitle": "Ekip üyesini kaldır",
     "removeConfirmDescription": "{name} ekipten çıkarmak istediğinizden emin misiniz? Erişimi hemen kaybedecek.",
-    "cancel": "İptal"
+    "cancel": "İptal",
+    "pendingInvites": "Bekleyen davetiyeler",
+    "pendingInvitesDescription": "{count} bekleyen davetiye",
+    "pending": "Bekliyor",
+    "resend": "Daveti yeniden gönder",
+    "revokeInvite": "Daveti iptal et",
+    "inviteResent": "Davet yeniden gönderildi",
+    "inviteRevoked": "Davet iptal edildi",
+    "status": "Durum"
   },
   "roles": {
     "ADMIN": "Yönetici",
@@ -745,7 +756,9 @@
     "emptyAction": "Onam Formu Oluştur",
     "filterByStatus": "Duruma göre filtrele",
     "allStatuses": "Tüm durumlar",
-    "risk": "Risk"
+    "risk": "Risk",
+    "patient": "Hasta",
+    "linked": "Bağlı"
   },
   "newConsent": {
     "button": "Yeni onam",
@@ -922,7 +935,9 @@
     "noAreasSelected": "Tedavi alanı seçilmedi",
     "areasCount": "{count} alan",
     "customize": "Özelleştir",
-    "noPlansDescription": "Enjeksiyon noktaları ve ürünleri belgelemek için bir tedavi planı oluşturun."
+    "noPlansDescription": "Enjeksiyon noktaları ve ürünleri belgelemek için bir tedavi planı oluşturun.",
+    "viewDetails": "Detayları görüntüle",
+    "planDetails": "Tedavi planı detayları"
   },
   "treatmentTemplate": {
     "pickTemplate": "Şablon Seçin",
@@ -1311,5 +1326,54 @@
     "roleBadge_ADMIN": "Yönetici",
     "roleBadge_ARZT": "Doktor",
     "roleBadge_EMPFANG": "Resepsiyon"
+  },
+  "apiErrors": {
+    "EMAIL_ALREADY_REGISTERED": "Bu e-posta ile bir hesap zaten mevcut.",
+    "INVALID_CREDENTIALS": "Geçersiz e-posta veya şifre.",
+    "ACCOUNT_LOCKED": "Hesap kilitlendi. {minutes} dakika sonra tekrar deneyin.",
+    "ACCOUNT_LOCKED_TEMPORARY": "Çok fazla başarısız deneme. Hesap {minutes} dakika kilitlendi.",
+    "OAUTH_ACCOUNT_NO_PASSWORD": "Bu hesap sosyal giriş kullanıyor — şifre değiştirilemez.",
+    "CURRENT_PASSWORD_INCORRECT": "Mevcut şifre yanlış.",
+    "INVALID_RESET_TOKEN": "Geçersiz veya süresi dolmuş sıfırlama bağlantısı.",
+    "INVALID_TOKEN_TYPE": "Geçersiz token.",
+    "INVALID_VERIFICATION_TOKEN": "Geçersiz veya süresi dolmuş doğrulama bağlantısı.",
+    "TWO_FA_NOT_ENABLED": "Bu hesap için 2FA etkin değil.",
+    "TWO_FA_INVALID_CODE": "Geçersiz 2FA kodu.",
+    "TWO_FA_SETUP_NOT_INITIATED": "2FA kurulumu başlatılmadı.",
+    "TWO_FA_SESSION_INVALID": "Geçersiz veya süresi dolmuş 2FA oturumu.",
+    "USER_ALREADY_MEMBER": "Kullanıcı zaten bu kliniğin üyesi.",
+    "INVITE_ALREADY_PENDING": "Bu e-posta için bir davetiye zaten mevcut.",
+    "CANNOT_REMOVE_SELF": "Kendinizi çıkaramazsınız.",
+    "USER_NOT_FOUND": "Kullanıcı bulunamadı.",
+    "CANNOT_CHANGE_OWN_ROLE": "Kendi rolünüzü değiştiremezsiniz.",
+    "LAST_ADMIN_CANNOT_CHANGE": "En az bir yönetici olmalıdır.",
+    "INVITE_NOT_FOUND": "Davetiye bulunamadı.",
+    "INVITE_ALREADY_USED_OR_EXPIRED": "Bu davetiye zaten kullanılmış veya süresi dolmuş.",
+    "INVITE_EXPIRED": "Bu davetiyenin süresi dolmuş.",
+    "INVITE_EMAIL_MISMATCH": "Bu davetiye farklı bir e-posta adresine gönderildi.",
+    "USER_ALREADY_IN_OTHER_PRACTICE": "Zaten başka bir kliniğin üyesisiniz. Lütfen önce mevcut kliniğinizden ayrılın.",
+    "CONSENT_NOT_FOUND": "Onam formu bulunamadı.",
+    "CONSENT_EXPIRED": "Bu onam bağlantısının süresi dolmuş.",
+    "CONSENT_REVOKED": "Bu onam iptal edildi.",
+    "CONSENT_ALREADY_SUBMITTED": "Bu onam formu zaten gönderilmiş.",
+    "CONSENT_ALREADY_REVOKED": "Bu onam zaten iptal edilmiş.",
+    "CONSENT_LIMIT_REACHED": "Aylık onam limiti doldu. Lütfen planınızı yükseltin.",
+    "PATIENT_NOT_FOUND": "Hasta bulunamadı.",
+    "PRACTICE_NOT_FOUND": "Klinik bulunamadı.",
+    "NO_SUBSCRIPTION_FOUND": "Abonelik bulunamadı.",
+    "NO_PRACTICE_ASSIGNED": "Klinik atanmamış.",
+    "PRACTICE_SUSPENDED": "Bu klinik askıya alındı. Lütfen destek ile iletişime geçin.",
+    "NO_ACTIVE_SUBSCRIPTION": "Aktif abonelik bulunamadı.",
+    "TRIAL_EXPIRED": "Deneme süresi doldu.",
+    "SUBSCRIPTION_REQUIRED": "Aktif bir abonelik gerekli.",
+    "TREATMENT_PLAN_NOT_FOUND": "Tedavi planı bulunamadı.",
+    "TREATMENT_TEMPLATE_NOT_FOUND": "Şablon bulunamadı.",
+    "PHOTO_NOT_FOUND": "Fotoğraf bulunamadı.",
+    "PDF_NOT_FOUND": "PDF bulunamadı.",
+    "SETTINGS_NOT_FOUND": "Ayarlar bulunamadı.",
+    "NO_FILE_PROVIDED": "Dosya sağlanmadı.",
+    "FILE_TOO_LARGE": "Dosya boyutu limiti aşıyor.",
+    "INVALID_FILE_TYPE": "Geçersiz dosya türü.",
+    "UNKNOWN_ERROR": "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
   }
 }

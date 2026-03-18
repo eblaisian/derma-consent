@@ -33,9 +33,10 @@ const allConsentTypes: ConsentType[] = ['BOTOX', 'FILLER', 'LASER', 'CHEMICAL_PE
 
 interface NewConsentDialogProps {
   onCreated: () => void;
+  patientId?: string;
 }
 
-export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
+export function NewConsentDialog({ onCreated, patientId }: NewConsentDialogProps) {
   const t = useTranslations('newConsent');
   const tTypes = useTranslations('consentTypes');
   const { data: session } = useSession();
@@ -68,6 +69,7 @@ export function NewConsentDialog({ onCreated }: NewConsentDialogProps) {
         body: JSON.stringify({
           type,
           deliveryChannel,
+          ...(patientId && { patientId }),
           ...(patientEmail.trim() && { patientEmail: patientEmail.trim() }),
           ...(patientPhone.trim() && { patientPhone: patientPhone.trim() }),
         }),

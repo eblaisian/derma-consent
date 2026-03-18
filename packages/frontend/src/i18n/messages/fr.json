@@ -143,7 +143,8 @@
     "showPassword": "Afficher le mot de passe",
     "hidePassword": "Masquer le mot de passe",
     "privacyPrefix": "En vous connectant, vous acceptez notre",
-    "privacyLink": "politique de confidentialité"
+    "privacyLink": "politique de confidentialité",
+    "comingSoon": "Bientôt disponible"
   },
   "forgotPassword": {
     "title": "Mot de passe oublié",
@@ -204,7 +205,9 @@
     "uppercase": "Une lettre majuscule",
     "lowercase": "Une lettre minuscule",
     "number": "Un chiffre",
-    "tosLabel": "J'accepte les conditions d'utilisation et la"
+    "tosLabel": "J'accepte les conditions d'utilisation et la",
+    "inviteTitle": "Créez votre compte",
+    "inviteDescription": "Définissez un mot de passe pour rejoindre le cabinet."
   },
   "setup": {
     "title": "Enregistrer le cabinet",
@@ -498,7 +501,7 @@
   },
   "patientDetail": {
     "title": "Détails du patient",
-    "delete": "Supprimer (RGPD Art. 17)",
+    "delete": "Supprimer",
     "deleteConfirm": "Supprimer toutes les données et consentements du patient ? (RGPD Art. 17)",
     "deleted": "Patient supprimé",
     "deleteError": "Erreur lors de la suppression",
@@ -515,7 +518,7 @@
     "treatmentPlanCount": "{count} Plans de traitement",
     "noConsentsDescription": "Envoyez un formulaire de consentement à ce patient pour commencer.",
     "deleteConfirmTitle": "Supprimer le patient",
-    "deleteConfirmDescription": "Cela supprimera définitivement ce patient et toutes les données associées. Cette action ne peut pas être annulée.",
+    "deleteConfirmDescription": "Cela supprime définitivement le patient et toutes les données associées (consentements, photos, plans de traitement) conformément au RGPD Article 17 (Droit à l'effacement). Cette action est irréversible.",
     "cancel": "Annuler",
     "summaryTitle": "Aperçu clinique",
     "summaryConsents": "Consentements",
@@ -558,7 +561,15 @@
     "removeMember": "Supprimer le membre",
     "removeConfirmTitle": "Supprimer un membre de l'équipe",
     "removeConfirmDescription": "Êtes-vous sûr de vouloir supprimer {name} de l'équipe ? L'accès sera perdu immédiatement.",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "pendingInvites": "Invitations en attente",
+    "pendingInvitesDescription": "{count} invitation(s) en attente",
+    "pending": "En attente",
+    "resend": "Renvoyer l'invitation",
+    "revokeInvite": "Révoquer l'invitation",
+    "inviteResent": "Invitation renvoyée",
+    "inviteRevoked": "Invitation révoquée",
+    "status": "Statut"
   },
   "roles": {
     "ADMIN": "Administrateur",
@@ -745,7 +756,9 @@
     "emptyAction": "Créer un consentement",
     "filterByStatus": "Filtrer par statut",
     "allStatuses": "Tous les statuts",
-    "risk": "Risque"
+    "risk": "Risque",
+    "patient": "Patient",
+    "linked": "Lié"
   },
   "newConsent": {
     "button": "Nouveau consentement",
@@ -897,7 +910,9 @@
     "noAreasSelected": "Aucune zone de traitement sélectionnée",
     "areasCount": "{count} zones",
     "customize": "Personnaliser",
-    "noPlansDescription": "Créez un plan de traitement pour documenter les points d'injection et les produits."
+    "noPlansDescription": "Créez un plan de traitement pour documenter les points d'injection et les produits.",
+    "viewDetails": "Voir les détails",
+    "planDetails": "Détails du plan de traitement"
   },
   "treatmentTemplate": {
     "pickTemplate": "Choisir un modèle",
@@ -1311,5 +1326,54 @@
     "roleBadge_ADMIN": "Administrateur",
     "roleBadge_ARZT": "Médecin",
     "roleBadge_EMPFANG": "Réception"
+  },
+  "apiErrors": {
+    "EMAIL_ALREADY_REGISTERED": "Un compte avec cet e-mail existe déjà.",
+    "INVALID_CREDENTIALS": "E-mail ou mot de passe invalide.",
+    "ACCOUNT_LOCKED": "Compte verrouillé. Réessayez dans {minutes} minute(s).",
+    "ACCOUNT_LOCKED_TEMPORARY": "Trop de tentatives. Compte verrouillé pendant {minutes} minutes.",
+    "OAUTH_ACCOUNT_NO_PASSWORD": "Ce compte utilise la connexion sociale — le mot de passe ne peut pas être modifié.",
+    "CURRENT_PASSWORD_INCORRECT": "Le mot de passe actuel est incorrect.",
+    "INVALID_RESET_TOKEN": "Lien de réinitialisation invalide ou expiré.",
+    "INVALID_TOKEN_TYPE": "Jeton invalide.",
+    "INVALID_VERIFICATION_TOKEN": "Lien de vérification invalide ou expiré.",
+    "TWO_FA_NOT_ENABLED": "La 2FA n'est pas activée pour ce compte.",
+    "TWO_FA_INVALID_CODE": "Code 2FA invalide.",
+    "TWO_FA_SETUP_NOT_INITIATED": "Configuration 2FA non démarrée.",
+    "TWO_FA_SESSION_INVALID": "Session 2FA invalide ou expirée.",
+    "USER_ALREADY_MEMBER": "L'utilisateur est déjà membre de ce cabinet.",
+    "INVITE_ALREADY_PENDING": "Une invitation pour cet e-mail existe déjà.",
+    "CANNOT_REMOVE_SELF": "Vous ne pouvez pas vous retirer vous-même.",
+    "USER_NOT_FOUND": "Utilisateur non trouvé.",
+    "CANNOT_CHANGE_OWN_ROLE": "Vous ne pouvez pas modifier votre propre rôle.",
+    "LAST_ADMIN_CANNOT_CHANGE": "Il doit y avoir au moins un administrateur.",
+    "INVITE_NOT_FOUND": "Invitation non trouvée.",
+    "INVITE_ALREADY_USED_OR_EXPIRED": "Cette invitation a déjà été utilisée ou a expiré.",
+    "INVITE_EXPIRED": "Cette invitation a expiré.",
+    "INVITE_EMAIL_MISMATCH": "Cette invitation a été envoyée à une autre adresse e-mail.",
+    "USER_ALREADY_IN_OTHER_PRACTICE": "Vous êtes déjà membre d'un autre cabinet. Veuillez d'abord quitter votre cabinet actuel.",
+    "CONSENT_NOT_FOUND": "Formulaire de consentement non trouvé.",
+    "CONSENT_EXPIRED": "Ce lien de consentement a expiré.",
+    "CONSENT_REVOKED": "Ce consentement a été révoqué.",
+    "CONSENT_ALREADY_SUBMITTED": "Ce formulaire de consentement a déjà été soumis.",
+    "CONSENT_ALREADY_REVOKED": "Ce consentement a déjà été révoqué.",
+    "CONSENT_LIMIT_REACHED": "Limite mensuelle de consentements atteinte. Veuillez mettre à jour votre plan.",
+    "PATIENT_NOT_FOUND": "Patient non trouvé.",
+    "PRACTICE_NOT_FOUND": "Cabinet non trouvé.",
+    "NO_SUBSCRIPTION_FOUND": "Aucun abonnement trouvé.",
+    "NO_PRACTICE_ASSIGNED": "Aucun cabinet attribué.",
+    "PRACTICE_SUSPENDED": "Ce cabinet a été suspendu. Veuillez contacter le support.",
+    "NO_ACTIVE_SUBSCRIPTION": "Aucun abonnement actif trouvé.",
+    "TRIAL_EXPIRED": "La période d'essai a expiré.",
+    "SUBSCRIPTION_REQUIRED": "Un abonnement actif est requis.",
+    "TREATMENT_PLAN_NOT_FOUND": "Plan de traitement non trouvé.",
+    "TREATMENT_TEMPLATE_NOT_FOUND": "Modèle non trouvé.",
+    "PHOTO_NOT_FOUND": "Photo non trouvée.",
+    "PDF_NOT_FOUND": "PDF non trouvé.",
+    "SETTINGS_NOT_FOUND": "Paramètres non trouvés.",
+    "NO_FILE_PROVIDED": "Aucun fichier fourni.",
+    "FILE_TOO_LARGE": "La taille du fichier dépasse la limite.",
+    "INVALID_FILE_TYPE": "Type de fichier invalide.",
+    "UNKNOWN_ERROR": "Une erreur inattendue s'est produite. Veuillez réessayer."
   }
 }

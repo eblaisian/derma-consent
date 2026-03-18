@@ -25,7 +25,9 @@ import {
 import { toast } from 'sonner';
 import { DecryptedFormViewer } from './decrypted-form-viewer';
 import { NoShowRiskBadge } from './no-show-risk-badge';
-import { FileSignature, Link as LinkIcon, Eye, Ban } from 'lucide-react';
+import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
+import { FileSignature, Link as LinkIcon, Eye, Ban, User } from 'lucide-react';
 
 interface ConsentTableProps {
   consents: ConsentFormSummary[];
@@ -135,6 +137,7 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             <TableHead className="text-xs font-semibold text-foreground-secondary">{t('type')}</TableHead>
+            <TableHead className="text-xs font-semibold text-foreground-secondary">{t('patient')}</TableHead>
             <TableHead className="text-xs font-semibold text-foreground-secondary">{t('status')}</TableHead>
             <TableHead className="text-xs font-semibold text-foreground-secondary">{t('risk')}</TableHead>
             <TableHead className="text-xs font-semibold text-foreground-secondary">{t('createdAt')}</TableHead>
@@ -147,6 +150,16 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
             <TableRow key={consent.id} className="border-border/50 transition-colors duration-150 hover:bg-muted/30 animate-fade-in-up">
               <TableCell className="font-medium">
                 {tTypes.has(consent.type as ConsentType) ? tTypes(consent.type as ConsentType) : consent.type}
+              </TableCell>
+              <TableCell>
+                {consent.patient ? (
+                  <Link href={`/patients/${consent.patient.id}`} className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline underline-offset-4">
+                    <User className="size-3.5" />
+                    {t('linked')}
+                  </Link>
+                ) : (
+                  <span className="text-xs text-muted-foreground">—</span>
+                )}
               </TableCell>
               <TableCell>
                 <StatusBadge
@@ -195,7 +208,7 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
                             if (isVaultUnlocked) {
                               setDecryptToken(consent.token);
                             } else {
-                              requestUnlock();
+                              requestUnlock(() => setDecryptToken(consent.token));
                             }
                           }}
                           aria-label={t('decrypt')}

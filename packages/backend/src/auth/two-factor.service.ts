@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { generateSecret, generateURI, verifySync } from 'otplib';
 import * as QRCode from 'qrcode';
 import { PrismaService } from '../prisma/prisma.service';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 @Injectable()
 export class TwoFactorService {
@@ -48,11 +49,11 @@ export class TwoFactorService {
     });
 
     if (!user.twoFactorSecret) {
-      throw new UnauthorizedException('2FA setup not initiated');
+      throw new UnauthorizedException(errorPayload(ErrorCode.TWO_FA_SETUP_NOT_INITIATED));
     }
 
     if (!this.verifyToken(user.twoFactorSecret, token)) {
-      throw new UnauthorizedException('Invalid 2FA code');
+      throw new UnauthorizedException(errorPayload(ErrorCode.TWO_FA_INVALID_CODE));
     }
 
     await this.prisma.user.update({
@@ -69,11 +70,11 @@ export class TwoFactorService {
     });
 
     if (!user.twoFactorSecret || !user.twoFactorEnabled) {
-      throw new UnauthorizedException('2FA is not enabled');
+      throw new UnauthorizedException(errorPayload(ErrorCode.TWO_FA_NOT_ENABLED));
     }
 
     if (!this.verifyToken(user.twoFactorSecret, token)) {
-      throw new UnauthorizedException('Invalid 2FA code');
+      throw new UnauthorizedException(errorPayload(ErrorCode.TWO_FA_INVALID_CODE));
     }
 
     await this.prisma.user.update({
@@ -100,11 +101,11 @@ export class TwoFactorService {
     try {
       const payload = this.jwtService.verify(tempToken);
       if (payload.type !== '2fa-pending') {
-        throw new UnauthorizedException('Invalid token type');
+        throw new UnauthorizedException(errorPayload(ErrorCode.INVALID_TOKEN_TYPE));
       }
       return payload.sub;
     } catch {
-      throw new UnauthorizedException('Invalid or expired 2FA session');
+      throw new UnauthorizedException(errorPayload(ErrorCode.TWO_FA_SESSION_INVALID));
     }
   }
 }

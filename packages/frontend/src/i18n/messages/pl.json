@@ -143,7 +143,8 @@
     "showPassword": "Pokaż hasło",
     "hidePassword": "Ukryj hasło",
     "privacyPrefix": "Logując się, zgadzasz się na naszą",
-    "privacyLink": "politykę prywatności"
+    "privacyLink": "politykę prywatności",
+    "comingSoon": "Wkrótce"
   },
   "forgotPassword": {
     "title": "Zapomniałeś hasła",
@@ -204,7 +205,9 @@
     "uppercase": "Jedna wielka litera",
     "lowercase": "Jedna mała litera",
     "number": "Jedna cyfra",
-    "tosLabel": "Akceptuję regulamin i"
+    "tosLabel": "Akceptuję regulamin i",
+    "inviteTitle": "Utwórz konto",
+    "inviteDescription": "Ustaw hasło, aby dołączyć do praktyki."
   },
   "setup": {
     "title": "Zarejestruj praktykę",
@@ -498,7 +501,7 @@
   },
   "patientDetail": {
     "title": "Szczegóły pacjenta",
-    "delete": "Usuń (RODO art. 17)",
+    "delete": "Usuń",
     "deleteConfirm": "Usunąć wszystkie dane pacjenta i zgody? (RODO art. 17)",
     "deleted": "Pacjent usunięty",
     "deleteError": "Błąd usuwania pacjenta",
@@ -515,7 +518,7 @@
     "treatmentPlanCount": "{count} planów zabiegów",
     "noConsentsDescription": "Wyślij pacjentowi formularz zgody, aby rozpocząć.",
     "deleteConfirmTitle": "Usuń pacjenta",
-    "deleteConfirmDescription": "To na stałe usunie tego pacjenta i wszystkie powiązane dane. Tej akcji nie można cofnąć.",
+    "deleteConfirmDescription": "To trwale usunie pacjenta i wszystkie powiązane dane (zgody, zdjęcia, plany leczenia) zgodnie z RODO Art. 17 (Prawo do usunięcia). Tej operacji nie można cofnąć.",
     "cancel": "Anuluj",
     "summaryTitle": "Przegląd kliniczny",
     "summaryConsents": "Zgody",
@@ -558,7 +561,15 @@
     "removeMember": "Usuń członka",
     "removeConfirmTitle": "Usuń członka zespołu",
     "removeConfirmDescription": "Czy na pewno chcesz usunąć {name} z zespołu? Stracą dostęp natychmiast.",
-    "cancel": "Anuluj"
+    "cancel": "Anuluj",
+    "pendingInvites": "Oczekujące zaproszenia",
+    "pendingInvitesDescription": "{count} oczekujące zaproszenie(a)",
+    "pending": "Oczekuje",
+    "resend": "Wyślij ponownie",
+    "revokeInvite": "Anuluj zaproszenie",
+    "inviteResent": "Zaproszenie wysłane ponownie",
+    "inviteRevoked": "Zaproszenie anulowane",
+    "status": "Status"
   },
   "roles": {
     "ADMIN": "Administrator",
@@ -745,7 +756,9 @@
     "emptyAction": "Utwórz formularz zgody",
     "filterByStatus": "Filtruj po statusie",
     "allStatuses": "Wszystkie statusy",
-    "risk": "Ryzyko"
+    "risk": "Ryzyko",
+    "patient": "Pacjent",
+    "linked": "Powiązany"
   },
   "newConsent": {
     "button": "Nowa zgoda",
@@ -922,7 +935,9 @@
     "noAreasSelected": "Nie wybrano obszarów zabiegowych",
     "areasCount": "{count} obszarów",
     "customize": "Dostosuj",
-    "noPlansDescription": "Utwórz plan leczenia, aby udokumentować punkty iniekcji i produkty."
+    "noPlansDescription": "Utwórz plan leczenia, aby udokumentować punkty iniekcji i produkty.",
+    "viewDetails": "Zobacz szczegóły",
+    "planDetails": "Szczegóły planu leczenia"
   },
   "treatmentTemplate": {
     "pickTemplate": "Wybierz szablon",
@@ -1311,5 +1326,54 @@
     "roleBadge_ADMIN": "Administrator",
     "roleBadge_ARZT": "Lekarz",
     "roleBadge_EMPFANG": "Recepcja"
+  },
+  "apiErrors": {
+    "EMAIL_ALREADY_REGISTERED": "Konto z tym adresem e-mail już istnieje.",
+    "INVALID_CREDENTIALS": "Nieprawidłowy e-mail lub hasło.",
+    "ACCOUNT_LOCKED": "Konto zablokowane. Spróbuj ponownie za {minutes} minut.",
+    "ACCOUNT_LOCKED_TEMPORARY": "Zbyt wiele prób. Konto zablokowane na {minutes} minut.",
+    "OAUTH_ACCOUNT_NO_PASSWORD": "To konto używa logowania społecznościowego — nie można zmienić hasła.",
+    "CURRENT_PASSWORD_INCORRECT": "Obecne hasło jest nieprawidłowe.",
+    "INVALID_RESET_TOKEN": "Nieprawidłowy lub wygasły link resetowania.",
+    "INVALID_TOKEN_TYPE": "Nieprawidłowy token.",
+    "INVALID_VERIFICATION_TOKEN": "Nieprawidłowy lub wygasły link weryfikacyjny.",
+    "TWO_FA_NOT_ENABLED": "2FA nie jest włączone dla tego konta.",
+    "TWO_FA_INVALID_CODE": "Nieprawidłowy kod 2FA.",
+    "TWO_FA_SETUP_NOT_INITIATED": "Konfiguracja 2FA nie została rozpoczęta.",
+    "TWO_FA_SESSION_INVALID": "Nieprawidłowa lub wygasła sesja 2FA.",
+    "USER_ALREADY_MEMBER": "Użytkownik jest już członkiem tej praktyki.",
+    "INVITE_ALREADY_PENDING": "Zaproszenie dla tego e-maila już istnieje.",
+    "CANNOT_REMOVE_SELF": "Nie możesz usunąć samego siebie.",
+    "USER_NOT_FOUND": "Użytkownik nie znaleziony.",
+    "CANNOT_CHANGE_OWN_ROLE": "Nie możesz zmienić własnej roli.",
+    "LAST_ADMIN_CANNOT_CHANGE": "Musi być przynajmniej jeden administrator.",
+    "INVITE_NOT_FOUND": "Zaproszenie nie znalezione.",
+    "INVITE_ALREADY_USED_OR_EXPIRED": "To zaproszenie zostało już wykorzystane lub wygasło.",
+    "INVITE_EXPIRED": "To zaproszenie wygasło.",
+    "INVITE_EMAIL_MISMATCH": "To zaproszenie zostało wysłane na inny adres e-mail.",
+    "USER_ALREADY_IN_OTHER_PRACTICE": "Jesteś już członkiem innej praktyki. Najpierw opuść swoją obecną praktykę.",
+    "CONSENT_NOT_FOUND": "Formularz zgody nie znaleziony.",
+    "CONSENT_EXPIRED": "Ten link zgody wygasł.",
+    "CONSENT_REVOKED": "Ta zgoda została cofnięta.",
+    "CONSENT_ALREADY_SUBMITTED": "Ten formularz zgody został już przesłany.",
+    "CONSENT_ALREADY_REVOKED": "Ta zgoda została już cofnięta.",
+    "CONSENT_LIMIT_REACHED": "Osiągnięto miesięczny limit zgód. Proszę ulepszyć plan.",
+    "PATIENT_NOT_FOUND": "Pacjent nie znaleziony.",
+    "PRACTICE_NOT_FOUND": "Praktyka nie znaleziona.",
+    "NO_SUBSCRIPTION_FOUND": "Nie znaleziono subskrypcji.",
+    "NO_PRACTICE_ASSIGNED": "Brak przypisanej praktyki.",
+    "PRACTICE_SUSPENDED": "Ta praktyka została zawieszona. Proszę skontaktować się z pomocą.",
+    "NO_ACTIVE_SUBSCRIPTION": "Nie znaleziono aktywnej subskrypcji.",
+    "TRIAL_EXPIRED": "Okres próbny wygasł.",
+    "SUBSCRIPTION_REQUIRED": "Wymagana jest aktywna subskrypcja.",
+    "TREATMENT_PLAN_NOT_FOUND": "Plan leczenia nie znaleziony.",
+    "TREATMENT_TEMPLATE_NOT_FOUND": "Szablon nie znaleziony.",
+    "PHOTO_NOT_FOUND": "Zdjęcie nie znalezione.",
+    "PDF_NOT_FOUND": "PDF nie znaleziony.",
+    "SETTINGS_NOT_FOUND": "Ustawienia nie znalezione.",
+    "NO_FILE_PROVIDED": "Nie podano pliku.",
+    "FILE_TOO_LARGE": "Rozmiar pliku przekracza limit.",
+    "INVALID_FILE_TYPE": "Nieprawidłowy typ pliku.",
+    "UNKNOWN_ERROR": "Wystąpił nieoczekiwany błąd. Proszę spróbować ponownie."
   }
 }

@@ -41,6 +41,7 @@ export interface ConsentFormSummary {
   createdAt: string;
   signatureTimestamp: string | null;
   noShowRisk: NoShowRisk | null;
+  patient: { id: string; encryptedName: string; lookupHash: string } | null;
 }
 
 // --- Photos ---

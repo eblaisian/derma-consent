@@ -27,7 +27,7 @@ interface ProfileData {
 export default function ProfilePage() {
   const t = useTranslations('profile');
   const format = useFormatter();
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
   const authFetch = useAuthFetch();
 
   const { data: profile, mutate } = useSWR<ProfileData>(
@@ -61,6 +61,7 @@ export default function ProfilePage() {
         method: 'PATCH',
         body: JSON.stringify({ name }),
       });
+      await updateSession({ name });
       mutate();
       toast.success(t('nameSaved'));
     } catch {

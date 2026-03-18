@@ -24,6 +24,7 @@ import { Roles } from '../auth/roles.decorator';
 import { SubscriptionGuard } from '../billing/subscription.guard';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
 import { PaginationDto } from '../common/pagination.dto';
+import { ErrorCode, errorPayload } from '../common/error-codes';
 
 @Controller('api/photos')
 @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
@@ -48,13 +49,13 @@ export class PhotoController {
     ];
 
     if (!file) {
-      throw new BadRequestException('No file provided');
+      throw new BadRequestException(errorPayload(ErrorCode.NO_FILE_PROVIDED));
     }
     if (file.size > maxSize) {
-      throw new BadRequestException('File size exceeds 10 MB limit');
+      throw new BadRequestException(errorPayload(ErrorCode.FILE_TOO_LARGE));
     }
     if (!allowedMimes.includes(file.mimetype)) {
-      throw new BadRequestException('Invalid file type');
+      throw new BadRequestException(errorPayload(ErrorCode.INVALID_FILE_TYPE));
     }
 
     return this.photoService.upload(
