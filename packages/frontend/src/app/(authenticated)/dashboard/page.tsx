@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import useSWR from 'swr';
 import { usePractice } from '@/hooks/use-practice';
@@ -13,7 +13,8 @@ import { OnboardingChecklist } from '@/components/dashboard/onboarding-checklist
 import { ConsentTable } from '@/components/dashboard/consent-table';
 import { StatCard } from '@/components/ui/stat-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FileSignature, Clock, CheckCircle, User, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FileSignature, Clock, CheckCircle, User, AlertCircle, Building2, LogOut } from 'lucide-react';
 
 export default function DashboardPage() {
   const t = useTranslations('dashboard');
@@ -100,10 +101,28 @@ export default function DashboardPage() {
     return { total, pending, completedThisMonth, expiringSoon, recentlySigned };
   }, [consents]);
 
-  if (needsSetup || practiceLoading || !practiceId) {
+  // No practice: either redirect ADMIN to setup, or show guidance for non-admins
+  if (!practiceId && !practiceLoading) {
+    if (needsSetup) {
+      return null; // useEffect will redirect to /setup
+    }
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className="flex items-center justify-center py-20">
+        <div className="max-w-md text-center space-y-6">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-muted">
+            <Building2 className="size-7 text-muted-foreground" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-xl font-semibold">{t('noPracticeTitle')}</h1>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {t('noPracticeDescription')}
+            </p>
+          </div>
+          <Button variant="outline" onClick={() => signOut({ callbackUrl: '/login' })}>
+            <LogOut className="mr-2 size-4" />
+            {t('noPracticeSignOut')}
+          </Button>
+        </div>
       </div>
     );
   }

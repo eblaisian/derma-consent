@@ -411,7 +411,10 @@
     "needsAttentionTitle": "Требует внимания",
     "chipPendingLabel": "Ожидающие согласия",
     "chipExpiringSoonLabel": "Истекают через 7 дней",
-    "chipRecentlySignedLabel": "Недавно подписанные"
+    "chipRecentlySignedLabel": "Недавно подписанные",
+    "noPracticeTitle": "No practice access",
+    "noPracticeDescription": "You are not currently assigned to a practice. If you received an invitation link, please use it to join a practice. Otherwise, contact your practice administrator.",
+    "noPracticeSignOut": "Sign out"
   },
   "settings": {
     "title": "Настройки",

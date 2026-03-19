@@ -411,7 +411,10 @@
     "needsAttentionTitle": "Wymaga uwagi",
     "chipPendingLabel": "Oczekujące zgody",
     "chipExpiringSoonLabel": "Wygasa za 7 dni",
-    "chipRecentlySignedLabel": "Ostatnio podpisane"
+    "chipRecentlySignedLabel": "Ostatnio podpisane",
+    "noPracticeTitle": "No practice access",
+    "noPracticeDescription": "You are not currently assigned to a practice. If you received an invitation link, please use it to join a practice. Otherwise, contact your practice administrator.",
+    "noPracticeSignOut": "Sign out"
   },
   "settings": {
     "title": "Ustawienia",

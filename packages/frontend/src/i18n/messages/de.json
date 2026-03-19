@@ -411,7 +411,10 @@
     "needsAttentionTitle": "Aufmerksamkeit erforderlich",
     "chipPendingLabel": "Ausstehende Einwilligungen",
     "chipExpiringSoonLabel": "Laufen in 7 Tagen ab",
-    "chipRecentlySignedLabel": "Kürzlich unterzeichnet"
+    "chipRecentlySignedLabel": "Kürzlich unterzeichnet",
+    "noPracticeTitle": "Kein Praxiszugang",
+    "noPracticeDescription": "Sie sind derzeit keiner Praxis zugeordnet. Wenn Sie einen Einladungslink erhalten haben, verwenden Sie diesen bitte, um einer Praxis beizutreten. Andernfalls wenden Sie sich an Ihren Praxisadministrator.",
+    "noPracticeSignOut": "Abmelden"
   },
   "settings": {
     "title": "Einstellungen",

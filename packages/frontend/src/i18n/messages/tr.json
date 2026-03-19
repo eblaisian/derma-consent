@@ -411,7 +411,10 @@
     "needsAttentionTitle": "Dikkat gerekiyor",
     "chipPendingLabel": "Bekleyen onamlar",
     "chipExpiringSoonLabel": "7 gün içinde sona eriyor",
-    "chipRecentlySignedLabel": "Son imzalananlar"
+    "chipRecentlySignedLabel": "Son imzalananlar",
+    "noPracticeTitle": "No practice access",
+    "noPracticeDescription": "You are not currently assigned to a practice. If you received an invitation link, please use it to join a practice. Otherwise, contact your practice administrator.",
+    "noPracticeSignOut": "Sign out"
   },
   "settings": {
     "title": "Ayarlar",
