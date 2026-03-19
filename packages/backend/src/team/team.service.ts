@@ -133,7 +133,7 @@ export class TeamService {
 
     await this.prisma.user.update({
       where: { id: userId },
-      data: { practiceId: null, role: 'ADMIN' },
+      data: { practiceId: null, role: 'EMPFANG' },
     });
 
     await this.auditService?.log({

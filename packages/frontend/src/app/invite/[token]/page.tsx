@@ -12,10 +12,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { getApiErrorMessage } from '@/lib/api-error';
 
 export default function InvitePage() {
   const t = useTranslations('invite');
   const tRoles = useTranslations('roles');
+  const tErrors = useTranslations('apiErrors');
   const { token } = useParams<{ token: string }>();
   const router = useRouter();
   const { data: session, update: updateSession } = useSession();
@@ -57,13 +59,14 @@ export default function InvitePage() {
 
       await updateSession({
         practiceId: result.practiceId,
+        role: invite.role,
         ...(newAccessToken && { accessToken: newAccessToken }),
       });
 
       toast.success(t('accepted'));
       router.push('/dashboard');
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : t('acceptError'));
+      toast.error(getApiErrorMessage(err, tErrors));
     } finally {
       setIsAccepting(false);
     }
