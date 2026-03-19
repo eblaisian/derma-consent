@@ -1,4 +1,18 @@
-<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="192" height="192" rx="32" fill="#0f172a"/>
-  <text x="96" y="110" text-anchor="middle" fill="white" font-family="system-ui" font-size="72" font-weight="700">DC</text>
+<svg width="192" height="192" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="112" fill="#0f172a"/>
+  <defs>
+    <linearGradient id="g" x1="160" y1="100" x2="360" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5eead4"/>
+      <stop offset="0.5" stop-color="#14b8a6"/>
+      <stop offset="1" stop-color="#0d9488"/>
+    </linearGradient>
+    <clipPath id="sc">
+      <path d="M256 92c0 0-120 34-156 34v168c0 92 68 156 156 192 88-36 156-100 156-192V126c-36 0-156-34-156-34z"/>
+    </clipPath>
+  </defs>
+  <path d="M256 92c0 0-120 34-156 34v168c0 92 68 156 156 192 88-36 156-100 156-192V126c-36 0-156-34-156-34z" fill="url(#g)" opacity="0.12"/>
+  <g clip-path="url(#sc)">
+    <path d="M256 140c-60 0-100 44-100 108M256 140c60 0 100 44 100 108M196 280c0 40 24 72 60 88M316 280c0 40-24 72-60 88M220 176c-20 20-28 48-28 76M292 176c20 20 28 48 28 76M240 200c-12 16-16 36-16 56s8 44 32 64M272 200c12 16 16 36 16 56s-8 44-32 64M256 224v56" stroke="url(#g)" stroke-width="14" fill="none" stroke-linecap="round"/>
+  </g>
+  <path d="M256 92c0 0-120 34-156 34v168c0 92 68 156 156 192 88-36 156-100 156-192V126c-36 0-156-34-156-34z" stroke="url(#g)" stroke-width="16" fill="none" stroke-linejoin="round"/>
 </svg>
