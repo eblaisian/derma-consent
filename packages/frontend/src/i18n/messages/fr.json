@@ -1316,7 +1316,11 @@
   },
   "analyticsInsights": {
     "cardTitle": "Analyses IA",
-    "refresh": "Actualiser"
+    "refresh": "Actualiser",
+    "noInsights": "Pas encore d'analyses",
+    "lockedPulse": "{count} nouvelles analyses disponibles",
+    "lockedHeadline": "L'IA a analysé les données de votre cabinet",
+    "lockedSubline": "Tendances, optimisations et recommandations concrètes pour vos flux de consentement"
   },
   "profile": {
     "title": "Paramètres du compte",

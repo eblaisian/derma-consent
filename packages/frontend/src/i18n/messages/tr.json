@@ -1316,7 +1316,11 @@
   },
   "analyticsInsights": {
     "cardTitle": "Yapay Zeka Analizleri",
-    "refresh": "Yenile"
+    "refresh": "Yenile",
+    "noInsights": "Henüz analiz yok",
+    "lockedPulse": "{count} yeni analiz mevcut",
+    "lockedHeadline": "Yapay zeka muayenehane verilerinizi analiz etti",
+    "lockedSubline": "Onam iş akışlarınız için trendler, optimizasyonlar ve uygulanabilir öneriler"
   },
   "profile": {
     "title": "Hesap Ayarları",

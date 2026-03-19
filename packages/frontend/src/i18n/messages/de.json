@@ -1320,7 +1320,11 @@
   },
   "analyticsInsights": {
     "cardTitle": "KI-Einblicke",
-    "refresh": "Aktualisieren"
+    "refresh": "Aktualisieren",
+    "noInsights": "Noch keine Einblicke",
+    "lockedPulse": "{count} neue Erkenntnisse verfügbar",
+    "lockedHeadline": "KI hat Ihre Praxisdaten analysiert",
+    "lockedSubline": "Trends, Optimierungen und Handlungsempfehlungen für Ihre Einwilligungsprozesse"
   },
   "profile": {
     "title": "Kontoeinstellungen",

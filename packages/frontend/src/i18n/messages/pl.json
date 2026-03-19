@@ -1316,7 +1316,11 @@
   },
   "analyticsInsights": {
     "cardTitle": "Analizy AI",
-    "refresh": "Odśwież"
+    "refresh": "Odśwież",
+    "noInsights": "Brak analiz",
+    "lockedPulse": "{count} nowych analiz dostępnych",
+    "lockedHeadline": "AI przeanalizowało dane Twojej praktyki",
+    "lockedSubline": "Trendy, optymalizacje i praktyczne rekomendacje dla Twoich procesów zgody"
   },
   "profile": {
     "title": "Ustawienia konta",

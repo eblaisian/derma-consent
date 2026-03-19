@@ -1320,7 +1320,11 @@
   },
   "analyticsInsights": {
     "cardTitle": "AI Insights",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "noInsights": "No insights yet",
+    "lockedPulse": "{count} new insights available",
+    "lockedHeadline": "AI analyzed your practice data",
+    "lockedSubline": "Trends, optimizations, and actionable recommendations for your consent workflows"
   },
   "profile": {
     "title": "Account Settings",

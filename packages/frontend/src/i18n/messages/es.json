@@ -1316,7 +1316,11 @@
   },
   "analyticsInsights": {
     "cardTitle": "Información IA",
-    "refresh": "Actualizar"
+    "refresh": "Actualizar",
+    "noInsights": "Aún no hay información",
+    "lockedPulse": "{count} nuevas informaciones disponibles",
+    "lockedHeadline": "La IA analizó los datos de su consulta",
+    "lockedSubline": "Tendencias, optimizaciones y recomendaciones prácticas para sus flujos de consentimiento"
   },
   "profile": {
     "title": "Configuración de cuenta",

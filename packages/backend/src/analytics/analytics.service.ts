@@ -17,6 +17,15 @@ const LOCALE_NAMES: Record<string, string> = {
   ar: 'Arabic', tr: 'Turkish', pl: 'Polish', ru: 'Russian',
 };
 
+export interface AiInsight {
+  type: 'trend' | 'opportunity' | 'attention' | 'milestone';
+  severity: 'positive' | 'warning' | 'neutral' | 'info';
+  title: string;
+  metric: string;
+  detail: string;
+  action: string;
+}
+
 @Injectable()
 export class AnalyticsService {
   private readonly logger = new Logger(AnalyticsService.name);
@@ -207,12 +216,12 @@ export class AnalyticsService {
 
   // --- AI Analytics Insights ---
 
-  async generateInsights(practiceId: string, locale: string): Promise<{ insights: string }> {
+  async generateInsights(practiceId: string, locale: string): Promise<{ insights: AiInsight[]; generatedAt: string }> {
     // Check cache (1 hour TTL)
     const cacheKey = `${practiceId}:${locale}`;
     const cached = this.insightsCache.get(cacheKey);
     if (cached && Date.now() - cached.cachedAt < 3600_000) {
-      return { insights: cached.text };
+      return { insights: JSON.parse(cached.text), generatedAt: new Date(cached.cachedAt).toISOString() };
     }
 
     // Gather aggregate data (all non-PII)
@@ -226,25 +235,45 @@ export class AnalyticsService {
     const dataContext = JSON.stringify({ overview, byType, conversion, recentTrend: trend.slice(-7) });
     const language = LOCALE_NAMES[locale] || 'German';
 
-    const insights = await this.ai.chat([
+    const raw = await this.ai.chat([
       {
         role: 'system',
         content: [
           'You are a practice analytics assistant for a German dermatology clinic.',
-          'Analyse the data and give 2-3 actionable insights.',
-          'Be specific with numbers. Reference trends.',
-          'Plain text, no headers, no markdown. Max 4 sentences.',
-          `Respond in ${language}.`,
+          'Analyse the data and return exactly 2-3 actionable insights as a JSON array.',
+          'Each insight must follow this schema:',
+          '{"type":"trend"|"opportunity"|"attention"|"milestone",',
+          '"severity":"positive"|"warning"|"neutral"|"info",',
+          '"title":"Short headline max 60 chars",',
+          '"metric":"Key number e.g. -18%, 4 patients, Tue 2pm",',
+          '"detail":"One sentence with specific numbers from the data",',
+          '"action":"One sentence actionable recommendation"}',
+          'Rules: trend=changing over time, opportunity=untapped potential, attention=needs follow-up, milestone=achievement.',
+          'severity: positive=good, warning=needs attention, neutral=informational, info=opportunity.',
+          'Be specific with numbers. Reference treatment types by name.',
+          `All text in ${language}.`,
+          'Return ONLY the JSON array, no wrapping object, no markdown, no code fences.',
         ].join(' '),
       },
       {
         role: 'user',
         content: `Practice analytics data:\n${dataContext}`,
       },
-    ], { maxTokens: 300, temperature: 0.4 });
+    ], { maxTokens: 500, temperature: 0.4 });
 
-    this.insightsCache.set(cacheKey, { text: insights, cachedAt: Date.now() });
+    const now = Date.now();
+    let insights: AiInsight[];
+    try {
+      const cleaned = raw.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
+      const parsed = JSON.parse(cleaned);
+      insights = (Array.isArray(parsed) ? parsed : [parsed]).slice(0, 3);
+    } catch {
+      this.logger.warn('Failed to parse structured insights, wrapping as single item');
+      insights = [{ type: 'attention', severity: 'neutral', title: 'Practice Overview', metric: '', detail: raw.slice(0, 200), action: '' }];
+    }
 
-    return { insights };
+    this.insightsCache.set(cacheKey, { text: JSON.stringify(insights), cachedAt: now });
+
+    return { insights, generatedAt: new Date(now).toISOString() };
   }
 }
