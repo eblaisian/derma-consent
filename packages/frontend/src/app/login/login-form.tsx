@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
@@ -14,10 +14,18 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 
-/** Only allow relative paths to prevent open-redirect attacks */
+/** Only allow relative paths to prevent open-redirect attacks.
+ *  NextAuth rewrites relative callbackUrls to absolute URLs, so we also
+ *  accept full URLs and extract just the pathname (which is always relative). */
 function getSafeCallbackUrl(raw: string | null): string | null {
   if (!raw) return null;
   if (raw.startsWith('/') && !raw.startsWith('//')) return raw;
+  try {
+    const path = new URL(raw).pathname;
+    if (path.startsWith('/') && !path.startsWith('//')) return path;
+  } catch {
+    // Not a valid URL
+  }
   return null;
 }
 
@@ -34,6 +42,15 @@ export function LoginForm({ enabledProviders }: Props) {
   const t = useTranslations('login');
   const searchParams = useSearchParams();
   const callbackUrl = getSafeCallbackUrl(searchParams.get('callbackUrl'));
+  // Persist callbackUrl to sessionStorage so it survives URL changes during NextAuth signIn()
+  const callbackRef = useRef(callbackUrl);
+  useEffect(() => {
+    const url = getSafeCallbackUrl(new URLSearchParams(window.location.search).get('callbackUrl'));
+    if (url) {
+      callbackRef.current = url;
+      sessionStorage.setItem('auth_callback', url);
+    }
+  }, []);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -72,8 +89,10 @@ export function LoginForm({ enabledProviders }: Props) {
           setError(t('invalidCredentials'));
         }
       } else if (result?.ok) {
-        if (callbackUrl) {
-          window.location.href = callbackUrl;
+        const target = callbackRef.current || sessionStorage.getItem('auth_callback');
+        if (target) sessionStorage.removeItem('auth_callback');
+        if (target) {
+          window.location.href = target;
         } else {
           const sessionRes = await fetch('/api/auth/session');
           const session = await sessionRes.json();
@@ -100,8 +119,10 @@ export function LoginForm({ enabledProviders }: Props) {
       if (result?.error) {
         setError(t('invalid2FACode'));
       } else if (result?.ok) {
-        if (callbackUrl) {
-          window.location.href = callbackUrl;
+        const freshCallback = getSafeCallbackUrl(new URLSearchParams(window.location.search).get('callbackUrl'));
+        const target = freshCallback || callbackUrl;
+        if (target) {
+          window.location.href = target;
         } else {
           const sessionRes = await fetch('/api/auth/session');
           const session = await sessionRes.json();
@@ -262,7 +283,7 @@ export function LoginForm({ enabledProviders }: Props) {
           <Button
             className="w-full"
             variant="outline"
-            onClick={() => signIn('google', { callbackUrl: callbackUrl || '/dashboard' })}
+            onClick={() => signIn('google', { callbackUrl: callbackRef.current || '/dashboard' })}
           >
             <GoogleIcon />
             {t('signInWithGoogle')}
@@ -279,7 +300,7 @@ export function LoginForm({ enabledProviders }: Props) {
           <Button
             className="w-full"
             variant="outline"
-            onClick={() => signIn('microsoft-entra-id', { callbackUrl: callbackUrl || '/dashboard' })}
+            onClick={() => signIn('microsoft-entra-id', { callbackUrl: callbackRef.current || '/dashboard' })}
           >
             <MicrosoftIcon />
             {t('signInWithMicrosoft')}
@@ -296,7 +317,7 @@ export function LoginForm({ enabledProviders }: Props) {
           <Button
             className="w-full"
             variant="outline"
-            onClick={() => signIn('apple', { callbackUrl: callbackUrl || '/dashboard' })}
+            onClick={() => signIn('apple', { callbackUrl: callbackRef.current || '/dashboard' })}
           >
             <AppleIcon />
             {t('signInWithApple')}
