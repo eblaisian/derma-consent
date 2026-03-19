@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import {
   CheckCircle2, CreditCard, FileText, ArrowUpRight, AlertTriangle, Clock, XCircle,
 } from 'lucide-react';
+import { PRICING } from '@/lib/pricing';
 
 const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
   TRIALING: 'secondary',
@@ -299,9 +300,9 @@ export default function BillingPage() {
 
           <div className="grid gap-4 md:grid-cols-3 items-stretch">
             {([
-              { plan: 'STARTER', priceKey: billingInterval === 'monthly' ? 'starterPrice' as const : 'starterYearlyPrice' as const, features: ['starterFeature1', 'starterFeature2', 'starterFeature3'] as const, priceId: starterPriceId, highlighted: false },
-              { plan: 'PROFESSIONAL', priceKey: billingInterval === 'monthly' ? 'professionalPrice' as const : 'professionalYearlyPrice' as const, features: ['professionalFeature1', 'professionalFeature2', 'professionalFeature3', 'professionalFeature4'] as const, priceId: professionalPriceId, highlighted: true },
-              { plan: 'ENTERPRISE', priceKey: null, features: ['enterpriseFeature1', 'enterpriseFeature2', 'enterpriseFeature3', 'enterpriseFeature4'] as const, priceId: null, highlighted: false },
+              { plan: 'STARTER', price: billingInterval === 'monthly' ? PRICING.starter.monthly : PRICING.starter.yearly, interval: billingInterval, features: ['starterFeature1', 'starterFeature2', 'starterFeature3'] as const, priceId: starterPriceId, highlighted: false },
+              { plan: 'PROFESSIONAL', price: billingInterval === 'monthly' ? PRICING.professional.monthly : PRICING.professional.yearly, interval: billingInterval, features: ['professionalFeature1', 'professionalFeature2', 'professionalFeature3', 'professionalFeature4'] as const, priceId: professionalPriceId, highlighted: true },
+              { plan: 'ENTERPRISE', price: null, interval: billingInterval, features: ['enterpriseFeature1', 'enterpriseFeature2', 'enterpriseFeature3', 'enterpriseFeature4'] as const, priceId: null, highlighted: false },
             ] as const).map((tier) => {
               const isCurrent = subscription?.plan === tier.plan && !isInactive;
               return (
@@ -314,7 +315,9 @@ export default function BillingPage() {
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col gap-4">
                     <p className="text-2xl font-semibold tabular-nums">
-                      {tier.priceKey ? t(tier.priceKey) : t('onRequest')}
+                      {tier.price != null
+                        ? t(tier.interval === 'monthly' ? 'priceMonthly' : 'priceYearly', { amount: tier.price })
+                        : t('onRequest')}
                     </p>
                     <ul className="flex-1 space-y-1 text-sm text-muted-foreground">
                       {tier.features.map((fKey) => (

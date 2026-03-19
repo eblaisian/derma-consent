@@ -29,6 +29,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { locales, localeNames, LOCALE_COOKIE, type Locale } from '@/i18n/config';
+import { PRICING } from '@/lib/pricing';
 import { BrowserMockup } from '@/components/landing/browser-mockup';
 import { ConsentFormMockup, AiInsightsMockup, ConsentExplainerMockup, ConsentLifecycleMockup, PatientListMockup, AnalyticsMockup, PhotoMockup } from '@/components/landing/feature-mockups';
 import { useCallback, useEffect, useState, useRef } from 'react';
@@ -551,7 +552,7 @@ export default function Home() {
                   <p className="mt-1 text-sm text-muted-foreground">{t('starterDesc')}</p>
                 </div>
                 <div className="mb-8">
-                  <span className="text-4xl font-semibold tabular-nums tracking-tight">€49</span>
+                  <span className="text-4xl font-semibold tabular-nums tracking-tight">€{PRICING.starter.monthly}</span>
                   <span className="text-muted-foreground ms-1">/ {t('month')}</span>
                 </div>
                 <Button className="w-full mb-8" variant="outline" asChild>
@@ -577,7 +578,7 @@ export default function Home() {
                   <p className="mt-1 text-sm text-muted-foreground">{t('professionalDesc')}</p>
                 </div>
                 <div className="mb-8">
-                  <span className="text-4xl font-semibold tabular-nums tracking-tight">€99</span>
+                  <span className="text-4xl font-semibold tabular-nums tracking-tight">€{PRICING.professional.monthly}</span>
                   <span className="text-muted-foreground ms-1">/ {t('month')}</span>
                 </div>
                 <Button className="w-full mb-8" asChild>

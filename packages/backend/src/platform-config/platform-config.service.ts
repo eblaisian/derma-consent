@@ -470,11 +470,12 @@ export class PlatformConfigService {
       await stripe.balance.retrieve();
       checks.push({ name: 'API Connection', passed: true, detail: 'Stripe API key valid' });
 
+      // Amounts in cents — must match PRICING in packages/frontend/src/lib/pricing.ts
       const expectedPrices: { key: string; label: string; expectedAmount: number }[] = [
-        { key: 'stripe.starterMonthlyPriceId', label: 'Starter Monthly', expectedAmount: 2900 },
-        { key: 'stripe.starterYearlyPriceId', label: 'Starter Yearly', expectedAmount: 29000 },
-        { key: 'stripe.professionalMonthlyPriceId', label: 'Professional Monthly', expectedAmount: 7900 },
-        { key: 'stripe.professionalYearlyPriceId', label: 'Professional Yearly', expectedAmount: 79000 },
+        { key: 'stripe.starterMonthlyPriceId', label: 'Starter Monthly', expectedAmount: 4900 },
+        { key: 'stripe.starterYearlyPriceId', label: 'Starter Yearly', expectedAmount: 47000 },
+        { key: 'stripe.professionalMonthlyPriceId', label: 'Professional Monthly', expectedAmount: 9900 },
+        { key: 'stripe.professionalYearlyPriceId', label: 'Professional Yearly', expectedAmount: 95000 },
         { key: 'stripe.enterpriseMonthlyPriceId', label: 'Enterprise Monthly', expectedAmount: 19900 },
         { key: 'stripe.enterpriseYearlyPriceId', label: 'Enterprise Yearly', expectedAmount: 199000 },
       ];

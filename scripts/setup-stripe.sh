@@ -199,15 +199,15 @@ find_or_create_price() {
 # --- Starter Plan ---
 info "  Starter plan..."
 STARTER_PRODUCT=$(find_or_create_product "DermaConsent Starter" "Up to 100 consents/month, 3 team members")
-STARTER_MONTHLY=$(find_or_create_price "$STARTER_PRODUCT" 2900 month "Starter Monthly")
-STARTER_YEARLY=$(find_or_create_price "$STARTER_PRODUCT" 29000 year "Starter Yearly")
+STARTER_MONTHLY=$(find_or_create_price "$STARTER_PRODUCT" 4900 month "Starter Monthly")
+STARTER_YEARLY=$(find_or_create_price "$STARTER_PRODUCT" 47000 year "Starter Yearly")
 ok "  Starter: monthly=$STARTER_MONTHLY yearly=$STARTER_YEARLY"
 
 # --- Professional Plan ---
 info "  Professional plan..."
 PRO_PRODUCT=$(find_or_create_product "DermaConsent Professional" "Unlimited consents, 10 team members, priority support")
-PRO_MONTHLY=$(find_or_create_price "$PRO_PRODUCT" 7900 month "Professional Monthly")
-PRO_YEARLY=$(find_or_create_price "$PRO_PRODUCT" 79000 year "Professional Yearly")
+PRO_MONTHLY=$(find_or_create_price "$PRO_PRODUCT" 9900 month "Professional Monthly")
+PRO_YEARLY=$(find_or_create_price "$PRO_PRODUCT" 95000 year "Professional Yearly")
 ok "  Professional: monthly=$PRO_MONTHLY yearly=$PRO_YEARLY"
 
 # --- Enterprise Plan ---
