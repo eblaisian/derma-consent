@@ -328,7 +328,7 @@ export default function TeamPage() {
                         value={member.role}
                         onValueChange={(role) => handleRoleChange(member.id, role)}
                       >
-                        <SelectTrigger className="w-40">
+                        <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>

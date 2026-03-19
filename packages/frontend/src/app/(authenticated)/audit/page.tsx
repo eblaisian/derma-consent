@@ -149,7 +149,7 @@ export default function AuditPage() {
       {/* Filter toolbar */}
       <div className="surface-raised p-4">
         <div className="flex flex-wrap items-end gap-4">
-          <div className="space-y-1.5 min-w-48">
+          <div className="space-y-2 min-w-48">
             <Label className="text-xs text-muted-foreground">{t('actionFilter')}</Label>
             <Select value={actionFilter} onValueChange={(v) => { setActionFilter(v === 'all' ? '' : v); setPage(1); }}>
               <SelectTrigger>
@@ -165,22 +165,20 @@ export default function AuditPage() {
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label className="text-xs text-muted-foreground">{t('dateFrom')}</Label>
             <Input
               type="date"
               value={startDate}
               onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
-              className="w-40"
             />
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label className="text-xs text-muted-foreground">{t('dateTo')}</Label>
             <Input
               type="date"
               value={endDate}
               onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
-              className="w-40"
             />
           </div>
         </div>

@@ -286,18 +286,18 @@ export default function SettingsPage() {
               <Label>{t('brandColor')}</Label>
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <Input
+                  <input
                     type="color"
                     value={brandColor || '#0f172a'}
                     onChange={(e) => setBrandColor(e.target.value)}
-                    className="size-10 cursor-pointer rounded-lg border border-border/50 p-0.5"
+                    className="size-9 cursor-pointer rounded-lg border border-border/50 p-0.5"
                   />
                 </div>
                 <Input
                   value={brandColor}
                   onChange={(e) => setBrandColor(e.target.value)}
                   placeholder="#0f172a"
-                  className="max-w-48 font-mono text-sm"
+                  className="font-mono text-sm"
                 />
                 {brandColor && (
                   <div
@@ -354,7 +354,7 @@ export default function SettingsPage() {
               <p className="text-sm text-muted-foreground mt-1">{t('educationVideosDescription')}</p>
             </div>
             {['BOTOX', 'FILLER', 'LASER', 'CHEMICAL_PEEL', 'MICRONEEDLING', 'PRP'].map((type) => (
-              <div key={type} className="space-y-1">
+              <div key={type} className="space-y-2">
                 <Label>{tTypes(type as Parameters<typeof tTypes>[0])}</Label>
                 <Input
                   type="url"

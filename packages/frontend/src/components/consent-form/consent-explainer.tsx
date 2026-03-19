@@ -30,13 +30,12 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 interface ConsentExplainerProps {
   consentType: ConsentType;
   token: string;
-  brandColor?: string;
 }
 
 type Status = 'idle' | 'loading' | 'done' | 'error';
 type ExplainMode = 'full' | 'summary';
 
-export function ConsentExplainer({ token, brandColor }: ConsentExplainerProps) {
+export function ConsentExplainer({ token }: ConsentExplainerProps) {
   const t = useTranslations('consent');
   const locale = useLocale();
   const [open, setOpen] = useState(false);
@@ -172,7 +171,6 @@ export function ConsentExplainer({ token, brandColor }: ConsentExplainerProps) {
           variant="outline"
           size="sm"
           className="gap-2 text-sm"
-          style={brandColor ? { borderColor: brandColor, color: brandColor } : undefined}
         >
           <Sparkles className="h-4 w-4" />
           {t('explainerButton')}

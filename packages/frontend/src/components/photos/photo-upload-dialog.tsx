@@ -89,15 +89,15 @@ export function PhotoUploadDialog({ open, onOpenChange, patientId, practice, onU
           <DialogDescription>{t('uploadDescription')}</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
-          <div>
+          <div className="space-y-2">
             <Label>{t('file')}</Label>
             <Input ref={fileRef} type="file" accept="image/*" />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div>
+            <div className="space-y-2">
               <Label>{t('photoType')}</Label>
               <Select value={type} onValueChange={(v) => setType(v as PhotoType)}>
-                <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {PHOTO_TYPES.map((pt) => (
                     <SelectItem key={pt} value={pt}>{t(pt as keyof IntlMessages['photos'])}</SelectItem>
@@ -105,10 +105,10 @@ export function PhotoUploadDialog({ open, onOpenChange, patientId, practice, onU
                 </SelectContent>
               </Select>
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>{t('bodyRegion')}</Label>
               <Select value={bodyRegion} onValueChange={(v) => setBodyRegion(v as BodyRegion)}>
-                <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {BODY_REGIONS.map((br) => (
                     <SelectItem key={br} value={br}>{tRegions(br as keyof IntlMessages['bodyRegions'])}</SelectItem>
@@ -117,7 +117,7 @@ export function PhotoUploadDialog({ open, onOpenChange, patientId, practice, onU
               </Select>
             </div>
           </div>
-          <div>
+          <div className="space-y-2">
             <Label>{t('takenAt')}</Label>
             <Input
               type="date"
@@ -126,10 +126,10 @@ export function PhotoUploadDialog({ open, onOpenChange, patientId, practice, onU
             />
           </div>
           {plans && plans.length > 0 && (
-            <div>
+            <div className="space-y-2">
               <Label>{t('linkToPlan')}</Label>
               <Select value={selectedPlanId} onValueChange={setSelectedPlanId}>
-                <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value={NO_PLAN}>{t('noPlanLink')}</SelectItem>
                   {plans.map((plan) => (

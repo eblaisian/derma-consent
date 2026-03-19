@@ -41,7 +41,6 @@ interface ConsentFormProps {
     comprehensionScore?: number;
     comprehensionAnswers?: Array<{ questionId: string; selectedIndex: number; correct: boolean }>;
   }) => Promise<void>;
-  brandColor?: string;
   videoUrl?: string;
 }
 
@@ -50,7 +49,6 @@ export function ConsentForm({
   practiceName,
   token,
   onSubmit,
-  brandColor,
   videoUrl,
 }: ConsentFormProps) {
   const t = useTranslations('consent');
@@ -134,7 +132,6 @@ export function ConsentForm({
 
   const currentStepIndex = STEPS.indexOf(step === 'submitting' ? 'review' : step);
   const progress = ((currentStepIndex + 1) / STEPS.length) * 100;
-  const primaryStyle = brandColor ? { backgroundColor: brandColor } : undefined;
 
   return (
     <div className="space-y-6">
@@ -166,7 +163,6 @@ export function ConsentForm({
                 <div className={`flex size-7 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
                   isCurrent ? 'bg-primary text-primary-foreground' : isComplete ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
                 }`}
-                  style={isCurrent && brandColor ? { backgroundColor: brandColor } : undefined}
                 >
                   {isComplete ? '✓' : i + 1}
                 </div>
@@ -180,7 +176,7 @@ export function ConsentForm({
         <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
           <div
             className="h-full bg-primary rounded-full transition-[width] duration-300 ease-out"
-            style={{ width: `${progress}%`, ...(brandColor ? { backgroundColor: brandColor } : {}) }}
+            style={{ width: `${progress}%` }}
           />
         </div>
       </div>
@@ -195,7 +191,6 @@ export function ConsentForm({
           <ConsentExplainer
             consentType={consentType}
             token={token}
-            brandColor={brandColor}
           />
         )}
       </div>
@@ -220,7 +215,7 @@ export function ConsentForm({
             </Label>
             <Input
               id="patient-name"
-              className="h-11"
+              size="lg"
               value={patientIdentity.fullName}
               onChange={(e) => setPatientIdentity((p) => ({ ...p, fullName: e.target.value }))}
               autoComplete="name"
@@ -234,7 +229,7 @@ export function ConsentForm({
             <Input
               id="patient-dob"
               type="date"
-              className="h-11"
+              size="lg"
               value={patientIdentity.dateOfBirth}
               onChange={(e) => setPatientIdentity((p) => ({ ...p, dateOfBirth: e.target.value }))}
               autoComplete="bday"
@@ -248,7 +243,7 @@ export function ConsentForm({
             <Input
               id="patient-email"
               type="email"
-              className="h-11"
+              size="lg"
               value={patientIdentity.email}
               onChange={(e) => setPatientIdentity((p) => ({ ...p, email: e.target.value }))}
               autoComplete="email"
@@ -263,7 +258,7 @@ export function ConsentForm({
           <Separator />
 
           <div className="flex justify-end pt-2">
-            <Button type="button" className="h-11 px-6" onClick={handlePersonalNext} style={primaryStyle}>
+            <Button type="button" size="lg" onClick={handlePersonalNext}>
               {t('nextToForm')}
             </Button>
           </div>
@@ -283,7 +278,7 @@ export function ConsentForm({
               {field.type === 'text' && (
                 <Input
                   id={field.name}
-                  className="h-11"
+                  size="lg"
                   {...register(field.name, { required: field.required })}
                 />
               )}
@@ -350,7 +345,6 @@ export function ConsentForm({
                                 ? 'border-primary bg-primary/10 text-primary font-medium'
                                 : 'border-border text-muted-foreground hover:border-primary/30 hover:bg-muted'
                             }`}
-                            style={isActive && brandColor ? { borderColor: brandColor, backgroundColor: `${brandColor}10`, color: brandColor } : undefined}
                           >
                             {isActive && <Check className="h-3.5 w-3.5" />}
                             {resolveOptionLabel(optKey)}
@@ -389,8 +383,7 @@ export function ConsentForm({
                                   ? 'border-primary bg-primary/10 text-primary font-medium'
                                   : 'border-border text-muted-foreground hover:border-primary/30 hover:bg-muted'
                               }`}
-                              style={isActive && brandColor ? { borderColor: brandColor, backgroundColor: `${brandColor}10`, color: brandColor } : undefined}
-                            >
+                              >
                               {isActive && <Check className="h-3.5 w-3.5" />}
                               {resolveOptionLabel(optKey)}
                             </button>
@@ -414,7 +407,6 @@ export function ConsentForm({
                       required={field.required}
                       value={value || ''}
                       onChange={onChange}
-                      brandColor={brandColor}
                     />
                   )}
                 />
@@ -432,7 +424,6 @@ export function ConsentForm({
                       required={field.required}
                       value={value || ''}
                       onChange={onChange}
-                      brandColor={brandColor}
                     />
                   )}
                 />
@@ -447,7 +438,6 @@ export function ConsentForm({
                       name={field.name}
                       value={value || ''}
                       onChange={onChange}
-                      brandColor={brandColor}
                     />
                   )}
                 />
@@ -464,10 +454,10 @@ export function ConsentForm({
           <Separator />
 
           <div className="flex justify-between pt-2">
-            <Button variant="outline" className="h-11" type="button" onClick={() => setStep('personal')}>
+            <Button variant="outline" size="lg" type="button" onClick={() => setStep('personal')}>
               {t('back')}
             </Button>
-            <Button type="submit" className="h-11 px-6" style={primaryStyle}>
+            <Button type="submit" size="lg">
               {questions.length > 0 ? t('nextToQuiz') : t('nextToSignature')}
             </Button>
           </div>
@@ -479,7 +469,6 @@ export function ConsentForm({
         <ComprehensionQuiz
           questions={questions}
           onComplete={handleQuizComplete}
-          brandColor={brandColor}
         />
       )}
 
@@ -494,10 +483,10 @@ export function ConsentForm({
           <Separator />
 
           <div className="flex justify-between pt-2">
-            <Button variant="outline" className="h-11" onClick={() => setStep(questions.length > 0 ? 'quiz' : 'form')}>
+            <Button variant="outline" size="lg" onClick={() => setStep(questions.length > 0 ? 'quiz' : 'form')}>
               {t('back')}
             </Button>
-            <Button className="h-11 px-6" onClick={handleSignatureNext} style={primaryStyle}>
+            <Button size="lg" onClick={handleSignatureNext}>
               {t('nextToReview')}
             </Button>
           </div>
@@ -584,10 +573,10 @@ export function ConsentForm({
           <Separator />
 
           <div className="flex justify-between pt-2">
-            <Button variant="outline" className="h-11" onClick={() => setStep('signature')}>
+            <Button variant="outline" size="lg" onClick={() => setStep('signature')}>
               {t('back')}
             </Button>
-            <Button className="h-11 px-6" onClick={handleFinalSubmit} style={primaryStyle}>
+            <Button size="lg" onClick={handleFinalSubmit}>
               {t('submitFinal')}
             </Button>
           </div>

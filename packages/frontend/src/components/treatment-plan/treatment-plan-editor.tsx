@@ -178,7 +178,7 @@ export function TreatmentPlanEditor({
 
         {/* Consent type selector */}
         <Select value={type} onValueChange={(v) => handleTypeChange(v as ConsentType)}>
-          <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+          <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
             {CONSENT_TYPES.map((ct) => (
               <SelectItem key={ct} value={ct}>{tTypes(ct as keyof IntlMessages['consentTypes'])}</SelectItem>
@@ -294,7 +294,7 @@ export function TreatmentPlanEditor({
 
         {/* Treatment date + Notes */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label>{t('treatmentDate')}</Label>
             <Input
               type="date"
@@ -302,7 +302,7 @@ export function TreatmentPlanEditor({
               onChange={(e) => setPerformedAt(e.target.value)}
             />
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label>{t('overallNotes')}</Label>
             <Input
               value={overallNotes}

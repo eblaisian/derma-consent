@@ -79,7 +79,7 @@ export function TreatmentAreaCard({
           <div>
             <Label className="text-xs">{t('product')}</Label>
             <Select value={areaState.product} onValueChange={(v) => onUpdate({ ...areaState, product: v })}>
-              <SelectTrigger className="h-7 text-xs w-full"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {PRODUCTS.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
               </SelectContent>
@@ -88,7 +88,7 @@ export function TreatmentAreaCard({
           <div>
             <Label className="text-xs">{t('technique')}</Label>
             <Select value={areaState.technique} onValueChange={(v) => onUpdate({ ...areaState, technique: v })}>
-              <SelectTrigger className="h-7 text-xs w-full"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {TECHNIQUES.map((tech) => (
                   <SelectItem key={tech} value={tech}>{tTech(tech as keyof IntlMessages['techniques'])}</SelectItem>

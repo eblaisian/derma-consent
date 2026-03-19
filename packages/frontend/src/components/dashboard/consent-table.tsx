@@ -119,7 +119,7 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
     <>
       <div className="mb-3">
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-48 h-9">
+          <SelectTrigger className="max-w-xs">
             <SelectValue placeholder={t('filterByStatus')} />
           </SelectTrigger>
           <SelectContent>

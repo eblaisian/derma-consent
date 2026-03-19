@@ -10,7 +10,6 @@ interface YesNoChipsProps {
   required?: boolean;
   value: string;
   onChange: (value: string) => void;
-  brandColor?: string;
 }
 
 /**
@@ -18,6 +17,8 @@ interface YesNoChipsProps {
  * - "None" path: one tap, stores "none"
  * - "Yes" path: reveals chip grid, stores comma-separated selected keys
  * - Optional free-text "Other" input for edge cases
+ *
+ * Brand color theming is handled via CSS variable override at the consent form container level.
  */
 export function YesNoChips({
   name,
@@ -25,7 +26,6 @@ export function YesNoChips({
   required,
   value,
   onChange,
-  brandColor,
 }: YesNoChipsProps) {
   const t = useTranslations('medicalOptions');
   const tFields = useTranslations('medicalFields');
@@ -86,10 +86,6 @@ export function YesNoChips({
       : key;
   };
 
-  const activeStyle = brandColor
-    ? { borderColor: brandColor, backgroundColor: `${brandColor}10`, color: brandColor }
-    : undefined;
-
   return (
     <div className="space-y-3">
       {/* Gate cards */}
@@ -114,7 +110,6 @@ export function YesNoChips({
               ? 'border-primary bg-primary/5 text-primary'
               : 'border-border hover:border-muted-foreground/30 text-muted-foreground'
           }`}
-          style={gate === 'yes' && brandColor ? activeStyle : undefined}
         >
           {gate === 'yes' && <Check className="h-4 w-4" />}
           {tFields('yesIHave' as keyof IntlMessages['medicalFields'])}
@@ -137,7 +132,6 @@ export function YesNoChips({
                       ? 'border-primary bg-primary/10 text-primary font-medium'
                       : 'border-border text-muted-foreground hover:border-primary/30 hover:bg-muted'
                   }`}
-                  style={isActive && brandColor ? activeStyle : undefined}
                 >
                   {isActive && <Check className="h-3.5 w-3.5" />}
                   {resolveLabel(key)}
@@ -154,7 +148,6 @@ export function YesNoChips({
                   ? 'border-primary bg-primary/10 text-primary font-medium'
                   : 'border-dashed border-border text-muted-foreground hover:border-primary/30'
               }`}
-              style={showOther && brandColor ? activeStyle : undefined}
             >
               {showOther ? <X className="h-3.5 w-3.5" /> : '+'}
               {resolveLabel('addOther')}
@@ -168,7 +161,7 @@ export function YesNoChips({
               value={otherText}
               onChange={(e) => setOtherText(e.target.value)}
               placeholder={resolveLabel('otherPlaceholder')}
-              className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm animate-in fade-in slide-in-from-top-1 duration-150"
+              className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm animate-in fade-in slide-in-from-top-1 duration-150"
               autoFocus
             />
           )}

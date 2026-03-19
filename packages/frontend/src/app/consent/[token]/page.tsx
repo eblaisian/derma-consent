@@ -253,7 +253,14 @@ export default function ConsentPage({
   return (
     <div
       className="min-h-dvh bg-background flex flex-col"
-      style={brandColor ? { '--brand-color': brandColor } as React.CSSProperties : undefined}
+      style={brandColor ? {
+        '--brand-color': brandColor,
+        '--primary': brandColor,
+        '--ring': brandColor,
+        '--primary-hover': brandColor,
+        '--primary-active': brandColor,
+        '--primary-subtle': `${brandColor}18`,
+      } as React.CSSProperties : undefined}
     >
       {/* Branded header */}
       <header className="border-b border-border-subtle bg-card/50 backdrop-blur-sm sticky top-0 z-10">
@@ -274,7 +281,7 @@ export default function ConsentPage({
               {data.practice?.name || 'DermaConsent'}
             </span>
           </div>
-          <LanguageSwitcher />
+          <LanguageSwitcher compact />
         </div>
       </header>
 
@@ -285,7 +292,6 @@ export default function ConsentPage({
           practiceName={data.practice?.name || 'Praxis'}
           token={token}
           onSubmit={handleSubmit}
-          brandColor={brandColor ?? undefined}
           videoUrl={videoUrl ?? undefined}
         />
       </main>

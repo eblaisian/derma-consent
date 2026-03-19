@@ -97,7 +97,7 @@ export function SendMessageDialog({ message, onClose }: SendMessageDialogProps) 
             <div className="space-y-3 border rounded-lg p-3 bg-muted/30">
               <p className="text-xs font-medium text-muted-foreground">{t('fillPlaceholders')}</p>
               {placeholders.map((placeholder) => (
-                <div key={placeholder} className="space-y-1">
+                <div key={placeholder} className="space-y-2">
                   <label className="text-sm font-medium">{labelFromPlaceholder(placeholder)}</label>
                   <Input
                     placeholder={labelFromPlaceholder(placeholder)}

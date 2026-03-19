@@ -29,7 +29,7 @@ export function InjectionPointEditFields({ point, onUpdate, onRemove, onDone }: 
       <div>
         <Label className="text-xs">{t('product')}</Label>
         <Select value={point.product} onValueChange={(v) => onUpdate({ ...point, product: v })}>
-          <SelectTrigger className="h-7 text-xs w-full"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             {PRODUCTS.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
           </SelectContent>
@@ -47,7 +47,7 @@ export function InjectionPointEditFields({ point, onUpdate, onRemove, onDone }: 
       <div>
         <Label className="text-xs">{t('technique')}</Label>
         <Select value={point.technique} onValueChange={(v) => onUpdate({ ...point, technique: v })}>
-          <SelectTrigger className="h-7 text-xs w-full"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             {TECHNIQUES.map((tech) => (
               <SelectItem key={tech} value={tech}>{tTech(tech as keyof IntlMessages['techniques'])}</SelectItem>

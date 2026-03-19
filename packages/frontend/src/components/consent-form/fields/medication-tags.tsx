@@ -8,7 +8,6 @@ interface MedicationTagsProps {
   name: string;
   value: string;
   onChange: (value: string) => void;
-  brandColor?: string;
 }
 
 // Common medications in dermatology contexts (offline fallback)
@@ -31,7 +30,6 @@ export function MedicationTags({
   name,
   value,
   onChange,
-  brandColor,
 }: MedicationTagsProps) {
   const t = useTranslations('medicalFields');
   const tOpt = useTranslations('medicalOptions');
@@ -141,10 +139,6 @@ export function MedicationTags({
     }
   };
 
-  const activeStyle = brandColor
-    ? { borderColor: brandColor, backgroundColor: `${brandColor}10`, color: brandColor }
-    : undefined;
-
   return (
     <div className="space-y-3">
       {/* Gate */}
@@ -169,7 +163,6 @@ export function MedicationTags({
               ? 'border-primary bg-primary/5 text-primary'
               : 'border-border hover:border-muted-foreground/30 text-muted-foreground'
           }`}
-          style={gate === 'yes' && brandColor ? activeStyle : undefined}
         >
           {gate === 'yes' && <Check className="h-4 w-4" />}
           {t('yesTakingMeds' as keyof IntlMessages['medicalFields'])}
@@ -186,7 +179,6 @@ export function MedicationTags({
                 <span
                   key={tag}
                   className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-3 py-1.5 text-sm font-medium"
-                  style={brandColor ? { backgroundColor: `${brandColor}15`, color: brandColor } : undefined}
                 >
                   <Pill className="h-3 w-3" />
                   {tag}
@@ -215,7 +207,7 @@ export function MedicationTags({
               onFocus={() => query.length >= 2 && setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
               placeholder={t('searchMedication' as keyof IntlMessages['medicalFields'])}
-              className="flex h-11 w-full rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm"
+              className="flex h-11 w-full rounded-md border border-input bg-background pl-10 pr-3 py-2 text-base md:text-sm"
               autoComplete="off"
             />
 

@@ -20,7 +20,6 @@ interface ConditionGridProps {
   required?: boolean;
   value: string;
   onChange: (value: string) => void;
-  brandColor?: string;
 }
 
 const CONDITION_ICONS: Record<string, typeof Heart> = {
@@ -51,6 +50,8 @@ const CONDITION_ICONS: Record<string, typeof Heart> = {
  * Replaces free-text textarea with tappable condition cards.
  * "None of the above" clears all selections.
  * Optional free-text escape hatch for unlisted conditions.
+ *
+ * Brand color theming is handled via CSS variable override at the consent form container level.
  */
 export function ConditionGrid({
   name,
@@ -58,7 +59,6 @@ export function ConditionGrid({
   required,
   value,
   onChange,
-  brandColor,
 }: ConditionGridProps) {
   const t = useTranslations('medicalOptions');
   const tFields = useTranslations('medicalFields');
@@ -87,7 +87,6 @@ export function ConditionGrid({
     setSelected((prev) => {
       const next = new Set(prev);
       if (key === 'noneOfAbove') {
-        // "None" clears everything else
         if (next.has('noneOfAbove')) {
           next.delete('noneOfAbove');
         } else {
@@ -95,7 +94,6 @@ export function ConditionGrid({
           next.add('noneOfAbove');
         }
       } else {
-        // Selecting a condition removes "None"
         next.delete('noneOfAbove');
         if (next.has(key)) next.delete(key);
         else next.add(key);
@@ -111,9 +109,6 @@ export function ConditionGrid({
   };
 
   const isNone = selected.has('noneOfAbove');
-  const activeStyle = brandColor
-    ? { borderColor: brandColor, backgroundColor: `${brandColor}10` }
-    : undefined;
 
   return (
     <div className="space-y-3">
@@ -135,7 +130,6 @@ export function ConditionGrid({
                     ? 'border-primary bg-primary/5 text-primary'
                     : 'border-border text-muted-foreground hover:border-muted-foreground/40 hover:bg-muted/50'
               }`}
-              style={isActive && !isNoneCard && brandColor ? activeStyle : undefined}
             >
               {isActive && (
                 <div className="absolute top-1.5 right-1.5">

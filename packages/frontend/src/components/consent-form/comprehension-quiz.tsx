@@ -15,10 +15,9 @@ interface QuizAnswer {
 interface ComprehensionQuizProps {
   questions: QuizQuestion[];
   onComplete: (score: number, answers: QuizAnswer[]) => void;
-  brandColor?: string;
 }
 
-export function ComprehensionQuiz({ questions, onComplete, brandColor }: ComprehensionQuizProps) {
+export function ComprehensionQuiz({ questions, onComplete }: ComprehensionQuizProps) {
   const t = useTranslations('quiz');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswer[]>([]);
@@ -28,7 +27,6 @@ export function ComprehensionQuiz({ questions, onComplete, brandColor }: Compreh
   const currentQuestion = questions[currentIndex];
   const isCorrect = selectedOption === currentQuestion.correctIndex;
   const isLastQuestion = currentIndex === questions.length - 1;
-  const primaryStyle = brandColor ? { backgroundColor: brandColor } : undefined;
 
   const handleSelect = (index: number) => {
     if (submitted) return;
@@ -131,15 +129,14 @@ export function ComprehensionQuiz({ questions, onComplete, brandColor }: Compreh
       <div className="flex justify-end pt-2">
         {!submitted ? (
           <Button
-            className="h-11 px-6"
+            size="lg"
             onClick={handleSubmitAnswer}
             disabled={selectedOption === null}
-            style={primaryStyle}
           >
             {t('checkAnswer')}
           </Button>
         ) : (
-          <Button className="h-11 px-6" onClick={handleNext} style={primaryStyle}>
+          <Button size="lg" onClick={handleNext}>
             {isLastQuestion ? t('continueToSignature') : t('nextQuestion')}
           </Button>
         )}
