@@ -1316,9 +1316,7 @@
   },
   "analyticsInsights": {
     "cardTitle": "Analizy AI",
-    "refresh": "Odśwież",
-    "loading": "Analizowanie...",
-    "noAi": "Analizy AI niedostępne"
+    "refresh": "Odśwież"
   },
   "profile": {
     "title": "Ustawienia konta",
@@ -1395,5 +1393,19 @@
     "FILE_TOO_LARGE": "Rozmiar pliku przekracza limit.",
     "INVALID_FILE_TYPE": "Nieprawidłowy typ pliku.",
     "UNKNOWN_ERROR": "Wystąpił nieoczekiwany błąd. Proszę spróbować ponownie."
+  },
+  "premiumGate": {
+    "badge": "Professional",
+    "upgradeCta": "Zmień plan",
+    "learnMore": "Dowiedz się więcej o planach",
+    "communicationsTitle": "Komunikacja z pacjentami AI",
+    "communicationsDescription": "Twórz profesjonalne, wielojęzyczne wiadomości do pacjentów w kilka sekund — przypomnienia o wizytach, kontynuacje zgód i instrukcje pozabiegowe.",
+    "communicationsFeature1": "7 szablonów wiadomości",
+    "communicationsFeature2": "8 języków",
+    "communicationsFeature3": "Bezpośrednia wysyłka email",
+    "aftercareTitle": "Instrukcje pielęgnacji AI",
+    "aftercareDescription": "Generuj spersonalizowane instrukcje pielęgnacji dla pacjentów na podstawie rodzaju zabiegu i obszaru ciała. Dostępne w planie Professional.",
+    "analyticsInsightsTitle": "Analizy praktyki AI",
+    "analyticsInsightsDescription": "Odblokuj analizy danych praktyki generowane przez AI — trendy, analizy konwersji i praktyczne rekomendacje."
   }
 }

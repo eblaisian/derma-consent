@@ -1320,9 +1320,7 @@
   },
   "analyticsInsights": {
     "cardTitle": "KI-Einblicke",
-    "refresh": "Aktualisieren",
-    "loading": "Wird analysiert...",
-    "noAi": "KI-Einblicke nicht verfügbar"
+    "refresh": "Aktualisieren"
   },
   "profile": {
     "title": "Kontoeinstellungen",
@@ -1399,5 +1397,19 @@
     "FILE_TOO_LARGE": "Dateigröße überschreitet das Limit.",
     "INVALID_FILE_TYPE": "Ungültiger Dateityp.",
     "UNKNOWN_ERROR": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+  },
+  "premiumGate": {
+    "badge": "Professional",
+    "upgradeCta": "Tarif upgraden",
+    "learnMore": "Mehr über Tarife erfahren",
+    "communicationsTitle": "KI-Patientenkommunikation",
+    "communicationsDescription": "Erstellen Sie in Sekunden professionelle, mehrsprachige Patientennachrichten — Terminbestätigungen, Einwilligungs-Follow-ups und Nachbehandlungshinweise.",
+    "communicationsFeature1": "7 Nachrichtenvorlagen",
+    "communicationsFeature2": "8 Sprachen",
+    "communicationsFeature3": "Direkter E-Mail-Versand",
+    "aftercareTitle": "KI-Nachsorgehinweise",
+    "aftercareDescription": "Erstellen Sie personalisierte Nachsorgehinweise für Ihre Patienten basierend auf Behandlungsart und Körperregion. Verfügbar im Professional-Tarif.",
+    "analyticsInsightsTitle": "KI-Praxisanalysen",
+    "analyticsInsightsDescription": "Schalten Sie KI-generierte Analysen Ihrer Praxisdaten frei — Trends, Konversionsanalysen und umsetzbare Empfehlungen."
   }
 }

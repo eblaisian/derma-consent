@@ -1316,9 +1316,7 @@
   },
   "analyticsInsights": {
     "cardTitle": "Analyses IA",
-    "refresh": "Actualiser",
-    "loading": "Analyse...",
-    "noAi": "Analyses IA non disponibles"
+    "refresh": "Actualiser"
   },
   "profile": {
     "title": "Paramètres du compte",
@@ -1395,5 +1393,19 @@
     "FILE_TOO_LARGE": "La taille du fichier dépasse la limite.",
     "INVALID_FILE_TYPE": "Type de fichier invalide.",
     "UNKNOWN_ERROR": "Une erreur inattendue s'est produite. Veuillez réessayer."
+  },
+  "premiumGate": {
+    "badge": "Professional",
+    "upgradeCta": "Mettre à niveau",
+    "learnMore": "En savoir plus sur les forfaits",
+    "communicationsTitle": "Communications patients par IA",
+    "communicationsDescription": "Rédigez des messages patients professionnels et multilingues en quelques secondes — rappels de rendez-vous, suivis de consentement et instructions post-traitement.",
+    "communicationsFeature1": "7 modèles de messages",
+    "communicationsFeature2": "8 langues",
+    "communicationsFeature3": "Envoi direct par email",
+    "aftercareTitle": "Instructions de suivi par IA",
+    "aftercareDescription": "Générez des instructions de suivi personnalisées pour vos patients selon le type de traitement et la zone corporelle. Disponible avec le forfait Professional.",
+    "analyticsInsightsTitle": "Analyses de cabinet par IA",
+    "analyticsInsightsDescription": "Débloquez des analyses générées par IA de vos données de cabinet — tendances, analyses de conversion et recommandations concrètes."
   }
 }

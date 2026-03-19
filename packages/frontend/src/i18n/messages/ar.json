@@ -1316,9 +1316,7 @@
   },
   "analyticsInsights": {
     "cardTitle": "تحليلات الذكاء الاصطناعي",
-    "refresh": "تحديث",
-    "loading": "جارٍ التحليل...",
-    "noAi": "تحليلات الذكاء الاصطناعي غير متاحة"
+    "refresh": "تحديث"
   },
   "profile": {
     "title": "إعدادات الحساب",
@@ -1395,5 +1393,19 @@
     "FILE_TOO_LARGE": "حجم الملف يتجاوز الحد المسموح.",
     "INVALID_FILE_TYPE": "نوع ملف غير صالح.",
     "UNKNOWN_ERROR": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى."
+  },
+  "premiumGate": {
+    "badge": "Professional",
+    "upgradeCta": "ترقية الخطة",
+    "learnMore": "معرفة المزيد عن الخطط",
+    "communicationsTitle": "تواصل مع المرضى بالذكاء الاصطناعي",
+    "communicationsDescription": "قم بصياغة رسائل احترافية متعددة اللغات للمرضى في ثوانٍ — تذكيرات المواعيد ومتابعات الموافقة وتعليمات ما بعد العلاج.",
+    "communicationsFeature1": "7 قوالب رسائل",
+    "communicationsFeature2": "8 لغات",
+    "communicationsFeature3": "إرسال مباشر بالبريد الإلكتروني",
+    "aftercareTitle": "تعليمات الرعاية اللاحقة بالذكاء الاصطناعي",
+    "aftercareDescription": "قم بإنشاء تعليمات رعاية لاحقة مخصصة لمرضاك بناءً على نوع العلاج ومنطقة الجسم. متاح في خطة Professional.",
+    "analyticsInsightsTitle": "تحليلات العيادة بالذكاء الاصطناعي",
+    "analyticsInsightsDescription": "افتح التحليلات المولدة بالذكاء الاصطناعي لبيانات عيادتك — الاتجاهات وتحليلات التحويل والتوصيات العملية."
   }
 }

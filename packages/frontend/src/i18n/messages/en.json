@@ -1320,9 +1320,7 @@
   },
   "analyticsInsights": {
     "cardTitle": "AI Insights",
-    "refresh": "Refresh",
-    "loading": "Analysing...",
-    "noAi": "AI insights not available"
+    "refresh": "Refresh"
   },
   "profile": {
     "title": "Account Settings",
@@ -1399,5 +1397,19 @@
     "FILE_TOO_LARGE": "File size exceeds the limit.",
     "INVALID_FILE_TYPE": "Invalid file type.",
     "UNKNOWN_ERROR": "An unexpected error occurred. Please try again."
+  },
+  "premiumGate": {
+    "badge": "Professional",
+    "upgradeCta": "Upgrade plan",
+    "learnMore": "Learn more about plans",
+    "communicationsTitle": "AI Patient Communications",
+    "communicationsDescription": "Draft professional, multilingual patient messages in seconds — appointment reminders, consent follow-ups, and post-treatment instructions.",
+    "communicationsFeature1": "7 message templates",
+    "communicationsFeature2": "8 languages",
+    "communicationsFeature3": "Direct email delivery",
+    "aftercareTitle": "AI Aftercare Instructions",
+    "aftercareDescription": "Generate personalised aftercare instructions for your patients based on treatment type and body region. Available on the Professional plan.",
+    "analyticsInsightsTitle": "AI Practice Insights",
+    "analyticsInsightsDescription": "Unlock AI-generated analysis of your practice data — trends, conversion insights, and actionable recommendations."
   }
 }

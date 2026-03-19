@@ -24,6 +24,8 @@ export class AiStatusController {
   async authenticatedStatus(@CurrentUser() user: CurrentUserPayload) {
     const aiConfigured = await this.ai.isConfigured();
 
+    const noPremiumFeatures = { communications: false, aftercare: false, analyticsInsights: false };
+
     if (!aiConfigured) {
       return {
         aiEnabled: false,
@@ -35,6 +37,7 @@ export class AiStatusController {
           noShowRisk: true,
           retention: true,
         },
+        premiumFeatures: noPremiumFeatures,
       };
     }
 
@@ -57,6 +60,11 @@ export class AiStatusController {
         analyticsInsights: isPremiumPlan,
         noShowRisk: true,
         retention: true,
+      },
+      premiumFeatures: {
+        communications: !isPremiumPlan,
+        aftercare: !isPremiumPlan,
+        analyticsInsights: !isPremiumPlan,
       },
     };
   }

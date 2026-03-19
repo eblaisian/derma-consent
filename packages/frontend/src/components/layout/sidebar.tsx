@@ -21,6 +21,7 @@ import {
   Shield,
   LogOut,
   MessageSquare,
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAiStatus } from '@/hooks/use-ai-status';
@@ -55,7 +56,7 @@ export function Sidebar() {
   const { isUnlocked, autoLockRemaining, requestUnlock, lock } = useVault();
   const { practiceId } = usePractice();
   const userRole = session?.user?.role || 'EMPFANG';
-  const { features: aiFeatures } = useAiStatus();
+  const { features: aiFeatures, premiumFeatures, isLoading: aiLoading } = useAiStatus();
 
   const { data: settingsData } = useSWR<{ logoUrl?: string }>(
     practiceId && session?.accessToken ? `${API_URL}/api/settings` : null,
@@ -75,7 +76,7 @@ export function Sidebar() {
 
   const filteredItems = navItems.filter((item) => {
     if (!item.roles.includes(userRole)) return false;
-    if (item.aiFeature && !aiFeatures[item.aiFeature]) return false;
+    if (item.aiFeature && !aiLoading && !aiFeatures[item.aiFeature] && !premiumFeatures[item.aiFeature]) return false;
     return true;
   });
 
@@ -131,6 +132,9 @@ export function Sidebar() {
                         <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground px-1">
                           {pendingCount > 99 ? '99+' : pendingCount}
                         </span>
+                      )}
+                      {item.aiFeature && !aiFeatures[item.aiFeature] && premiumFeatures[item.aiFeature] && (
+                        <Sparkles className={cn('size-3.5 shrink-0', isActive ? 'text-sidebar-primary' : 'text-primary/60')} />
                       )}
                     </Link>
                   );

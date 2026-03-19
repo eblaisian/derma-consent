@@ -1316,9 +1316,7 @@
   },
   "analyticsInsights": {
     "cardTitle": "Información IA",
-    "refresh": "Actualizar",
-    "loading": "Analizando...",
-    "noAi": "Información IA no disponible"
+    "refresh": "Actualizar"
   },
   "profile": {
     "title": "Configuración de cuenta",
@@ -1395,5 +1393,19 @@
     "FILE_TOO_LARGE": "El tamaño del archivo excede el límite.",
     "INVALID_FILE_TYPE": "Tipo de archivo inválido.",
     "UNKNOWN_ERROR": "Ocurrió un error inesperado. Por favor, inténtelo de nuevo."
+  },
+  "premiumGate": {
+    "badge": "Professional",
+    "upgradeCta": "Mejorar plan",
+    "learnMore": "Más información sobre los planes",
+    "communicationsTitle": "Comunicaciones con pacientes con IA",
+    "communicationsDescription": "Redacte mensajes profesionales y multilingües para pacientes en segundos — recordatorios de citas, seguimientos de consentimiento e instrucciones post-tratamiento.",
+    "communicationsFeature1": "7 plantillas de mensajes",
+    "communicationsFeature2": "8 idiomas",
+    "communicationsFeature3": "Envío directo por email",
+    "aftercareTitle": "Instrucciones de cuidados post-tratamiento con IA",
+    "aftercareDescription": "Genere instrucciones personalizadas de cuidados post-tratamiento para sus pacientes según el tipo de tratamiento y la zona corporal. Disponible en el plan Professional.",
+    "analyticsInsightsTitle": "Análisis de práctica con IA",
+    "analyticsInsightsDescription": "Desbloquee análisis generados por IA de los datos de su práctica — tendencias, análisis de conversión y recomendaciones prácticas."
   }
 }

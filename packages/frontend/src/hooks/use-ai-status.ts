@@ -11,9 +11,16 @@ interface AiFeatures {
   retention: boolean;
 }
 
+export interface PremiumFeatures {
+  communications: boolean;
+  aftercare: boolean;
+  analyticsInsights: boolean;
+}
+
 interface AiStatus {
   aiEnabled: boolean;
   features: AiFeatures;
+  premiumFeatures: PremiumFeatures;
 }
 
 const DEFAULT_STATUS: AiStatus = {
@@ -26,16 +33,23 @@ const DEFAULT_STATUS: AiStatus = {
     noShowRisk: true,
     retention: true,
   },
+  premiumFeatures: {
+    communications: false,
+    aftercare: false,
+    analyticsInsights: false,
+  },
 };
 
 export function useAiStatus() {
-  const { data: session } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
 
-  const { data, isLoading } = useSWR<AiStatus>(
+  const { data, isLoading: swrLoading } = useSWR<AiStatus>(
     session?.accessToken ? `${API_URL}/api/ai/status` : null,
     createAuthFetcher(session?.accessToken),
     { refreshInterval: 300_000, dedupingInterval: 60_000 },
   );
+
+  const isLoading = sessionStatus === 'loading' || swrLoading || (!data && sessionStatus === 'authenticated');
 
   return {
     ...(data || DEFAULT_STATUS),

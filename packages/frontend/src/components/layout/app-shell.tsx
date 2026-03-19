@@ -21,6 +21,7 @@ import {
   CreditCard,
   Settings,
   MessageSquare,
+  Sparkles,
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
@@ -49,7 +50,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const userRole = session?.user?.role || 'EMPFANG';
   const { practiceId } = usePractice();
-  const { features: aiFeatures } = useAiStatus();
+  const { features: aiFeatures, premiumFeatures, isLoading: aiLoading } = useAiStatus();
 
   const { data: settingsData } = useSWR<{ logoUrl?: string; brandColor?: string }>(
     practiceId && session?.accessToken ? `${API_URL}/api/settings` : null,
@@ -78,7 +79,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const filteredMobileNav = mobileNavItems.filter((item) => {
     if (!item.roles.includes(userRole)) return false;
-    if (item.aiFeature && !aiFeatures[item.aiFeature as keyof typeof aiFeatures]) return false;
+    if (item.aiFeature && !aiLoading && !aiFeatures[item.aiFeature as keyof typeof aiFeatures] && !premiumFeatures[item.aiFeature as keyof typeof premiumFeatures]) return false;
     return true;
   });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -182,7 +183,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       aria-current={isActive ? 'page' : undefined}
                     >
                       <Icon className="size-4 shrink-0" />
-                      {tNav(item.labelKey)}
+                      <span className="flex-1">{tNav(item.labelKey)}</span>
+                      {item.aiFeature && !aiFeatures[item.aiFeature as keyof typeof aiFeatures] && premiumFeatures[item.aiFeature as keyof typeof premiumFeatures] && (
+                        <Sparkles className="size-3.5 shrink-0 text-primary/60" />
+                      )}
                     </Link>
                   );
                 })}

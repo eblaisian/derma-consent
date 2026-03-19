@@ -1316,9 +1316,7 @@
   },
   "analyticsInsights": {
     "cardTitle": "Yapay Zeka Analizleri",
-    "refresh": "Yenile",
-    "loading": "Analiz ediliyor...",
-    "noAi": "Yapay zeka analizleri mevcut değil"
+    "refresh": "Yenile"
   },
   "profile": {
     "title": "Hesap Ayarları",
@@ -1395,5 +1393,19 @@
     "FILE_TOO_LARGE": "Dosya boyutu limiti aşıyor.",
     "INVALID_FILE_TYPE": "Geçersiz dosya türü.",
     "UNKNOWN_ERROR": "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+  },
+  "premiumGate": {
+    "badge": "Professional",
+    "upgradeCta": "Planı yükselt",
+    "learnMore": "Planlar hakkında bilgi al",
+    "communicationsTitle": "Yapay Zeka ile Hasta İletişimi",
+    "communicationsDescription": "Saniyeler içinde profesyonel, çok dilli hasta mesajları oluşturun — randevu hatırlatmaları, onam takipleri ve tedavi sonrası talimatlar.",
+    "communicationsFeature1": "7 mesaj şablonu",
+    "communicationsFeature2": "8 dil",
+    "communicationsFeature3": "Doğrudan e-posta gönderimi",
+    "aftercareTitle": "Yapay Zeka ile Bakım Talimatları",
+    "aftercareDescription": "Tedavi türü ve vücut bölgesine göre hastalarınız için kişiselleştirilmiş bakım talimatları oluşturun. Professional planında kullanılabilir.",
+    "analyticsInsightsTitle": "Yapay Zeka ile Klinik Analizleri",
+    "analyticsInsightsDescription": "Klinik verilerinizin yapay zeka ile oluşturulan analizlerini açın — trendler, dönüşüm analizleri ve uygulanabilir öneriler."
   }
 }
