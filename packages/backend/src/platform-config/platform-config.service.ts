@@ -55,9 +55,9 @@ const DEFAULTS: Record<string, string> = {
   'plans.starterLimit': '100',
   'plans.professionalLimit': '-1',
   'plans.enterpriseLimit': '-1',
-  'openai.baseUrl': 'https://api.openai.com/v1',
-  'openai.model': 'gpt-4o-mini',
-  'openai.explainerEnabled': 'true',
+  'ai.baseUrl': 'https://api.cerebras.ai/v1',
+  'ai.model': 'llama3.1-8b',
+  'ai.explainerEnabled': 'true',
   'sms.senderName': 'DermaConsent',
   'sms.whatsappEnabled': 'false',
   'notifications.consentLinkEnabled': 'true',
@@ -77,7 +77,7 @@ const SECRET_KEYS = new Set([
   'sms.sevenApiKey',
   'storage.accessKey',
   'storage.secretKey',
-  'openai.apiKey',
+  'ai.apiKey',
 ]);
 
 // Config key metadata
@@ -109,10 +109,10 @@ const CONFIG_METADATA: Record<string, { category: string; description: string; i
   'plans.starterLimit': { category: 'plans', description: 'Starter Plan Monthly Consent Limit', isSecret: false },
   'plans.professionalLimit': { category: 'plans', description: 'Professional Plan Monthly Consent Limit (-1 = unlimited)', isSecret: false },
   'plans.enterpriseLimit': { category: 'plans', description: 'Enterprise Plan Monthly Consent Limit (-1 = unlimited)', isSecret: false },
-  'openai.apiKey': { category: 'ai', description: 'OpenAI API Key (sk-...) — not needed for Ollama', isSecret: true },
-  'openai.baseUrl': { category: 'ai', description: 'API Base URL (default: OpenAI, set to http://localhost:11434/v1 for Ollama)', isSecret: false },
-  'openai.model': { category: 'ai', description: 'Model (e.g. gpt-4o-mini, llama3.2, mistral)', isSecret: false },
-  'openai.explainerEnabled': { category: 'ai', description: 'Enable AI Consent Explainer on patient forms (true/false)', isSecret: false },
+  'ai.apiKey': { category: 'ai', description: 'AI API Key (Cerebras, OpenAI, or other provider) — not needed for Ollama', isSecret: true },
+  'ai.baseUrl': { category: 'ai', description: 'API Base URL (default: Cerebras, or http://localhost:11434/v1 for Ollama)', isSecret: false },
+  'ai.model': { category: 'ai', description: 'Model (e.g. llama3.1-8b, gpt-4o-mini, gemini-2.0-flash)', isSecret: false },
+  'ai.explainerEnabled': { category: 'ai', description: 'Enable AI Consent Explainer on patient forms (true/false)', isSecret: false },
   'notifications.consentLinkEnabled': { category: 'notifications', description: 'Send consent link emails to patients', isSecret: false },
   'notifications.consentReminderEnabled': { category: 'notifications', description: 'Send consent reminder emails to admins', isSecret: false },
   'notifications.inviteEnabled': { category: 'notifications', description: 'Send team invite emails', isSecret: false },
@@ -593,28 +593,29 @@ export class PlatformConfigService {
 
   private async validateAI(): Promise<ServiceValidation> {
     const requirements = await Promise.all([
-      this.checkRequirement('openai.baseUrl', 'API Base URL', true, 'For OpenAI: use https://api.openai.com/v1 — For Ollama: use http://localhost:11434/v1'),
-      this.checkRequirement('openai.model', 'Model', true, 'e.g. gpt-4o-mini (OpenAI) or llama3.2 (Ollama)'),
-      this.checkRequirement('openai.apiKey', 'API Key', false, 'Required for OpenAI (sk-...), not needed for Ollama'),
+      this.checkRequirement('ai.baseUrl', 'API Base URL', true, 'Default: Cerebras — or http://localhost:11434/v1 for Ollama'),
+      this.checkRequirement('ai.model', 'Model', true, 'e.g. llama3.1-8b, gpt-4o-mini, gemini-2.0-flash'),
+      this.checkRequirement('ai.apiKey', 'API Key', false, 'Required for cloud providers (Cerebras, OpenAI), not needed for Ollama'),
     ]);
 
     const checks: { name: string; passed: boolean; detail: string }[] = [];
 
-    const baseUrl = (await this.get('openai.baseUrl')) || 'https://api.openai.com/v1';
-    const apiKey = await this.get('openai.apiKey');
-    const model = (await this.get('openai.model')) || 'gpt-4o-mini';
-    const isOllama = baseUrl !== 'https://api.openai.com/v1';
-    const provider = isOllama ? 'Ollama' : 'OpenAI';
+    const defaultUrl = 'https://api.cerebras.ai/v1';
+    const baseUrl = (await this.get('ai.baseUrl')) || defaultUrl;
+    const apiKey = await this.get('ai.apiKey');
+    const model = (await this.get('ai.model')) || 'llama3.1-8b';
+    const isLocal = baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1');
+    const provider = isLocal ? 'Ollama' : baseUrl.includes('cerebras') ? 'Cerebras' : 'AI Provider';
 
-    if (!isOllama && !apiKey) {
+    if (!isLocal && !apiKey) {
       return this.buildValidationResult('ai', requirements, [
-        { name: 'API Connection', passed: false, detail: 'OpenAI API key not configured' },
+        { name: 'API Connection', passed: false, detail: 'AI API key not configured' },
       ]);
     }
 
     try {
       const modelsRes = await fetch(`${baseUrl}/models`, {
-        headers: { Authorization: `Bearer ${apiKey || 'ollama'}` },
+        headers: { Authorization: `Bearer ${apiKey || 'local'}` },
       });
       if (!modelsRes.ok) {
         const body = await modelsRes.text();
@@ -640,7 +641,7 @@ export class PlatformConfigService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey || 'ollama'}`,
+          Authorization: `Bearer ${apiKey || 'local'}`,
         },
         body: JSON.stringify({
           model,

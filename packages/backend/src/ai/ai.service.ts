@@ -6,7 +6,7 @@ export interface ChatMessage {
   content: string;
 }
 
-const DEFAULT_BASE_URL = 'https://api.openai.com/v1';
+const DEFAULT_BASE_URL = 'https://api.cerebras.ai/v1';
 
 @Injectable()
 export class AiService {
@@ -15,15 +15,15 @@ export class AiService {
   constructor(private readonly platformConfig: PlatformConfigService) {}
 
   async isConfigured(): Promise<boolean> {
-    const enabled = await this.platformConfig.get('openai.explainerEnabled');
+    const enabled = await this.platformConfig.get('ai.explainerEnabled');
     if (enabled === 'false') return false;
 
     const baseUrl = await this.getBaseUrl();
-    const apiKey = await this.platformConfig.get('openai.apiKey');
+    const apiKey = await this.platformConfig.get('ai.apiKey');
 
-    // Ollama (non-OpenAI base URL) doesn't need a real API key
-    const isOllama = baseUrl !== DEFAULT_BASE_URL;
-    if (isOllama) return true;
+    // Local providers (Ollama) don't need an API key
+    const isLocal = baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1');
+    if (isLocal) return true;
 
     return !!apiKey;
   }
@@ -33,21 +33,21 @@ export class AiService {
     opts?: { maxTokens?: number; temperature?: number },
   ): Promise<string> {
     const baseUrl = await this.getBaseUrl();
-    const apiKey = await this.platformConfig.get('openai.apiKey');
-    const isOllama = baseUrl !== DEFAULT_BASE_URL;
+    const apiKey = await this.platformConfig.get('ai.apiKey');
+    const isLocal = baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1');
 
-    if (!isOllama && !apiKey) {
+    if (!isLocal && !apiKey) {
       throw new ServiceUnavailableException('AI is not configured');
     }
 
-    const model = (await this.platformConfig.get('openai.model')) || 'gpt-4o-mini';
+    const model = (await this.platformConfig.get('ai.model')) || 'llama3.1-8b';
 
     try {
       const res = await fetch(`${baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey || 'ollama'}`,
+          Authorization: `Bearer ${apiKey || 'local'}`,
         },
         body: JSON.stringify({
           model,
@@ -64,7 +64,7 @@ export class AiService {
         // Surface model-not-found errors clearly
         if (errorBody.includes('not found')) {
           throw new ServiceUnavailableException(
-            `AI model '${model}' not found. Check your OPENAI_MODEL setting or pull the model with: ollama pull ${model}`,
+            `AI model '${model}' not found. Check your ai.model setting in Admin > Config`,
           );
         }
 
@@ -87,7 +87,7 @@ export class AiService {
   }
 
   private async getBaseUrl(): Promise<string> {
-    const url = (await this.platformConfig.get('openai.baseUrl')) || DEFAULT_BASE_URL;
+    const url = (await this.platformConfig.get('ai.baseUrl')) || DEFAULT_BASE_URL;
     return url.trim();
   }
 }
