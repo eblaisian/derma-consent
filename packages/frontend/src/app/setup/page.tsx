@@ -68,13 +68,13 @@ export default function SetupPage() {
         }),
       });
 
-      // Refresh the backend JWT to include the new practiceId
-      let newAccessToken: string | undefined;
+      // Refresh the backend JWT to include the new practiceId and role.
+      // The refreshed JWT is the authoritative source of truth.
+      let refreshed: { accessToken: string; user: { role: string } } | undefined;
       try {
-        const refreshed = await authFetch('/api/auth/refresh-token', {
+        refreshed = await authFetch('/api/auth/refresh-token', {
           method: 'POST',
         });
-        newAccessToken = refreshed.accessToken;
       } catch {
         // Token refresh failed — session will update practiceId client-side only.
         // User may need to re-login for full functionality.
@@ -82,7 +82,7 @@ export default function SetupPage() {
 
       await updateSession({
         practiceId: practice.id,
-        ...(newAccessToken && { accessToken: newAccessToken }),
+        ...(refreshed && { accessToken: refreshed.accessToken, role: refreshed.user.role }),
       });
       toast.success(t('success'));
       router.push('/dashboard');

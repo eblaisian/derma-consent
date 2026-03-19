@@ -68,9 +68,12 @@ export default function DashboardPage() {
     setOnboardingDismissed(true);
   };
 
-  // If user doesn't have a practice yet, redirect to setup
-  // Note: PLATFORM_ADMIN redirect to /admin is handled by middleware
-  const needsSetup = !practiceLoading && !practiceId && !!session && session?.user?.role !== 'PLATFORM_ADMIN';
+  // If an ADMIN user doesn't have a practice yet, redirect to setup to create one.
+  // Non-admin users without a practice (e.g. removed team members) should NOT see setup —
+  // they need to accept a new invite instead.
+  // PLATFORM_ADMIN redirect to /admin is handled by middleware.
+  const needsSetup = !practiceLoading && !practiceId && !!session
+    && session?.user?.role === 'ADMIN';
   useEffect(() => {
     if (needsSetup) {
       router.push('/setup');

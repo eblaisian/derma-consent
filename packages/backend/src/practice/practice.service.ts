@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePracticeDto } from './practice.dto';
 import { UpdatePracticeDto } from './update-practice.dto';
@@ -9,43 +9,50 @@ export class PracticeService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(dto: CreatePracticeDto, userId: string) {
+    // Prevent double-creation: user must not already belong to a practice
+    const existingUser = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    if (existingUser.practiceId) {
+      throw new BadRequestException(errorPayload(ErrorCode.USER_ALREADY_MEMBER));
+    }
+
     const trialEndsAt = new Date();
     trialEndsAt.setDate(trialEndsAt.getDate() + 30);
 
-    const practice = await this.prisma.practice.create({
-      data: {
-        name: dto.name,
-        dsgvoContact: dto.dsgvoContact,
-        publicKey: dto.publicKey as object,
-        encryptedPrivKey: dto.encryptedPrivKey as object,
-        subscription: {
-          create: {
-            plan: 'FREE_TRIAL',
-            status: 'TRIALING',
-            trialEndsAt,
+    return this.prisma.$transaction(async (tx) => {
+      const practice = await tx.practice.create({
+        data: {
+          name: dto.name,
+          dsgvoContact: dto.dsgvoContact,
+          publicKey: dto.publicKey as object,
+          encryptedPrivKey: dto.encryptedPrivKey as object,
+          subscription: {
+            create: {
+              plan: 'FREE_TRIAL',
+              status: 'TRIALING',
+              trialEndsAt,
+            },
+          },
+          settings: {
+            create: {},
           },
         },
-        settings: {
-          create: {},
+        select: {
+          id: true,
+          name: true,
+          createdAt: true,
         },
-      },
-      select: {
-        id: true,
-        name: true,
-        createdAt: true,
-      },
-    });
+      });
 
-    // Link user to practice as ADMIN
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        practiceId: practice.id,
-        role: 'ADMIN',
-      },
-    });
+      await tx.user.update({
+        where: { id: userId },
+        data: {
+          practiceId: practice.id,
+          role: 'ADMIN',
+        },
+      });
 
-    return practice;
+      return practice;
+    });
   }
 
   async update(practiceId: string, dto: UpdatePracticeDto) {
