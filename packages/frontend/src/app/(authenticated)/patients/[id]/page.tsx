@@ -19,14 +19,13 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import { toast } from 'sonner';
-import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { VaultUnlockBanner } from '@/components/vault/vault-unlock-banner';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Trash2, ArrowLeft, Upload, Plus, Columns2, FileSignature, Eye, Link as LinkIcon, Ban } from 'lucide-react';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { DecryptedFormViewer } from '@/components/dashboard/decrypted-form-viewer';
-import { ConfirmDialog as RevokeConfirmDialog } from '@/components/ui/confirm-dialog';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PhotoGallery } from '@/components/photos/photo-gallery';
@@ -452,7 +451,7 @@ export default function PatientDetailPage() {
             </TableBody>
           </Table>
 
-          <RevokeConfirmDialog
+          <ConfirmDialog
             open={!!revokeConsentToken}
             onOpenChange={(open) => !open && setRevokeConsentToken(null)}
             title={tTable('revokeTitle')}

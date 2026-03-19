@@ -10,23 +10,8 @@ import { PasswordInput } from '@/components/auth/password-input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-
-/** Only allow relative paths to prevent open-redirect attacks.
- *  NextAuth rewrites relative callbackUrls to absolute URLs, so we also
- *  accept full URLs and extract just the pathname (which is always relative). */
-function getSafeCallbackUrl(raw: string | null): string | null {
-  if (!raw) return null;
-  if (raw.startsWith('/') && !raw.startsWith('//')) return raw;
-  try {
-    const path = new URL(raw).pathname;
-    if (path.startsWith('/') && !path.startsWith('//')) return path;
-  } catch {
-    // Not a valid URL
-  }
-  return null;
-}
+import { API_URL } from '@/lib/api';
+import { getSafeCallbackUrl } from '@/lib/auth-utils';
 
 export default function RegisterPage() {
   const t = useTranslations('register');

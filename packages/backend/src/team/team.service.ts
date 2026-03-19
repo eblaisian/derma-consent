@@ -61,13 +61,7 @@ export class TeamService {
       throw new BadRequestException(errorPayload(ErrorCode.INVITE_ALREADY_PENDING));
     }
 
-    // Auto-supersede expired invites
-    if (existingInvite?.status === 'EXPIRED') {
-      await this.prisma.invite.update({
-        where: { id: existingInvite.id },
-        data: { status: 'EXPIRED' },
-      });
-    }
+    // Expired invites don't block re-inviting — a new invite is created below
 
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);

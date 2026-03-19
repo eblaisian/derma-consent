@@ -45,22 +45,22 @@ export default function InvitePage() {
     try {
       const result = await authFetch(`/api/team/invite/${token}/accept`, { method: 'POST' });
 
-      // Refresh the backend JWT so it includes the newly assigned practiceId and role,
-      // then propagate those values into the NextAuth session. Without this the dashboard
-      // sees practiceId: null in the session and immediately redirects back to /setup.
-      let newAccessToken: string | undefined;
+      // Refresh the backend JWT so it includes the newly assigned practiceId and role.
+      // The refreshed JWT is the authoritative source — never trust client-side SWR data.
+      let refreshed: { accessToken: string; user: { role: string } };
       try {
-        const refreshed = await authFetch('/api/auth/refresh-token', { method: 'POST' });
-        newAccessToken = refreshed.accessToken;
+        refreshed = await authFetch('/api/auth/refresh-token', { method: 'POST' });
       } catch {
-        // Token refresh failed — session will have stale practiceId. User will need to
-        // re-login. This is an edge case; the invite itself was accepted successfully.
+        // Token refresh failed — force re-login so the session gets correct data
+        toast.success(t('accepted'));
+        signIn(undefined, { callbackUrl: '/dashboard' });
+        return;
       }
 
       await updateSession({
         practiceId: result.practiceId,
-        role: invite.role,
-        ...(newAccessToken && { accessToken: newAccessToken }),
+        role: refreshed.user.role,
+        accessToken: refreshed.accessToken,
       });
 
       toast.success(t('accepted'));

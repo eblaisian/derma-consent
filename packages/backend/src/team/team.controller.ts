@@ -92,7 +92,8 @@ export class TeamController {
   }
 
   @Post('invite/:token/accept')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'ARZT', 'EMPFANG')
   acceptInvite(
     @Param('token') token: string,
     @CurrentUser() user: CurrentUserPayload,

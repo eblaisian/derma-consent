@@ -13,21 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-
-/** Only allow relative paths to prevent open-redirect attacks.
- *  NextAuth rewrites relative callbackUrls to absolute URLs, so we also
- *  accept full URLs and extract just the pathname (which is always relative). */
-function getSafeCallbackUrl(raw: string | null): string | null {
-  if (!raw) return null;
-  if (raw.startsWith('/') && !raw.startsWith('//')) return raw;
-  try {
-    const path = new URL(raw).pathname;
-    if (path.startsWith('/') && !path.startsWith('//')) return path;
-  } catch {
-    // Not a valid URL
-  }
-  return null;
-}
+import { getSafeCallbackUrl } from '@/lib/auth-utils';
 
 interface Props {
   enabledProviders: {
@@ -48,7 +34,7 @@ export function LoginForm({ enabledProviders }: Props) {
     const url = getSafeCallbackUrl(new URLSearchParams(window.location.search).get('callbackUrl'));
     if (url) {
       callbackRef.current = url;
-      sessionStorage.setItem('auth_callback', url);
+      try { sessionStorage.setItem('auth_callback', url); } catch { /* storage blocked */ }
     }
   }, []);
   const [email, setEmail] = useState('');
@@ -89,8 +75,10 @@ export function LoginForm({ enabledProviders }: Props) {
           setError(t('invalidCredentials'));
         }
       } else if (result?.ok) {
-        const target = callbackRef.current || sessionStorage.getItem('auth_callback');
-        if (target) sessionStorage.removeItem('auth_callback');
+        let stored: string | null = null;
+        try { stored = sessionStorage.getItem('auth_callback'); } catch { /* storage blocked */ }
+        const target = callbackRef.current || stored;
+        if (target) { try { sessionStorage.removeItem('auth_callback'); } catch { /* */ } }
         if (target) {
           window.location.href = target;
         } else {
@@ -119,8 +107,10 @@ export function LoginForm({ enabledProviders }: Props) {
       if (result?.error) {
         setError(t('invalid2FACode'));
       } else if (result?.ok) {
-        const freshCallback = getSafeCallbackUrl(new URLSearchParams(window.location.search).get('callbackUrl'));
-        const target = freshCallback || callbackUrl;
+        let stored2fa: string | null = null;
+        try { stored2fa = sessionStorage.getItem('auth_callback'); } catch { /* */ }
+        const target = callbackRef.current || stored2fa;
+        if (target) { try { sessionStorage.removeItem('auth_callback'); } catch { /* */ } }
         if (target) {
           window.location.href = target;
         } else {

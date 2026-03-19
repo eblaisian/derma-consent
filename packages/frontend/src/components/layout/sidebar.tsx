@@ -37,7 +37,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard, roles: ['ADMIN', 'ARZT', 'EMPFANG'], section: 'overview' },
   { href: '/patients', labelKey: 'patients', icon: User, roles: ['ADMIN', 'ARZT', 'EMPFANG'], section: 'overview' },
-  { href: '/communications', labelKey: 'communications', icon: MessageSquare, roles: ['ADMIN', 'ARZT', 'EMPFANG'], section: 'overview' },
+  { href: '/communications', labelKey: 'communications', icon: MessageSquare, roles: ['ADMIN', 'ARZT', 'EMPFANG'], section: 'overview', aiFeature: 'communications' },
   { href: '/analytics', labelKey: 'analytics', icon: BarChart3, roles: ['ADMIN'], section: 'management' },
   { href: '/team', labelKey: 'team', icon: Users, roles: ['ADMIN'], section: 'management' },
   { href: '/audit', labelKey: 'audit', icon: ScrollText, roles: ['ADMIN'], section: 'management' },
