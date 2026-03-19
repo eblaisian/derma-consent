@@ -288,14 +288,40 @@ export function AiInsightsCard() {
       </CardHeader>
       <CardContent className="pt-0">
         {isLoading && <InsightsSkeleton />}
-        {data?.insights && !isLoading && data.insights.length > 0 && (
+        {!isLoading && data?.insights && Array.isArray(data.insights) && data.insights.length > 0 && (
           <div className="divide-y divide-border/50">
-            {data.insights.map((insight, i) => (
-              <InsightRow key={`${insight.title}-${i}`} insight={insight} index={i} />
-            ))}
+            {data.insights.map((insight, i) => {
+              const visuals = getInsightVisuals(insight);
+              const IconComp = visuals.Icon;
+              return (
+                <div
+                  key={`insight-${i}`}
+                  className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
+                >
+                  <div className={`flex-shrink-0 mt-0.5 h-8 w-8 rounded-lg flex items-center justify-center ${visuals.bgClass}`}>
+                    <IconComp className={`h-4 w-4 ${visuals.iconClass}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{String(insight.title || '')}</p>
+                    <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">{String(insight.detail || '')}</p>
+                    {insight.action && (
+                      <p className="text-xs text-muted-foreground/70 mt-1.5">
+                        <span className="font-medium not-italic">Suggestion: </span>
+                        <span className="italic">{String(insight.action)}</span>
+                      </p>
+                    )}
+                  </div>
+                  {insight.metric && (
+                    <div className={`flex-shrink-0 text-right text-lg font-semibold tabular-nums tracking-tight ${visuals.metricClass}`}>
+                      {String(insight.metric)}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
-        {data?.insights && !isLoading && data.insights.length === 0 && (
+        {!isLoading && data?.insights && Array.isArray(data.insights) && data.insights.length === 0 && (
           <div className="py-8 text-center">
             <Sparkles className="h-8 w-8 text-muted-foreground/40 mx-auto" />
             <p className="text-sm font-medium text-muted-foreground mt-3">{t('noInsights')}</p>
