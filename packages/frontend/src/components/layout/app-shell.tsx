@@ -35,7 +35,7 @@ import { useAiStatus } from '@/hooks/use-ai-status';
 
 const mobileNavItems = [
   { href: '/dashboard', labelKey: 'dashboard' as const, icon: LayoutDashboard, roles: ['ADMIN', 'ARZT', 'EMPFANG'] },
-  { href: '/patients', labelKey: 'patients' as const, icon: User, roles: ['ADMIN', 'ARZT'] },
+  { href: '/patients', labelKey: 'patients' as const, icon: User, roles: ['ADMIN', 'ARZT', 'EMPFANG'] },
   { href: '/communications', labelKey: 'communications' as const, icon: MessageSquare, roles: ['ADMIN', 'ARZT', 'EMPFANG'], aiFeature: 'communications' as const },
   { href: '/analytics', labelKey: 'analytics' as const, icon: BarChart3, roles: ['ADMIN'] },
   { href: '/team', labelKey: 'team' as const, icon: Users, roles: ['ADMIN'] },

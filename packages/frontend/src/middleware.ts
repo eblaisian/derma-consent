@@ -26,8 +26,8 @@ function isProtectedPath(pathname: string) {
 // Each role lists the path prefixes it is allowed to access
 const roleAllowedPaths: Record<string, string[]> = {
   ADMIN: ['/dashboard', '/patients', '/communications', '/analytics', '/team', '/audit', '/billing', '/settings', '/setup', '/profile'],
-  ARZT: ['/dashboard', '/patients', '/communications', '/analytics', '/profile'],
-  EMPFANG: ['/dashboard', '/communications', '/profile'],
+  ARZT: ['/dashboard', '/patients', '/communications', '/profile'],
+  EMPFANG: ['/dashboard', '/patients', '/communications', '/profile'],
   PLATFORM_ADMIN: ['/admin', '/profile'],
 };
 

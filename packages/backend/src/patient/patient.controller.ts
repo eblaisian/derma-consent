@@ -23,7 +23,7 @@ export class PatientController {
   constructor(private readonly patientService: PatientService) {}
 
   @Get()
-  @Roles('ADMIN', 'ARZT')
+  @Roles('ADMIN', 'ARZT', 'EMPFANG')
   findAll(
     @CurrentUser() user: CurrentUserPayload,
     @Query() pagination: PaginationDto,
@@ -36,7 +36,7 @@ export class PatientController {
   }
 
   @Get(':id')
-  @Roles('ADMIN', 'ARZT')
+  @Roles('ADMIN', 'ARZT', 'EMPFANG')
   findById(
     @Param('id') id: string,
     @CurrentUser() user: CurrentUserPayload,
@@ -45,7 +45,7 @@ export class PatientController {
   }
 
   @Post()
-  @Roles('ADMIN', 'ARZT')
+  @Roles('ADMIN', 'ARZT', 'EMPFANG')
   create(
     @Body() dto: CreatePatientDto,
     @CurrentUser() user: CurrentUserPayload,
@@ -54,7 +54,7 @@ export class PatientController {
   }
 
   @Get('lookup/:hash')
-  @Roles('ADMIN', 'ARZT')
+  @Roles('ADMIN', 'ARZT', 'EMPFANG')
   findByLookupHash(
     @Param('hash') hash: string,
     @CurrentUser() user: CurrentUserPayload,

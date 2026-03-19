@@ -12,19 +12,19 @@ export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
   @Get('overview')
-  @Roles('ADMIN', 'ARZT')
+  @Roles('ADMIN')
   getOverview(@CurrentUser() user: CurrentUserPayload) {
     return this.analyticsService.getOverview(user.practiceId!);
   }
 
   @Get('by-type')
-  @Roles('ADMIN', 'ARZT')
+  @Roles('ADMIN')
   getByType(@CurrentUser() user: CurrentUserPayload) {
     return this.analyticsService.getByType(user.practiceId!);
   }
 
   @Get('by-period')
-  @Roles('ADMIN', 'ARZT')
+  @Roles('ADMIN')
   getByPeriod(
     @CurrentUser() user: CurrentUserPayload,
     @Query('days') days?: string,
@@ -40,7 +40,7 @@ export class AnalyticsController {
   }
 
   @Get('conversion')
-  @Roles('ADMIN', 'ARZT')
+  @Roles('ADMIN')
   getConversion(@CurrentUser() user: CurrentUserPayload) {
     return this.analyticsService.getConversion(user.practiceId!);
   }
@@ -60,13 +60,13 @@ export class AnalyticsController {
   }
 
   @Get('retention-flags')
-  @Roles('ADMIN', 'ARZT')
+  @Roles('ADMIN')
   getRetentionFlags(@CurrentUser() user: CurrentUserPayload) {
     return this.analyticsService.getRetentionFlags(user.practiceId!);
   }
 
   @Get('insights')
-  @Roles('ADMIN', 'ARZT')
+  @Roles('ADMIN')
   getInsights(
     @CurrentUser() user: CurrentUserPayload,
     @Query('locale') locale?: string,

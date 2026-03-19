@@ -76,6 +76,9 @@ export default function PatientDetailPage() {
   const authFetch = useAuthFetch();
   const router = useRouter();
 
+  const userRole = session?.user?.role || 'EMPFANG';
+  const isClinical = userRole === 'ADMIN' || userRole === 'ARZT';
+  const isAdmin = userRole === 'ADMIN';
   const { isUnlocked, decryptForm, requestUnlock } = useVault();
 
   const [uploadOpen, setUploadOpen] = useState(false);
@@ -100,17 +103,17 @@ export default function PatientDetailPage() {
   );
 
   const { data: photosData, mutate: mutatePhotos } = useSWR<PaginatedResponse<TreatmentPhotoSummary>>(
-    session?.accessToken && id ? `${API_URL}/api/photos/patient/${id}` : null,
+    isClinical && session?.accessToken && id ? `${API_URL}/api/photos/patient/${id}` : null,
     fetcher,
   );
 
   const { data: plansData, mutate: mutatePlans } = useSWR<PaginatedResponse<TreatmentPlanSummary>>(
-    session?.accessToken && id ? `${API_URL}/api/treatment-plans/patient/${id}` : null,
+    isClinical && session?.accessToken && id ? `${API_URL}/api/treatment-plans/patient/${id}` : null,
     fetcher,
   );
 
   const { data: templates } = useSWR<TreatmentTemplateSummary[]>(
-    session?.accessToken ? `${API_URL}/api/treatment-templates` : null,
+    isClinical && session?.accessToken ? `${API_URL}/api/treatment-templates` : null,
     fetcher,
   );
 
@@ -232,10 +235,12 @@ export default function PatientDetailPage() {
         <div className="flex-1">
           <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
         </div>
-        <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>
-          <Trash2 className="mr-2 size-4" />
-          {t('delete')}
-        </Button>
+        {isAdmin && (
+          <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>
+            <Trash2 className="mr-2 size-4" />
+            {t('delete')}
+          </Button>
+        )}
       </div>
 
       <VaultUnlockBanner />
@@ -246,19 +251,23 @@ export default function PatientDetailPage() {
           <CardTitle>{t('summaryTitle')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 stagger-children">
+          <div className={`grid grid-cols-2 gap-4 ${isClinical ? 'sm:grid-cols-4' : 'sm:grid-cols-2'} stagger-children`}>
             <div className="animate-fade-in-up">
               <p className="text-2xl font-bold tabular-nums">{patient.consentForms.length}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{t('summaryConsents')}</p>
             </div>
-            <div className="animate-fade-in-up">
-              <p className="text-2xl font-bold tabular-nums">{plans.length}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{t('summaryPlans')}</p>
-            </div>
-            <div className="animate-fade-in-up">
-              <p className="text-2xl font-bold tabular-nums">{photos.length}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{t('summaryPhotos')}</p>
-            </div>
+            {isClinical && (
+              <>
+                <div className="animate-fade-in-up">
+                  <p className="text-2xl font-bold tabular-nums">{plans.length}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('summaryPlans')}</p>
+                </div>
+                <div className="animate-fade-in-up">
+                  <p className="text-2xl font-bold tabular-nums">{photos.length}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('summaryPhotos')}</p>
+                </div>
+              </>
+            )}
             <div className="animate-fade-in-up">
               <p className="text-2xl font-bold tabular-nums">
                 {(() => {
@@ -326,33 +335,35 @@ export default function PatientDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Treatment Plans Section */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>{t('treatmentPlans')}</CardTitle>
-              <CardDescription>{t('treatmentPlanCount', { count: plans.length })}</CardDescription>
+      {/* Treatment Plans Section — clinical roles only */}
+      {isClinical && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>{t('treatmentPlans')}</CardTitle>
+                <CardDescription>{t('treatmentPlanCount', { count: plans.length })}</CardDescription>
+              </div>
+              <div className="flex gap-2">
+                {templates && templates.length > 0 && (
+                  <Button variant="outline" size="sm" onClick={() => setTemplatePickerOpen(true)}>
+                    {tPlan('fromTemplate')}
+                  </Button>
+                )}
+                {practice && (
+                  <Button size="sm" onClick={() => { setSelectedTemplate(null); setEditorOpen(true); }}>
+                    <Plus className="mr-2 size-4" />
+                    {tPlan('newPlan')}
+                  </Button>
+                )}
+              </div>
             </div>
-            <div className="flex gap-2">
-              {templates && templates.length > 0 && (
-                <Button variant="outline" size="sm" onClick={() => setTemplatePickerOpen(true)}>
-                  {tPlan('fromTemplate')}
-                </Button>
-              )}
-              {practice && (
-                <Button size="sm" onClick={() => { setSelectedTemplate(null); setEditorOpen(true); }}>
-                  <Plus className="mr-2 size-4" />
-                  {tPlan('newPlan')}
-                </Button>
-              )}
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <TreatmentHistory plans={plans} onRefresh={() => mutatePlans()} />
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent>
+            <TreatmentHistory plans={plans} onRefresh={() => mutatePlans()} />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Consents Section */}
       <Card>
@@ -412,7 +423,7 @@ export default function PatientDetailPage() {
                         </Tooltip>
                       )}
 
-                      {canRevoke(consent.status) && (
+                      {isClinical && canRevoke(consent.status) && (
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button variant="ghost" size="icon-xs" className="text-destructive hover:text-destructive" onClick={() => setRevokeConsentToken(consent.token)} aria-label={tTable('revoke')}>
@@ -464,37 +475,39 @@ export default function PatientDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Photos Section */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>{t('photos')}</CardTitle>
-              <CardDescription>{t('photoCount', { count: photos.length })}</CardDescription>
+      {/* Photos Section — clinical roles only */}
+      {isClinical && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>{t('photos')}</CardTitle>
+                <CardDescription>{t('photoCount', { count: photos.length })}</CardDescription>
+              </div>
+              <div className="flex gap-2">
+                {photos.length >= 2 && (
+                  <Button variant="outline" size="sm" onClick={() => setComparisonOpen(true)}>
+                    <Columns2 className="mr-2 size-4" />
+                    {tPhotos('compare')}
+                  </Button>
+                )}
+                {practice && (
+                  <Button size="sm" onClick={() => setUploadOpen(true)}>
+                    <Upload className="mr-2 size-4" />
+                    {tPhotos('upload')}
+                  </Button>
+                )}
+              </div>
             </div>
-            <div className="flex gap-2">
-              {photos.length >= 2 && (
-                <Button variant="outline" size="sm" onClick={() => setComparisonOpen(true)}>
-                  <Columns2 className="mr-2 size-4" />
-                  {tPhotos('compare')}
-                </Button>
-              )}
-              {practice && (
-                <Button size="sm" onClick={() => setUploadOpen(true)}>
-                  <Upload className="mr-2 size-4" />
-                  {tPhotos('upload')}
-                </Button>
-              )}
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <PhotoGallery photos={photos} />
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent>
+            <PhotoGallery photos={photos} />
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Dialogs */}
-      {practice && (
+      {/* Clinical dialogs — ADMIN and ARZT only */}
+      {isClinical && practice && (
         <>
           <PhotoUploadDialog
             open={uploadOpen}
@@ -519,7 +532,7 @@ export default function PatientDetailPage() {
           />
         </>
       )}
-      {templates && (
+      {isClinical && templates && (
         <TemplatePickerDialog
           open={templatePickerOpen}
           onOpenChange={setTemplatePickerOpen}
@@ -528,17 +541,19 @@ export default function PatientDetailPage() {
         />
       )}
 
-      <ConfirmDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        title={t('deleteConfirmTitle')}
-        description={t('deleteConfirmDescription')}
-        confirmLabel={t('delete')}
-        cancelLabel={t('cancel')}
-        onConfirm={handleDelete}
-        variant="destructive"
-        loading={isDeleting}
-      />
+      {isAdmin && (
+        <ConfirmDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          title={t('deleteConfirmTitle')}
+          description={t('deleteConfirmDescription')}
+          confirmLabel={t('delete')}
+          cancelLabel={t('cancel')}
+          onConfirm={handleDelete}
+          variant="destructive"
+          loading={isDeleting}
+        />
+      )}
     </div>
   );
 }
