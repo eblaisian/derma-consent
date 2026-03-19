@@ -19,6 +19,7 @@ import {
   Line,
 } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AiInsightsCard } from '@/components/analytics/ai-insights-card';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
@@ -159,6 +160,8 @@ export default function AnalyticsPage() {
           </>
         )}
       </div>
+
+      <AiInsightsCard />
 
       {/* Revenue */}
       <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
