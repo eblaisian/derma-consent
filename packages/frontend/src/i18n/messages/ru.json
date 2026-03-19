@@ -412,9 +412,9 @@
     "chipPendingLabel": "Ожидающие согласия",
     "chipExpiringSoonLabel": "Истекают через 7 дней",
     "chipRecentlySignedLabel": "Недавно подписанные",
-    "noPracticeTitle": "No practice access",
-    "noPracticeDescription": "You are not currently assigned to a practice. If you received an invitation link, please use it to join a practice. Otherwise, contact your practice administrator.",
-    "noPracticeSignOut": "Sign out"
+    "noPracticeTitle": "Нет доступа к клинике",
+    "noPracticeDescription": "Вы в настоящее время не привязаны к клинике. Если вы получили ссылку-приглашение, используйте её для присоединения к клинике. В противном случае свяжитесь с администратором вашей клиники.",
+    "noPracticeSignOut": "Выйти"
   },
   "settings": {
     "title": "Настройки",

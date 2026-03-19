@@ -412,9 +412,9 @@
     "chipPendingLabel": "Oczekujące zgody",
     "chipExpiringSoonLabel": "Wygasa za 7 dni",
     "chipRecentlySignedLabel": "Ostatnio podpisane",
-    "noPracticeTitle": "No practice access",
-    "noPracticeDescription": "You are not currently assigned to a practice. If you received an invitation link, please use it to join a practice. Otherwise, contact your practice administrator.",
-    "noPracticeSignOut": "Sign out"
+    "noPracticeTitle": "Brak dostępu do gabinetu",
+    "noPracticeDescription": "Nie jesteś obecnie przypisany do żadnego gabinetu. Jeśli otrzymałeś link z zaproszeniem, użyj go, aby dołączyć do gabinetu. W przeciwnym razie skontaktuj się z administratorem gabinetu.",
+    "noPracticeSignOut": "Wyloguj się"
   },
   "settings": {
     "title": "Ustawienia",

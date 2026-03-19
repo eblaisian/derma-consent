@@ -412,9 +412,9 @@
     "chipPendingLabel": "Consentimientos pendientes",
     "chipExpiringSoonLabel": "Expiran en 7 días",
     "chipRecentlySignedLabel": "Firmados recientemente",
-    "noPracticeTitle": "No practice access",
-    "noPracticeDescription": "You are not currently assigned to a practice. If you received an invitation link, please use it to join a practice. Otherwise, contact your practice administrator.",
-    "noPracticeSignOut": "Sign out"
+    "noPracticeTitle": "Sin acceso a la consulta",
+    "noPracticeDescription": "Actualmente no está asignado a una consulta. Si recibió un enlace de invitación, úselo para unirse a una consulta. De lo contrario, póngase en contacto con su administrador de consulta.",
+    "noPracticeSignOut": "Cerrar sesión"
   },
   "settings": {
     "title": "Configuración",

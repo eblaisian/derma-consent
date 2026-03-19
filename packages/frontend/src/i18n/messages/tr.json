@@ -412,9 +412,9 @@
     "chipPendingLabel": "Bekleyen onamlar",
     "chipExpiringSoonLabel": "7 gün içinde sona eriyor",
     "chipRecentlySignedLabel": "Son imzalananlar",
-    "noPracticeTitle": "No practice access",
-    "noPracticeDescription": "You are not currently assigned to a practice. If you received an invitation link, please use it to join a practice. Otherwise, contact your practice administrator.",
-    "noPracticeSignOut": "Sign out"
+    "noPracticeTitle": "Klinik erişimi yok",
+    "noPracticeDescription": "Şu anda bir kliniğe atanmış değilsiniz. Bir davet bağlantısı aldıysanız, lütfen kliniğe katılmak için kullanın. Aksi takdirde klinik yöneticinizle iletişime geçin.",
+    "noPracticeSignOut": "Çıkış yap"
   },
   "settings": {
     "title": "Ayarlar",

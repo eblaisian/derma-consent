@@ -412,9 +412,9 @@
     "chipPendingLabel": "موافقات معلقة",
     "chipExpiringSoonLabel": "تنتهي خلال 7 أيام",
     "chipRecentlySignedLabel": "موقعة حديثاً",
-    "noPracticeTitle": "No practice access",
-    "noPracticeDescription": "You are not currently assigned to a practice. If you received an invitation link, please use it to join a practice. Otherwise, contact your practice administrator.",
-    "noPracticeSignOut": "Sign out"
+    "noPracticeTitle": "لا يوجد وصول للعيادة",
+    "noPracticeDescription": "أنت غير مسجل حالياً في أي عيادة. إذا تلقيت رابط دعوة، يرجى استخدامه للانضمام إلى العيادة. وإلا، تواصل مع مسؤول العيادة.",
+    "noPracticeSignOut": "تسجيل الخروج"
   },
   "settings": {
     "title": "الإعدادات",
