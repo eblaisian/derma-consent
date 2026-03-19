@@ -62,18 +62,18 @@ function getInsightVisuals(insight: AiInsight): InsightVisuals {
 
 function InsightsSkeleton() {
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {[0, 1, 2].map((i) => (
-        <div key={i} className="rounded-lg border border-border/40 p-4">
-          <div className="flex items-start gap-3">
-            <Skeleton className="h-9 w-9 rounded-lg flex-shrink-0" />
-            <div className="flex-1 space-y-2">
-              <div className="flex items-center justify-between gap-3">
-                <Skeleton className="h-4 w-36" />
-                <Skeleton className="h-5 w-16 rounded-full" />
+        <div key={i} className="rounded-lg border border-border/40 px-3 py-3">
+          <div className="flex items-start gap-2.5">
+            <Skeleton className="h-8 w-8 rounded-md flex-shrink-0" />
+            <div className="flex-1 space-y-1.5">
+              <div className="flex items-center justify-between gap-2">
+                <Skeleton className="h-3.5 w-32" />
+                <Skeleton className="h-4 w-14 rounded-md" />
               </div>
-              <Skeleton className="h-3.5 w-full" />
-              <Skeleton className="h-3 w-48" />
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-2.5 w-40" />
             </div>
           </div>
         </div>
@@ -147,54 +147,54 @@ function InsightsLockedCard() {
         </div>
       </CardHeader>
 
-      <CardContent className="relative min-h-[320px]">
-        <div className="space-y-3 select-none pointer-events-none" aria-hidden="true">
+      <CardContent className="relative min-h-[280px]">
+        <div className="space-y-2 select-none pointer-events-none" aria-hidden="true">
           {/* Insight 1: partially visible */}
-          <div className="rounded-lg border border-border/40 border-l-2 border-l-amber-500 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 h-9 w-9 rounded-lg flex items-center justify-center bg-amber-100/60 dark:bg-amber-900/30">
-                <TrendingDown className="h-4.5 w-4.5 text-amber-600 dark:text-amber-400" />
+          <div className="rounded-lg border border-border/40 border-l-2 border-l-amber-500 px-3 py-3">
+            <div className="flex items-start gap-2.5">
+              <div className="flex-shrink-0 h-8 w-8 rounded-md flex items-center justify-center bg-amber-100/60 dark:bg-amber-900/30">
+                <TrendingDown className="h-4 w-4 text-amber-600 dark:text-amber-400" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-semibold text-foreground">{fakeInsights[0]!.title}</p>
-                  <span className="flex-shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 tabular-nums">
+                <div className="flex items-baseline justify-between gap-2">
+                  <p className="text-[13px] font-semibold text-foreground">{fakeInsights[0]!.title}</p>
+                  <span className="flex-shrink-0 text-[11px] font-medium px-1.5 py-px rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 tabular-nums whitespace-nowrap">
                     {fakeInsights[0]!.metric}
                   </span>
                 </div>
-                <p className="text-[13px] leading-relaxed text-muted-foreground mt-1 blur-[2px] opacity-60">{fakeInsights[0]!.detail}</p>
+                <p className="text-xs text-muted-foreground mt-1 blur-[2px] opacity-60">{fakeInsights[0]!.detail}</p>
               </div>
             </div>
           </div>
 
           {/* Insight 2: mostly blurred */}
-          <div className="rounded-lg border border-border/40 border-l-2 border-l-blue-500 p-4 opacity-50 blur-[3px]">
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 h-9 w-9 rounded-lg flex items-center justify-center bg-blue-100/60">
-                <Lightbulb className="h-4.5 w-4.5 text-blue-600" />
+          <div className="rounded-lg border border-border/40 border-l-2 border-l-blue-500 px-3 py-3 opacity-50 blur-[3px]">
+            <div className="flex items-start gap-2.5">
+              <div className="flex-shrink-0 h-8 w-8 rounded-md flex items-center justify-center bg-blue-100/60">
+                <Lightbulb className="h-4 w-4 text-blue-600" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-semibold">{fakeInsights[1]!.title}</p>
-                  <span className="flex-shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 tabular-nums">{fakeInsights[1]!.metric}</span>
+                <div className="flex items-baseline justify-between gap-2">
+                  <p className="text-[13px] font-semibold">{fakeInsights[1]!.title}</p>
+                  <span className="flex-shrink-0 text-[11px] font-medium px-1.5 py-px rounded-md bg-blue-50 text-blue-700 tabular-nums whitespace-nowrap">{fakeInsights[1]!.metric}</span>
                 </div>
-                <p className="text-[13px] text-muted-foreground mt-1">{fakeInsights[1]!.detail}</p>
+                <p className="text-xs text-muted-foreground mt-1">{fakeInsights[1]!.detail}</p>
               </div>
             </div>
           </div>
 
           {/* Insight 3: fully blurred */}
-          <div className="rounded-lg border border-border/40 border-l-2 border-l-emerald-500 p-4 opacity-25 blur-[6px]">
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 h-9 w-9 rounded-lg flex items-center justify-center bg-emerald-100/60">
-                <Trophy className="h-4.5 w-4.5 text-emerald-600" />
+          <div className="rounded-lg border border-border/40 border-l-2 border-l-emerald-500 px-3 py-3 opacity-25 blur-[6px]">
+            <div className="flex items-start gap-2.5">
+              <div className="flex-shrink-0 h-8 w-8 rounded-md flex items-center justify-center bg-emerald-100/60">
+                <Trophy className="h-4 w-4 text-emerald-600" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-semibold">{fakeInsights[2]!.title}</p>
-                  <span className="flex-shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 tabular-nums">{fakeInsights[2]!.metric}</span>
+                <div className="flex items-baseline justify-between gap-2">
+                  <p className="text-[13px] font-semibold">{fakeInsights[2]!.title}</p>
+                  <span className="flex-shrink-0 text-[11px] font-medium px-1.5 py-px rounded-md bg-emerald-50 text-emerald-700 tabular-nums whitespace-nowrap">{fakeInsights[2]!.metric}</span>
                 </div>
-                <p className="text-[13px] text-muted-foreground mt-1">{fakeInsights[2]!.detail}</p>
+                <p className="text-xs text-muted-foreground mt-1">{fakeInsights[2]!.detail}</p>
               </div>
             </div>
           </div>
@@ -276,36 +276,34 @@ export function AiInsightsCard() {
       <CardContent className="pt-0">
         {isLoading && <InsightsSkeleton />}
         {!isLoading && data?.insights && Array.isArray(data.insights) && data.insights.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {data.insights.map((insight, i) => {
               const v = getInsightVisuals(insight);
               const IconComp = v.Icon;
               return (
                 <div
                   key={`insight-${i}`}
-                  className={`rounded-lg border border-border/40 border-l-2 ${v.accentBorder} p-4 transition-colors hover:bg-muted/30`}
+                  className={`rounded-lg border border-border/40 border-l-2 ${v.accentBorder} px-3 py-3 transition-colors hover:bg-muted/30`}
                 >
-                  <div className="flex items-start gap-3">
-                    <div className={`flex-shrink-0 h-9 w-9 rounded-lg flex items-center justify-center ${v.bgClass}`}>
-                      <IconComp className={`h-[18px] w-[18px] ${v.iconClass}`} />
+                  <div className="flex items-start gap-2.5">
+                    <div className={`flex-shrink-0 h-8 w-8 rounded-md flex items-center justify-center ${v.bgClass}`}>
+                      <IconComp className={`h-4 w-4 ${v.iconClass}`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <p className="text-sm font-semibold text-foreground">{String(insight.title || '')}</p>
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="text-[13px] font-semibold text-foreground leading-snug">{String(insight.title || '')}</p>
                         {insight.metric && (
-                          <span className={`flex-shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full tabular-nums ${v.metricBg} ${v.metricClass}`}>
+                          <span className={`flex-shrink-0 text-[11px] font-medium px-1.5 py-px rounded-md tabular-nums whitespace-nowrap ${v.metricBg} ${v.metricClass}`}>
                             {String(insight.metric)}
                           </span>
                         )}
                       </div>
-                      <p className="text-[13px] leading-relaxed text-muted-foreground mt-1">{String(insight.detail || '')}</p>
+                      <p className="text-xs leading-relaxed text-muted-foreground mt-1">{String(insight.detail || '')}</p>
                       {insight.action && (
-                        <div className="mt-2 rounded-md bg-muted/40 px-3 py-1.5">
-                          <p className="text-xs text-muted-foreground">
-                            <span className="font-semibold text-foreground/70">Tip: </span>
-                            {String(insight.action)}
-                          </p>
-                        </div>
+                        <p className="text-[11px] leading-normal text-muted-foreground/70 mt-1.5">
+                          <span className="font-medium text-muted-foreground">Tip:</span>{' '}
+                          {String(insight.action)}
+                        </p>
                       )}
                     </div>
                   </div>

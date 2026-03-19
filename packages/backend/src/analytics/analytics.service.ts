@@ -245,7 +245,7 @@ export class AnalyticsService {
           '{"type":"trend"|"opportunity"|"attention"|"milestone",',
           '"severity":"positive"|"warning"|"neutral"|"info",',
           '"title":"Short headline, max 50 chars, no period",',
-          '"metric":"VERY short label, max 3 words, e.g. -18%, 4 patients, Tue 2pm. NEVER a full sentence.",',
+          '"metric":"ULTRA short, max 2-3 words. Examples: -18%, 4 patients, Tue 2pm, 87%, 12 total. NEVER a sentence. NEVER include explanatory text.",',
           '"detail":"One concise sentence with specific numbers from the data, max 120 chars",',
           '"action":"One short actionable recommendation, max 100 chars"}',
           'Rules: trend=changing over time, opportunity=untapped potential, attention=needs follow-up, milestone=achievement.',
