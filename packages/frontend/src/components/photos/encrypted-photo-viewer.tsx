@@ -46,13 +46,7 @@ export function EncryptedPhotoViewer({ photo, className }: Props) {
         const url = URL.createObjectURL(new Blob([decrypted], { type: 'image/png' }));
         revoke = url;
         setObjectUrl(url);
-      } catch (err) {
-        console.error('[PhotoViewer] Decryption error:', err, {
-          photoId: photo.id,
-          hasIv: !!photo.encryptedMetadata?.iv,
-          hasSessionKey: !!photo.encryptedSessionKey,
-          sessionKeyLen: photo.encryptedSessionKey?.length,
-        });
+      } catch {
         if (!cancelled) setError(true);
       } finally {
         if (!cancelled) setLoading(false);
@@ -73,16 +67,16 @@ export function EncryptedPhotoViewer({ photo, className }: Props) {
 
   if (loading) {
     return (
-      <div className={`flex items-center justify-center bg-muted rounded ${className ?? 'h-40'}`}>
-        <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      <div className={`flex items-center justify-center bg-muted rounded-lg ${className ?? 'h-40'}`}>
+        <div className="size-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   if (error || !objectUrl) {
     return (
-      <div className={`flex items-center justify-center bg-muted rounded text-xs text-muted-foreground ${className ?? 'h-40'}`}>
-        Decryption failed
+      <div className={`flex items-center justify-center bg-muted rounded-lg text-xs text-muted-foreground ${className ?? 'h-40'}`}>
+        {photo.type}
       </div>
     );
   }
@@ -91,7 +85,7 @@ export function EncryptedPhotoViewer({ photo, className }: Props) {
     <img
       src={objectUrl}
       alt={`${photo.type} - ${photo.bodyRegion}`}
-      className={`rounded object-cover ${className ?? 'h-40 w-full'}`}
+      className={`rounded-lg object-cover animate-fade-in ${className ?? 'h-40 w-full'}`}
     />
   );
 }

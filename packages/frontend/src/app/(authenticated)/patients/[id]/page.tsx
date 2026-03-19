@@ -246,21 +246,21 @@ export default function PatientDetailPage() {
           <CardTitle>{t('summaryTitle')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 stagger-children">
+            <div className="animate-fade-in-up">
               <p className="text-2xl font-bold tabular-nums">{patient.consentForms.length}</p>
-              <p className="text-xs text-muted-foreground">{t('summaryConsents')}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{t('summaryConsents')}</p>
             </div>
-            <div>
+            <div className="animate-fade-in-up">
               <p className="text-2xl font-bold tabular-nums">{plans.length}</p>
-              <p className="text-xs text-muted-foreground">{t('summaryPlans')}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{t('summaryPlans')}</p>
             </div>
-            <div>
+            <div className="animate-fade-in-up">
               <p className="text-2xl font-bold tabular-nums">{photos.length}</p>
-              <p className="text-xs text-muted-foreground">{t('summaryPhotos')}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{t('summaryPhotos')}</p>
             </div>
-            <div>
-              <p className="text-sm font-medium">
+            <div className="animate-fade-in-up">
+              <p className="text-2xl font-bold tabular-nums">
                 {(() => {
                   const dates = [
                     ...patient.consentForms.map(c => c.signatureTimestamp || c.createdAt),
@@ -268,10 +268,10 @@ export default function PatientDetailPage() {
                     ...photos.map(p => p.takenAt),
                   ].filter(Boolean).map(d => new Date(d).getTime());
                   if (dates.length === 0) return '—';
-                  return format.dateTime(new Date(Math.max(...dates)), { dateStyle: 'medium' });
+                  return format.dateTime(new Date(Math.max(...dates)), { dateStyle: 'short' });
                 })()}
               </p>
-              <p className="text-xs text-muted-foreground">{t('summaryLastActivity')}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{t('summaryLastActivity')}</p>
             </div>
           </div>
         </CardContent>
@@ -286,40 +286,40 @@ export default function PatientDetailPage() {
           {!isUnlocked ? (
             <VaultLockedPlaceholder size="lg" />
           ) : (
-            <div className="space-y-3">
-              <div className="flex items-baseline gap-2">
-                <span className="text-sm text-muted-foreground shrink-0">{t('nameLabel')}</span>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">{t('nameLabel')}</p>
                 {decryptedName ? (
-                  <span className="text-sm font-medium">{decryptedName}</span>
+                  <p className="text-sm font-medium animate-fade-in">{decryptedName}</p>
                 ) : (
-                  <span className="inline-block h-4 w-32 animate-pulse rounded bg-muted" />
+                  <div className="h-5 w-32 animate-pulse rounded-md bg-muted" />
                 )}
               </div>
               {(decryptedDob || patient.encryptedDob) && (
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm text-muted-foreground shrink-0">{tPatients('dateOfBirth')}:</span>
+                <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground">{tPatients('dateOfBirth')}</p>
                   {decryptedDob ? (
-                    <span className="text-sm font-medium">{decryptedDob}</span>
+                    <p className="text-sm font-medium tabular-nums animate-fade-in">{decryptedDob}</p>
                   ) : (
-                    <span className="inline-block h-4 w-24 animate-pulse rounded bg-muted" />
+                    <div className="h-5 w-24 animate-pulse rounded-md bg-muted" />
                   )}
                 </div>
               )}
               {(decryptedEmail || patient.encryptedEmail) && (
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm text-muted-foreground shrink-0">{tPatients('email')}:</span>
+                <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground">{tPatients('email')}</p>
                   {decryptedEmail ? (
-                    <span className="text-sm font-medium">{decryptedEmail}</span>
+                    <p className="text-sm font-medium animate-fade-in">{decryptedEmail}</p>
                   ) : (
-                    <span className="inline-block h-4 w-40 animate-pulse rounded bg-muted" />
+                    <div className="h-5 w-40 animate-pulse rounded-md bg-muted" />
                   )}
                 </div>
               )}
-              <div className="flex items-baseline gap-2">
-                <span className="text-sm text-muted-foreground shrink-0">{t('createdLabel')}</span>
-                <span className="text-sm font-medium">
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">{t('createdLabel')}</p>
+                <p className="text-sm font-medium tabular-nums">
                   {format.dateTime(new Date(patient.createdAt), { dateStyle: 'long' })}
-                </span>
+                </p>
               </div>
             </div>
           )}
@@ -350,7 +350,7 @@ export default function PatientDetailPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <TreatmentHistory plans={plans} />
+          <TreatmentHistory plans={plans} onRefresh={() => mutatePlans()} />
         </CardContent>
       </Card>
 
@@ -502,6 +502,7 @@ export default function PatientDetailPage() {
             patientId={id}
             practice={practice}
             onUploaded={() => mutatePhotos()}
+            plans={plans}
           />
           <PhotoComparisonViewer
             open={comparisonOpen}

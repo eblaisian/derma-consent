@@ -852,7 +852,9 @@
     "consent": "Consentimiento fotográfico",
     "consentGranted": "Consentimiento otorgado",
     "consentNotGranted": "Sin consentimiento",
-    "noPhotosDescription": "Cargue fotos para rastrear el progreso del tratamiento y los resultados."
+    "noPhotosDescription": "Cargue fotos para rastrear el progreso del tratamiento y los resultados.",
+    "linkToPlan": "Vincular al plan de tratamiento (opcional)",
+    "noPlanLink": "Ninguno"
   },
   "bodyRegions": {
     "FOREHEAD": "Frente",
@@ -881,6 +883,7 @@
     "batchNumber": "N.º lote",
     "done": "Listo",
     "noPoints": "No se han agregado puntos de inyección.",
+    "injectionPoints": "{count, plural, one {punto} other {puntos}}",
     "totalUnits": "Unidades totales",
     "overallNotes": "Notas",
     "notesPlaceholder": "Notas generales del tratamiento...",
@@ -920,7 +923,15 @@
     "customize": "Personalizar",
     "noPlansDescription": "Cree un plan de tratamiento para documentar los puntos de inyección y productos.",
     "viewDetails": "Ver detalles",
-    "planDetails": "Detalles del plan de tratamiento"
+    "planDetails": "Detalles del plan de tratamiento",
+    "deletePlan": "Eliminar plan",
+    "deleted": "Plan de tratamiento eliminado",
+    "deleteError": "Error al eliminar el plan de tratamiento",
+    "deleting": "Eliminando...",
+    "deleteConfirmTitle": "Eliminar plan de tratamiento",
+    "deleteConfirmDescription": "Esto elimina permanentemente este plan de tratamiento. Esta acción no se puede deshacer.",
+    "treatmentDate": "Fecha del tratamiento",
+    "createdOn": "Creado"
   },
   "treatmentTemplate": {
     "pickTemplate": "Elegir plantilla",

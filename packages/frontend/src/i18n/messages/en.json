@@ -879,7 +879,9 @@
     "consent": "Photo consent",
     "consentGranted": "Consent granted",
     "consentNotGranted": "No consent",
-    "noPhotosDescription": "Upload photos to track treatment progress and results."
+    "noPhotosDescription": "Upload photos to track treatment progress and results.",
+    "linkToPlan": "Link to treatment plan (optional)",
+    "noPlanLink": "None"
   },
   "bodyRegions": {
     "FOREHEAD": "Forehead",
@@ -908,6 +910,7 @@
     "batchNumber": "Batch No.",
     "done": "Done",
     "noPoints": "No injection points added.",
+    "injectionPoints": "{count, plural, one {point} other {points}}",
     "totalUnits": "Total units",
     "overallNotes": "Notes",
     "notesPlaceholder": "Overall treatment notes...",
@@ -947,7 +950,16 @@
     "customize": "Customize",
     "noPlansDescription": "Create a treatment plan to document injection points and products.",
     "viewDetails": "View details",
-    "planDetails": "Treatment plan details"
+    "planDetails": "Treatment plan details",
+    "deletePlan": "Delete plan",
+    "deleted": "Treatment plan deleted",
+    "deleteError": "Error deleting treatment plan",
+    "deleting": "Deleting...",
+    "deleteConfirmTitle": "Delete treatment plan",
+    "deleteConfirmDescription": "This permanently deletes this treatment plan. This action cannot be undone.",
+    "treatmentDate": "Treatment date",
+    "createdOn": "Created",
+    "photoNoPoints": "Photo reference only — no injection points documented."
   },
   "treatmentTemplate": {
     "pickTemplate": "Choose Template",

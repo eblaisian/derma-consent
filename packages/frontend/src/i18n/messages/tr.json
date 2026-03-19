@@ -877,7 +877,9 @@
     "consent": "Fotoğraf onamı",
     "consentGranted": "Onam verildi",
     "consentNotGranted": "Onam yok",
-    "noPhotosDescription": "Tedavi ilerlemesini ve sonuçlarını takip etmek için fotoğraflar yükleyin."
+    "noPhotosDescription": "Tedavi ilerlemesini ve sonuçlarını takip etmek için fotoğraflar yükleyin.",
+    "linkToPlan": "Tedavi planına bağla (isteğe bağlı)",
+    "noPlanLink": "Hiçbiri"
   },
   "bodyRegions": {
     "FOREHEAD": "Alın",
@@ -906,6 +908,7 @@
     "batchNumber": "Parti No.",
     "done": "Tamam",
     "noPoints": "Enjeksiyon noktası eklenmedi.",
+    "injectionPoints": "{count, plural, one {nokta} other {nokta}}",
     "totalUnits": "Toplam ünite",
     "overallNotes": "Notlar",
     "notesPlaceholder": "Genel tedavi notları...",
@@ -945,7 +948,15 @@
     "customize": "Özelleştir",
     "noPlansDescription": "Enjeksiyon noktaları ve ürünleri belgelemek için bir tedavi planı oluşturun.",
     "viewDetails": "Detayları görüntüle",
-    "planDetails": "Tedavi planı detayları"
+    "planDetails": "Tedavi planı detayları",
+    "deletePlan": "Planı sil",
+    "deleted": "Tedavi planı silindi",
+    "deleteError": "Tedavi planı silinirken hata oluştu",
+    "deleting": "Siliniyor...",
+    "deleteConfirmTitle": "Tedavi planını sil",
+    "deleteConfirmDescription": "Bu tedavi planını kalıcı olarak siler. Bu işlem geri alınamaz.",
+    "treatmentDate": "Tedavi tarihi",
+    "createdOn": "Oluşturulma"
   },
   "treatmentTemplate": {
     "pickTemplate": "Şablon Seçin",

@@ -73,10 +73,12 @@ export class PhotoController {
     @Query() pagination: PaginationDto,
     @Query('type') type?: string,
     @Query('bodyRegion') bodyRegion?: string,
+    @Query('treatmentPlanId') treatmentPlanId?: string,
   ) {
     return this.photoService.findByPatient(user.practiceId!, patientId, {
       type,
       bodyRegion,
+      treatmentPlanId,
       page: pagination.page,
       limit: pagination.limit,
     });

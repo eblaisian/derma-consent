@@ -50,19 +50,21 @@ export function PhotoGallery({ photos, onPhotoClick }: Props) {
               <button
                 key={photo.id}
                 type="button"
-                className="relative group text-left"
+                className="relative group text-left rounded-lg overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all duration-150"
                 onClick={() => onPhotoClick?.(photo)}
               >
-                {isUnlocked ? (
-                  <EncryptedPhotoViewer photo={photo} className="h-32 w-full" />
-                ) : (
-                  <VaultLockedPlaceholder size="sm" className="h-32 w-full" />
-                )}
-                <div className="mt-1 flex items-center gap-1">
-                  <Badge variant="outline" className="text-[10px]">
+                <div className="rounded-lg overflow-hidden transition-shadow duration-150 group-hover:shadow-md">
+                  {isUnlocked ? (
+                    <EncryptedPhotoViewer photo={photo} className="h-32 w-full transition-transform duration-200 group-hover:scale-[1.02]" />
+                  ) : (
+                    <VaultLockedPlaceholder size="sm" className="h-32 w-full" />
+                  )}
+                </div>
+                <div className="mt-1.5 flex items-center gap-1.5">
+                  <Badge variant="outline" className="text-xs">
                     {t(photo.type as keyof IntlMessages['photos'])}
                   </Badge>
-                  <span className="text-[10px] text-muted-foreground">
+                  <span className="text-xs text-muted-foreground">
                     {format.dateTime(new Date(photo.takenAt), { dateStyle: 'short' })}
                   </span>
                 </div>

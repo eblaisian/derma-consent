@@ -877,7 +877,9 @@
     "consent": "Zgoda na zdjęcia",
     "consentGranted": "Zgoda udzielona",
     "consentNotGranted": "Brak zgody",
-    "noPhotosDescription": "Prześlij zdjęcia, aby śledzić postęp leczenia i wyniki."
+    "noPhotosDescription": "Prześlij zdjęcia, aby śledzić postęp leczenia i wyniki.",
+    "linkToPlan": "Powiąż z planem leczenia (opcjonalnie)",
+    "noPlanLink": "Brak"
   },
   "bodyRegions": {
     "FOREHEAD": "Czoło",
@@ -906,6 +908,7 @@
     "batchNumber": "Nr serii",
     "done": "Gotowe",
     "noPoints": "Nie dodano punktów iniekcji.",
+    "injectionPoints": "{count, plural, one {punkt} few {punkty} other {punktów}}",
     "totalUnits": "Łączna liczba jednostek",
     "overallNotes": "Notatki",
     "notesPlaceholder": "Ogólne notatki z zabiegu...",
@@ -945,7 +948,15 @@
     "customize": "Dostosuj",
     "noPlansDescription": "Utwórz plan leczenia, aby udokumentować punkty iniekcji i produkty.",
     "viewDetails": "Zobacz szczegóły",
-    "planDetails": "Szczegóły planu leczenia"
+    "planDetails": "Szczegóły planu leczenia",
+    "deletePlan": "Usuń plan",
+    "deleted": "Plan leczenia usunięty",
+    "deleteError": "Błąd podczas usuwania planu leczenia",
+    "deleting": "Usuwanie...",
+    "deleteConfirmTitle": "Usuń plan leczenia",
+    "deleteConfirmDescription": "Spowoduje to trwałe usunięcie tego planu leczenia. Tej czynności nie można cofnąć.",
+    "treatmentDate": "Data leczenia",
+    "createdOn": "Utworzono"
   },
   "treatmentTemplate": {
     "pickTemplate": "Wybierz szablon",

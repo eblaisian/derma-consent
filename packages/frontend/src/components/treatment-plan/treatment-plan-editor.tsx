@@ -56,6 +56,7 @@ export function TreatmentPlanEditor({
     template?.templateData?.points ?? [],
   );
   const [overallNotes, setOverallNotes] = useState('');
+  const [performedAt, setPerformedAt] = useState(new Date().toISOString().slice(0, 10));
   const [saving, setSaving] = useState(false);
 
   // Photo mode state
@@ -105,18 +106,24 @@ export function TreatmentPlanEditor({
   const handleSave = async () => {
     setSaving(true);
     try {
-      const isPhotoMode = activeTab === 'photo' && photoDataUrl;
-      const finalPoints = isAreasTab ? selectedAreasToPoints(selectedAreas) : points;
-      const finalTotalUnits = isAreasTab
+      // Determine save mode from content, preferring the active tab when both have data.
+      // If active tab has content, use it. Otherwise fall back to whichever tab has content.
+      const hasPhotoContent = !!photoDataUrl;
+      const hasAreasContent = selectedAreas.length > 0;
+      const saveAsAreas = isAreasTab ? hasAreasContent : !hasPhotoContent && hasAreasContent;
+      const saveAsPhoto = !saveAsAreas && hasPhotoContent;
+
+      const finalPoints = saveAsAreas ? selectedAreasToPoints(selectedAreas) : points;
+      const finalTotalUnits = saveAsAreas
         ? selectedAreas.reduce((sum, a) => sum + a.totalUnits, 0)
         : points.reduce((sum, p) => sum + p.units, 0);
 
       const planData: TreatmentPlanData = {
-        diagramType: isAreasTab ? 'treatment-areas' : (isPhotoMode ? 'patient-photo' : 'face-front'),
+        diagramType: saveAsAreas ? 'treatment-areas' : (saveAsPhoto ? 'patient-photo' : 'face-front'),
         points: finalPoints,
         totalUnits: Math.round(finalTotalUnits * 100) / 100,
         overallNotes,
-        ...(isPhotoMode ? { photoDataUrl, photoAspectRatio } : {}),
+        ...(saveAsPhoto ? { photoDataUrl, photoAspectRatio } : {}),
       };
 
       const encrypted = await encryptForPractice(planData, practice.publicKey);
@@ -129,6 +136,7 @@ export function TreatmentPlanEditor({
           encryptedSessionKey: encrypted.encryptedSessionKey,
           encryptedData: { iv: encrypted.iv, ciphertext: encrypted.ciphertext },
           templateId: template?.id,
+          performedAt: performedAt ? new Date(performedAt).toISOString() : undefined,
         }),
       });
 
@@ -183,10 +191,16 @@ export function TreatmentPlanEditor({
             <TabsTrigger value="photo" className="flex-1 gap-1.5">
               <Camera className="h-3.5 w-3.5" />
               {t('photoMode')}
+              {activeTab !== 'photo' && photoDataUrl && (
+                <span className="ml-1 size-1.5 rounded-full bg-primary" />
+              )}
             </TabsTrigger>
             <TabsTrigger value="areas" className="flex-1 gap-1.5">
               <LayoutGrid className="h-3.5 w-3.5" />
               {t('treatmentAreasMode')}
+              {activeTab !== 'areas' && selectedAreas.length > 0 && (
+                <span className="ml-1 size-1.5 rounded-full bg-primary" />
+              )}
             </TabsTrigger>
           </TabsList>
 
@@ -278,14 +292,24 @@ export function TreatmentPlanEditor({
           </TabsContent>
         </Tabs>
 
-        {/* Notes — always visible */}
-        <div>
-          <Label>{t('overallNotes')}</Label>
-          <Input
-            value={overallNotes}
-            onChange={(e) => setOverallNotes(e.target.value)}
-            placeholder={t('notesPlaceholder')}
-          />
+        {/* Treatment date + Notes */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Label>{t('treatmentDate')}</Label>
+            <Input
+              type="date"
+              value={performedAt}
+              onChange={(e) => setPerformedAt(e.target.value)}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label>{t('overallNotes')}</Label>
+            <Input
+              value={overallNotes}
+              onChange={(e) => setOverallNotes(e.target.value)}
+              placeholder={t('notesPlaceholder')}
+            />
+          </div>
         </div>
 
         <DialogFooter className="flex-wrap gap-2">

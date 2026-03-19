@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import type { PhotoType, BodyRegion } from '@/lib/types';
+import type { PhotoType, BodyRegion, TreatmentPlanSummary } from '@/lib/types';
 import type { Practice } from '@/lib/types';
 
 const PHOTO_TYPES: PhotoType[] = ['BEFORE', 'AFTER'];
@@ -23,23 +23,29 @@ const BODY_REGIONS: BodyRegion[] = [
   'LIPS', 'CHIN', 'JAWLINE', 'NECK', 'DECOLLETE', 'HANDS', 'SCALP', 'OTHER',
 ];
 
+const NO_PLAN = '__none__';
+
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   patientId: string;
   practice: Practice;
   onUploaded: () => void;
+  plans?: TreatmentPlanSummary[];
+  treatmentPlanId?: string;
 }
 
-export function PhotoUploadDialog({ open, onOpenChange, patientId, practice, onUploaded }: Props) {
+export function PhotoUploadDialog({ open, onOpenChange, patientId, practice, onUploaded, plans, treatmentPlanId: initialPlanId }: Props) {
   const t = useTranslations('photos');
   const tRegions = useTranslations('bodyRegions');
+  const tTypes = useTranslations('consentTypes');
   const authFetch = useAuthFetch();
   const { encryptPhoto } = useVault();
 
   const [type, setType] = useState<PhotoType>('BEFORE');
   const [bodyRegion, setBodyRegion] = useState<BodyRegion>('FOREHEAD');
   const [takenAt, setTakenAt] = useState(new Date().toISOString().slice(0, 10));
+  const [selectedPlanId, setSelectedPlanId] = useState(initialPlanId ?? NO_PLAN);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -60,6 +66,9 @@ export function PhotoUploadDialog({ open, onOpenChange, patientId, practice, onU
       formData.append('encryptedSessionKey', encrypted.encryptedSessionKey);
       formData.append('takenAt', new Date(takenAt).toISOString());
       formData.append('encryptedMetadata', JSON.stringify({ iv: encrypted.iv, ciphertext: '' }));
+      if (selectedPlanId && selectedPlanId !== NO_PLAN) {
+        formData.append('treatmentPlanId', selectedPlanId);
+      }
 
       await authFetch('/api/photos', { method: 'POST', body: formData });
       toast.success(t('uploaded'));
@@ -116,6 +125,22 @@ export function PhotoUploadDialog({ open, onOpenChange, patientId, practice, onU
               onChange={(e) => setTakenAt(e.target.value)}
             />
           </div>
+          {plans && plans.length > 0 && (
+            <div>
+              <Label>{t('linkToPlan')}</Label>
+              <Select value={selectedPlanId} onValueChange={setSelectedPlanId}>
+                <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NO_PLAN}>{t('noPlanLink')}</SelectItem>
+                  {plans.map((plan) => (
+                    <SelectItem key={plan.id} value={plan.id}>
+                      {tTypes(plan.type as keyof IntlMessages['consentTypes'])} — {new Date(plan.createdAt).toLocaleDateString()}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>

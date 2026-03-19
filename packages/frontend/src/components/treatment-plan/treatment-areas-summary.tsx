@@ -27,10 +27,10 @@ export function TreatmentAreasSummary({ points }: Props) {
             : area.definitionId;
 
           return (
-            <div key={area.definitionId} className="rounded-lg border border-border p-3">
+            <div key={area.definitionId} className="rounded-lg border border-border p-3 transition-default hover:bg-muted/20">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">{label}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-muted-foreground tabular-nums">
                   {area.siteCount} sites &middot; {area.totalUnits}{def?.consentType === 'FILLER' ? 'ml' : 'U'}
                 </span>
               </div>

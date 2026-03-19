@@ -879,7 +879,9 @@
     "consent": "Fotoeinwilligung",
     "consentGranted": "Einwilligung erteilt",
     "consentNotGranted": "Keine Einwilligung",
-    "noPhotosDescription": "Fotos hochladen, um Behandlungsfortschritt und Ergebnisse nachzuverfolgen."
+    "noPhotosDescription": "Fotos hochladen, um Behandlungsfortschritt und Ergebnisse nachzuverfolgen.",
+    "linkToPlan": "Mit Behandlungsplan verknüpfen (optional)",
+    "noPlanLink": "Keiner"
   },
   "bodyRegions": {
     "FOREHEAD": "Stirn",
@@ -908,6 +910,7 @@
     "batchNumber": "Chargen-Nr.",
     "done": "Fertig",
     "noPoints": "Keine Injektionspunkte hinzugefügt.",
+    "injectionPoints": "{count, plural, one {Punkt} other {Punkte}}",
     "totalUnits": "Gesamteinheiten",
     "overallNotes": "Notizen",
     "notesPlaceholder": "Allgemeine Behandlungsnotizen...",
@@ -947,7 +950,16 @@
     "customize": "Anpassen",
     "noPlansDescription": "Erstellen Sie einen Behandlungsplan, um Injektionspunkte und Produkte zu dokumentieren.",
     "viewDetails": "Details anzeigen",
-    "planDetails": "Behandlungsplandetails"
+    "planDetails": "Behandlungsplandetails",
+    "deletePlan": "Plan löschen",
+    "deleted": "Behandlungsplan gelöscht",
+    "deleteError": "Fehler beim Löschen des Behandlungsplans",
+    "deleting": "Wird gelöscht...",
+    "deleteConfirmTitle": "Behandlungsplan löschen",
+    "deleteConfirmDescription": "Dieser Behandlungsplan wird unwiderruflich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "treatmentDate": "Behandlungsdatum",
+    "createdOn": "Erstellt",
+    "photoNoPoints": "Nur Fotoreferenz — keine Injektionspunkte dokumentiert."
   },
   "treatmentTemplate": {
     "pickTemplate": "Vorlage wählen",

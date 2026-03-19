@@ -877,7 +877,9 @@
     "consent": "موافقة التصوير",
     "consentGranted": "تم منح الموافقة",
     "consentNotGranted": "لا توجد موافقة",
-    "noPhotosDescription": "قم برفع الصور لتتبع تقدم العلاج والنتائج."
+    "noPhotosDescription": "قم برفع الصور لتتبع تقدم العلاج والنتائج.",
+    "linkToPlan": "ربط بخطة العلاج (اختياري)",
+    "noPlanLink": "بدون"
   },
   "bodyRegions": {
     "FOREHEAD": "الجبهة",
@@ -906,6 +908,7 @@
     "batchNumber": "رقم الدفعة",
     "done": "تم",
     "noPoints": "لم تتم إضافة نقاط حقن.",
+    "injectionPoints": "{count, plural, one {نقطة} other {نقاط}}",
     "totalUnits": "إجمالي الوحدات",
     "overallNotes": "ملاحظات",
     "notesPlaceholder": "ملاحظات العلاج العامة...",
@@ -945,7 +948,15 @@
     "customize": "تخصيص",
     "noPlansDescription": "قم بإنشاء خطة علاج لتوثيق نقاط الحقن والمنتجات.",
     "viewDetails": "عرض التفاصيل",
-    "planDetails": "تفاصيل خطة العلاج"
+    "planDetails": "تفاصيل خطة العلاج",
+    "deletePlan": "حذف الخطة",
+    "deleted": "تم حذف خطة العلاج",
+    "deleteError": "خطأ في حذف خطة العلاج",
+    "deleting": "جارٍ الحذف...",
+    "deleteConfirmTitle": "حذف خطة العلاج",
+    "deleteConfirmDescription": "سيؤدي هذا إلى حذف خطة العلاج بشكل نهائي. لا يمكن التراجع عن هذا الإجراء.",
+    "treatmentDate": "تاريخ العلاج",
+    "createdOn": "تم الإنشاء"
   },
   "treatmentTemplate": {
     "pickTemplate": "اختر قالباً",

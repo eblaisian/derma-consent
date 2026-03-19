@@ -70,14 +70,15 @@ export class PhotoService {
   async findByPatient(
     practiceId: string,
     patientId: string,
-    options: { type?: string; bodyRegion?: string; page?: number; limit?: number } = {},
+    options: { type?: string; bodyRegion?: string; treatmentPlanId?: string; page?: number; limit?: number } = {},
   ) {
-    const { type, bodyRegion, page = 1, limit = 50 } = options;
+    const { type, bodyRegion, treatmentPlanId, page = 1, limit = 50 } = options;
     const skip = (page - 1) * limit;
 
     const where: Record<string, unknown> = { practiceId, patientId };
     if (type) where.type = type;
     if (bodyRegion) where.bodyRegion = bodyRegion;
+    if (treatmentPlanId) where.treatmentPlanId = treatmentPlanId;
 
     const [items, total] = await Promise.all([
       this.prisma.treatmentPhoto.findMany({

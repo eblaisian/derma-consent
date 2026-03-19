@@ -877,7 +877,9 @@
     "consent": "Согласие на фото",
     "consentGranted": "Согласие получено",
     "consentNotGranted": "Нет согласия",
-    "noPhotosDescription": "Загружайте фотографии, чтобы отслеживать ход лечения и результаты."
+    "noPhotosDescription": "Загружайте фотографии, чтобы отслеживать ход лечения и результаты.",
+    "linkToPlan": "Привязать к плану лечения (необязательно)",
+    "noPlanLink": "Нет"
   },
   "bodyRegions": {
     "FOREHEAD": "Лоб",
@@ -906,6 +908,7 @@
     "batchNumber": "Номер партии",
     "done": "Готово",
     "noPoints": "Точки инъекций не добавлены.",
+    "injectionPoints": "{count, plural, one {точка} few {точки} other {точек}}",
     "totalUnits": "Всего единиц",
     "overallNotes": "Заметки",
     "notesPlaceholder": "Общие заметки о процедуре...",
@@ -945,7 +948,15 @@
     "customize": "Настроить",
     "noPlansDescription": "Создайте план лечения для документирования точек инъекций и продуктов.",
     "viewDetails": "Подробности",
-    "planDetails": "Детали плана лечения"
+    "planDetails": "Детали плана лечения",
+    "deletePlan": "Удалить план",
+    "deleted": "План лечения удалён",
+    "deleteError": "Ошибка удаления плана лечения",
+    "deleting": "Удаление...",
+    "deleteConfirmTitle": "Удалить план лечения",
+    "deleteConfirmDescription": "Это навсегда удалит данный план лечения. Это действие нельзя отменить.",
+    "treatmentDate": "Дата лечения",
+    "createdOn": "Создано"
   },
   "treatmentTemplate": {
     "pickTemplate": "Выбрать шаблон",

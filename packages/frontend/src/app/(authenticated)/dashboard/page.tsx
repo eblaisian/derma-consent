@@ -218,25 +218,21 @@ export default function DashboardPage() {
       )}
 
       {/* Consent table in a raised surface */}
-      <div className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
-        <div className="px-6 pt-5 pb-4">
-          <h2 className="text-lg font-semibold">{t('recentConsents')}</h2>
-        </div>
+      <div className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)] px-6 py-5 overflow-visible">
+        <h2 className="text-lg font-semibold mb-5">{t('recentConsents')}</h2>
         {consentsLoading ? (
-          <div className="space-y-3 px-6 pb-6">
+          <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
               <Skeleton key={i} className="h-12 rounded-lg" />
             ))}
           </div>
         ) : (
-          <div className="px-6 pb-6 overflow-x-auto">
-            <ConsentTable
-              consents={consents || []}
-              onRefresh={() => refreshConsents()}
-              statusFilter={statusFilter}
-              onStatusFilterChange={setStatusFilter}
-            />
-          </div>
+          <ConsentTable
+            consents={consents || []}
+            onRefresh={() => refreshConsents()}
+            statusFilter={statusFilter}
+            onStatusFilterChange={setStatusFilter}
+          />
         )}
       </div>
 
