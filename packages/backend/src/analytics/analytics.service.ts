@@ -259,17 +259,54 @@ export class AnalyticsService {
         role: 'user',
         content: `Practice analytics data:\n${dataContext}`,
       },
-    ], { maxTokens: 500, temperature: 0.4 });
+    ], { maxTokens: 1200, temperature: 0.4 });
 
     const now = Date.now();
-    let insights: AiInsight[];
+    let insights: AiInsight[] = [];
+    const cleaned = raw.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
+
+    // Try direct parse first
     try {
-      const cleaned = raw.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
       const parsed = JSON.parse(cleaned);
       insights = (Array.isArray(parsed) ? parsed : [parsed]).slice(0, 3);
     } catch {
-      this.logger.warn('Failed to parse structured insights, wrapping as single item');
-      insights = [{ type: 'attention', severity: 'neutral', title: 'Practice Overview', metric: '', detail: raw.slice(0, 200), action: '' }];
+      // Try extracting a complete JSON array from the response
+      const arrayMatch = raw.match(/\[[\s\S]*\]/);
+      if (arrayMatch) {
+        try {
+          const parsed = JSON.parse(arrayMatch[0]);
+          insights = (Array.isArray(parsed) ? parsed : [parsed]).slice(0, 3);
+        } catch {
+          // Ignore — fall through to truncation recovery
+        }
+      }
+
+      // If still no insights, the response may be truncated — try to salvage complete objects
+      if (insights.length === 0) {
+        const objectMatches = [...cleaned.matchAll(/\{[^{}]*"type"\s*:\s*"[^"]+"\s*,[^{}]*"title"\s*:\s*"[^"]+"\s*[^{}]*\}/g)];
+        if (objectMatches.length > 0) {
+          for (const m of objectMatches.slice(0, 3)) {
+            try {
+              const obj = JSON.parse(m[0]);
+              insights.push({
+                type: obj.type || 'attention',
+                severity: obj.severity || 'neutral',
+                title: String(obj.title || ''),
+                metric: String(obj.metric || ''),
+                detail: String(obj.detail || ''),
+                action: String(obj.action || ''),
+              });
+            } catch {
+              // Skip malformed individual objects
+            }
+          }
+        }
+      }
+
+      if (insights.length === 0) {
+        this.logger.warn('Failed to parse AI insights response, raw length: ' + raw.length);
+        insights = [{ type: 'attention', severity: 'neutral', title: 'Practice Overview', metric: '', detail: raw.slice(0, 200), action: '' }];
+      }
     }
 
     this.insightsCache.set(cacheKey, { text: JSON.stringify(insights), cachedAt: now });

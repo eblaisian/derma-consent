@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   ResponsiveContainer,
   PieChart,
   Pie,
@@ -19,9 +19,18 @@ import {
   Line,
 } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
+import { StatCard } from '@/components/ui/stat-card';
 import { AiInsightsCard } from '@/components/analytics/ai-insights-card';
+import { FileSignature, Clock, CheckCircle, User, CreditCard, TrendingUp, PieChart as PieChartIcon, Activity } from 'lucide-react';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
+const CHART_COLORS = [
+  'oklch(0.50 0.12 185)',   // primary teal
+  'oklch(0.60 0.15 155)',   // success green
+  'oklch(0.70 0.12 80)',    // warm yellow
+  'oklch(0.55 0.12 210)',   // cool blue
+  'oklch(0.577 0.200 25)',  // warm red
+  'oklch(0.60 0.10 300)',   // soft purple
+];
 
 interface Overview {
   total: number;
@@ -101,11 +110,11 @@ export default function AnalyticsPage() {
   })) || [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground text-pretty">
+          <p className="mt-1.5 text-sm text-muted-foreground text-pretty">
             {t('description')}
           </p>
         </div>
@@ -128,104 +137,147 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Overview Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 stagger-children">
         {isLoading ? (
           <>
             {Array.from({ length: 4 }).map((_, i) => (
-              <Card key={i} className="rounded-xl border border-border/50 shadow-[var(--shadow-sm)]">
-                <CardContent className="p-5">
-                  <Skeleton className="h-4 w-20" />
-                  <Skeleton className="h-9 w-16 mt-2" />
-                </CardContent>
-              </Card>
+              <Skeleton key={i} className="h-[110px] rounded-xl" />
             ))}
           </>
         ) : (
           <>
-            {[
-              { label: t('total'), value: overview?.total },
-              { label: t('pending'), value: overview?.pending },
-              { label: t('signed'), value: overview?.signed },
-              { label: t('patients'), value: overview?.patients },
-            ].map((stat) => (
-              <Card key={stat.label} className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-border">
-                <CardContent className="p-5">
-                  <span className="text-sm text-muted-foreground">{stat.label}</span>
-                  <div className="mt-2 text-3xl font-bold tabular-nums tracking-tight">
-                    {stat.value ?? '—'}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            <StatCard
+              title={t('total')}
+              value={overview?.total ?? '—'}
+              icon={<FileSignature className="size-4" />}
+              accent="primary"
+            />
+            <StatCard
+              title={t('pending')}
+              value={overview?.pending ?? '—'}
+              icon={<Clock className="size-4" />}
+              accent="warning"
+            />
+            <StatCard
+              title={t('signed')}
+              value={overview?.signed ?? '—'}
+              icon={<CheckCircle className="size-4" />}
+              accent="success"
+            />
+            <StatCard
+              title={t('patients')}
+              value={overview?.patients ?? '—'}
+              icon={<User className="size-4" />}
+              accent="info"
+            />
           </>
         )}
       </div>
 
       <AiInsightsCard />
 
-      {/* Revenue */}
-      <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
-        <CardHeader>
-          <CardTitle>{t('revenue')}</CardTitle>
-          <CardDescription>{t('revenueDescription')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {revenueLoading ? (
-            <>
-              <Skeleton className="h-9 w-40" />
-              <Skeleton className="h-4 w-56 mt-2" />
-            </>
-          ) : revenue?.totalRevenue === 0 && revenue?.transactionCount === 0 ? (
-            <div className="py-4">
-              <p className="text-sm text-muted-foreground">{t('noRevenue')}</p>
-              <p className="text-xs text-muted-foreground mt-1">{t('noRevenueDescription')}</p>
+      {/* Revenue & Conversion side by side */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {/* Revenue */}
+        <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-border">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-3">
+              <span className="flex size-9 items-center justify-center rounded-lg bg-primary/[0.06]">
+                <CreditCard className="size-4 text-primary" />
+              </span>
+              <div>
+                <CardTitle className="text-base">{t('revenue')}</CardTitle>
+                <CardDescription className="text-xs">{t('revenueDescription')}</CardDescription>
+              </div>
             </div>
-          ) : (
-            <>
-              <p className="text-3xl font-bold tabular-nums tracking-tight">
-                <span className="text-sm font-normal text-muted-foreground">EUR</span>{' '}
-                {revenue?.totalRevenue?.toFixed(2) ?? '0.00'}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1 tabular-nums">
-                {revenue?.transactionCount ?? 0} {t('transactions')} | {t('avg')} EUR {revenue?.averageTransaction?.toFixed(2) ?? '0.00'}
-              </p>
-            </>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Conversion */}
-      {conversion && (
-        <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
-          <CardHeader>
-            <CardTitle>{t('conversionRate')}</CardTitle>
-            <CardDescription>
-              {t('conversionDescription', {
-                signed: conversion.signed,
-                total: conversion.total,
-                rate: conversion.conversionRate,
-              })}
-            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-4 w-full rounded-full bg-muted overflow-hidden">
-              <div
-                className="h-full rounded-full bg-primary transition-all"
-                style={{ width: `${conversion.conversionRate}%` }}
-              />
-            </div>
-            <p className="mt-2 text-sm font-medium tabular-nums">
-              {conversion.conversionRate.toFixed(1)}%
-            </p>
+            {revenueLoading ? (
+              <>
+                <Skeleton className="h-9 w-40" />
+                <Skeleton className="h-4 w-56 mt-2" />
+              </>
+            ) : revenue?.totalRevenue === 0 && revenue?.transactionCount === 0 ? (
+              <div className="py-6 text-center">
+                <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted">
+                  <CreditCard className="size-5 text-muted-foreground" />
+                </div>
+                <p className="mt-3 text-sm font-medium text-muted-foreground">{t('noRevenue')}</p>
+                <p className="mt-1 text-xs text-muted-foreground/70 max-w-[240px] mx-auto leading-relaxed">{t('noRevenueDescription')}</p>
+              </div>
+            ) : (
+              <>
+                <p className="text-3xl font-bold tabular-nums tracking-tight">
+                  <span className="text-sm font-normal text-muted-foreground">EUR</span>{' '}
+                  {revenue?.totalRevenue?.toFixed(2) ?? '0.00'}
+                </p>
+                <p className="text-sm text-muted-foreground mt-1 tabular-nums">
+                  {revenue?.transactionCount ?? 0} {t('transactions')} | {t('avg')} EUR {revenue?.averageTransaction?.toFixed(2) ?? '0.00'}
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
-      )}
 
+        {/* Conversion */}
+        {conversion ? (
+          <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-border">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-3">
+                <span className="flex size-9 items-center justify-center rounded-lg bg-success/[0.06]">
+                  <TrendingUp className="size-4 text-success" />
+                </span>
+                <div>
+                  <CardTitle className="text-base">{t('conversionRate')}</CardTitle>
+                  <CardDescription className="text-xs">
+                    {t('conversionDescription', {
+                      signed: conversion.signed,
+                      total: conversion.total,
+                      rate: conversion.conversionRate,
+                    })}
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-end gap-3 mb-3">
+                <span className="text-3xl font-bold tabular-nums tracking-tight">
+                  {conversion.conversionRate.toFixed(1)}%
+                </span>
+                <span className="text-sm text-muted-foreground pb-1">
+                  {conversion.signed} / {conversion.total}
+                </span>
+              </div>
+              <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-success transition-all duration-500"
+                  style={{ width: `${conversion.conversionRate}%` }}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
+            <CardContent className="p-5">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-9 w-20 mt-2" />
+              <Skeleton className="h-3 w-full mt-4 rounded-full" />
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Charts */}
       <div className="grid gap-4 md:grid-cols-2">
         {/* By Type */}
-        <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
-          <CardHeader>
-            <CardTitle>{t('byType')}</CardTitle>
+        <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-border">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-3">
+              <span className="flex size-9 items-center justify-center rounded-lg bg-primary/[0.06]">
+                <PieChartIcon className="size-4 text-primary" />
+              </span>
+              <CardTitle className="text-base">{t('byType')}</CardTitle>
+            </div>
           </CardHeader>
           <CardContent>
             {typeData.length > 0 ? (
@@ -236,21 +288,31 @@ export default function AnalyticsPage() {
                       data={typeData}
                       cx="50%"
                       cy="50%"
+                      innerRadius={55}
                       outerRadius={90}
                       dataKey="value"
                       label={false}
+                      strokeWidth={2}
+                      stroke="oklch(0.985 0.005 80)"
                     >
                       {typeData.map((_, index) => (
-                        <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                        <Cell key={index} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <RechartsTooltip
+                      contentStyle={{
+                        borderRadius: '8px',
+                        border: '1px solid oklch(0.90 0.005 80)',
+                        boxShadow: '0 4px 6px oklch(0.20 0.01 80 / 0.08)',
+                        fontSize: '13px',
+                      }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1.5">
                   {typeData.map((entry, index) => (
                     <div key={entry.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <div className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                      <div className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }} />
                       <span className="truncate max-w-[120px]">{entry.name}</span>
                       <span className="tabular-nums font-medium text-foreground">({entry.value})</span>
                     </div>
@@ -258,37 +320,81 @@ export default function AnalyticsPage() {
                 </div>
               </>
             ) : (
-              <p className="text-center text-muted-foreground py-12">{t('noData')}</p>
+              <div className="py-12 text-center">
+                <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted">
+                  <PieChartIcon className="size-5 text-muted-foreground" />
+                </div>
+                <p className="mt-3 text-sm text-muted-foreground">{t('noData')}</p>
+              </div>
             )}
           </CardContent>
         </Card>
 
         {/* By Period */}
-        <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)]">
-          <CardHeader>
-            <CardTitle>
-              {dateRange === '7d' ? t('last7Days') : dateRange === '30d' ? t('last30Days') : t('last90Days')}
-            </CardTitle>
+        <Card className="rounded-xl border border-border/50 bg-card shadow-[var(--shadow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-border">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-3">
+              <span className="flex size-9 items-center justify-center rounded-lg bg-info/[0.06]">
+                <Activity className="size-4 text-info" />
+              </span>
+              <CardTitle className="text-base">
+                {dateRange === '7d' ? t('last7Days') : dateRange === '30d' ? t('last30Days') : t('last90Days')}
+              </CardTitle>
+            </div>
           </CardHeader>
           <CardContent>
             {byPeriod && byPeriod.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={280}>
                 <LineChart data={byPeriod}>
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.90 0.005 80)" />
                   <XAxis
                     dataKey="date"
                     tickFormatter={(d) => format.dateTime(new Date(d), { day: '2-digit', month: '2-digit' })}
+                    tick={{ fontSize: 12, fill: 'oklch(0.55 0.01 80)' }}
+                    axisLine={{ stroke: 'oklch(0.90 0.005 80)' }}
+                    tickLine={false}
                   />
-                  <YAxis />
-                  <Tooltip
+                  <YAxis
+                    tick={{ fontSize: 12, fill: 'oklch(0.55 0.01 80)' }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <RechartsTooltip
                     labelFormatter={(d) => format.dateTime(new Date(d as string), { dateStyle: 'medium' })}
+                    contentStyle={{
+                      borderRadius: '8px',
+                      border: '1px solid oklch(0.90 0.005 80)',
+                      boxShadow: '0 4px 6px oklch(0.20 0.01 80 / 0.08)',
+                      fontSize: '13px',
+                    }}
                   />
-                  <Line type="monotone" dataKey="created" stroke="#8884d8" name={t('created')} />
-                  <Line type="monotone" dataKey="signed" stroke="#82ca9d" name={t('signed')} />
+                  <Line
+                    type="monotone"
+                    dataKey="created"
+                    stroke="oklch(0.50 0.12 185)"
+                    strokeWidth={2}
+                    dot={false}
+                    activeDot={{ r: 4, strokeWidth: 2 }}
+                    name={t('created')}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="signed"
+                    stroke="oklch(0.60 0.15 155)"
+                    strokeWidth={2}
+                    dot={false}
+                    activeDot={{ r: 4, strokeWidth: 2 }}
+                    name={t('signed')}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-center text-muted-foreground py-12">{t('noData')}</p>
+              <div className="py-12 text-center">
+                <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted">
+                  <Activity className="size-5 text-muted-foreground" />
+                </div>
+                <p className="mt-3 text-sm text-muted-foreground">{t('noData')}</p>
+              </div>
             )}
           </CardContent>
         </Card>

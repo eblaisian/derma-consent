@@ -124,11 +124,11 @@ export default function ProfilePage() {
     .toUpperCase();
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-3xl space-y-8">
       {/* Page header */}
       <div>
         <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
-        <p className="mt-1 text-sm text-muted-foreground leading-relaxed text-pretty">
+        <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed text-pretty">
           {t('description')}
         </p>
       </div>
@@ -176,11 +176,13 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div>
-          <Button onClick={handleSaveName} disabled={isSavingName || !isNameDirty}>
-            {isSavingName ? t('saving') : t('saveName')}
-          </Button>
-        </div>
+        {isNameDirty && (
+          <div className="flex justify-end">
+            <Button onClick={handleSaveName} disabled={isSavingName} size="sm">
+              {isSavingName ? t('saving') : t('saveName')}
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Change Password */}
@@ -221,8 +223,9 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div>
+        <div className="flex justify-end">
           <Button
+            size="sm"
             onClick={handleChangePassword}
             disabled={isChangingPassword || !currentPassword || !newPassword || !confirmPassword}
           >

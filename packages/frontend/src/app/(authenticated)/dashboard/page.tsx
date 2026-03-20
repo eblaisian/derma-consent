@@ -155,6 +155,43 @@ export default function DashboardPage() {
         {canViewConsents && <NewConsentDialog onCreated={() => refreshConsents()} />}
       </div>
 
+      {/* Needs Attention — compact action strip */}
+      {!consentsLoading && stats && (stats.pending > 0 || stats.expiringSoon > 0 || stats.recentlySigned > 0) && (
+        <div className="flex flex-wrap items-center gap-2" role="status" aria-label="Items needing attention">
+          <span className="text-xs font-medium text-muted-foreground mr-1">{t('needsAttentionTitle')}:</span>
+          {stats.expiringSoon > 0 && (
+            <button
+              onClick={() => setStatusFilter('PENDING')}
+              className="inline-flex items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/[0.05] px-3 py-1.5 text-sm cursor-pointer transition-colors hover:bg-destructive/[0.10]"
+            >
+              <AlertCircle className="size-3.5 text-destructive" />
+              <span className="font-semibold tabular-nums text-destructive">{stats.expiringSoon}</span>
+              <span className="text-destructive/80">{t('chipExpiringSoonLabel')}</span>
+            </button>
+          )}
+          {stats.pending > 0 && (
+            <button
+              onClick={() => setStatusFilter('PENDING')}
+              className="inline-flex items-center gap-2 rounded-lg border border-warning/20 bg-warning/[0.05] px-3 py-1.5 text-sm cursor-pointer transition-colors hover:bg-warning/[0.10]"
+            >
+              <Clock className="size-3.5 text-warning" />
+              <span className="font-semibold tabular-nums text-warning">{stats.pending}</span>
+              <span className="text-foreground/70">{t('chipPendingLabel')}</span>
+            </button>
+          )}
+          {stats.recentlySigned > 0 && (
+            <button
+              onClick={() => setStatusFilter('SIGNED')}
+              className="inline-flex items-center gap-2 rounded-lg border border-success/20 bg-success/[0.05] px-3 py-1.5 text-sm cursor-pointer transition-colors hover:bg-success/[0.10]"
+            >
+              <CheckCircle className="size-3.5 text-success" />
+              <span className="font-semibold tabular-nums text-success">{stats.recentlySigned}</span>
+              <span className="text-foreground/70">{t('chipRecentlySignedLabel')}</span>
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Stat cards with stagger animation */}
       {consentsLoading ? (
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -188,54 +225,6 @@ export default function DashboardPage() {
             icon={<User className="size-4" />}
             accent="info"
           />
-        </div>
-      )}
-
-      {/* Needs Attention */}
-      {stats && (stats.pending > 0 || stats.expiringSoon > 0 || stats.recentlySigned > 0) && (
-        <div className="grid gap-4 sm:grid-cols-3">
-          {stats.pending > 0 && (
-            <button
-              onClick={() => setStatusFilter('PENDING')}
-              className="group flex items-center gap-3 rounded-xl border border-border/50 border-l-2 border-l-warning bg-card px-4 py-3 text-start shadow-[var(--shadow-sm)] cursor-pointer transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-warning/30 hover:border-l-warning"
-            >
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-warning/[0.06]">
-                <Clock className="size-4 text-warning transition-transform duration-150 group-hover:scale-110" />
-              </div>
-              <div>
-                <p className="text-xl font-semibold tabular-nums">{stats.pending}</p>
-                <p className="text-xs text-muted-foreground">{t('chipPendingLabel')}</p>
-              </div>
-            </button>
-          )}
-          {stats.expiringSoon > 0 && (
-            <button
-              onClick={() => setStatusFilter('PENDING')}
-              className="group flex items-center gap-3 rounded-xl border border-border/50 border-l-2 border-l-destructive bg-card px-4 py-3 text-start shadow-[var(--shadow-sm)] cursor-pointer transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-destructive/30 hover:border-l-destructive"
-            >
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-destructive/[0.06]">
-                <AlertCircle className="size-4 text-destructive transition-transform duration-150 group-hover:scale-110" />
-              </div>
-              <div>
-                <p className="text-xl font-semibold tabular-nums">{stats.expiringSoon}</p>
-                <p className="text-xs text-muted-foreground">{t('chipExpiringSoonLabel')}</p>
-              </div>
-            </button>
-          )}
-          {stats.recentlySigned > 0 && (
-            <button
-              onClick={() => setStatusFilter('SIGNED')}
-              className="group flex items-center gap-3 rounded-xl border border-border/50 border-l-2 border-l-success bg-card px-4 py-3 text-start shadow-[var(--shadow-sm)] cursor-pointer transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-success/30 hover:border-l-success"
-            >
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-success/[0.06]">
-                <CheckCircle className="size-4 text-success transition-transform duration-150 group-hover:scale-110" />
-              </div>
-              <div>
-                <p className="text-xl font-semibold tabular-nums">{stats.recentlySigned}</p>
-                <p className="text-xs text-muted-foreground">{t('chipRecentlySignedLabel')}</p>
-              </div>
-            </button>
-          )}
         </div>
       )}
 

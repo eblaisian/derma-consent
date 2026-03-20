@@ -38,14 +38,16 @@ function StatusPage({
   }[variant];
 
   return (
-    <div className="flex items-center justify-center min-h-dvh bg-background">
+    <div className="flex items-center justify-center min-h-dvh bg-muted/30">
       <div className="text-center space-y-6 max-w-sm px-6">
-        <div className={`mx-auto flex size-20 items-center justify-center rounded-full ring-1 ${ringColor}`}>
-          {icon}
-        </div>
-        <div className="space-y-2">
-          <h1 className="text-xl font-semibold tracking-tight text-balance">{title}</h1>
-          <p className="text-sm text-muted-foreground leading-relaxed text-pretty">{message}</p>
+        <div className="mx-auto rounded-2xl border border-border/50 bg-card shadow-[var(--shadow-sm)] p-10">
+          <div className={`mx-auto flex size-20 items-center justify-center rounded-full ring-1 ${ringColor}`}>
+            {icon}
+          </div>
+          <div className="space-y-2 mt-6">
+            <h1 className="text-xl font-semibold tracking-tight text-balance">{title}</h1>
+            <p className="text-sm text-muted-foreground leading-relaxed text-pretty">{message}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -252,7 +254,7 @@ export default function ConsentPage({
 
   return (
     <div
-      className="min-h-dvh bg-background flex flex-col"
+      className="min-h-dvh bg-muted flex flex-col"
       style={brandColor ? {
         '--brand-color': brandColor,
         '--primary': brandColor,
@@ -263,7 +265,7 @@ export default function ConsentPage({
       } as React.CSSProperties : undefined}
     >
       {/* Branded header */}
-      <header className="border-b border-border-subtle bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="mx-auto max-w-2xl px-4 md:px-6 flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
             {logoUrl ? (
@@ -286,18 +288,20 @@ export default function ConsentPage({
       </header>
 
       {/* Form content */}
-      <main className="flex-1 mx-auto w-full max-w-2xl px-4 md:px-6 py-10">
-        <ConsentForm
-          consentType={data.type as ConsentType}
-          practiceName={data.practice?.name || 'Praxis'}
-          token={token}
-          onSubmit={handleSubmit}
-          videoUrl={videoUrl ?? undefined}
-        />
+      <main className="flex-1 mx-auto w-full max-w-2xl px-4 md:px-6 py-8">
+        <div className="rounded-2xl border border-border/50 bg-card shadow-[var(--shadow-md)] px-6 py-8 md:px-10 md:py-10">
+          <ConsentForm
+            consentType={data.type as ConsentType}
+            practiceName={data.practice?.name || 'Praxis'}
+            token={token}
+            onSubmit={handleSubmit}
+            videoUrl={videoUrl ?? undefined}
+          />
+        </div>
       </main>
 
       {/* Security trust bar */}
-      <footer className="border-t border-border-subtle bg-card/30 py-5">
+      <footer className="border-t border-border/50 bg-background/60 backdrop-blur-sm py-5">
         <div className="mx-auto max-w-2xl px-4 md:px-6">
           <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">

@@ -145,9 +145,9 @@ export function ConsentForm({
         </p>
       </div>
 
-      {/* Progress bar with step labels */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
+      {/* Progress stepper */}
+      <nav aria-label="Form progress">
+        <div className="flex items-start">
           {STEPS.map((s, i) => {
             const stepLabels = {
               personal: t('stepPersonal'),
@@ -158,28 +158,38 @@ export function ConsentForm({
             };
             const isCurrent = i === currentStepIndex;
             const isComplete = i < currentStepIndex;
+            const isLast = i === STEPS.length - 1;
             return (
-              <div key={s} className="flex flex-col items-center gap-1 flex-1">
-                <div className={`flex size-7 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
-                  isCurrent ? 'bg-primary text-primary-foreground' : isComplete ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
-                }`}
-                >
-                  {isComplete ? '✓' : i + 1}
+              <div key={s} className="flex items-start flex-1">
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className={`flex size-8 items-center justify-center rounded-full text-xs font-semibold transition-all duration-200 ${
+                    isCurrent
+                      ? 'bg-primary text-primary-foreground shadow-[var(--shadow-brand)]'
+                      : isComplete
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-muted-foreground'
+                  }`}
+                  >
+                    {isComplete ? <Check className="size-3.5" /> : i + 1}
+                  </div>
+                  <span className={`text-[11px] leading-tight text-center max-w-[60px] ${
+                    isCurrent ? 'font-semibold text-foreground' : isComplete ? 'font-medium text-primary' : 'text-muted-foreground'
+                  }`}>
+                    {stepLabels[s]}
+                  </span>
                 </div>
-                <span className={`text-[10px] leading-tight text-center ${isCurrent ? 'font-medium text-foreground' : 'text-muted-foreground'}`}>
-                  {stepLabels[s]}
-                </span>
+                {!isLast && (
+                  <div className="flex-1 mt-4 mx-1">
+                    <div className={`h-0.5 w-full rounded-full transition-colors duration-300 ${
+                      i < currentStepIndex ? 'bg-primary' : 'bg-muted'
+                    }`} />
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
-        <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
-          <div
-            className="h-full bg-primary rounded-full transition-[width] duration-300 ease-out"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
+      </nav>
 
       {/* Security badge + AI Explainer */}
       <div className="flex items-center justify-between flex-wrap gap-2">
@@ -475,9 +485,11 @@ export function ConsentForm({
       {/* Step 3: Signature */}
       {step === 'signature' && (
         <div className="space-y-6">
-          <p className="text-base text-foreground-secondary leading-relaxed">
-            {t('signatureInstruction')}
-          </p>
+          <div className="rounded-xl bg-muted/40 border border-border/30 p-4">
+            <p className="text-base text-foreground leading-relaxed">
+              {t('signatureInstruction')}
+            </p>
+          </div>
           <SignaturePad onSignatureChange={setSignatureData} />
 
           <Separator />
@@ -493,11 +505,14 @@ export function ConsentForm({
         </div>
       )}
 
-      {/* Step 3: Review */}
+      {/* Step 4: Review */}
       {step === 'review' && (
         <div className="space-y-6">
-          <h2 className="text-lg font-semibold">{t('reviewTitle')}</h2>
-          <div className="bg-muted/50 border rounded-lg p-4 space-y-3 text-base leading-relaxed">
+          <div>
+            <h2 className="text-lg font-semibold">{t('reviewTitle')}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{t('consentDeclaration')}</p>
+          </div>
+          <div className="bg-muted/30 border border-border/50 rounded-xl p-5 space-y-3 text-base leading-relaxed">
             {patientIdentity.fullName && (
               <div>
                 <span className="font-medium">{t('fullName')}:</span> {patientIdentity.fullName}
@@ -558,17 +573,21 @@ export function ConsentForm({
           {signatureData && (
             <div>
               <p className="text-sm font-medium mb-2">{t('yourSignature')}</p>
-              <img
-                src={signatureData}
-                alt={t('signature')}
-                className="border rounded-lg h-24"
-              />
+              <div className="inline-block rounded-xl border border-border/50 bg-white p-3">
+                <img
+                  src={signatureData}
+                  alt={t('signature')}
+                  className="h-20"
+                />
+              </div>
             </div>
           )}
 
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            {t('legalNotice')}
-          </p>
+          <div className="rounded-lg bg-primary/[0.04] border border-primary/10 px-4 py-3">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {t('legalNotice')}
+            </p>
+          </div>
 
           <Separator />
 
@@ -576,7 +595,7 @@ export function ConsentForm({
             <Button variant="outline" size="lg" onClick={() => setStep('signature')}>
               {t('back')}
             </Button>
-            <Button size="lg" onClick={handleFinalSubmit}>
+            <Button size="lg" className="min-w-[160px]" onClick={handleFinalSubmit}>
               {t('submitFinal')}
             </Button>
           </div>
