@@ -124,10 +124,10 @@ export default function BillingPage() {
   const isAtLimit = usage?.limit ? usage.used >= usage.limit : false;
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-4xl space-y-8">
       <div>
         <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
-        <p className="text-sm text-muted-foreground text-pretty">{t('description')}</p>
+        <p className="mt-1.5 text-sm text-muted-foreground text-pretty">{t('description')}</p>
       </div>
 
       {/* Cancellation pending banner */}

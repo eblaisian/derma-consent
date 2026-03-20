@@ -142,8 +142,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </TooltipTrigger>
               <TooltipContent>{tNav('helpCenter')}</TooltipContent>
             </Tooltip>
-            <VaultStatusButton />
-            <ThemeToggle />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span><VaultStatusButton /></span>
+              </TooltipTrigger>
+              <TooltipContent>{tNav('vault')}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span><ThemeToggle /></span>
+              </TooltipTrigger>
+              <TooltipContent>{tNav('theme')}</TooltipContent>
+            </Tooltip>
             <div className="hidden md:block">
               <LanguageSwitcher />
             </div>

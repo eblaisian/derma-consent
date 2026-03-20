@@ -738,7 +738,10 @@
     "settings": "Settings",
     "audit": "Audit log",
     "helpCenter": "Help center",
-    "communications": "Communications"
+    "communications": "Communications",
+    "pendingBadge": "{count} pending consents",
+    "vault": "Encryption vault",
+    "theme": "Toggle theme"
   },
   "sidebar": {
     "overview": "Overview",

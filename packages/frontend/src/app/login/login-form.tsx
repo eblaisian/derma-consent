@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
 import { getSafeCallbackUrl } from '@/lib/auth-utils';
 
 interface Props {
@@ -269,7 +268,7 @@ export function LoginForm({ enabledProviders }: Props) {
           </div>
         )}
 
-        {enabledProviders.google ? (
+        {enabledProviders.google && (
           <Button
             className="w-full"
             variant="outline"
@@ -278,15 +277,9 @@ export function LoginForm({ enabledProviders }: Props) {
             <GoogleIcon />
             {t('signInWithGoogle')}
           </Button>
-        ) : (
-          <Button className="w-full" variant="outline" disabled>
-            <GoogleIcon />
-            {t('signInWithGoogle')}
-            <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">{t('comingSoon')}</Badge>
-          </Button>
         )}
 
-        {enabledProviders['microsoft-entra-id'] ? (
+        {enabledProviders['microsoft-entra-id'] && (
           <Button
             className="w-full"
             variant="outline"
@@ -294,12 +287,6 @@ export function LoginForm({ enabledProviders }: Props) {
           >
             <MicrosoftIcon />
             {t('signInWithMicrosoft')}
-          </Button>
-        ) : (
-          <Button className="w-full" variant="outline" disabled>
-            <MicrosoftIcon />
-            {t('signInWithMicrosoft')}
-            <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">{t('comingSoon')}</Badge>
           </Button>
         )}
 

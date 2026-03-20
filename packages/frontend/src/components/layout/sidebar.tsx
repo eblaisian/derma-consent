@@ -129,7 +129,10 @@ export function Sidebar() {
                       <item.icon className={cn('size-5 shrink-0', isActive ? 'text-sidebar-primary' : 'text-muted-foreground')} />
                       <span className="flex-1">{t(item.labelKey)}</span>
                       {item.href === '/dashboard' && pendingCount > 0 && (
-                        <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground px-1">
+                        <span
+                          className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground px-1"
+                          title={t('pendingBadge', { count: pendingCount })}
+                        >
                           {pendingCount > 99 ? '99+' : pendingCount}
                         </span>
                       )}

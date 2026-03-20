@@ -738,7 +738,10 @@
     "settings": "Einstellungen",
     "audit": "Protokoll",
     "helpCenter": "Hilfe",
-    "communications": "Kommunikation"
+    "communications": "Kommunikation",
+    "pendingBadge": "{count} ausstehende Einwilligungen",
+    "vault": "Verschlüsselungstresor",
+    "theme": "Design wechseln"
   },
   "sidebar": {
     "overview": "Übersicht",
