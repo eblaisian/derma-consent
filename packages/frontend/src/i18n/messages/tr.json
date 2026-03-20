@@ -308,7 +308,17 @@
     "dateOfBirth": "Doğum tarihi",
     "emailAddress": "E-posta (isteğe bağlı)",
     "personalDataNotice": "Bilgileriniz uçtan uca şifreli olarak saklanır.",
-    "nextToForm": "Devam"
+    "nextToForm": "Devam",
+    "introTitle": "Onam formunuz",
+    "introWhat": "Neler bekleniyor",
+    "introStep1": "Kişisel verilerinizi girin",
+    "introStep2": "Sağlık sorularını yanıtlayın",
+    "introStep3": "İnceleyip dijital olarak imzalayın",
+    "introTime": "Yaklaşık 5 dakika",
+    "introBegin": "Başla",
+    "successNext": "Sonra ne olacak?",
+    "successNextDetail": "Onamınız güvenli şekilde gönderildi ve şifrelendi. Kliniğiniz imzalı bir PDF saklayacak.",
+    "successClose": "Şimdi bu pencereyi kapatabilirsiniz."
   },
   "consentTypes": {
     "BOTOX": "Botox / Botulinum toksin",
@@ -474,7 +484,10 @@
     "transactions": "işlem",
     "avg": "Ort.",
     "noRevenue": "Henüz gelir kaydedilmedi",
-    "noRevenueDescription": "Hastalar ücretli onam formlarını tamamladığında gelir görünecektir."
+    "noRevenueDescription": "Hastalar ücretli onam formlarını tamamladığında gelir görünecektir.",
+    "noDataYetTitle": "Henüz onam verisi yok",
+    "noDataYetDescription": "Onam formları oluşturmaya başladığınızda analizler doldurulacaktır.",
+    "noDataYetAction": "Panoya git"
   },
   "patients": {
     "title": "Hastalar",
@@ -579,7 +592,9 @@
     "revokeInvite": "Daveti iptal et",
     "inviteResent": "Davet yeniden gönderildi",
     "inviteRevoked": "Davet iptal edildi",
-    "status": "Durum"
+    "status": "Durum",
+    "noMembersTitle": "Henüz takım üyesi yok",
+    "noMembersDescription": "Onam yönetiminde işbirliği yapmak için doktorları ve resepsiyon personelini davet edin."
   },
   "roles": {
     "ADMIN": "Yönetici",
@@ -680,7 +695,10 @@
     "noEntries": "Kayıt bulunamadı.",
     "exportStarted": "Dışa aktarma başladı",
     "exportError": "Dışa aktarma hatası",
-    "unknownUser": "Bilinmeyen kullanıcı"
+    "unknownUser": "Bilinmeyen kullanıcı",
+    "noEntriesDescription": "Takımınız platformu kullandığında denetim girişleri burada görünecektir.",
+    "noEntriesFiltered": "Eşleşen giriş yok",
+    "noEntriesFilteredDescription": "Aradığınızı bulmak için filtrelerinizi ayarlamayı deneyin."
   },
   "auditActions": {
     "CONSENT_CREATED": "{actor} bir onam formu oluşturdu",
@@ -718,7 +736,10 @@
     "settings": "Ayarlar",
     "audit": "Denetim günlüğü",
     "helpCenter": "Yardım merkezi",
-    "communications": "İletişim"
+    "communications": "İletişim",
+    "pendingBadge": "{count} bekleyen onam",
+    "vault": "Şifreleme kasası",
+    "theme": "Tema değiştir"
   },
   "sidebar": {
     "overview": "Genel Bakış",
@@ -850,7 +871,14 @@
     "action_logo": "Yükle",
     "action_team": "Davet et",
     "action_consent": "Oluştur",
-    "dismiss": "Kapat"
+    "dismiss": "Kapat",
+    "time_vault": "~2 dk",
+    "time_logo": "~1 dk",
+    "time_team": "~2 dk",
+    "time_consent": "~1 dk",
+    "getStarted": "Başla",
+    "skipWelcome": "Şimdilik Atla",
+    "collapseTitle": "Kurulum ilerlemesi"
   },
   "metadata": {
     "description": "Dermatoloji klinikleri için GDPR uyumlu dijital onam formları"

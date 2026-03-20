@@ -308,7 +308,17 @@
     "dateOfBirth": "تاريخ الميلاد",
     "emailAddress": "البريد الإلكتروني (اختياري)",
     "personalDataNotice": "يتم تخزين بياناتك مشفرة من طرف إلى طرف.",
-    "nextToForm": "متابعة"
+    "nextToForm": "متابعة",
+    "introTitle": "نموذج الموافقة الخاص بك",
+    "introWhat": "ماذا تتوقع",
+    "introStep1": "أدخل بياناتك الشخصية",
+    "introStep2": "أجب عن الأسئلة الصحية",
+    "introStep3": "راجع ووقّع رقمياً",
+    "introTime": "حوالي 5 دقائق",
+    "introBegin": "ابدأ",
+    "successNext": "ماذا يحدث بعد ذلك؟",
+    "successNextDetail": "تم تقديم موافقتك بأمان وتشفيرها. ستحفظ عيادتك ملف PDF موقّعاً.",
+    "successClose": "يمكنك الآن إغلاق هذه النافذة."
   },
   "consentTypes": {
     "BOTOX": "Botox / توكسين البوتولينوم",
@@ -474,7 +484,10 @@
     "transactions": "معاملات",
     "avg": "المتوسط",
     "noRevenue": "لا توجد إيرادات مسجلة بعد",
-    "noRevenueDescription": "ستظهر الإيرادات بمجرد أن يكمل المرضى نماذج الموافقة المدفوعة."
+    "noRevenueDescription": "ستظهر الإيرادات بمجرد أن يكمل المرضى نماذج الموافقة المدفوعة.",
+    "noDataYetTitle": "لا توجد بيانات موافقة بعد",
+    "noDataYetDescription": "ستظهر التحليلات بمجرد البدء في إنشاء وإرسال نماذج الموافقة.",
+    "noDataYetAction": "الانتقال إلى لوحة المعلومات"
   },
   "patients": {
     "title": "المرضى",
@@ -579,7 +592,9 @@
     "revokeInvite": "إلغاء الدعوة",
     "inviteResent": "تم إعادة إرسال الدعوة",
     "inviteRevoked": "تم إلغاء الدعوة",
-    "status": "الحالة"
+    "status": "الحالة",
+    "noMembersTitle": "لا يوجد أعضاء فريق بعد",
+    "noMembersDescription": "ادعُ الأطباء وموظفي الاستقبال للتعاون في إدارة الموافقات."
   },
   "roles": {
     "ADMIN": "مدير",
@@ -680,7 +695,10 @@
     "noEntries": "لم يتم العثور على سجلات.",
     "exportStarted": "بدأ التصدير",
     "exportError": "خطأ في التصدير",
-    "unknownUser": "مستخدم غير معروف"
+    "unknownUser": "مستخدم غير معروف",
+    "noEntriesDescription": "ستظهر سجلات التدقيق هنا عندما يستخدم فريقك المنصة.",
+    "noEntriesFiltered": "لا توجد إدخالات مطابقة",
+    "noEntriesFilteredDescription": "حاول تعديل المرشحات للعثور على ما تبحث عنه."
   },
   "auditActions": {
     "CONSENT_CREATED": "{actor} أنشأ نموذج موافقة",
@@ -718,7 +736,10 @@
     "settings": "الإعدادات",
     "audit": "سجل التدقيق",
     "helpCenter": "مركز المساعدة",
-    "communications": "الاتصالات"
+    "communications": "الاتصالات",
+    "pendingBadge": "{count} موافقات معلقة",
+    "vault": "خزنة التشفير",
+    "theme": "تبديل المظهر"
   },
   "sidebar": {
     "overview": "نظرة عامة",
@@ -850,7 +871,14 @@
     "action_logo": "رفع",
     "action_team": "دعوة",
     "action_consent": "إنشاء",
-    "dismiss": "إغلاق"
+    "dismiss": "إغلاق",
+    "time_vault": "~دقيقتان",
+    "time_logo": "~دقيقة",
+    "time_team": "~دقيقتان",
+    "time_consent": "~دقيقة",
+    "getStarted": "ابدأ",
+    "skipWelcome": "تخطي الآن",
+    "collapseTitle": "تقدم الإعداد"
   },
   "metadata": {
     "description": "نماذج موافقة رقمية متوافقة مع GDPR لعيادات الأمراض الجلدية"

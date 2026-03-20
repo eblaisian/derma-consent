@@ -308,7 +308,17 @@
     "dateOfBirth": "Дата рождения",
     "emailAddress": "Email (необязательно)",
     "personalDataNotice": "Ваши данные хранятся в зашифрованном виде.",
-    "nextToForm": "Продолжить"
+    "nextToForm": "Продолжить",
+    "introTitle": "Форма вашего согласия",
+    "introWhat": "Чего ожидать",
+    "introStep1": "Введите свои личные данные",
+    "introStep2": "Ответьте на вопросы о здоровье",
+    "introStep3": "Проверьте и подпишите цифровой подписью",
+    "introTime": "Примерно 5 минут",
+    "introBegin": "Начать",
+    "successNext": "Что будет дальше?",
+    "successNextDetail": "Ваше согласие безопасно отправлено и зашифровано. Клиника сохранит подписанный PDF.",
+    "successClose": "Теперь вы можете закрыть это окно."
   },
   "consentTypes": {
     "BOTOX": "Ботокс / Ботулотоксин",
@@ -474,7 +484,10 @@
     "transactions": "транзакции",
     "avg": "Среднее",
     "noRevenue": "Доходов пока нет",
-    "noRevenueDescription": "Доход появится, когда пациенты заполнят платные формы согласия."
+    "noRevenueDescription": "Доход появится, когда пациенты заполнят платные формы согласия.",
+    "noDataYetTitle": "Данных о согласиях пока нет",
+    "noDataYetDescription": "Аналитика появится после создания и отправки форм согласия.",
+    "noDataYetAction": "Перейти на панель"
   },
   "patients": {
     "title": "Пациенты",
@@ -579,7 +592,9 @@
     "revokeInvite": "Отозвать приглашение",
     "inviteResent": "Приглашение отправлено повторно",
     "inviteRevoked": "Приглашение отозвано",
-    "status": "Статус"
+    "status": "Статус",
+    "noMembersTitle": "Пока нет членов команды",
+    "noMembersDescription": "Пригласите врачей и сотрудников приёмной для совместного управления согласиями."
   },
   "roles": {
     "ADMIN": "Администратор",
@@ -680,7 +695,10 @@
     "noEntries": "Записи не найдены.",
     "exportStarted": "Экспорт начат",
     "exportError": "Ошибка экспорта",
-    "unknownUser": "Неизвестный пользователь"
+    "unknownUser": "Неизвестный пользователь",
+    "noEntriesDescription": "Записи аудита появятся здесь по мере использования платформы командой.",
+    "noEntriesFiltered": "Нет совпадающих записей",
+    "noEntriesFilteredDescription": "Попробуйте изменить фильтры, чтобы найти нужное."
   },
   "auditActions": {
     "CONSENT_CREATED": "{actor} создал форму согласия",
@@ -718,7 +736,10 @@
     "settings": "Настройки",
     "audit": "Журнал аудита",
     "helpCenter": "Центр помощи",
-    "communications": "Коммуникации"
+    "communications": "Коммуникации",
+    "pendingBadge": "{count} ожидающих согласий",
+    "vault": "Хранилище шифрования",
+    "theme": "Сменить тему"
   },
   "sidebar": {
     "overview": "Обзор",
@@ -850,7 +871,14 @@
     "action_logo": "Загрузить",
     "action_team": "Пригласить",
     "action_consent": "Создать",
-    "dismiss": "Закрыть"
+    "dismiss": "Закрыть",
+    "time_vault": "~2 мин",
+    "time_logo": "~1 мин",
+    "time_team": "~2 мин",
+    "time_consent": "~1 мин",
+    "getStarted": "Начать",
+    "skipWelcome": "Пропустить",
+    "collapseTitle": "Прогресс настройки"
   },
   "metadata": {
     "description": "GDPR-совместимые цифровые формы согласия для дерматологических клиник"

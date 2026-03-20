@@ -308,7 +308,17 @@
     "dateOfBirth": "Data urodzenia",
     "emailAddress": "Adres e-mail (opcjonalny)",
     "personalDataNotice": "Twoje dane są przechowywane z szyfrowaniem end-to-end.",
-    "nextToForm": "Dalej"
+    "nextToForm": "Dalej",
+    "introTitle": "Twój formularz zgody",
+    "introWhat": "Czego się spodziewać",
+    "introStep1": "Wprowadź swoje dane osobowe",
+    "introStep2": "Odpowiedz na pytania zdrowotne",
+    "introStep3": "Przejrzyj i podpisz cyfrowo",
+    "introTime": "Około 5 minut",
+    "introBegin": "Zacznij",
+    "successNext": "Co się stanie dalej?",
+    "successNextDetail": "Twoja zgoda została bezpiecznie przesłana i zaszyfrowana. Klinika przechowa podpisany PDF.",
+    "successClose": "Możesz teraz zamknąć to okno."
   },
   "consentTypes": {
     "BOTOX": "Botox / Toksyna botulinowa",
@@ -474,7 +484,10 @@
     "transactions": "transakcje",
     "avg": "Śr.",
     "noRevenue": "Brak zarejestrowanych przychodów",
-    "noRevenueDescription": "Przychody pojawią się po wypełnieniu płatnych formularzy zgody."
+    "noRevenueDescription": "Przychody pojawią się po wypełnieniu płatnych formularzy zgody.",
+    "noDataYetTitle": "Brak danych o zgodach",
+    "noDataYetDescription": "Analityka pojawi się po utworzeniu i wysłaniu formularzy zgody.",
+    "noDataYetAction": "Przejdź do pulpitu"
   },
   "patients": {
     "title": "Pacjenci",
@@ -579,7 +592,9 @@
     "revokeInvite": "Anuluj zaproszenie",
     "inviteResent": "Zaproszenie wysłane ponownie",
     "inviteRevoked": "Zaproszenie anulowane",
-    "status": "Status"
+    "status": "Status",
+    "noMembersTitle": "Brak członków zespołu",
+    "noMembersDescription": "Zaproś lekarzy i personel recepcji do współpracy przy zarządzaniu zgodami."
   },
   "roles": {
     "ADMIN": "Administrator",
@@ -680,7 +695,10 @@
     "noEntries": "Nie znaleziono wpisów.",
     "exportStarted": "Eksport rozpoczęty",
     "exportError": "Błąd eksportu",
-    "unknownUser": "Nieznany użytkownik"
+    "unknownUser": "Nieznany użytkownik",
+    "noEntriesDescription": "Wpisy audytu pojawią się tutaj, gdy zespół zacznie korzystać z platformy.",
+    "noEntriesFiltered": "Brak pasujących wpisów",
+    "noEntriesFilteredDescription": "Spróbuj dostosować filtry, aby znaleźć to, czego szukasz."
   },
   "auditActions": {
     "CONSENT_CREATED": "{actor} utworzył formularz zgody",
@@ -718,7 +736,10 @@
     "settings": "Ustawienia",
     "audit": "Dziennik audytu",
     "helpCenter": "Centrum pomocy",
-    "communications": "Komunikacja"
+    "communications": "Komunikacja",
+    "pendingBadge": "{count} oczekujących zgód",
+    "vault": "Sejf szyfrowania",
+    "theme": "Zmień motyw"
   },
   "sidebar": {
     "overview": "Przegląd",
@@ -850,7 +871,14 @@
     "action_logo": "Prześlij",
     "action_team": "Zaproś",
     "action_consent": "Utwórz",
-    "dismiss": "Zamknij"
+    "dismiss": "Zamknij",
+    "time_vault": "~2 min",
+    "time_logo": "~1 min",
+    "time_team": "~2 min",
+    "time_consent": "~1 min",
+    "getStarted": "Zacznij",
+    "skipWelcome": "Pomiń na razie",
+    "collapseTitle": "Postęp konfiguracji"
   },
   "metadata": {
     "description": "Cyfrowe formularze zgody zgodne z RODO dla praktyk dermatologicznych"

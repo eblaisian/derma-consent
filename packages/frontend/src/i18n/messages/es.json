@@ -308,7 +308,17 @@
     "dateOfBirth": "Fecha de nacimiento",
     "emailAddress": "Correo electrónico (opcional)",
     "personalDataNotice": "Sus datos se almacenan cifrados de extremo a extremo.",
-    "nextToForm": "Continuar"
+    "nextToForm": "Continuar",
+    "introTitle": "Tu formulario de consentimiento",
+    "introWhat": "Qué esperar",
+    "introStep1": "Ingresa tus datos personales",
+    "introStep2": "Responde preguntas de salud",
+    "introStep3": "Revisa y firma digitalmente",
+    "introTime": "Aproximadamente 5 minutos",
+    "introBegin": "Comenzar",
+    "successNext": "¿Qué sucede después?",
+    "successNextDetail": "Tu consentimiento ha sido enviado de forma segura y cifrado. Tu consulta almacenará un PDF firmado.",
+    "successClose": "Ahora puedes cerrar esta ventana."
   },
   "consentTypes": {
     "BOTOX": "Botox / Toxina botulínica",
@@ -474,7 +484,10 @@
     "transactions": "transacciones",
     "avg": "Prom.",
     "noRevenue": "Sin ingresos registrados aún",
-    "noRevenueDescription": "Los ingresos aparecerán cuando los pacientes completen formularios de consentimiento pagados."
+    "noRevenueDescription": "Los ingresos aparecerán cuando los pacientes completen formularios de consentimiento pagados.",
+    "noDataYetTitle": "Sin datos de consentimiento aún",
+    "noDataYetDescription": "Las analíticas se rellenarán una vez que comiences a crear y enviar formularios de consentimiento.",
+    "noDataYetAction": "Ir al panel"
   },
   "patients": {
     "title": "Pacientes",
@@ -579,7 +592,9 @@
     "revokeInvite": "Revocar invitación",
     "inviteResent": "Invitación reenviada",
     "inviteRevoked": "Invitación revocada",
-    "status": "Estado"
+    "status": "Estado",
+    "noMembersTitle": "Sin miembros del equipo aún",
+    "noMembersDescription": "Invita a médicos y personal de recepción para colaborar en la gestión del consentimiento."
   },
   "roles": {
     "ADMIN": "Administrador",
@@ -680,7 +695,10 @@
     "noEntries": "No se encontraron entradas.",
     "exportStarted": "Exportación iniciada",
     "exportError": "Error al exportar",
-    "unknownUser": "Usuario desconocido"
+    "unknownUser": "Usuario desconocido",
+    "noEntriesDescription": "Las entradas de auditoría aparecerán aquí a medida que tu equipo utilice la plataforma.",
+    "noEntriesFiltered": "Sin entradas coincidentes",
+    "noEntriesFilteredDescription": "Intenta ajustar tus filtros para encontrar lo que buscas."
   },
   "auditActions": {
     "CONSENT_CREATED": "{actor} creó un formulario de consentimiento",
@@ -718,7 +736,10 @@
     "settings": "Configuración",
     "audit": "Auditoría",
     "helpCenter": "Centro de ayuda",
-    "communications": "Comunicaciones"
+    "communications": "Comunicaciones",
+    "pendingBadge": "{count} consentimientos pendientes",
+    "vault": "Almacén de cifrado",
+    "theme": "Cambiar tema"
   },
   "sidebar": {
     "overview": "Resumen",
@@ -974,7 +995,14 @@
     "action_logo": "Subir",
     "action_team": "Invitar",
     "action_consent": "Crear",
-    "dismiss": "Cerrar"
+    "dismiss": "Cerrar",
+    "time_vault": "~2 min",
+    "time_logo": "~1 min",
+    "time_team": "~2 min",
+    "time_consent": "~1 min",
+    "getStarted": "Empezar",
+    "skipWelcome": "Omitir por ahora",
+    "collapseTitle": "Progreso de configuración"
   },
   "metadata": {
     "description": "Consentimientos digitales conformes al RGPD para consultas dermatológicas"
