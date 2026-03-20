@@ -6,6 +6,7 @@ import { VaultProvider } from '@/contexts/vault-context';
 import { VaultUnlockModal } from '@/components/vault/vault-unlock-modal';
 import { VaultStatusButton } from '@/components/vault/vault-status-button';
 import { Sidebar } from './sidebar';
+import { PageTransition } from './page-transition';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
@@ -197,7 +198,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Main content */}
         <main id="main-content" className="flex-1 overflow-y-auto p-4 md:p-6">
-          {children}
+          <PageTransition>{children}</PageTransition>
         </main>
       </div>
 

@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { Menu, X, Shield } from 'lucide-react';
 import { AdminSidebar, adminNavItems } from '@/components/layout/admin-sidebar';
+import { PageTransition } from '@/components/layout/page-transition';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
@@ -132,9 +133,7 @@ export default function PlatformAdminLayout({
         )}
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          <div className="animate-fade-in-up">
-            {children}
-          </div>
+          <PageTransition>{children}</PageTransition>
         </main>
       </div>
     </div>
