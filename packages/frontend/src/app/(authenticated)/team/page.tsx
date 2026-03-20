@@ -27,6 +27,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Trash2, UserPlus, RefreshCw, X } from 'lucide-react';
 
 interface TeamMember {
@@ -282,21 +283,6 @@ export default function TeamPage() {
                   <TableCell className="text-right"><Skeleton className="size-8 ml-auto" /></TableCell>
                 </TableRow>
               ))}
-              {members?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={4} className="py-12 text-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="flex size-12 items-center justify-center rounded-full bg-primary-subtle">
-                        <UserPlus className="size-5 text-primary" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">{t('members')}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{t('description')}</p>
-                      </div>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
               {members?.map((member) => (
                 <TableRow key={member.id}>
                   <TableCell>
@@ -363,6 +349,16 @@ export default function TeamPage() {
           </Table>
         </CardContent>
       </Card>
+
+      {!isLoading && members?.length === 0 && (
+        <EmptyState
+          icon={UserPlus}
+          title={t('noMembersTitle')}
+          description={t('noMembersDescription')}
+          actionLabel={t('invite')}
+          onAction={() => setInviteOpen(true)}
+        />
+      )}
 
       <ConfirmDialog
         open={!!memberToRemove}

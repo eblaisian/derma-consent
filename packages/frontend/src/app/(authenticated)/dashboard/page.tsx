@@ -10,10 +10,12 @@ import { API_URL, createAuthFetcher } from '@/lib/api';
 import type { ConsentFormSummary } from '@/lib/types';
 import { NewConsentDialog } from '@/components/dashboard/new-consent-dialog';
 import { OnboardingChecklist } from '@/components/dashboard/onboarding-checklist';
+import { WelcomeModal } from '@/components/dashboard/welcome-modal';
 import { ConsentTable } from '@/components/dashboard/consent-table';
 import { StatCard } from '@/components/ui/stat-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { useVault } from '@/hooks/use-vault';
 import { FileSignature, Clock, CheckCircle, User, AlertCircle, Building2, LogOut } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -21,6 +23,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const { data: session } = useSession();
   const { practiceId, practice, isLoading: practiceLoading } = usePractice();
+  const { requestUnlock } = useVault();
   const [statusFilter, setStatusFilter] = useState('ALL');
 
   const isAdmin = session?.user?.role === 'ADMIN';
@@ -62,6 +65,10 @@ export default function DashboardPage() {
 
   const [onboardingDismissed, setOnboardingDismissed] = useState(() =>
     typeof window !== 'undefined' ? localStorage.getItem('onboarding-complete') === 'true' : false
+  );
+
+  const [welcomeOpen, setWelcomeOpen] = useState(() =>
+    typeof window !== 'undefined' ? !localStorage.getItem('welcome-modal-dismissed') : false
   );
 
   const dismissOnboarding = () => {
@@ -133,6 +140,22 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      {isAdmin && welcomeOpen && !practiceLoading && (
+        <WelcomeModal
+          open={welcomeOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              localStorage.setItem('welcome-modal-dismissed', 'true');
+              setWelcomeOpen(false);
+            }
+          }}
+          onCreateConsent={() => {
+            localStorage.setItem('welcome-modal-dismissed', 'true');
+            setWelcomeOpen(false);
+          }}
+        />
+      )}
+
       {/* Onboarding checklist for admins */}
       {isAdmin && !onboardingDismissed && !consentsLoading && (
         <OnboardingChecklist
@@ -141,6 +164,7 @@ export default function DashboardPage() {
           hasLogo={!!settingsData?.logoUrl}
           hasKeypair={!!practice?.publicKey}
           onDismiss={dismissOnboarding}
+          onVaultSetup={() => requestUnlock()}
         />
       )}
 

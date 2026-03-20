@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { SignaturePad } from '@/components/signature-pad/signature-pad';
-import { Shield, Check } from 'lucide-react';
+import { Shield, Check, User, ClipboardList, PenLine, Clock } from 'lucide-react';
 import {
   type ConsentType,
   getFormFields,
@@ -20,9 +20,9 @@ import { EducationVideo } from './education-video';
 import { quizQuestions } from './quiz-questions';
 import { usePublicAiStatus } from '@/hooks/use-ai-status';
 
-type Step = 'personal' | 'form' | 'quiz' | 'signature' | 'review' | 'submitting';
+type Step = 'intro' | 'personal' | 'form' | 'quiz' | 'signature' | 'review' | 'submitting';
 
-const STEPS = ['personal', 'form', 'quiz', 'signature', 'review'] as const;
+const STEPPER_STEPS = ['personal', 'form', 'quiz', 'signature', 'review'] as const;
 
 export interface PatientIdentity {
   fullName: string;
@@ -56,7 +56,7 @@ export function ConsentForm({
   const tFields = useTranslations('medicalFields');
   const tOptions = useTranslations('medicalOptions');
   const { aiEnabled } = usePublicAiStatus();
-  const [step, setStep] = useState<Step>('personal');
+  const [step, setStep] = useState<Step>('intro');
   const [signatureData, setSignatureData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [patientIdentity, setPatientIdentity] = useState<PatientIdentity>({ fullName: '', dateOfBirth: '', email: '' });
@@ -130,25 +130,29 @@ export function ConsentForm({
     }
   };
 
-  const currentStepIndex = STEPS.indexOf(step === 'submitting' ? 'review' : step);
-  const progress = ((currentStepIndex + 1) / STEPS.length) * 100;
+  const stepperStep = step === 'submitting' ? 'review' : step === 'intro' ? 'personal' : step;
+  const currentStepIndex = STEPPER_STEPS.indexOf(stepperStep as typeof STEPPER_STEPS[number]);
+  const progress = step === 'intro' ? 0 : ((currentStepIndex + 1) / STEPPER_STEPS.length) * 100;
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-semibold leading-tight">
-          {tTypes.has(consentType) ? tTypes(consentType) : consentType}
-        </h1>
-        <p className="mt-1 text-base text-foreground-secondary leading-relaxed">
-          {t('consentDeclaration')} — {t('practice')} {practiceName}
-        </p>
-      </div>
+      {/* Header (hidden on intro) */}
+      {step !== 'intro' && (
+        <div>
+          <h1 className="text-2xl font-semibold leading-tight">
+            {tTypes.has(consentType) ? tTypes(consentType) : consentType}
+          </h1>
+          <p className="mt-1 text-base text-foreground-secondary leading-relaxed">
+            {t('consentDeclaration')} — {t('practice')} {practiceName}
+          </p>
+        </div>
+      )}
 
-      {/* Progress stepper */}
+      {/* Progress stepper (hidden on intro) */}
+      {step !== 'intro' && (
       <nav aria-label="Form progress">
         <div className="flex items-start">
-          {STEPS.map((s, i) => {
+          {STEPPER_STEPS.map((s, i) => {
             const stepLabels = {
               personal: t('stepPersonal'),
               form: t('stepForm'),
@@ -158,7 +162,7 @@ export function ConsentForm({
             };
             const isCurrent = i === currentStepIndex;
             const isComplete = i < currentStepIndex;
-            const isLast = i === STEPS.length - 1;
+            const isLast = i === STEPPER_STEPS.length - 1;
             return (
               <div key={s} className="flex items-start flex-1">
                 <div className="flex flex-col items-center gap-1.5">
@@ -190,20 +194,23 @@ export function ConsentForm({
           })}
         </div>
       </nav>
+      )}
 
-      {/* Security badge + AI Explainer */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Shield className="h-3.5 w-3.5 text-success" />
-          {t('endToEndEncrypted')}
+      {/* Security badge + AI Explainer (hidden on intro) */}
+      {step !== 'intro' && (
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Shield className="h-3.5 w-3.5 text-success" />
+            {t('endToEndEncrypted')}
+          </div>
+          {step === 'form' && aiEnabled && (
+            <ConsentExplainer
+              consentType={consentType}
+              token={token}
+            />
+          )}
         </div>
-        {step === 'form' && aiEnabled && (
-          <ConsentExplainer
-            consentType={consentType}
-            token={token}
-          />
-        )}
-      </div>
+      )}
 
       {error && (
         <div className="bg-destructive-subtle text-destructive text-sm p-3 rounded-lg">
@@ -214,6 +221,52 @@ export function ConsentForm({
       {/* Education Video (shown above form when configured) */}
       {step === 'form' && videoUrl && (
         <EducationVideo url={videoUrl} />
+      )}
+
+      {/* Step: Intro */}
+      {step === 'intro' && (
+        <div className="space-y-6">
+          <div className="text-center space-y-2">
+            <h2 className="text-xl font-semibold">{t('introTitle')}</h2>
+            <p className="text-base text-muted-foreground">
+              {tTypes.has(consentType) ? tTypes(consentType) : consentType} — {practiceName}
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-muted/40 border border-border/30 p-5 space-y-4">
+            <p className="text-sm font-medium">{t('introWhat')}</p>
+            <div className="space-y-3">
+              {[
+                { icon: User, text: t('introStep1') },
+                { icon: ClipboardList, text: t('introStep2') },
+                { icon: PenLine, text: t('introStep3') },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                    <item.icon className="size-4 text-primary" />
+                  </div>
+                  <span className="text-sm">{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <Clock className="size-4" />
+            {t('introTime')}
+          </div>
+
+          <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+            <Shield className="size-3.5 text-success" />
+            {t('endToEndEncrypted')}
+          </div>
+
+          <div className="flex justify-center pt-2">
+            <Button size="lg" onClick={() => setStep('personal')}>
+              {t('introBegin')}
+            </Button>
+          </div>
+        </div>
       )}
 
       {/* Step 0: Personal Details */}

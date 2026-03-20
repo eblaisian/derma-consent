@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useTranslations, useFormatter } from 'next-intl';
 import useSWR from 'swr';
 import { API_URL, createAuthFetcher } from '@/lib/api';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   XAxis,
@@ -21,7 +23,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatCard } from '@/components/ui/stat-card';
 import { AiInsightsCard } from '@/components/analytics/ai-insights-card';
-import { FileSignature, Clock, CheckCircle, User, CreditCard, TrendingUp, PieChart as PieChartIcon, Activity } from 'lucide-react';
+import { FileSignature, Clock, CheckCircle, User, CreditCard, TrendingUp, PieChart as PieChartIcon, Activity, BarChart3 } from 'lucide-react';
 
 const CHART_COLORS = [
   'oklch(0.50 0.12 185)',   // primary teal
@@ -70,6 +72,7 @@ export default function AnalyticsPage() {
   const t = useTranslations('analytics');
   const tTypes = useTranslations('consentTypes');
   const format = useFormatter();
+  const router = useRouter();
   const { data: session } = useSession();
   const authFetcher = createAuthFetcher(session?.accessToken);
   const [dateRange, setDateRange] = useState<DateRange>('30d');
@@ -108,6 +111,26 @@ export default function AnalyticsPage() {
     name: tTypes.has(item.type as Parameters<typeof tTypes>[0]) ? tTypes(item.type as Parameters<typeof tTypes>[0]) : item.type,
     value: item.count,
   })) || [];
+
+  if (!isLoading && overview?.total === 0) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground text-pretty">
+            {t('description')}
+          </p>
+        </div>
+        <EmptyState
+          icon={BarChart3}
+          title={t('noDataYetTitle')}
+          description={t('noDataYetDescription')}
+          actionLabel={t('noDataYetAction')}
+          onAction={() => router.push('/dashboard')}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

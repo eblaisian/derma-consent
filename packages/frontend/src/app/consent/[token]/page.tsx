@@ -191,12 +191,31 @@ export default function ConsentPage({
 
   if (submitted) {
     return (
-      <StatusPage
-        icon={<CheckCircle className="size-8 text-success" strokeWidth={1.5} />}
-        title={t('thankYou')}
-        message={t('successMessage')}
-        variant="success"
-      />
+      <div className="flex items-center justify-center min-h-dvh bg-muted/30">
+        <div className="text-center space-y-6 max-w-sm px-6">
+          <div className="mx-auto rounded-2xl border border-border/50 bg-card shadow-[var(--shadow-sm)] p-10">
+            {data?.logoUrl && (
+              <img
+                src={data.logoUrl as string}
+                alt={data?.practice?.name || 'Practice'}
+                className="h-10 w-auto mx-auto mb-6 rounded-lg"
+              />
+            )}
+            <div className="mx-auto flex size-20 items-center justify-center rounded-full ring-1 ring-success/20 bg-success-subtle">
+              <CheckCircle className="size-8 text-success" strokeWidth={1.5} />
+            </div>
+            <div className="space-y-2 mt-6">
+              <h1 className="text-xl font-semibold tracking-tight text-balance">{t('thankYou')}</h1>
+              <p className="text-sm text-muted-foreground leading-relaxed text-pretty">{t('successMessage')}</p>
+            </div>
+            <div className="mt-6 rounded-lg bg-muted/50 border border-border/30 p-4 text-left space-y-2">
+              <p className="text-sm font-medium">{t('successNext')}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">{t('successNextDetail')}</p>
+              <p className="text-xs text-muted-foreground">{t('successClose')}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 

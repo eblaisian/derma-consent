@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Download, ScrollText, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface AuditLogEntry {
@@ -253,27 +254,24 @@ export default function AuditPage() {
                   </TableRow>
                 );
               })}
-              {!isLoading && (!data?.items || data.items.length === 0) && (
-                <TableRow>
-                  <TableCell colSpan={hasSignificantIps ? 4 : 3} className="h-48">
-                    <div className="flex flex-col items-center justify-center gap-3 text-center">
-                      <div className="flex size-12 items-center justify-center rounded-full bg-muted">
-                        <ScrollText className="size-5 text-muted-foreground" strokeWidth={1.5} />
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium">{t('noEntries')}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {actionFilter || startDate || endDate
-                            ? t('description')
-                            : t('description')}
-                        </p>
-                      </div>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
             </TableBody>
           </Table>
+
+          {!isLoading && (!data?.items || data.items.length === 0) && (
+            actionFilter || startDate || endDate ? (
+              <EmptyState
+                icon={ScrollText}
+                title={t('noEntriesFiltered')}
+                description={t('noEntriesFilteredDescription')}
+              />
+            ) : (
+              <EmptyState
+                icon={ScrollText}
+                title={t('noEntries')}
+                description={t('noEntriesDescription')}
+              />
+            )
+          )}
 
           {data && data.totalPages > 1 && (
             <div className="flex items-center justify-between border-t pt-4 mt-4">

@@ -308,7 +308,17 @@
     "dateOfBirth": "Geburtsdatum",
     "emailAddress": "E-Mail-Adresse (optional)",
     "personalDataNotice": "Ihre Angaben werden Ende-zu-Ende-verschlüsselt gespeichert.",
-    "nextToForm": "Weiter"
+    "nextToForm": "Weiter",
+    "introTitle": "Ihr Einwilligungsformular",
+    "introWhat": "Was Sie erwartet",
+    "introStep1": "Persönliche Daten eingeben",
+    "introStep2": "Gesundheitsfragen beantworten",
+    "introStep3": "Prüfen und digital unterschreiben",
+    "introTime": "Etwa 5 Minuten",
+    "introBegin": "Beginnen",
+    "successNext": "Wie geht es weiter?",
+    "successNextDetail": "Ihre Einwilligung wurde sicher übermittelt und verschlüsselt. Ihre Praxis speichert eine signierte PDF.",
+    "successClose": "Sie können dieses Fenster jetzt schließen."
   },
   "consentTypes": {
     "BOTOX": "Botox / Botulinumtoxin",
@@ -474,7 +484,10 @@
     "transactions": "Transaktionen",
     "avg": "Durchschn.",
     "noRevenue": "Noch keine Einnahmen verzeichnet",
-    "noRevenueDescription": "Einnahmen werden angezeigt, sobald Patienten kostenpflichtige Einwilligungsformulare ausfüllen."
+    "noRevenueDescription": "Einnahmen werden angezeigt, sobald Patienten kostenpflichtige Einwilligungsformulare ausfüllen.",
+    "noDataYetTitle": "Noch keine Einwilligungsdaten",
+    "noDataYetDescription": "Die Analytik wird befüllt, sobald Sie Einwilligungsformulare erstellen und versenden.",
+    "noDataYetAction": "Zum Dashboard"
   },
   "patients": {
     "title": "Patienten",
@@ -579,7 +592,9 @@
     "revokeInvite": "Einladung widerrufen",
     "inviteResent": "Einladung erneut gesendet",
     "inviteRevoked": "Einladung widerrufen",
-    "status": "Status"
+    "status": "Status",
+    "noMembersTitle": "Noch keine Teammitglieder",
+    "noMembersDescription": "Laden Sie Ärzte und Empfangspersonal ein, um gemeinsam Einwilligungen zu verwalten."
   },
   "roles": {
     "ADMIN": "Administrator",
@@ -679,6 +694,9 @@
     "pageOf": "Seite {page} von {totalPages}",
     "next": "Weiter",
     "noEntries": "Keine Einträge gefunden.",
+    "noEntriesDescription": "Audit-Einträge erscheinen hier, sobald Ihr Team die Plattform nutzt.",
+    "noEntriesFiltered": "Keine passenden Einträge",
+    "noEntriesFilteredDescription": "Passen Sie Ihre Filter an, um Ergebnisse zu finden.",
     "exportStarted": "Export gestartet",
     "exportError": "Fehler beim Export",
     "unknownUser": "Unbekannter Benutzer"
@@ -852,7 +870,14 @@
     "action_logo": "Hochladen",
     "action_team": "Einladen",
     "action_consent": "Erstellen",
-    "dismiss": "Schließen"
+    "dismiss": "Schließen",
+    "time_vault": "~2 Min.",
+    "time_logo": "~1 Min.",
+    "time_team": "~2 Min.",
+    "time_consent": "~1 Min.",
+    "getStarted": "Loslegen",
+    "skipWelcome": "Später",
+    "collapseTitle": "Einrichtungsfortschritt"
   },
   "metadata": {
     "description": "DSGVO-konforme digitale Einwilligungen für Dermatologie-Praxen"

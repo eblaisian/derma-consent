@@ -308,7 +308,17 @@
     "dateOfBirth": "Date of birth",
     "emailAddress": "Email address (optional)",
     "personalDataNotice": "Your details are stored end-to-end encrypted.",
-    "nextToForm": "Continue"
+    "nextToForm": "Continue",
+    "introTitle": "Your consent form",
+    "introWhat": "What to expect",
+    "introStep1": "Enter your personal details",
+    "introStep2": "Answer health questions",
+    "introStep3": "Review and sign digitally",
+    "introTime": "About 5 minutes",
+    "introBegin": "Begin",
+    "successNext": "What happens next?",
+    "successNextDetail": "Your consent has been securely submitted and encrypted. Your practice will store a signed PDF.",
+    "successClose": "You may now close this window."
   },
   "consentTypes": {
     "BOTOX": "Botox / Botulinum toxin",
@@ -474,7 +484,10 @@
     "transactions": "transactions",
     "avg": "Avg",
     "noRevenue": "No revenue recorded yet",
-    "noRevenueDescription": "Revenue will appear once patients complete paid consent forms."
+    "noRevenueDescription": "Revenue will appear once patients complete paid consent forms.",
+    "noDataYetTitle": "No consent data yet",
+    "noDataYetDescription": "Analytics will populate once you start creating and sending consent forms.",
+    "noDataYetAction": "Go to Dashboard"
   },
   "patients": {
     "title": "Patients",
@@ -579,7 +592,9 @@
     "revokeInvite": "Revoke invitation",
     "inviteResent": "Invitation resent",
     "inviteRevoked": "Invitation revoked",
-    "status": "Status"
+    "status": "Status",
+    "noMembersTitle": "No team members yet",
+    "noMembersDescription": "Invite doctors and reception staff to collaborate on consent management."
   },
   "roles": {
     "ADMIN": "Administrator",
@@ -679,6 +694,9 @@
     "pageOf": "Page {page} of {totalPages}",
     "next": "Next",
     "noEntries": "No entries found.",
+    "noEntriesDescription": "Audit entries will appear here as your team uses the platform.",
+    "noEntriesFiltered": "No matching entries",
+    "noEntriesFilteredDescription": "Try adjusting your filters to find what you're looking for.",
     "exportStarted": "Export started",
     "exportError": "Error exporting",
     "unknownUser": "Unknown user"
@@ -852,7 +870,14 @@
     "action_logo": "Upload",
     "action_team": "Invite",
     "action_consent": "Create",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "time_vault": "~2 min",
+    "time_logo": "~1 min",
+    "time_team": "~2 min",
+    "time_consent": "~1 min",
+    "getStarted": "Get Started",
+    "skipWelcome": "Skip for now",
+    "collapseTitle": "Setup progress"
   },
   "metadata": {
     "description": "GDPR-compliant digital consent forms for dermatology practices"
