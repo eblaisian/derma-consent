@@ -207,7 +207,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         )}
 
         {/* Main content */}
-        <main id="main-content" className="flex-1 overflow-y-auto p-4 md:p-6 [scrollbar-gutter:stable]">
+        <main id="main-content" className="flex-1 overflow-y-auto p-4 md:p-6" style={{ scrollbarGutter: 'stable' }}>
           <PageTransition>{children}</PageTransition>
         </main>
       </div>
