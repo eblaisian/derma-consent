@@ -5,8 +5,8 @@ import { useEffect, useRef } from 'react';
 
 /**
  * Wraps page content with a fade-in-up animation that re-triggers on route changes.
- * Uses `key={pathname}` to force React to remount the wrapper, which naturally
- * re-triggers the CSS animation on every navigation.
+ * Uses key={pathname} to force React to remount the wrapper on navigation,
+ * which naturally re-triggers the CSS animation.
  * Respects prefers-reduced-motion via the global CSS media query.
  */
 export function PageTransition({ children }: { children: React.ReactNode }) {
@@ -19,7 +19,11 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return (
-    <div ref={mainRef} key={pathname} className="animate-page-enter">
+    <div
+      ref={mainRef}
+      key={pathname}
+      className="animate-fade-in-up"
+    >
       {children}
     </div>
   );
