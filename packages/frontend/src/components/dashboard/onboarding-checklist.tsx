@@ -43,12 +43,12 @@ export function OnboardingChecklist({ hasConsents, teamCount, hasLogo, hasKeypai
   if (allComplete) return null;
 
   return (
-    <div className="rounded-xl border border-primary/20 bg-primary/[0.02] shadow-[var(--shadow-sm)]">
+    <div className="rounded-xl border border-primary/20 bg-primary/[0.02] shadow-[var(--shadow-sm)] overflow-hidden">
       {/* Header — always visible, acts as toggle */}
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center gap-3 px-5 py-4 text-left cursor-pointer group"
+        className="flex w-full items-center gap-3 px-5 py-4 text-left cursor-pointer group [contain:layout]"
       >
         <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
           <CheckCircle2 className="size-4 text-primary" />
