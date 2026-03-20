@@ -25,9 +25,10 @@ import type { TreatmentPlanSummary } from '@/lib/types';
 interface Props {
   plans: TreatmentPlanSummary[];
   onRefresh: () => void;
+  patientEmail?: string | null;
 }
 
-export function TreatmentHistory({ plans, onRefresh }: Props) {
+export function TreatmentHistory({ plans, onRefresh, patientEmail }: Props) {
   const t = useTranslations('treatmentPlan');
   const tTypes = useTranslations('consentTypes');
   const format = useFormatter();
@@ -97,7 +98,7 @@ export function TreatmentHistory({ plans, onRefresh }: Props) {
               )}
             </div>
             <div className="flex items-center gap-1 shrink-0">
-              <AftercareDialog treatmentType={plan.type} />
+              <AftercareDialog treatmentType={plan.type} patientEmail={patientEmail} />
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button

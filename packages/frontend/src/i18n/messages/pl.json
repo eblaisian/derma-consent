@@ -1306,7 +1306,20 @@
     "print": "Drukuj",
     "regenerate": "Wygeneruj ponownie",
     "editHint": "Sprawdź i edytuj instrukcje przed przekazaniem pacjentowi.",
-    "error": "Nie można wygenerować instrukcji."
+    "preview": "Podgląd",
+    "edit": "Edytuj",
+    "error": "Nie można wygenerować instrukcji.",
+    "aiGenerated": "Wygenerowano przez AI",
+    "regenerateConfirm": "Dokonałeś zmian. Ponowne generowanie zastąpi Twoje modyfikacje. Kontynuować?",
+    "regenerateConfirmTitle": "Wygenerować instrukcje ponownie?",
+    "cancel": "Anuluj",
+    "printDisclaimer": "Te instrukcje zostały wygenerowane z pomocą AI i zweryfikowane przez lekarza.",
+    "sendToPatient": "Wyślij do pacjenta",
+    "sendConfirmTitle": "Wysłać instrukcje?",
+    "sendConfirmDescription": "Instrukcje zostaną wysłane e-mailem na poniższy adres.",
+    "sendEmailLabel": "Adres e-mail",
+    "sendSuccess": "Instrukcje wysłane pomyślnie.",
+    "sendError": "Nie udało się wysłać instrukcji."
   },
   "retention": {
     "widgetTitle": "Zaległe kontrole",

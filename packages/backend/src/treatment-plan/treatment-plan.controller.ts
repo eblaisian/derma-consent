@@ -16,6 +16,7 @@ import {
   CreateTemplateDto,
   UpdateTemplateDto,
   GenerateAftercareDto,
+  SendAftercareDto,
 } from './treatment-plan.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -120,5 +121,14 @@ export class TreatmentPlanController {
     @CurrentUser() user: CurrentUserPayload,
   ) {
     return this.service.generateAftercare(user.practiceId!, user.userId, dto);
+  }
+
+  @Post('treatment-plans/aftercare/send')
+  @Roles('ADMIN', 'ARZT')
+  sendAftercare(
+    @Body() dto: SendAftercareDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    return this.service.sendAftercare(user.practiceId!, user.userId, dto);
   }
 }

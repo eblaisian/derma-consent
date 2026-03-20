@@ -1306,7 +1306,20 @@
     "print": "Imprimer",
     "regenerate": "Régénérer",
     "editHint": "Vérifiez et modifiez les instructions avant de les partager avec le patient.",
-    "error": "Impossible de générer les instructions."
+    "preview": "Aperçu",
+    "edit": "Modifier",
+    "error": "Impossible de générer les instructions.",
+    "aiGenerated": "Généré par IA",
+    "regenerateConfirm": "Vous avez effectué des modifications. La régénération remplacera vos changements. Continuer ?",
+    "regenerateConfirmTitle": "Régénérer les instructions ?",
+    "cancel": "Annuler",
+    "printDisclaimer": "Ces instructions ont été générées avec l'aide de l'IA et examinées par votre médecin.",
+    "sendToPatient": "Envoyer au patient",
+    "sendConfirmTitle": "Envoyer les instructions ?",
+    "sendConfirmDescription": "Les instructions seront envoyées par e-mail à l'adresse ci-dessous.",
+    "sendEmailLabel": "Adresse e-mail",
+    "sendSuccess": "Instructions envoyées avec succès.",
+    "sendError": "Échec de l'envoi des instructions."
   },
   "retention": {
     "widgetTitle": "Suivis en retard",

@@ -359,7 +359,7 @@ export default function PatientDetailPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <TreatmentHistory plans={plans} onRefresh={() => mutatePlans()} />
+            <TreatmentHistory plans={plans} onRefresh={() => mutatePlans()} patientEmail={decryptedEmail} />
           </CardContent>
         </Card>
       )}

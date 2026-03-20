@@ -119,6 +119,31 @@ export class UpdateTemplateDto {
 // --- Aftercare ---
 
 const SUPPORTED_LOCALES = ['de', 'en', 'es', 'fr', 'ar', 'tr', 'pl', 'ru'];
+const SUPPORTED_CHANNELS = ['email', 'sms', 'whatsapp'];
+
+export class SendAftercareDto {
+  @IsString()
+  htmlContent!: string;
+
+  @IsOptional()
+  @IsString()
+  subject?: string;
+
+  @IsIn(SUPPORTED_CHANNELS)
+  channel!: string;
+
+  @IsOptional()
+  @IsString()
+  recipientEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  recipientPhone?: string;
+
+  @IsOptional()
+  @IsIn(SUPPORTED_LOCALES)
+  locale?: string;
+}
 
 export class GenerateAftercareDto {
   @IsEnum(ConsentType)

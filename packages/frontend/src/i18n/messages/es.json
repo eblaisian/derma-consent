@@ -1306,7 +1306,20 @@
     "print": "Imprimir",
     "regenerate": "Regenerar",
     "editHint": "Revise y edite las instrucciones antes de compartirlas con el paciente.",
-    "error": "No se pudieron generar las instrucciones."
+    "preview": "Vista previa",
+    "edit": "Editar",
+    "error": "No se pudieron generar las instrucciones.",
+    "aiGenerated": "Generado por IA",
+    "regenerateConfirm": "Ha realizado cambios. Regenerar reemplazará sus modificaciones. ¿Continuar?",
+    "regenerateConfirmTitle": "¿Regenerar instrucciones?",
+    "cancel": "Cancelar",
+    "printDisclaimer": "Estas instrucciones fueron generadas con asistencia de IA y revisadas por su médico.",
+    "sendToPatient": "Enviar al paciente",
+    "sendConfirmTitle": "¿Enviar instrucciones de cuidado?",
+    "sendConfirmDescription": "Las instrucciones se enviarán por correo electrónico a la dirección indicada.",
+    "sendEmailLabel": "Correo electrónico",
+    "sendSuccess": "Instrucciones enviadas correctamente.",
+    "sendError": "No se pudieron enviar las instrucciones."
   },
   "retention": {
     "widgetTitle": "Seguimientos pendientes",

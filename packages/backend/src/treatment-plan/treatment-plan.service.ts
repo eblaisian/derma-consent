@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 import { AiService } from '../ai/ai.service';
+import { NotificationService } from '../notifications/notification.service';
 import { ErrorCode, errorPayload } from '../common/error-codes';
 import {
   CreateTreatmentPlanDto,
@@ -9,6 +10,7 @@ import {
   CreateTemplateDto,
   UpdateTemplateDto,
   GenerateAftercareDto,
+  SendAftercareDto,
 } from './treatment-plan.dto';
 
 @Injectable()
@@ -17,6 +19,7 @@ export class TreatmentPlanService {
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
     private readonly ai: AiService,
+    private readonly notifications: NotificationService,
   ) {}
 
   // --- Treatment Plans ---
@@ -238,9 +241,11 @@ export class TreatmentPlanService {
         role: 'system',
         content: [
           'You are a dermatology aftercare specialist at a German practice.',
-          'Write practical, patient-friendly post-treatment instructions.',
-          'Use numbered steps (1, 2, 3...). Keep it concise — 5-8 steps.',
-          'Include: immediate aftercare, things to avoid, expected side effects, when to call the doctor.',
+          'Write practical, patient-friendly post-treatment instructions using markdown formatting.',
+          'Structure with ## headings for sections (e.g., ## Immediate Care, ## What to Avoid, ## Expected Side Effects, ## When to Contact Your Doctor).',
+          'Use numbered lists (1. 2. 3.) for step-by-step instructions within each section.',
+          'Use **bold** for critical warnings or important terms.',
+          'Keep it concise — 5-8 steps total across all sections.',
           `Respond entirely in ${language}. Use formal address.`,
         ].join(' '),
       },
@@ -258,5 +263,38 @@ export class TreatmentPlanService {
     });
 
     return { content };
+  }
+
+  async sendAftercare(
+    practiceId: string,
+    userId: string,
+    dto: SendAftercareDto,
+  ): Promise<{ success: true }> {
+    const channel = dto.channel as 'email' | 'sms' | 'whatsapp';
+
+    if (channel === 'email' && !dto.recipientEmail) {
+      throw new BadRequestException('recipientEmail is required for email channel');
+    }
+    if ((channel === 'sms' || channel === 'whatsapp') && !dto.recipientPhone) {
+      throw new BadRequestException('recipientPhone is required for sms/whatsapp channel');
+    }
+
+    await this.notifications.sendCustomMessage({
+      practiceId,
+      recipientEmail: dto.recipientEmail,
+      recipientPhone: dto.recipientPhone,
+      channel,
+      subject: dto.subject,
+      message: dto.htmlContent,
+    });
+
+    await this.audit.log({
+      practiceId,
+      userId,
+      action: 'TREATMENT_PLAN_CREATED',
+      metadata: { subAction: 'aftercare_sent', channel, locale: dto.locale },
+    });
+
+    return { success: true };
   }
 }

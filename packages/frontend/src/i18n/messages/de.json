@@ -1310,7 +1310,20 @@
     "print": "Drucken",
     "regenerate": "Neu generieren",
     "editHint": "Überprüfen und bearbeiten Sie die Anweisungen, bevor Sie sie an den Patienten weitergeben.",
-    "error": "Nachsorgeanweisungen konnten nicht generiert werden."
+    "preview": "Vorschau",
+    "edit": "Bearbeiten",
+    "error": "Nachsorgeanweisungen konnten nicht generiert werden.",
+    "aiGenerated": "KI-generiert",
+    "regenerateConfirm": "Sie haben Änderungen vorgenommen. Beim Neugenerieren gehen Ihre Änderungen verloren. Fortfahren?",
+    "regenerateConfirmTitle": "Anweisungen neu generieren?",
+    "cancel": "Abbrechen",
+    "printDisclaimer": "Diese Anweisungen wurden mit KI-Unterstützung erstellt und von Ihrem Arzt überprüft.",
+    "sendToPatient": "An Patient senden",
+    "sendConfirmTitle": "Nachsorgeanweisungen senden?",
+    "sendConfirmDescription": "Die Nachsorgeanweisungen werden per E-Mail an die unten angegebene Adresse gesendet.",
+    "sendEmailLabel": "E-Mail-Adresse",
+    "sendSuccess": "Nachsorgeanweisungen erfolgreich gesendet.",
+    "sendError": "Nachsorgeanweisungen konnten nicht gesendet werden."
   },
   "retention": {
     "widgetTitle": "Überfällige Nachuntersuchungen",

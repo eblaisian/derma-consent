@@ -1306,7 +1306,20 @@
     "print": "Yazdır",
     "regenerate": "Yeniden oluştur",
     "editHint": "Hastayla paylaşmadan önce talimatları gözden geçirin ve düzenleyin.",
-    "error": "Bakım talimatları oluşturulamadı."
+    "preview": "Önizleme",
+    "edit": "Düzenle",
+    "error": "Bakım talimatları oluşturulamadı.",
+    "aiGenerated": "Yapay Zeka ile Oluşturuldu",
+    "regenerateConfirm": "Düzenlemeler yaptınız. Yeniden oluşturma değişikliklerinizi değiştirecektir. Devam edilsin mi?",
+    "regenerateConfirmTitle": "Talimatları yeniden oluştur?",
+    "cancel": "İptal",
+    "printDisclaimer": "Bu talimatlar yapay zeka desteğiyle oluşturulmuş ve doktorunuz tarafından incelenmiştir.",
+    "sendToPatient": "Hastaya Gönder",
+    "sendConfirmTitle": "Bakım talimatlarını gönder?",
+    "sendConfirmDescription": "Bakım talimatları aşağıdaki adrese e-posta ile gönderilecek.",
+    "sendEmailLabel": "E-posta adresi",
+    "sendSuccess": "Bakım talimatları başarıyla gönderildi.",
+    "sendError": "Bakım talimatları gönderilemedi."
   },
   "retention": {
     "widgetTitle": "Gecikmiş Kontroller",

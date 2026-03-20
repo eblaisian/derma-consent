@@ -1310,7 +1310,20 @@
     "print": "Print",
     "regenerate": "Regenerate",
     "editHint": "Review and edit the instructions before sharing with the patient.",
-    "error": "Could not generate aftercare instructions."
+    "preview": "Preview",
+    "edit": "Edit",
+    "error": "Could not generate aftercare instructions.",
+    "aiGenerated": "AI Generated",
+    "regenerateConfirm": "You have made edits. Regenerating will replace your changes. Continue?",
+    "regenerateConfirmTitle": "Regenerate instructions?",
+    "cancel": "Cancel",
+    "printDisclaimer": "These instructions were generated with AI assistance and reviewed by your physician.",
+    "sendToPatient": "Send to Patient",
+    "sendConfirmTitle": "Send aftercare instructions?",
+    "sendConfirmDescription": "The aftercare instructions will be sent via email to the address below.",
+    "sendEmailLabel": "Recipient email",
+    "sendSuccess": "Aftercare instructions sent successfully.",
+    "sendError": "Failed to send aftercare instructions."
   },
   "retention": {
     "widgetTitle": "Overdue Follow-ups",

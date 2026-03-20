@@ -19,11 +19,12 @@ import type { TreatmentPlanSummary, TreatmentPlanData } from '@/lib/types';
 interface Props {
   plan: TreatmentPlanSummary;
   onDelete?: () => void;
+  patientEmail?: string | null;
 }
 
 const SVG_DIAGRAM_TYPES = new Set(['face-front', 'face-side', 'body-front']);
 
-export function TreatmentSummary({ plan, onDelete }: Props) {
+export function TreatmentSummary({ plan, onDelete, patientEmail }: Props) {
   const t = useTranslations('treatmentPlan');
   const tTypes = useTranslations('consentTypes');
   const tTech = useTranslations('techniques');
@@ -140,7 +141,7 @@ export function TreatmentSummary({ plan, onDelete }: Props) {
   // --- Actions footer ---
   const actions = (
     <div className="flex items-center justify-between pt-1">
-      <AftercareDialog treatmentType={plan.type} />
+      <AftercareDialog treatmentType={plan.type} patientEmail={patientEmail} />
       {onDelete && (
         <Button variant="ghost" size="sm" onClick={onDelete} className="gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10">
           <Trash2 className="h-3.5 w-3.5" />
