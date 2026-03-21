@@ -96,6 +96,7 @@ export class AuthService {
         name: dto.name,
         passwordHash,
         emailVerified: true,
+        ...(dto.locale && { locale: dto.locale }),
       },
     });
 
@@ -403,6 +404,7 @@ export class AuthService {
         email: true,
         name: true,
         role: true,
+        locale: true,
         emailVerified: true,
         twoFactorEnabled: true,
         createdAt: true,
@@ -410,11 +412,14 @@ export class AuthService {
     });
   }
 
-  async updateProfile(userId: string, dto: { name?: string }) {
+  async updateProfile(userId: string, dto: { name?: string; locale?: string }) {
     return this.prisma.user.update({
       where: { id: userId },
-      data: { ...(dto.name !== undefined && { name: dto.name }) },
-      select: { id: true, email: true, name: true, role: true },
+      data: {
+        ...(dto.name !== undefined && { name: dto.name }),
+        ...(dto.locale !== undefined && { locale: dto.locale }),
+      },
+      select: { id: true, email: true, name: true, role: true, locale: true },
     });
   }
 

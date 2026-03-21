@@ -62,6 +62,7 @@ export class CommunicationsService {
     recipient: string,
     message: string,
     subject: string,
+    userId?: string,
   ): Promise<{ sent: boolean }> {
     await this.notificationService.sendCustomMessage({
       practiceId,
@@ -69,6 +70,8 @@ export class CommunicationsService {
       ...(channel === 'email' ? { recipientEmail: recipient } : { recipientPhone: recipient }),
       message,
       subject,
+      isHtml: false,
+      userId,
     });
     return { sent: true };
   }

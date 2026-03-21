@@ -47,6 +47,7 @@ export class ConsentController {
         practiceName: consent.practiceName,
         consentLink: link,
         expiryDays: 7,
+        userId: user.userId,
       }).catch(() => {});
     }
 

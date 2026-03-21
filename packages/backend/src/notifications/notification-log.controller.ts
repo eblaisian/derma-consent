@@ -104,6 +104,7 @@ export class NotificationLogController {
           recipient,
           'DermaConsent — Test Email',
           'This is a test email from DermaConsent.\n\nIf you are reading this, your email configuration is working correctly.\n\nNo action required.',
+          { locale: 'en' },
         );
         return { success: true, message: `Test email sent to ${recipient}` };
       }

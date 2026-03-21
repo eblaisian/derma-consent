@@ -7,10 +7,10 @@ import { subscriptionTemplate, getSubscriptionSubject } from './templates/subscr
 import { passwordResetTemplate, getPasswordResetSubject } from './templates/password-reset.template';
 import { emailVerificationTemplate, getEmailVerificationSubject } from './templates/email-verification.template';
 import { consentReminderTemplate, getConsentReminderSubject } from './templates/consent-reminder.template';
+import { baseLayout, stripHtmlToText } from './templates/base-layout';
+import type { EmailLocale } from './templates/types';
 import type { IEmailTransport } from './transports';
 import { ResendTransport } from './transports';
-
-type Locale = 'de' | 'en' | 'es' | 'fr';
 
 @Injectable()
 export class EmailService {
@@ -24,96 +24,148 @@ export class EmailService {
     return new ResendTransport(this.platformConfig);
   }
 
-  private async send(to: string, subject: string, html: string) {
+  private async send(opts: {
+    to: string;
+    subject: string;
+    html: string;
+    text?: string;
+    fromNameOverride?: string;
+    replyTo?: string;
+  }) {
     const transport = await this.getTransport();
 
     if (!transport) {
-      this.logger.log(`[NO-OP] Email to ${to}: ${subject}`);
+      this.logger.log(`[NO-OP] Email to ${opts.to}: ${opts.subject}`);
       return;
     }
 
     try {
-      const fromName = (await this.platformConfig.get('email.fromName')) || 'DermaConsent';
+      const fromName = opts.fromNameOverride
+        || (await this.platformConfig.get('email.fromName'))
+        || 'DermaConsent';
       const fromAddress = (await this.platformConfig.get('email.fromAddress')) || 'noreply@eblaisian.com';
+      const text = opts.text || stripHtmlToText(opts.html);
+
       await transport.send({
         from: `${fromName} <${fromAddress}>`,
-        to,
-        subject,
-        html,
+        to: opts.to,
+        subject: opts.subject,
+        html: opts.html,
+        text,
+        replyTo: opts.replyTo,
       });
-      this.logger.log(`Email sent to ${to}: ${subject}`);
+      this.logger.log(`Email sent to ${opts.to}: ${opts.subject}`);
     } catch (error) {
-      this.logger.error(`Failed to send email to ${to}: ${error}`);
+      this.logger.error(`Failed to send email to ${opts.to}: ${error}`);
       throw error;
     }
   }
 
-  async sendConsentLink(to: string, practiceName: string, consentLink: string, expiryDays: number, locale: Locale = 'de') {
-    await this.send(
+  async sendConsentLink(
+    to: string,
+    practiceName: string,
+    consentLink: string,
+    expiryDays: number,
+    locale: EmailLocale = 'de',
+    brandColor?: string,
+  ) {
+    await this.send({
       to,
-      getConsentLinkSubject(practiceName, locale),
-      consentLinkTemplate(practiceName, consentLink, expiryDays, locale),
-    );
+      subject: getConsentLinkSubject(practiceName, locale),
+      html: consentLinkTemplate(practiceName, consentLink, expiryDays, locale, brandColor),
+      fromNameOverride: `${practiceName} via DermaConsent`,
+    });
   }
 
-  async sendInvite(to: string, practiceName: string, role: string, inviteLink: string, locale: Locale = 'de') {
-    await this.send(
+  async sendInvite(to: string, practiceName: string, role: string, inviteLink: string, locale: EmailLocale = 'de') {
+    await this.send({
       to,
-      getInviteSubject(practiceName, locale),
-      inviteTemplate(practiceName, role, inviteLink, locale),
-    );
+      subject: getInviteSubject(practiceName, locale),
+      html: inviteTemplate(practiceName, role, inviteLink, locale),
+    });
   }
 
-  async sendWelcome(to: string, userName: string, locale: Locale = 'de') {
-    await this.send(
+  async sendWelcome(to: string, userName: string, locale: EmailLocale = 'de') {
+    await this.send({
       to,
-      getWelcomeSubject(locale),
-      welcomeTemplate(userName, locale),
-    );
+      subject: getWelcomeSubject(locale),
+      html: welcomeTemplate(userName, locale),
+    });
   }
 
-  async sendSubscriptionNotice(to: string, type: 'trial_expiring' | 'payment_failed', practiceName: string, locale: Locale = 'de') {
-    await this.send(
+  async sendSubscriptionNotice(
+    to: string,
+    type: 'trial_expiring' | 'payment_failed',
+    practiceName: string,
+    locale: EmailLocale = 'de',
+    daysLeft: number = 3,
+  ) {
+    await this.send({
       to,
-      getSubscriptionSubject(type, practiceName, locale),
-      subscriptionTemplate(type, practiceName, locale),
-    );
+      subject: getSubscriptionSubject(type, practiceName, locale),
+      html: subscriptionTemplate(type, practiceName, locale, daysLeft),
+    });
   }
 
-  async sendPasswordReset(to: string, resetLink: string, locale: Locale = 'de') {
-    await this.send(
+  async sendPasswordReset(to: string, resetLink: string, locale: EmailLocale = 'de') {
+    await this.send({
       to,
-      getPasswordResetSubject(locale),
-      passwordResetTemplate(resetLink, locale),
-    );
+      subject: getPasswordResetSubject(locale),
+      html: passwordResetTemplate(resetLink, locale),
+    });
   }
 
-  async sendEmailVerification(to: string, verifyLink: string, locale: Locale = 'de') {
-    await this.send(
+  async sendEmailVerification(to: string, verifyLink: string, locale: EmailLocale = 'de') {
+    await this.send({
       to,
-      getEmailVerificationSubject(locale),
-      emailVerificationTemplate(verifyLink, locale),
-    );
+      subject: getEmailVerificationSubject(locale),
+      html: emailVerificationTemplate(verifyLink, locale),
+    });
   }
 
-  async sendConsentReminder(to: string, practiceName: string, consentLink: string, locale: Locale = 'de') {
-    await this.send(
+  async sendConsentReminder(
+    to: string,
+    practiceName: string,
+    consentLink: string,
+    locale: EmailLocale = 'de',
+    brandColor?: string,
+  ) {
+    await this.send({
       to,
-      getConsentReminderSubject(practiceName, locale),
-      consentReminderTemplate(practiceName, consentLink, locale),
-    );
+      subject: getConsentReminderSubject(practiceName, locale),
+      html: consentReminderTemplate(practiceName, consentLink, locale, brandColor),
+      fromNameOverride: `${practiceName} via DermaConsent`,
+    });
   }
 
-  async sendCustomMessage(to: string, subject: string, body: string) {
-    const html = `
-<!DOCTYPE html>
-<html><head><meta charset="UTF-8"></head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
-  <div style="white-space: pre-wrap; line-height: 1.6;">${body.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
-  <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
-  <p style="color: #999; font-size: 12px;">Gesendet über DermaConsent</p>
-</body>
-</html>`;
-    await this.send(to, subject, html);
+  async sendCustomMessage(to: string, subject: string, body: string, opts?: {
+    isHtml?: boolean;
+    locale?: EmailLocale;
+    practiceName?: string;
+    brandColor?: string;
+  }) {
+    const locale = opts?.locale || 'de';
+    const practiceName = opts?.practiceName;
+
+    let innerContent: string;
+    if (opts?.isHtml) {
+      innerContent = body;
+    } else {
+      const escaped = body.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      innerContent = `<div style="white-space: pre-wrap; line-height: 1.6;">${escaped.replace(/\n/g, '<br>')}</div>`;
+    }
+
+    const html = baseLayout(innerContent, {
+      locale,
+      practiceName,
+      brandColor: opts?.brandColor,
+    });
+
+    await this.send({
+      to,
+      subject,
+      html,
+      fromNameOverride: practiceName ? `${practiceName} via DermaConsent` : undefined,
+    });
   }
 }

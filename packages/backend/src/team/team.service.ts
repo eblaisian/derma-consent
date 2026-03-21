@@ -107,6 +107,7 @@ export class TeamService {
       practiceName: practice?.name || 'Praxis',
       role: dto.role,
       inviteLink,
+      userId,
     }).catch(() => {}); // Fire-and-forget; audit already logged the invite creation
 
     return invite;
@@ -313,6 +314,7 @@ export class TeamService {
       practiceName: practice?.name || 'Praxis',
       role: invite.role,
       inviteLink,
+      userId,
     }).catch(() => {});
 
     await this.auditService?.log({

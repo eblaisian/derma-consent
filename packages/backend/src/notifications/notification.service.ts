@@ -4,6 +4,7 @@ import { EmailService } from '../email/email.service';
 import { SmsService } from '../sms/sms.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import type { SendNotificationOptions, NotificationLocale } from './notification.types';
+import type { EmailLocale } from '../email/templates/types';
 
 @Injectable()
 export class NotificationService {
@@ -90,10 +91,12 @@ export class NotificationService {
     consentLink: string;
     expiryDays: number;
     locale?: string;
+    userId?: string;
+    brandColor?: string;
   }): Promise<void> {
     if (!(await this.isEnabled('consentLink'))) return;
 
-    const locale = opts.locale || 'de';
+    const locale = await this.resolveLocale(opts.locale, opts.userId);
     const logId = await this.logSend({
       practiceId: opts.practiceId,
       recipientType: 'patient',
@@ -103,12 +106,22 @@ export class NotificationService {
     });
 
     try {
+      let brandColor = opts.brandColor;
+      if (!brandColor && opts.practiceId) {
+        const settings = await this.prisma.practiceSettings.findUnique({
+          where: { practiceId: opts.practiceId },
+          select: { brandColor: true },
+        });
+        brandColor = settings?.brandColor ?? undefined;
+      }
+
       await this.emailService.sendConsentLink(
         opts.recipientEmail,
         opts.practiceName,
         opts.consentLink,
         opts.expiryDays,
-        locale as 'de' | 'en' | 'es' | 'fr',
+        locale as EmailLocale,
+        brandColor,
       );
       await this.markSent(logId);
     } catch (err) {
@@ -159,10 +172,11 @@ export class NotificationService {
     role: string;
     inviteLink: string;
     locale?: string;
+    userId?: string;
   }): Promise<void> {
     if (!(await this.isEnabled('invite'))) return;
 
-    const locale = opts.locale || 'de';
+    const locale = await this.resolveLocale(opts.locale, opts.userId);
     const logId = await this.logSend({
       practiceId: opts.practiceId,
       recipientType: 'external',
@@ -178,7 +192,7 @@ export class NotificationService {
         opts.practiceName,
         opts.role,
         opts.inviteLink,
-        locale as 'de' | 'en' | 'es' | 'fr',
+        locale as EmailLocale,
       );
       await this.markSent(logId);
     } catch (err) {
@@ -207,7 +221,7 @@ export class NotificationService {
       await this.emailService.sendWelcome(
         opts.recipientEmail,
         opts.userName,
-        locale as 'de' | 'en' | 'es' | 'fr',
+        locale as EmailLocale,
       );
       await this.markSent(logId);
     } catch (err) {
@@ -234,7 +248,7 @@ export class NotificationService {
       await this.emailService.sendEmailVerification(
         opts.recipientEmail,
         opts.verifyLink,
-        locale as 'de' | 'en' | 'es' | 'fr',
+        locale as EmailLocale,
       );
       await this.markSent(logId);
     } catch (err) {
@@ -261,7 +275,7 @@ export class NotificationService {
       await this.emailService.sendPasswordReset(
         opts.recipientEmail,
         opts.resetLink,
-        locale as 'de' | 'en' | 'es' | 'fr',
+        locale as EmailLocale,
       );
       await this.markSent(logId);
     } catch (err) {
@@ -277,6 +291,7 @@ export class NotificationService {
     practiceName: string;
     userId?: string;
     locale?: string;
+    daysLeft?: number;
   }): Promise<void> {
     if (!(await this.isEnabled('subscriptionAlerts'))) return;
 
@@ -295,7 +310,8 @@ export class NotificationService {
         opts.recipientEmail,
         opts.type,
         opts.practiceName,
-        locale as 'de' | 'en' | 'es' | 'fr',
+        locale as EmailLocale,
+        opts.daysLeft,
       );
       await this.markSent(logId);
     } catch (err) {
@@ -310,10 +326,12 @@ export class NotificationService {
     practiceName: string;
     consentLink: string;
     locale?: string;
+    userId?: string;
+    brandColor?: string;
   }): Promise<void> {
     if (!(await this.isEnabled('consentReminder'))) return;
 
-    const locale = opts.locale || 'de';
+    const locale = await this.resolveLocale(opts.locale, opts.userId);
     const logId = await this.logSend({
       practiceId: opts.practiceId,
       recipientType: 'user',
@@ -323,11 +341,21 @@ export class NotificationService {
     });
 
     try {
+      let brandColor = opts.brandColor;
+      if (!brandColor && opts.practiceId) {
+        const settings = await this.prisma.practiceSettings.findUnique({
+          where: { practiceId: opts.practiceId },
+          select: { brandColor: true },
+        });
+        brandColor = settings?.brandColor ?? undefined;
+      }
+
       await this.emailService.sendConsentReminder(
         opts.recipientEmail,
         opts.practiceName,
         opts.consentLink,
-        locale as 'de' | 'en' | 'es' | 'fr',
+        locale as EmailLocale,
+        brandColor,
       );
       await this.markSent(logId);
     } catch (err) {
@@ -343,6 +371,11 @@ export class NotificationService {
     channel: 'email' | 'sms' | 'whatsapp';
     message: string;
     subject?: string;
+    isHtml?: boolean;
+    locale?: string;
+    userId?: string;
+    practiceName?: string;
+    brandColor?: string;
   }): Promise<void> {
     // Block WhatsApp sends when feature is disabled
     if (opts.channel === 'whatsapp') {
@@ -353,12 +386,14 @@ export class NotificationService {
       }
     }
 
+    const locale = await this.resolveLocale(opts.locale, opts.userId);
+
     const logId = await this.logSend({
       practiceId: opts.practiceId,
       recipientType: 'patient',
       channel: opts.channel,
       templateKey: 'custom_message',
-      locale: 'de',
+      locale,
     });
 
     try {
@@ -367,6 +402,12 @@ export class NotificationService {
           opts.recipientEmail,
           opts.subject || 'Nachricht von Ihrer Praxis',
           opts.message,
+          {
+            isHtml: opts.isHtml,
+            locale: locale as EmailLocale,
+            practiceName: opts.practiceName,
+            brandColor: opts.brandColor,
+          },
         );
       } else if (opts.channel === 'sms' && opts.recipientPhone) {
         await this.smsService.sendMessage(opts.recipientPhone, opts.message);

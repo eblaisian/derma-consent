@@ -1,84 +1,93 @@
-type Locale = 'de' | 'en' | 'es' | 'fr';
+import { baseLayout, ctaButton } from './base-layout';
+import type { EmailLocale } from './types';
 
-const i18n: Record<Locale, {
+const i18n: Record<EmailLocale, {
   subject: (practiceName: string) => string;
-  heading: string;
-  greeting: string;
   body: (practiceName: string) => string;
-  cta: string;
   button: string;
-  urgency: string;
-  footer: string;
+  expiry: string;
+  preheader: (practiceName: string) => string;
 }> = {
   de: {
     subject: (p) => `Erinnerung: Einwilligungsformular von ${p}`,
-    heading: 'Erinnerung: Einwilligungsformular',
-    greeting: 'Sehr geehrte/r Patient/in,',
-    body: (p) => `Sie haben ein Einwilligungsformular von <strong>${p}</strong> noch nicht ausgefuellt.`,
-    cta: 'Bitte fuellen Sie das Formular zeitnah aus:',
-    button: 'Formular oeffnen',
-    urgency: 'Der Link laeuft in Kuerze ab.',
-    footer: 'Diese E-Mail wurde ueber DermaConsent versendet. Ihre Daten werden Ende-zu-Ende verschluesselt.',
+    body: (p) => `Ihr Einwilligungsformular von <strong style="color: #0f172a;">${p}</strong> wurde noch nicht ausgefüllt.`,
+    button: 'Jetzt ausfüllen →',
+    expiry: 'Der Link läuft in Kürze ab.',
+    preheader: (p) => `Erinnerung: Bitte füllen Sie Ihr Formular von ${p} aus`,
   },
   en: {
     subject: (p) => `Reminder: Consent form from ${p}`,
-    heading: 'Reminder: Consent Form',
-    greeting: 'Dear Patient,',
-    body: (p) => `You have not yet completed a consent form from <strong>${p}</strong>.`,
-    cta: 'Please complete the form soon:',
-    button: 'Open form',
-    urgency: 'This link will expire shortly.',
-    footer: 'This email was sent via DermaConsent. Your data is end-to-end encrypted.',
+    body: (p) => `Your consent form from <strong style="color: #0f172a;">${p}</strong> has not been completed yet.`,
+    button: 'Complete now →',
+    expiry: 'This link will expire shortly.',
+    preheader: (p) => `Reminder: Please complete your form from ${p}`,
   },
   es: {
     subject: (p) => `Recordatorio: Formulario de consentimiento de ${p}`,
-    heading: 'Recordatorio: Formulario de consentimiento',
-    greeting: 'Estimado/a paciente,',
-    body: (p) => `Aun no ha completado el formulario de consentimiento de <strong>${p}</strong>.`,
-    cta: 'Por favor complete el formulario pronto:',
-    button: 'Abrir formulario',
-    urgency: 'Este enlace expirara pronto.',
-    footer: 'Este correo fue enviado a traves de DermaConsent. Sus datos estan cifrados de extremo a extremo.',
+    body: (p) => `Su formulario de consentimiento de <strong style="color: #0f172a;">${p}</strong> aún no ha sido completado.`,
+    button: 'Completar ahora →',
+    expiry: 'Este enlace expirará pronto.',
+    preheader: (p) => `Recordatorio: Complete su formulario de ${p}`,
   },
   fr: {
     subject: (p) => `Rappel: Formulaire de consentement de ${p}`,
-    heading: 'Rappel: Formulaire de consentement',
-    greeting: 'Cher/e patient/e,',
-    body: (p) => `Vous n'avez pas encore rempli le formulaire de consentement de <strong>${p}</strong>.`,
-    cta: 'Veuillez remplir le formulaire rapidement :',
-    button: 'Ouvrir le formulaire',
-    urgency: 'Ce lien expirera bientot.',
-    footer: 'Cet e-mail a ete envoye via DermaConsent. Vos donnees sont chiffrees de bout en bout.',
+    body: (p) => `Votre formulaire de consentement de <strong style="color: #0f172a;">${p}</strong> n'a pas encore été rempli.`,
+    button: 'Remplir maintenant →',
+    expiry: 'Ce lien expirera bientôt.',
+    preheader: (p) => `Rappel : Veuillez remplir votre formulaire de ${p}`,
+  },
+  ar: {
+    subject: (p) => `تذكير: نموذج الموافقة من ${p}`,
+    body: (p) => `لم يتم تعبئة نموذج الموافقة الخاص بك من <strong style="color: #0f172a;">${p}</strong> بعد.`,
+    button: '← أكمل الآن',
+    expiry: 'ستنتهي صلاحية هذا الرابط قريباً.',
+    preheader: (p) => `تذكير: يرجى إكمال نموذجك من ${p}`,
+  },
+  tr: {
+    subject: (p) => `Hatırlatma: ${p} onay formu`,
+    body: (p) => `<strong style="color: #0f172a;">${p}</strong> onay formunuz henüz doldurulmadı.`,
+    button: 'Şimdi doldur →',
+    expiry: 'Bu bağlantının süresi yakında dolacak.',
+    preheader: (p) => `Hatırlatma: ${p} formunuzu doldurun`,
+  },
+  pl: {
+    subject: (p) => `Przypomnienie: Formularz zgody od ${p}`,
+    body: (p) => `Twój formularz zgody od <strong style="color: #0f172a;">${p}</strong> nie został jeszcze wypełniony.`,
+    button: 'Wypełnij teraz →',
+    expiry: 'Ten link wkrótce wygaśnie.',
+    preheader: (p) => `Przypomnienie: Wypełnij formularz od ${p}`,
+  },
+  ru: {
+    subject: (p) => `Напоминание: Форма согласия от ${p}`,
+    body: (p) => `Ваша форма согласия от <strong style="color: #0f172a;">${p}</strong> ещё не заполнена.`,
+    button: 'Заполнить сейчас →',
+    expiry: 'Срок действия ссылки скоро истечёт.',
+    preheader: (p) => `Напоминание: Заполните форму от ${p}`,
   },
 };
 
-export function getConsentReminderSubject(practiceName: string, locale: Locale = 'de'): string {
+export function getConsentReminderSubject(practiceName: string, locale: EmailLocale = 'de'): string {
   return (i18n[locale] || i18n.de).subject(practiceName);
 }
 
-export function consentReminderTemplate(practiceName: string, consentLink: string, locale: Locale = 'de'): string {
+export function consentReminderTemplate(
+  practiceName: string,
+  consentLink: string,
+  locale: EmailLocale = 'de',
+  brandColor?: string,
+): string {
   const t = i18n[locale] || i18n.de;
-  const lang = locale === 'de' ? 'de' : locale;
+  const accent = brandColor || '#0f172a';
 
-  return `
-<!DOCTYPE html>
-<html lang="${lang}">
-<head><meta charset="UTF-8"></head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
-  <h2 style="color: #1a1a1a;">${t.heading}</h2>
-  <p>${t.greeting}</p>
-  <p>${t.body(practiceName)}</p>
-  <p>${t.cta}</p>
-  <p style="margin: 24px 0;">
-    <a href="${consentLink}" style="background-color: #0f172a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
-      ${t.button}
-    </a>
-  </p>
-  <p style="color: #dc2626; font-size: 14px; font-weight: 500;">${t.urgency}</p>
-  <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
-  <p style="color: #999; font-size: 12px;">
-    ${t.footer}
-  </p>
-</body>
-</html>`;
+  const content = `
+  <p style="font-size: 16px; line-height: 1.6; color: #374151; margin: 0 0 20px;">${t.body(practiceName)}</p>
+  ${ctaButton(t.button, consentLink, accent, true)}
+  <p style="font-size: 13px; color: #9ca3af; margin: 0; text-align: center;">${t.expiry}</p>`;
+
+  return baseLayout(content, {
+    locale,
+    preheaderText: t.preheader(practiceName),
+    practiceName,
+    brandColor,
+  });
 }

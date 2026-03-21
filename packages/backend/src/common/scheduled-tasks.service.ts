@@ -59,6 +59,10 @@ export class ScheduledTasksService {
     });
 
     for (const sub of expiringSubscriptions) {
+      const daysLeft = sub.trialEndsAt
+        ? Math.max(0, Math.ceil((sub.trialEndsAt.getTime() - Date.now()) / 86400000))
+        : 3;
+
       for (const admin of sub.practice.users) {
         await this.notificationService.sendSubscriptionNotice({
           practiceId: sub.practiceId,
@@ -67,6 +71,7 @@ export class ScheduledTasksService {
           practiceName: sub.practice.name,
           userId: admin.id,
           locale: admin.locale,
+          daysLeft,
         });
       }
     }

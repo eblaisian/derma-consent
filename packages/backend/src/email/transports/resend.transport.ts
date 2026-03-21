@@ -13,6 +13,8 @@ export class ResendTransport implements IEmailTransport {
       to: options.to,
       subject: options.subject,
       html: options.html,
+      text: options.text,
+      replyTo: options.replyTo,
       attachments: options.attachments?.map((a) => ({
         filename: a.filename,
         content: Buffer.isBuffer(a.content)

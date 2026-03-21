@@ -2,7 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
+import { useSession } from 'next-auth/react';
 import { locales, localeNames, LOCALE_COOKIE, type Locale } from '@/i18n/config';
+import { API_URL } from '@/lib/api';
 import { Globe } from 'lucide-react';
 import {
   Select,
@@ -20,10 +22,22 @@ interface LanguageSwitcherProps {
 export function LanguageSwitcher({ compact }: LanguageSwitcherProps) {
   const locale = useLocale();
   const router = useRouter();
+  const { data: session } = useSession();
 
   const handleChange = (newLocale: string) => {
     document.cookie = `${LOCALE_COOKIE}=${newLocale};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
     router.refresh();
+
+    if (session?.accessToken) {
+      fetch(`${API_URL}/api/auth/account/profile`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+        body: JSON.stringify({ locale: newLocale }),
+      }).catch(() => {});
+    }
   };
 
   if (compact) {

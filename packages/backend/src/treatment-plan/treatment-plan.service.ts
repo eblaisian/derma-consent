@@ -279,6 +279,8 @@ export class TreatmentPlanService {
       throw new BadRequestException('recipientPhone is required for sms/whatsapp channel');
     }
 
+    const practice = await this.prisma.practice.findUnique({ where: { id: practiceId }, select: { name: true } });
+
     await this.notifications.sendCustomMessage({
       practiceId,
       recipientEmail: dto.recipientEmail,
@@ -286,6 +288,10 @@ export class TreatmentPlanService {
       channel,
       subject: dto.subject,
       message: dto.htmlContent,
+      isHtml: true,
+      locale: dto.locale,
+      userId,
+      practiceName: practice?.name,
     });
 
     await this.audit.log({

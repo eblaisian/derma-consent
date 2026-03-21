@@ -1,4 +1,4 @@
-import { IsString, IsEmail, MinLength, IsOptional, IsNotEmpty, Matches } from 'class-validator';
+import { IsString, IsEmail, MinLength, IsOptional, IsNotEmpty, Matches, IsIn } from 'class-validator';
 
 export class RegisterDto {
   @IsEmail()
@@ -14,6 +14,11 @@ export class RegisterDto {
     message: 'Password must contain at least one lowercase letter, one uppercase letter, and one number',
   })
   password!: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['de', 'en', 'es', 'fr', 'ar', 'tr', 'pl', 'ru'])
+  locale?: string;
 }
 
 export class LoginDto {
@@ -51,6 +56,11 @@ export class UpdateProfileDto {
   @IsString()
   @IsNotEmpty()
   name?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['de', 'en', 'es', 'fr', 'ar', 'tr', 'pl', 'ru'])
+  locale?: string;
 }
 
 export class ChangePasswordDto {

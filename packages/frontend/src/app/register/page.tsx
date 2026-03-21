@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AuthLayout } from '@/components/auth/auth-layout';
@@ -16,6 +16,7 @@ import { getSafeCallbackUrl } from '@/lib/auth-utils';
 export default function RegisterPage() {
   const t = useTranslations('register');
   const tLogin = useTranslations('login');
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const callbackUrl = getSafeCallbackUrl(searchParams.get('callbackUrl'));
   const inviteEmail = searchParams.get('email') || '';
@@ -55,7 +56,7 @@ export default function RegisterPage() {
       const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name: name || undefined, password }),
+        body: JSON.stringify({ email, name: name || undefined, password, locale }),
       });
 
       if (res.status === 409) {

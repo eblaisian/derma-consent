@@ -61,6 +61,7 @@ export class CommunicationsController {
       dto.recipient,
       dto.message,
       subject,
+      user.userId,
     );
   }
 }
