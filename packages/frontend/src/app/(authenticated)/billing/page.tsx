@@ -18,14 +18,6 @@ import {
 } from 'lucide-react';
 import { PRICING } from '@/lib/pricing';
 
-const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-  TRIALING: 'secondary',
-  ACTIVE: 'default',
-  PAST_DUE: 'destructive',
-  CANCELLED: 'outline',
-  EXPIRED: 'outline',
-};
-
 interface Subscription {
   id: string;
   plan: string;
@@ -124,7 +116,7 @@ export default function BillingPage() {
   const isAtLimit = usage?.limit ? usage.used >= usage.limit : false;
 
   return (
-    <div className="max-w-4xl space-y-8">
+    <div className="space-y-8">
       <div>
         <h1 className="text-page-title font-display font-light text-balance">{t('title')}</h1>
         <p className="mt-1.5 text-sm text-muted-foreground text-pretty">{t('description')}</p>
