@@ -93,7 +93,7 @@ function LanguageSwitcher() {
   );
 }
 
-function MobileMenu({ t }: { t: (key: 'navFeatures' | 'navPricing' | 'navSecurity') => string }) {
+function MobileMenu({ t }: { t: (key: 'navFeatures' | 'navPricing' | 'navSecurity' | 'kontakt') => string }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -129,6 +129,9 @@ function MobileMenu({ t }: { t: (key: 'navFeatures' | 'navPricing' | 'navSecurit
               <a href="#security" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-accent transition-colors">
                 {t('navSecurity')}
               </a>
+              <Link href="/contact" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-accent transition-colors">
+                {t('kontakt')}
+              </Link>
             </div>
           </nav>
         </>
@@ -170,6 +173,9 @@ export default function Home() {
               <a href="#security" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {t('navSecurity')}
               </a>
+              <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {t('kontakt')}
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -604,9 +610,9 @@ export default function Home() {
                   <span className="text-4xl font-semibold tracking-tight">{t('enterprisePrice')}</span>
                 </div>
                 <Button className="w-full mb-8" variant="outline" asChild>
-                  <a href="mailto:enterprise@dermaconsent.de?subject=Enterprise%20Plan%20Inquiry">
+                  <Link href="/contact">
                     {t('contactUs')}
-                  </a>
+                  </Link>
                 </Button>
                 <ul className="space-y-3 text-sm">
                   {(['entF1', 'entF2', 'entF3', 'entF4', 'entF5'] as const).map((key) => (
@@ -642,6 +648,11 @@ export default function Home() {
                     <Link href="/register">
                       {t('startTrial')}
                       <ArrowRight className="ms-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" className="h-12 px-8 text-base border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10" asChild>
+                    <Link href="/contact">
+                      {t('kontakt')}
                     </Link>
                   </Button>
                 </div>
@@ -683,7 +694,7 @@ export default function Home() {
               <div className="mt-4 flex flex-col gap-3">
                 <Link href="/impressum" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('impressum')}</Link>
                 <Link href="/datenschutz" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('datenschutz')}</Link>
-                <a href="mailto:kontakt@dermaconsent.de" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('kontakt')}</a>
+                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('kontakt')}</Link>
               </div>
             </div>
           </div>

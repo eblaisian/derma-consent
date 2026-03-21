@@ -1483,5 +1483,31 @@
     "aftercareDescription": "Generuj spersonalizowane instrukcje pielęgnacji dla pacjentów na podstawie rodzaju zabiegu i obszaru ciała. Dostępne w planie Professional.",
     "analyticsInsightsTitle": "Analizy praktyki AI",
     "analyticsInsightsDescription": "Odblokuj analizy danych praktyki generowane przez AI — trendy, analizy konwersji i praktyczne rekomendacje."
+  },
+  "contact": {
+    "back": "Wstecz",
+    "title": "Porozmawiajmy o Twojej praktyce",
+    "subtitle": "Osobiście odpowiadam na pytania — zwykle w ciągu 24 godzin.",
+    "founder": "Założyciel",
+    "phone": "Telefon",
+    "email": "E-mail",
+    "location": "Lokalizacja",
+    "linkedIn": "LinkedIn",
+    "formName": "Imię i nazwisko",
+    "formNamePlaceholder": "Twoje pełne imię i nazwisko",
+    "formEmail": "E-mail",
+    "formEmailPlaceholder": "twoj@email.com",
+    "formPractice": "Nazwa praktyki",
+    "formPracticePlaceholder": "Opcjonalnie",
+    "formMessage": "Wiadomość",
+    "formMessagePlaceholder": "Jak mogę Ci pomóc?",
+    "formSubmit": "Wyślij wiadomość",
+    "formSubmitting": "Wysyłanie...",
+    "formSuccess": "Dziękuję! Skontaktuję się z Tobą w ciągu 24 godzin.",
+    "formError": "Nie udało się wysłać wiadomości. Spróbuj ponownie.",
+    "orReply": "Lub odpowiedz bezpośrednio na mój e-mail",
+    "trustZeroKnowledge": "Szyfrowanie zerowej wiedzy",
+    "trustDsgvo": "Zgodność z RODO",
+    "trustDerma": "Stworzone dla dermatologii"
   }
 }

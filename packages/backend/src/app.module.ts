@@ -28,6 +28,7 @@ import { AdminModule } from './admin/admin.module';
 import { AiModule } from './ai/ai.module';
 import { NotificationModule } from './notifications/notification.module';
 import { CommunicationsModule } from './communications/communications.module';
+import { ContactModule } from './contact/contact.module';
 import { StorageModule } from './storage/storage.module';
 import { ScheduledTasksService } from './common/scheduled-tasks.service';
 
@@ -85,6 +86,7 @@ import { ScheduledTasksService } from './common/scheduled-tasks.service';
     AiModule,
     NotificationModule,
     CommunicationsModule,
+    ContactModule,
   ],
   providers: [
     {

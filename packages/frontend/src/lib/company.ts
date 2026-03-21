@@ -9,7 +9,9 @@ export const company = {
   city: '60435 Frankfurt am Main',
   country: 'Deutschland',
   phone: '+491747767645',
+  phoneFormatted: '+49 174 776 7645',
   email: 'info@derma-consent.de',
+  linkedin: 'https://www.linkedin.com/in/sohaib-faroukh/',
   vatId: 'In Beantragung',
   responsiblePerson: 'Sohaib Faroukh',
 

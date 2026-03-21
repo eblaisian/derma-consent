@@ -1487,5 +1487,31 @@
     "aftercareDescription": "Generate personalised aftercare instructions for your patients based on treatment type and body region. Available on the Professional plan.",
     "analyticsInsightsTitle": "AI Practice Insights",
     "analyticsInsightsDescription": "Unlock AI-generated analysis of your practice data — trends, conversion insights, and actionable recommendations."
+  },
+  "contact": {
+    "back": "Back",
+    "title": "Let's talk about your practice",
+    "subtitle": "I'll personally answer your questions — usually within 24 hours.",
+    "founder": "Founder",
+    "phone": "Phone",
+    "email": "Email",
+    "location": "Location",
+    "linkedIn": "LinkedIn",
+    "formName": "Name",
+    "formNamePlaceholder": "Your full name",
+    "formEmail": "Email",
+    "formEmailPlaceholder": "your@email.com",
+    "formPractice": "Practice name",
+    "formPracticePlaceholder": "Optional",
+    "formMessage": "Message",
+    "formMessagePlaceholder": "How can I help you?",
+    "formSubmit": "Send message",
+    "formSubmitting": "Sending...",
+    "formSuccess": "Thank you! I'll get back to you within 24 hours.",
+    "formError": "Failed to send message. Please try again.",
+    "orReply": "Or reply directly to my email",
+    "trustZeroKnowledge": "Zero-knowledge encryption",
+    "trustDsgvo": "GDPR compliant",
+    "trustDerma": "Built for dermatology"
   }
 }

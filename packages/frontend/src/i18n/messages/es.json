@@ -1483,5 +1483,31 @@
     "aftercareDescription": "Genere instrucciones personalizadas de cuidados post-tratamiento para sus pacientes según el tipo de tratamiento y la zona corporal. Disponible en el plan Professional.",
     "analyticsInsightsTitle": "Análisis de práctica con IA",
     "analyticsInsightsDescription": "Desbloquee análisis generados por IA de los datos de su práctica — tendencias, análisis de conversión y recomendaciones prácticas."
+  },
+  "contact": {
+    "back": "Volver",
+    "title": "Hablemos sobre su consulta",
+    "subtitle": "Respondo personalmente a sus preguntas — normalmente en 24 horas.",
+    "founder": "Fundador",
+    "phone": "Teléfono",
+    "email": "Correo electrónico",
+    "location": "Ubicación",
+    "linkedIn": "LinkedIn",
+    "formName": "Nombre",
+    "formNamePlaceholder": "Su nombre completo",
+    "formEmail": "Correo electrónico",
+    "formEmailPlaceholder": "su@email.com",
+    "formPractice": "Nombre de la consulta",
+    "formPracticePlaceholder": "Opcional",
+    "formMessage": "Mensaje",
+    "formMessagePlaceholder": "¿Cómo puedo ayudarle?",
+    "formSubmit": "Enviar mensaje",
+    "formSubmitting": "Enviando...",
+    "formSuccess": "¡Gracias! Me pondré en contacto con usted en 24 horas.",
+    "formError": "No se pudo enviar el mensaje. Inténtelo de nuevo.",
+    "orReply": "O responda directamente a mi correo electrónico",
+    "trustZeroKnowledge": "Cifrado de conocimiento cero",
+    "trustDsgvo": "Conforme al RGPD",
+    "trustDerma": "Diseñado para dermatología"
   }
 }

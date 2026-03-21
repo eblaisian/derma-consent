@@ -1483,5 +1483,31 @@
     "aftercareDescription": "قم بإنشاء تعليمات رعاية لاحقة مخصصة لمرضاك بناءً على نوع العلاج ومنطقة الجسم. متاح في خطة Professional.",
     "analyticsInsightsTitle": "تحليلات العيادة بالذكاء الاصطناعي",
     "analyticsInsightsDescription": "افتح التحليلات المولدة بالذكاء الاصطناعي لبيانات عيادتك — الاتجاهات وتحليلات التحويل والتوصيات العملية."
+  },
+  "contact": {
+    "back": "رجوع",
+    "title": "دعنا نتحدث عن عيادتك",
+    "subtitle": "أجيب شخصياً على أسئلتكم — عادةً خلال 24 ساعة.",
+    "founder": "المؤسس",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "location": "الموقع",
+    "linkedIn": "لينكد إن",
+    "formName": "الاسم",
+    "formNamePlaceholder": "اسمك الكامل",
+    "formEmail": "البريد الإلكتروني",
+    "formEmailPlaceholder": "بريدك@الإلكتروني.com",
+    "formPractice": "اسم العيادة",
+    "formPracticePlaceholder": "اختياري",
+    "formMessage": "الرسالة",
+    "formMessagePlaceholder": "كيف يمكنني مساعدتك؟",
+    "formSubmit": "إرسال الرسالة",
+    "formSubmitting": "جارٍ الإرسال...",
+    "formSuccess": "شكراً لك! سأتواصل معك خلال 24 ساعة.",
+    "formError": "فشل إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+    "orReply": "أو قم بالرد مباشرة على بريدي الإلكتروني",
+    "trustZeroKnowledge": "تشفير المعرفة الصفرية",
+    "trustDsgvo": "متوافق مع GDPR",
+    "trustDerma": "مصمم لطب الجلدية"
   }
 }

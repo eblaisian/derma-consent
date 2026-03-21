@@ -1483,5 +1483,31 @@
     "aftercareDescription": "Создавайте персонализированные инструкции по уходу для пациентов на основе типа процедуры и области тела. Доступно в тарифе Professional.",
     "analyticsInsightsTitle": "ИИ-аналитика практики",
     "analyticsInsightsDescription": "Разблокируйте ИИ-анализ данных вашей практики — тренды, анализ конверсии и практические рекомендации."
+  },
+  "contact": {
+    "back": "Назад",
+    "title": "Давайте поговорим о вашей практике",
+    "subtitle": "Я лично отвечаю на ваши вопросы — обычно в течение 24 часов.",
+    "founder": "Основатель",
+    "phone": "Телефон",
+    "email": "Эл. почта",
+    "location": "Местоположение",
+    "linkedIn": "LinkedIn",
+    "formName": "Имя",
+    "formNamePlaceholder": "Ваше полное имя",
+    "formEmail": "Эл. почта",
+    "formEmailPlaceholder": "ваш@email.com",
+    "formPractice": "Название клиники",
+    "formPracticePlaceholder": "Необязательно",
+    "formMessage": "Сообщение",
+    "formMessagePlaceholder": "Чем я могу вам помочь?",
+    "formSubmit": "Отправить сообщение",
+    "formSubmitting": "Отправка...",
+    "formSuccess": "Спасибо! Я свяжусь с вами в течение 24 часов.",
+    "formError": "Не удалось отправить сообщение. Попробуйте ещё раз.",
+    "orReply": "Или ответьте напрямую на моё письмо",
+    "trustZeroKnowledge": "Шифрование с нулевым разглашением",
+    "trustDsgvo": "Соответствие GDPR",
+    "trustDerma": "Создано для дерматологии"
   }
 }

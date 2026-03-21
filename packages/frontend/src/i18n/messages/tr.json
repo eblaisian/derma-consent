@@ -1483,5 +1483,31 @@
     "aftercareDescription": "Tedavi türü ve vücut bölgesine göre hastalarınız için kişiselleştirilmiş bakım talimatları oluşturun. Professional planında kullanılabilir.",
     "analyticsInsightsTitle": "Yapay Zeka ile Klinik Analizleri",
     "analyticsInsightsDescription": "Klinik verilerinizin yapay zeka ile oluşturulan analizlerini açın — trendler, dönüşüm analizleri ve uygulanabilir öneriler."
+  },
+  "contact": {
+    "back": "Geri",
+    "title": "Kliniğiniz hakkında konuşalım",
+    "subtitle": "Sorularınızı kişisel olarak yanıtlıyorum — genellikle 24 saat içinde.",
+    "founder": "Kurucu",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "location": "Konum",
+    "linkedIn": "LinkedIn",
+    "formName": "Ad",
+    "formNamePlaceholder": "Tam adınız",
+    "formEmail": "E-posta",
+    "formEmailPlaceholder": "sizin@email.com",
+    "formPractice": "Klinik adı",
+    "formPracticePlaceholder": "İsteğe bağlı",
+    "formMessage": "Mesaj",
+    "formMessagePlaceholder": "Size nasıl yardımcı olabilirim?",
+    "formSubmit": "Mesaj gönder",
+    "formSubmitting": "Gönderiliyor...",
+    "formSuccess": "Teşekkürler! 24 saat içinde size geri dönüş yapacağım.",
+    "formError": "Mesaj gönderilemedi. Lütfen tekrar deneyin.",
+    "orReply": "Veya doğrudan e-postama yanıt verin",
+    "trustZeroKnowledge": "Sıfır bilgi şifrelemesi",
+    "trustDsgvo": "KVKK uyumlu",
+    "trustDerma": "Dermatoloji için tasarlandı"
   }
 }

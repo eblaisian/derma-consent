@@ -1483,5 +1483,31 @@
     "aftercareDescription": "Générez des instructions de suivi personnalisées pour vos patients selon le type de traitement et la zone corporelle. Disponible avec le forfait Professional.",
     "analyticsInsightsTitle": "Analyses de cabinet par IA",
     "analyticsInsightsDescription": "Débloquez des analyses générées par IA de vos données de cabinet — tendances, analyses de conversion et recommandations concrètes."
+  },
+  "contact": {
+    "back": "Retour",
+    "title": "Parlons de votre cabinet",
+    "subtitle": "Je réponds personnellement à vos questions — généralement sous 24 heures.",
+    "founder": "Fondateur",
+    "phone": "Téléphone",
+    "email": "E-mail",
+    "location": "Emplacement",
+    "linkedIn": "LinkedIn",
+    "formName": "Nom",
+    "formNamePlaceholder": "Votre nom complet",
+    "formEmail": "E-mail",
+    "formEmailPlaceholder": "votre@email.com",
+    "formPractice": "Nom du cabinet",
+    "formPracticePlaceholder": "Facultatif",
+    "formMessage": "Message",
+    "formMessagePlaceholder": "Comment puis-je vous aider ?",
+    "formSubmit": "Envoyer le message",
+    "formSubmitting": "Envoi en cours...",
+    "formSuccess": "Merci ! Je vous répondrai dans les 24 heures.",
+    "formError": "Échec de l'envoi du message. Veuillez réessayer.",
+    "orReply": "Ou répondez directement à mon e-mail",
+    "trustZeroKnowledge": "Chiffrement à connaissance nulle",
+    "trustDsgvo": "Conforme au RGPD",
+    "trustDerma": "Conçu pour la dermatologie"
   }
 }

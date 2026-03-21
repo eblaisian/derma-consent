@@ -1487,5 +1487,31 @@
     "aftercareDescription": "Erstellen Sie personalisierte Nachsorgehinweise für Ihre Patienten basierend auf Behandlungsart und Körperregion. Verfügbar im Professional-Tarif.",
     "analyticsInsightsTitle": "KI-Praxisanalysen",
     "analyticsInsightsDescription": "Schalten Sie KI-generierte Analysen Ihrer Praxisdaten frei — Trends, Konversionsanalysen und umsetzbare Empfehlungen."
+  },
+  "contact": {
+    "back": "Zurück",
+    "title": "Sprechen wir über Ihre Praxis",
+    "subtitle": "Ich beantworte Ihre Fragen persönlich — in der Regel innerhalb von 24 Stunden.",
+    "founder": "Gründer",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "location": "Standort",
+    "linkedIn": "LinkedIn",
+    "formName": "Name",
+    "formNamePlaceholder": "Ihr vollständiger Name",
+    "formEmail": "E-Mail",
+    "formEmailPlaceholder": "ihre@email.de",
+    "formPractice": "Praxisname",
+    "formPracticePlaceholder": "Optional",
+    "formMessage": "Nachricht",
+    "formMessagePlaceholder": "Wie kann ich Ihnen helfen?",
+    "formSubmit": "Nachricht senden",
+    "formSubmitting": "Wird gesendet...",
+    "formSuccess": "Vielen Dank! Ich melde mich innerhalb von 24 Stunden bei Ihnen.",
+    "formError": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+    "orReply": "Oder antworten Sie direkt auf meine E-Mail",
+    "trustZeroKnowledge": "Zero-Knowledge-Verschlüsselung",
+    "trustDsgvo": "DSGVO-konform",
+    "trustDerma": "Speziell für Dermatologie"
   }
 }
