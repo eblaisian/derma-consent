@@ -4,12 +4,12 @@
  * Update this file when company details change — all pages pull from here.
  */
 export const company = {
-  name: 'Eblaisian',
+  name: 'DermaConsent',
   street: 'Sigmund-Freud-Str',
   city: '60435 Frankfurt am Main',
   country: 'Deutschland',
   phone: '+491747767645',
-  email: 'info@eblaisian.com',
+  email: 'info@derma-consent.de',
   vatId: 'In Beantragung',
   responsiblePerson: 'Sohaib Faroukh',
 
@@ -17,5 +17,5 @@ export const company = {
   productName: 'DermaConsent',
 
   /** Default sender email for transactional emails */
-  noreplyEmail: 'noreply@eblaisian.com',
+  noreplyEmail: 'noreply@derma-consent.de',
 } as const;

@@ -318,7 +318,7 @@ The visual design is **professional and trustworthy** — appropriate for health
 **Moderate.** The setup checklist (master password -> logo -> team invite -> first consent) is a good guide. However:
 - Registration doesn't create a practice — unclear when this happens
 - No guided tour or contextual help
-- Help center link points to docs.consent.eblaisian.com (needs to exist)
+- Help center link points to docs.derma-consent.de (needs to exist)
 
 ### Conversion Friction
 

@@ -15,7 +15,7 @@ const footerText: Record<string, { sentVia: string; impressum: string }> = {
 export function baseLayout(content: string, opts: BaseLayoutOptions): string {
   const { locale, preheaderText, practiceName, brandColor = '#0f172a' } = opts;
   const ft = footerText[locale] || footerText.de;
-  const impressumUrl = 'https://consent.eblaisian.com/impressum';
+  const impressumUrl = 'https://derma-consent.de/impressum';
   const isRtl = RTL_LOCALES.includes(locale);
   const dir = isRtl ? 'rtl' : 'ltr';
   const align = isRtl ? 'right' : 'left';

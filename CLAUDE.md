@@ -186,7 +186,7 @@ After running `make seed`:
 ### Deployment & Infrastructure
 
 - **Cloud**: DigitalOcean — DOKS (Kubernetes), Managed PostgreSQL, Container Registry (DOCR)
-- **Domains**: `consent.eblaisian.com` (frontend), `api.consent.eblaisian.com` (backend)
+- **Domains**: `derma-consent.de` (frontend), `api.derma-consent.de` (backend)
 - **Orchestration**: Kubernetes (DOKS) — cluster provisioned via DO console
 - **Manifests**: Kustomize — `infra/kubernetes/base/` + `overlays/prod/`
 - **CI/CD**: GitHub Actions — `ci.yml` (test on PR), `deploy.yml` (build → deploy to production on push to master)

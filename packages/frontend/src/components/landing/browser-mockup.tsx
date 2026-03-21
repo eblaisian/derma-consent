@@ -22,7 +22,7 @@ export function BrowserMockup() {
           <div className="size-2.5 rounded-full bg-[#28C840]" />
         </div>
         <div className="flex-1 rounded-md bg-background/70 border border-border/30 px-3 py-1 text-[10px] text-muted-foreground font-mono truncate">
-          consent.eblaisian.com/dashboard
+          derma-consent.de/dashboard
         </div>
       </div>
 

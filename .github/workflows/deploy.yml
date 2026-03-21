@@ -112,7 +112,7 @@ jobs:
           platforms: linux/amd64
           push: true
           build-args: |
-            NEXT_PUBLIC_API_URL=https://api.consent.eblaisian.com
+            NEXT_PUBLIC_API_URL=https://api.derma-consent.de
           cache-from: type=registry,ref=${{ env.FRONTEND_IMAGE }}:buildcache
           cache-to: type=registry,ref=${{ env.FRONTEND_IMAGE }}:buildcache,mode=min
           tags: |
@@ -177,7 +177,7 @@ jobs:
             --namespace=${{ env.NAMESPACE }} \
             --from-literal=DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             --from-literal=AUTH_SECRET="${{ secrets.AUTH_SECRET }}" \
-            --from-literal=FRONTEND_URL="https://consent.eblaisian.com" \
+            --from-literal=FRONTEND_URL="https://derma-consent.de" \
             --from-literal=PLATFORM_ADMIN_EMAIL="${{ secrets.PLATFORM_ADMIN_EMAIL }}" \
             --from-literal=PLATFORM_ADMIN_PASSWORD="${{ secrets.PLATFORM_ADMIN_PASSWORD }}" \
             --from-literal=PLATFORM_ENCRYPTION_KEY="${{ secrets.PLATFORM_ENCRYPTION_KEY }}" \
@@ -200,8 +200,8 @@ jobs:
           echo ""
           echo ""
           echo "Point these DNS records to the IP above:"
-          echo "  consent.eblaisian.com     → A record"
-          echo "  api.consent.eblaisian.com → A record"
+          echo "  derma-consent.de          → A record"
+          echo "  api.derma-consent.de      → A record"
 
       - name: Clean up old registry images
         run: |

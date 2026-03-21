@@ -34,9 +34,9 @@ spec:
             - name: AUTH_TRUST_HOST
               value: "true"
             - name: AUTH_URL
-              value: "https://consent.eblaisian.com"
+              value: "https://derma-consent.de"
             - name: NEXT_PUBLIC_API_URL
-              value: "https://api.consent.eblaisian.com"
+              value: "https://api.derma-consent.de"
           resources:
             requests:
               cpu: 25m

@@ -34,7 +34,7 @@ export default withMermaid(
         { text: 'Self-Hosted', link: '/self-hosted/' },
         { text: 'Development', link: '/development/' },
         { text: 'Reference', link: '/reference/environment-variables' },
-        { text: 'App', link: 'https://consent.eblaisian.com' },
+        { text: 'App', link: 'https://derma-consent.de' },
       ],
 
       sidebar: {

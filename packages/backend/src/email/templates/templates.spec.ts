@@ -13,7 +13,7 @@ function assertBaseStructure(html: string, locale: EmailLocale) {
   expect(html).toContain('<!DOCTYPE html>');
   expect(html).toContain(`lang="${locale}"`);
   expect(html).toContain('<meta name="viewport"');
-  expect(html).toContain('consent.eblaisian.com/impressum');
+  expect(html).toContain('derma-consent.de/impressum');
 }
 
 function assertNoAsciiUmlauts(html: string) {

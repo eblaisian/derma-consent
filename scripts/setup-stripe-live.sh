@@ -30,8 +30,8 @@ ENV_FILE="$ROOT_DIR/.env.production"
 BACKEND_DIR="$ROOT_DIR/packages/backend"
 
 # Webhook endpoint URLs
-WEBHOOK_URL_BILLING="https://api.consent.eblaisian.com/api/billing/webhook"
-WEBHOOK_URL_CONNECT="https://api.consent.eblaisian.com/api/stripe/webhook"
+WEBHOOK_URL_BILLING="https://api.derma-consent.de/api/billing/webhook"
+WEBHOOK_URL_CONNECT="https://api.derma-consent.de/api/stripe/webhook"
 
 DB_ONLY=false
 DRY_RUN=false

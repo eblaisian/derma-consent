@@ -135,7 +135,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="icon" asChild aria-label={tNav('helpCenter')}>
-                  <a href="https://eblaisian.github.io/derma-consent/" target="_blank" rel="noopener noreferrer">
+                  <a href="https://docs.derma-consent.de" target="_blank" rel="noopener noreferrer">
                     <CircleHelp className="size-4" />
                   </a>
                 </Button>

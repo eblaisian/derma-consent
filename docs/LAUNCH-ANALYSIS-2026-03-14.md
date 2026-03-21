@@ -271,7 +271,7 @@ User, Account, Practice, PracticeSettings, Patient, ConsentForm, TreatmentPhoto,
 
 ### Deployment
 
-- **Domains:** consent.eblaisian.com (frontend), api.consent.eblaisian.com (backend)
+- **Domains:** derma-consent.de (frontend), api.derma-consent.de (backend)
 - **Container Registry:** DigitalOcean DOCR
 - **Orchestration:** Kustomize (base + prod overlay)
 - **Migrations:** Automated Kubernetes Job before rollout

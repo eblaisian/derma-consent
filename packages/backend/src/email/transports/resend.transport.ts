@@ -36,7 +36,7 @@ export class ResendTransport implements IEmailTransport {
 
     try {
       const client = new Resend(apiKey);
-      const fromAddress = (await this.config.get('email.fromAddress')) || 'noreply@eblaisian.com';
+      const fromAddress = (await this.config.get('email.fromAddress')) || 'noreply@derma-consent.de';
       const fromName = (await this.config.get('email.fromName')) || 'DermaConsent';
       const { error } = await client.emails.send({
         from: `${fromName} <${fromAddress}>`,

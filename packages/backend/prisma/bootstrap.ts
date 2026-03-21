@@ -7,7 +7,7 @@
  * - If one exists with correct email → no-op
  *
  * Env vars:
- *   PLATFORM_ADMIN_EMAIL    (default: admin@eblaisian.com)
+ *   PLATFORM_ADMIN_EMAIL    (default: admin@derma-consent.de)
  *   PLATFORM_ADMIN_PASSWORD (default: auto-generated, printed to stdout)
  *   DATABASE_URL            (required)
  *
@@ -24,7 +24,7 @@ async function bootstrap() {
   const prisma = new PrismaClient();
 
   try {
-    const adminEmail = process.env.PLATFORM_ADMIN_EMAIL || 'admin@eblaisian.com';
+    const adminEmail = process.env.PLATFORM_ADMIN_EMAIL || 'admin@derma-consent.de';
 
     console.log(`[bootstrap] Ensuring platform admin exists: ${adminEmail}`);
 

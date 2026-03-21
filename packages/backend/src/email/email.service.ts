@@ -43,7 +43,7 @@ export class EmailService {
       const fromName = opts.fromNameOverride
         || (await this.platformConfig.get('email.fromName'))
         || 'DermaConsent';
-      const fromAddress = (await this.platformConfig.get('email.fromAddress')) || 'noreply@eblaisian.com';
+      const fromAddress = (await this.platformConfig.get('email.fromAddress')) || 'noreply@derma-consent.de';
       const text = opts.text || stripHtmlToText(opts.html);
 
       await transport.send({

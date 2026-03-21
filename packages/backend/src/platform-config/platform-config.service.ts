@@ -46,7 +46,7 @@ export interface SystemHealthReport {
 // Default values for config keys
 const DEFAULTS: Record<string, string> = {
   'stripe.platformFeePercent': '5',
-  'email.fromAddress': 'noreply@eblaisian.com',
+  'email.fromAddress': 'noreply@derma-consent.de',
   'email.fromName': 'DermaConsent',
   'storage.endpoint': 'https://fra1.digitaloceanspaces.com',
   'storage.region': 'fra1',

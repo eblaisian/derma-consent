@@ -17,7 +17,7 @@ describe('baseLayout', () => {
 
   it('contains Impressum link', () => {
     const html = baseLayout('<p>Hello</p>', { locale: 'de' });
-    expect(html).toContain('consent.eblaisian.com/impressum');
+    expect(html).toContain('derma-consent.de/impressum');
     expect(html).toContain('Impressum');
   });
 
