@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEnum, IsOptional, IsInt, Min, Max } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsOptional, IsInt, IsEmail, IsArray, ArrayMinSize, ArrayMaxSize, MaxLength, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export enum SubscriptionPlanEnum {
@@ -17,6 +17,27 @@ export class UpdateConfigDto {
 export class OverrideSubscriptionDto {
   @IsEnum(SubscriptionPlanEnum)
   plan!: SubscriptionPlanEnum;
+}
+
+export class SendAdminEmailDto {
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(50)
+  @IsEmail({}, { each: true })
+  to!: string[];
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
+  subject!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  html!: string;
+
+  @IsOptional()
+  @IsEmail()
+  fromAddress?: string;
 }
 
 export class PracticesQueryDto {

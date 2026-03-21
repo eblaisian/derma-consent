@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AdminDashboardController } from './admin-dashboard.controller';
 import { AdminPracticesController } from './admin-practices.controller';
 import { AdminConfigController } from './admin-config.controller';
+import { AdminEmailController } from './admin-email.controller';
 import { PlatformAdminGuard } from '../auth/platform-admin.guard';
 import { SmsModule } from '../sms/sms.module';
 
@@ -12,6 +13,7 @@ import { SmsModule } from '../sms/sms.module';
     AdminDashboardController,
     AdminPracticesController,
     AdminConfigController,
+    AdminEmailController,
   ],
 })
 export class AdminModule {}

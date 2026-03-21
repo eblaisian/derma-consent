@@ -138,6 +138,47 @@ export class EmailService {
     });
   }
 
+  async sendRawEmail(
+    recipients: string[],
+    subject: string,
+    html: string,
+    fromAddressOverride?: string,
+  ): Promise<{ sent: number; failed: number }> {
+    const transport = await this.getTransport();
+    if (!transport) {
+      this.logger.log(`[NO-OP] Raw email to ${recipients.length} recipients: ${subject}`);
+      return { sent: 0, failed: 0 };
+    }
+
+    const fromName = (await this.platformConfig.get('email.fromName')) || 'DermaConsent';
+    const fromAddress = fromAddressOverride
+      || (await this.platformConfig.get('email.fromAddress'))
+      || 'noreply@derma-consent.de';
+    const text = stripHtmlToText(html);
+
+    let sent = 0;
+    let failed = 0;
+
+    for (const to of recipients) {
+      try {
+        await transport.send({
+          from: `${fromName} <${fromAddress}>`,
+          to,
+          subject,
+          html,
+          text,
+        });
+        sent++;
+        this.logger.log(`Raw email sent to ${to}: ${subject}`);
+      } catch (error) {
+        failed++;
+        this.logger.error(`Failed to send raw email to ${to}: ${error}`);
+      }
+    }
+
+    return { sent, failed };
+  }
+
   async sendCustomMessage(to: string, subject: string, body: string, opts?: {
     isHtml?: boolean;
     locale?: EmailLocale;

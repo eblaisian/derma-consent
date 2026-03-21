@@ -10,12 +10,13 @@ import {
   Settings,
   Shield,
   LogOut,
+  Mail,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export interface AdminNavItem {
   href: string;
-  labelKey: 'dashboard' | 'practices' | 'configuration';
+  labelKey: 'dashboard' | 'practices' | 'configuration' | 'emailSender';
   icon: React.ComponentType<{ className?: string }>;
 }
 
@@ -23,6 +24,7 @@ export const adminNavItems: AdminNavItem[] = [
   { href: '/admin', labelKey: 'dashboard', icon: LayoutDashboard },
   { href: '/admin/practices', labelKey: 'practices', icon: Building2 },
   { href: '/admin/config', labelKey: 'configuration', icon: Settings },
+  { href: '/admin/email', labelKey: 'emailSender', icon: Mail },
 ];
 
 export function AdminSidebar() {
