@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Shield, Lock, FileSignature } from 'lucide-react';
@@ -43,9 +44,9 @@ export function WelcomeModal({ open, onOpenChange, onCreateConsent }: WelcomeMod
           <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl bg-primary/[0.08]">
             <current.Icon className="size-7 text-primary" strokeWidth={1.5} />
           </div>
-          <h2 className="font-display text-xl font-semibold tracking-tight text-balance">
+          <DialogTitle className="font-display text-xl font-semibold tracking-tight text-balance">
             {t(current.titleKey)}
-          </h2>
+          </DialogTitle>
           <p className="mt-3 text-sm text-muted-foreground leading-relaxed text-pretty max-w-sm mx-auto">
             {t(current.descriptionKey)}
           </p>
