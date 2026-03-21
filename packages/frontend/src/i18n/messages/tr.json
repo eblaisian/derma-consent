@@ -263,7 +263,7 @@
     "pleaseSign": "Lütfen formu imzalayın",
     "nextToSignature": "İmzaya devam et",
     "nextToQuiz": "Teste devam et",
-    "signatureInstruction": "Lütfen onamınızı onaylamak için aşağıya imzanızı atın.",
+    "signatureInstruction": "Aşağıda imzalayarak, sağlanan bilgileri okuduğunuzu ve anladığınızı ve prosedüre izin verdiğinizi doğrularsınız.",
     "back": "Geri",
     "nextToReview": "İncelemeye devam et",
     "reviewTitle": "Bilgilerinizi gözden geçirin",
@@ -318,7 +318,20 @@
     "introBegin": "Başla",
     "successNext": "Sonra ne olacak?",
     "successNextDetail": "Onamınız güvenli şekilde gönderildi ve şifrelendi. Kliniğiniz imzalı bir PDF saklayacak.",
-    "successClose": "Şimdi bu pencereyi kapatabilirsiniz."
+    "successClose": "Şimdi bu pencereyi kapatabilirsiniz.",
+    "introSubtitle": "{practiceName} adresindeki doktorunuz bu formu sizin için hazırlamıştır.",
+    "introStepLabel1": "Bilgileriniz",
+    "introStepLabel2": "Sağlık soruları",
+    "introStepLabel3": "İnceleme ve imzalama",
+    "personalIntro": "Bilgilerinizle başlayalım. Bu bilgiler, doktorunuzun kayıtlarınızı tanımlamasına yardımcı olur.",
+    "formIntro": "Lütfen sağlığınızla ilgili aşağıdaki soruları yanıtlayın. Bu, prosedür sırasında güvenliğinizi sağlamaya yardımcı olur.",
+    "signatureTitle": "Neredeyse bitti — imzanız",
+    "signatureCaptured": "İmza yakalandı",
+    "signaturePlaceholder": "Buraya imzalayın",
+    "signatureHint": "Mobil cihazlarda parmağınızı veya masaüstünde fareyi kullanın",
+    "submittingTitle": "İzniniz gönderiliyor",
+    "reviewSubtitle": "Gönderilmeden önce lütfen her şeyin doğru olduğunu doğrulayın.",
+    "reviewEdit": "Düzenle"
   },
   "consentTypes": {
     "BOTOX": "Botox / Botulinum toksin",
@@ -861,8 +874,8 @@
     "next": "İleri",
     "back": "Geri",
     "createFirst": "İlk Onamı Oluştur",
-    "checklistTitle": "DermaConsent ile başlayın",
-    "stepsComplete": "{total} adımdan {done} tamamlandı",
+    "stepsRemaining": "{count} adım kaldı",
+    "almostDone": "Neredeyse bitti — bir adım kaldı!",
     "step_vault": "Ana parolanızı belirleyin",
     "step_logo": "Klinik logonuzu yükleyin",
     "step_team": "İlk ekip üyenizi davet edin",
@@ -877,8 +890,7 @@
     "time_team": "~2 dk",
     "time_consent": "~1 dk",
     "getStarted": "Başla",
-    "skipWelcome": "Şimdilik Atla",
-    "collapseTitle": "Kurulum ilerlemesi"
+    "skipWelcome": "Şimdilik Atla"
   },
   "metadata": {
     "description": "Dermatoloji klinikleri için GDPR uyumlu dijital onam formları"

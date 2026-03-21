@@ -263,7 +263,7 @@
     "pleaseSign": "Por favor firme el formulario",
     "nextToSignature": "Continuar a la firma",
     "nextToQuiz": "Continuar al cuestionario",
-    "signatureInstruction": "Firme a continuación para confirmar su consentimiento.",
+    "signatureInstruction": "Al firmar a continuación, confirma que has leído y entendido la información proporcionada y consientes al procedimiento.",
     "back": "Atrás",
     "nextToReview": "Continuar a la revisión",
     "reviewTitle": "Revise sus datos",
@@ -318,7 +318,20 @@
     "introBegin": "Comenzar",
     "successNext": "¿Qué sucede después?",
     "successNextDetail": "Tu consentimiento ha sido enviado de forma segura y cifrado. Tu consulta almacenará un PDF firmado.",
-    "successClose": "Ahora puedes cerrar esta ventana."
+    "successClose": "Ahora puedes cerrar esta ventana.",
+    "introSubtitle": "Su médico en {practiceName} ha preparado este formulario para usted.",
+    "introStepLabel1": "Sus datos",
+    "introStepLabel2": "Preguntas de salud",
+    "introStepLabel3": "Revisar y firmar",
+    "personalIntro": "Comencemos con sus datos. Esta información ayuda a su médico a identificar sus registros.",
+    "formIntro": "Por favor responda las siguientes preguntas sobre su salud. Esto ayuda a garantizar su seguridad durante el procedimiento.",
+    "signatureTitle": "Casi listo — su firma",
+    "signatureCaptured": "Firma capturada",
+    "signaturePlaceholder": "Firme aquí",
+    "signatureHint": "Use su dedo en dispositivos móviles o el ratón en escritorio",
+    "submittingTitle": "Enviando su consentimiento",
+    "reviewSubtitle": "Por favor verifique que todo sea correcto antes de enviar.",
+    "reviewEdit": "Editar"
   },
   "consentTypes": {
     "BOTOX": "Botox / Toxina botulínica",
@@ -985,8 +998,8 @@
     "next": "Siguiente",
     "back": "Atrás",
     "createFirst": "Crear primer consentimiento",
-    "checklistTitle": "Primeros pasos con DermaConsent",
-    "stepsComplete": "{done} de {total} pasos completados",
+    "stepsRemaining": "{count} pasos restantes",
+    "almostDone": "Casi listo — un paso más!",
     "step_vault": "Establece tu contraseña maestra",
     "step_logo": "Sube el logo de tu consulta",
     "step_team": "Invita a tu primer miembro",
@@ -1001,8 +1014,7 @@
     "time_team": "~2 min",
     "time_consent": "~1 min",
     "getStarted": "Empezar",
-    "skipWelcome": "Omitir por ahora",
-    "collapseTitle": "Progreso de configuración"
+    "skipWelcome": "Omitir por ahora"
   },
   "metadata": {
     "description": "Consentimientos digitales conformes al RGPD para consultas dermatológicas"

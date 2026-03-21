@@ -146,7 +146,7 @@ export function MedicationTags({
         <button
           type="button"
           onClick={() => handleGate('none')}
-          className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3.5 text-sm font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3.5 text-sm font-medium transition-all active:scale-[0.97] ${
             gate === 'none'
               ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-400 dark:bg-emerald-950/30 dark:text-emerald-400'
               : 'border-border hover:border-muted-foreground/30 text-muted-foreground'
@@ -158,7 +158,7 @@ export function MedicationTags({
         <button
           type="button"
           onClick={() => handleGate('yes')}
-          className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3.5 text-sm font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3.5 text-sm font-medium transition-all active:scale-[0.97] ${
             gate === 'yes'
               ? 'border-primary bg-primary/5 text-primary'
               : 'border-border hover:border-muted-foreground/30 text-muted-foreground'

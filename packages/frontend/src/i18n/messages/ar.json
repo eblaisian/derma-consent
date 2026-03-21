@@ -263,7 +263,7 @@
     "pleaseSign": "يرجى توقيع النموذج",
     "nextToSignature": "المتابعة إلى التوقيع",
     "nextToQuiz": "متابعة إلى الاختبار",
-    "signatureInstruction": "يرجى التوقيع أدناه لتأكيد موافقتك.",
+    "signatureInstruction": "بالتوقيع أدناه، تؤكد أنك قرأت وفهمت المعلومات المقدمة وتوافق على الإجراء.",
     "back": "رجوع",
     "nextToReview": "المتابعة إلى المراجعة",
     "reviewTitle": "مراجعة معلوماتك",
@@ -318,7 +318,20 @@
     "introBegin": "ابدأ",
     "successNext": "ماذا يحدث بعد ذلك؟",
     "successNextDetail": "تم تقديم موافقتك بأمان وتشفيرها. ستحفظ عيادتك ملف PDF موقّعاً.",
-    "successClose": "يمكنك الآن إغلاق هذه النافذة."
+    "successClose": "يمكنك الآن إغلاق هذه النافذة.",
+    "introSubtitle": "لقد أعد طبيبك في {practiceName} هذا النموذج لك.",
+    "introStepLabel1": "تفاصيلك",
+    "introStepLabel2": "أسئلة صحية",
+    "introStepLabel3": "المراجعة والتوقيع",
+    "personalIntro": "لنبدأ بتفاصيلك. تساعد هذه المعلومات طبيبك في تحديد سجلاتك.",
+    "formIntro": "يرجى الإجابة على الأسئلة التالية حول صحتك. يساعد هذا على ضمان سلامتك أثناء الإجراء.",
+    "signatureTitle": "قريباً — توقيعك",
+    "signatureCaptured": "تم التقاط التوقيع",
+    "signaturePlaceholder": "وقع هنا",
+    "signatureHint": "استخدم إصبعك على الهاتف المحمول أو الماوس على سطح المكتب",
+    "submittingTitle": "إرسال موافقتك",
+    "reviewSubtitle": "يرجى التحقق من صحة كل شيء قبل الإرسال.",
+    "reviewEdit": "تعديل"
   },
   "consentTypes": {
     "BOTOX": "Botox / توكسين البوتولينوم",
@@ -861,8 +874,8 @@
     "next": "التالي",
     "back": "رجوع",
     "createFirst": "إنشاء أول موافقة",
-    "checklistTitle": "ابدأ مع DermaConsent",
-    "stepsComplete": "{done} من {total} خطوات مكتملة",
+    "stepsRemaining": "{count} خطوات متبقية",
+    "almostDone": "أوشكت على الانتهاء — خطوة واحدة متبقية!",
     "step_vault": "حدد كلمة المرور الرئيسية",
     "step_logo": "ارفع شعار عيادتك",
     "step_team": "ادعُ أول عضو في فريقك",
@@ -877,8 +890,7 @@
     "time_team": "~دقيقتان",
     "time_consent": "~دقيقة",
     "getStarted": "ابدأ",
-    "skipWelcome": "تخطي الآن",
-    "collapseTitle": "تقدم الإعداد"
+    "skipWelcome": "تخطي الآن"
   },
   "metadata": {
     "description": "نماذج موافقة رقمية متوافقة مع GDPR لعيادات الأمراض الجلدية"

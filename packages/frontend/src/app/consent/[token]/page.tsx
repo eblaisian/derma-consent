@@ -3,6 +3,7 @@
 import { use, useCallback, useState } from 'react';
 import useSWR from 'swr';
 import { useTranslations } from 'next-intl';
+import { motion } from 'framer-motion';
 import { ConsentForm } from '@/components/consent-form/consent-form';
 import type { PatientIdentity } from '@/components/consent-form/consent-form';
 import { LanguageSwitcher } from '@/components/language-switcher';
@@ -25,11 +26,13 @@ function StatusPage({
   title,
   message,
   variant = 'neutral',
+  children,
 }: {
   icon: React.ReactNode;
   title: string;
   message: string;
   variant?: 'success' | 'error' | 'neutral';
+  children?: React.ReactNode;
 }) {
   const ringColor = {
     success: 'ring-success/20 bg-success-subtle',
@@ -39,17 +42,33 @@ function StatusPage({
 
   return (
     <div className="flex items-center justify-center min-h-dvh bg-muted/30">
-      <div className="text-center space-y-6 max-w-sm px-6">
+      <motion.div
+        className="text-center space-y-6 max-w-sm px-6"
+        initial={{ opacity: 0, y: 20, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+      >
         <div className="mx-auto rounded-2xl border border-border/50 bg-card shadow-[var(--shadow-sm)] p-10">
-          <div className={`mx-auto flex size-20 items-center justify-center rounded-full ring-1 ${ringColor}`}>
+          <motion.div
+            className={`mx-auto flex size-20 items-center justify-center rounded-full ring-1 ${ringColor}`}
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 15 }}
+          >
             {icon}
-          </div>
-          <div className="space-y-2 mt-6">
+          </motion.div>
+          <motion.div
+            className="space-y-2 mt-6"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.4 }}
+          >
             <h1 className="text-xl font-semibold tracking-tight text-balance">{title}</h1>
             <p className="text-sm text-muted-foreground leading-relaxed text-pretty">{message}</p>
-          </div>
+          </motion.div>
+          {children}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -83,7 +102,6 @@ export default function ConsentPage({
 
       const publicKey = await importPublicKey(data.practice.publicKey);
 
-      // Encrypt form data (medical questionnaire + signature)
       const encrypted = await encryptFormData(
         {
           ...submission.formData,
@@ -92,16 +110,13 @@ export default function ConsentPage({
         publicKey,
       );
 
-      // Compute patient lookup hash and encrypt identity fields
       const patientFields: Record<string, string> = {};
       const { fullName, dateOfBirth, email } = submission.patientIdentity;
       if (fullName.trim()) {
-        // Use same separator as create-patient-dialog (:) for lookup hash deduplication
         const hashInput = fullName.trim().toLowerCase() + ':' + dateOfBirth;
         const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(hashInput));
         const lookupHash = Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
 
-        // Encrypt raw strings (not wrapped objects) to match manual patient creation format
         const encName = await encryptFormData(fullName.trim(), publicKey);
         patientFields.patientLookupHash = lookupHash;
         patientFields.encryptedPatientName = JSON.stringify(encName);
@@ -168,11 +183,11 @@ export default function ConsentPage({
           <Skeleton className="h-8 w-64" />
           <Skeleton className="h-1 w-full rounded-full" />
           <div className="space-y-4">
-            <Skeleton className="h-12 w-full rounded-lg" />
-            <Skeleton className="h-12 w-full rounded-lg" />
-            <Skeleton className="h-12 w-full rounded-lg" />
+            <Skeleton className="h-12 w-full rounded-lg animate-pulse" />
+            <Skeleton className="h-12 w-full rounded-lg animate-pulse [animation-delay:100ms]" />
+            <Skeleton className="h-12 w-full rounded-lg animate-pulse [animation-delay:200ms]" />
           </div>
-          <Skeleton className="h-48 w-full rounded-xl" />
+          <Skeleton className="h-48 w-full rounded-xl animate-pulse [animation-delay:300ms]" />
         </div>
       </div>
     );
@@ -191,43 +206,54 @@ export default function ConsentPage({
 
   if (submitted) {
     return (
-      <div className="flex items-center justify-center min-h-dvh bg-muted/30">
-        <div className="text-center space-y-6 max-w-sm px-6">
-          <div className="mx-auto rounded-2xl border border-border/50 bg-card shadow-[var(--shadow-sm)] p-10">
-            {data?.logoUrl && (
-              <img
-                src={data.logoUrl as string}
-                alt={data?.practice?.name || 'Practice'}
-                className="h-10 w-auto mx-auto mb-6 rounded-lg"
-              />
-            )}
-            <div className="mx-auto flex size-20 items-center justify-center rounded-full ring-1 ring-success/20 bg-success-subtle">
-              <CheckCircle className="size-8 text-success" strokeWidth={1.5} />
-            </div>
-            <div className="space-y-2 mt-6">
-              <h1 className="text-xl font-semibold tracking-tight text-balance">{t('thankYou')}</h1>
-              <p className="text-sm text-muted-foreground leading-relaxed text-pretty">{t('successMessage')}</p>
-            </div>
-            <div className="mt-6 rounded-lg bg-muted/50 border border-border/30 p-4 text-left space-y-2">
-              <p className="text-sm font-medium">{t('successNext')}</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">{t('successNextDetail')}</p>
-              <p className="text-xs text-muted-foreground">{t('successClose')}</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <StatusPage
+        icon={<CheckCircle className="size-8 text-success" strokeWidth={1.5} />}
+        title={t('thankYou')}
+        message={t('successMessage')}
+        variant="success"
+      >
+        {data?.logoUrl && (
+          <motion.img
+            src={data.logoUrl as string}
+            alt={data?.practice?.name || 'Practice'}
+            className="h-10 w-auto mx-auto mt-6 rounded-lg"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          />
+        )}
+        <motion.div
+          className="mt-6 rounded-lg bg-muted/50 border border-border/30 p-4 text-left space-y-2"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.4 }}
+        >
+          <p className="text-sm font-medium">{t('successNext')}</p>
+          <p className="text-xs text-muted-foreground leading-relaxed">{t('successNextDetail')}</p>
+          <p className="text-xs text-muted-foreground">{t('successClose')}</p>
+        </motion.div>
+      </StatusPage>
     );
   }
 
   if (stripeUrl) {
     return (
       <div className="flex items-center justify-center min-h-dvh bg-background">
-        <div className="text-center space-y-4">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary-subtle">
+        <motion.div
+          className="text-center space-y-4"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          <motion.div
+            className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary-subtle"
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
             <div className="animate-spin size-6 border-2 border-primary border-t-transparent rounded-full" />
-          </div>
+          </motion.div>
           <p className="text-sm text-muted-foreground">{t('redirectingToPayment')}</p>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -308,7 +334,12 @@ export default function ConsentPage({
 
       {/* Form content */}
       <main className="flex-1 mx-auto w-full max-w-2xl px-4 md:px-6 py-8">
-        <div className="rounded-2xl border border-border/50 bg-card shadow-[var(--shadow-md)] px-6 py-8 md:px-10 md:py-10">
+        <motion.div
+          className="rounded-2xl border border-border/50 bg-card shadow-[var(--shadow-md)] px-6 py-8 md:px-10 md:py-10"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <ConsentForm
             consentType={data.type as ConsentType}
             practiceName={data.practice?.name || 'Praxis'}
@@ -316,7 +347,7 @@ export default function ConsentPage({
             onSubmit={handleSubmit}
             videoUrl={videoUrl ?? undefined}
           />
-        </div>
+        </motion.div>
       </main>
 
       {/* Security trust bar */}

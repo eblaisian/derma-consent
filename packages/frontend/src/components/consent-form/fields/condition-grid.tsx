@@ -123,7 +123,7 @@ export function ConditionGrid({
               key={key}
               type="button"
               onClick={() => toggleCondition(key)}
-              className={`relative flex flex-col items-center gap-1.5 rounded-xl border-2 px-3 py-3 text-center transition-all ${
+              className={`relative flex flex-col items-center gap-1.5 rounded-xl border-2 px-3 py-3 text-center transition-all active:scale-[0.97] ${
                 isNoneCard && isActive
                   ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-400 dark:bg-emerald-950/30 dark:text-emerald-400'
                   : isActive

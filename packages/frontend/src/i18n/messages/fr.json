@@ -263,7 +263,7 @@
     "pleaseSign": "Veuillez signer le formulaire",
     "nextToSignature": "Passer à la signature",
     "nextToQuiz": "Continuer au questionnaire",
-    "signatureInstruction": "Veuillez signer ci-dessous pour confirmer votre consentement.",
+    "signatureInstruction": "En signant ci-dessous, vous confirmez que vous avez lu et compris les informations fournies et consentez à la procédure.",
     "back": "Retour",
     "nextToReview": "Passer à la vérification",
     "reviewTitle": "Vérification de vos données",
@@ -318,7 +318,20 @@
     "introBegin": "Commencer",
     "successNext": "Que se passe-t-il ensuite?",
     "successNextDetail": "Votre consentement a été soumis en toute sécurité et chiffré. Votre cabinet stockera un PDF signé.",
-    "successClose": "Vous pouvez maintenant fermer cette fenêtre."
+    "successClose": "Vous pouvez maintenant fermer cette fenêtre.",
+    "introSubtitle": "Votre médecin à {practiceName} a préparé ce formulaire pour vous.",
+    "introStepLabel1": "Vos détails",
+    "introStepLabel2": "Questions de santé",
+    "introStepLabel3": "Réviser et signer",
+    "personalIntro": "Commençons par vos détails. Ces informations aident votre médecin à identifier vos dossiers.",
+    "formIntro": "Veuillez répondre aux questions suivantes sur votre santé. Cela aide à assurer votre sécurité pendant la procédure.",
+    "signatureTitle": "Presque terminé — votre signature",
+    "signatureCaptured": "Signature capturée",
+    "signaturePlaceholder": "Signez ici",
+    "signatureHint": "Utilisez votre doigt sur mobile ou la souris sur le bureau",
+    "submittingTitle": "Soumission de votre consentement",
+    "reviewSubtitle": "Veuillez vérifier que tout est correct avant de soumettre.",
+    "reviewEdit": "Modifier"
   },
   "consentTypes": {
     "BOTOX": "Botox / Toxine botulique",
@@ -985,8 +998,8 @@
     "next": "Suivant",
     "back": "Retour",
     "createFirst": "Créer le premier consentement",
-    "checklistTitle": "Démarrez avec DermaConsent",
-    "stepsComplete": "{done} sur {total} étapes terminées",
+    "stepsRemaining": "Encore {count} étapes",
+    "almostDone": "Presque fini — plus qu'une étape !",
     "step_vault": "Définir votre mot de passe principal",
     "step_logo": "Téléchargez le logo de votre cabinet",
     "step_team": "Invitez votre premier membre",
@@ -1001,8 +1014,7 @@
     "time_team": "~2 min",
     "time_consent": "~1 min",
     "getStarted": "Commencer",
-    "skipWelcome": "Ignorer pour l'instant",
-    "collapseTitle": "Progression de la configuration"
+    "skipWelcome": "Ignorer pour l'instant"
   },
   "metadata": {
     "description": "Consentements numériques conformes au RGPD pour les cabinets de dermatologie"

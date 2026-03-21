@@ -263,7 +263,7 @@
     "pleaseSign": "Bitte unterschreiben Sie das Formular",
     "nextToSignature": "Weiter zur Unterschrift",
     "nextToQuiz": "Weiter zum Wissenstest",
-    "signatureInstruction": "Bitte unterschreiben Sie unten, um Ihre Einwilligung zu bestätigen.",
+    "signatureInstruction": "Mit Ihrer Unterschrift unten bestätigen Sie, dass Sie die bereitgestellten Informationen gelesen und verstanden haben und dem Verfahren zustimmen.",
     "back": "Zurück",
     "nextToReview": "Weiter zur Überprüfung",
     "reviewTitle": "Überprüfung Ihrer Angaben",
@@ -318,7 +318,20 @@
     "introBegin": "Beginnen",
     "successNext": "Wie geht es weiter?",
     "successNextDetail": "Ihre Einwilligung wurde sicher übermittelt und verschlüsselt. Ihre Praxis speichert eine signierte PDF.",
-    "successClose": "Sie können dieses Fenster jetzt schließen."
+    "successClose": "Sie können dieses Fenster jetzt schließen.",
+    "introSubtitle": "Ihr Arzt bei {practiceName} hat dieses Formular für Sie vorbereitet.",
+    "introStepLabel1": "Ihre Daten",
+    "introStepLabel2": "Gesundheitsfragen",
+    "introStepLabel3": "Überprüfen & unterschreiben",
+    "personalIntro": "Lassen Sie uns mit Ihren Daten beginnen. Diese Informationen helfen Ihrem Arzt, Ihre Unterlagen zu identifizieren.",
+    "formIntro": "Bitte beantworten Sie die folgenden Fragen zu Ihrer Gesundheit. Dies hilft, Ihre Sicherheit während des Verfahrens zu gewährleisten.",
+    "signatureTitle": "Fast fertig — Ihre Unterschrift",
+    "signatureCaptured": "Unterschrift erfasst",
+    "signaturePlaceholder": "Hier unterschreiben",
+    "signatureHint": "Verwenden Sie Ihren Finger auf dem Mobiltelefon oder die Maus auf dem Desktop",
+    "submittingTitle": "Ihre Zustimmung wird eingereicht",
+    "reviewSubtitle": "Bitte überprüfen Sie, ob alles korrekt ist, bevor Sie absenden.",
+    "reviewEdit": "Bearbeiten"
   },
   "consentTypes": {
     "BOTOX": "Botox / Botulinumtoxin",
@@ -863,8 +876,8 @@
     "next": "Weiter",
     "back": "Zurück",
     "createFirst": "Erste Einwilligung erstellen",
-    "checklistTitle": "Erste Schritte mit DermaConsent",
-    "stepsComplete": "{done} von {total} Schritten abgeschlossen",
+    "stepsRemaining": "Noch {count} Schritte",
+    "almostDone": "Fast geschafft — noch ein Schritt!",
     "step_vault": "Master-Passwort festlegen",
     "step_logo": "Praxis-Logo hochladen",
     "step_team": "Erstes Teammitglied einladen",
@@ -879,8 +892,7 @@
     "time_team": "~2 Min.",
     "time_consent": "~1 Min.",
     "getStarted": "Loslegen",
-    "skipWelcome": "Später",
-    "collapseTitle": "Einrichtungsfortschritt"
+    "skipWelcome": "Später"
   },
   "metadata": {
     "description": "DSGVO-konforme digitale Einwilligungen für Dermatologie-Praxen"

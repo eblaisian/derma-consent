@@ -263,7 +263,7 @@
     "pleaseSign": "Proszę podpisać formularz",
     "nextToSignature": "Przejdź do podpisu",
     "nextToQuiz": "Przejdź do testu",
-    "signatureInstruction": "Proszę podpisać poniżej, aby potwierdzić zgodę.",
+    "signatureInstruction": "Podpisując poniżej, potwierdzasz, że przeczytałeś i zrozumiałeś dostarczone informacje i wyrażasz zgodę na procedurę.",
     "back": "Wstecz",
     "nextToReview": "Przejdź do przeglądu",
     "reviewTitle": "Sprawdź swoje dane",
@@ -318,7 +318,20 @@
     "introBegin": "Zacznij",
     "successNext": "Co się stanie dalej?",
     "successNextDetail": "Twoja zgoda została bezpiecznie przesłana i zaszyfrowana. Klinika przechowa podpisany PDF.",
-    "successClose": "Możesz teraz zamknąć to okno."
+    "successClose": "Możesz teraz zamknąć to okno.",
+    "introSubtitle": "Twój lekarz w {practiceName} przygotował ten formularz dla Ciebie.",
+    "introStepLabel1": "Twoje dane",
+    "introStepLabel2": "Pytania zdrowotne",
+    "introStepLabel3": "Przegląd i podpis",
+    "personalIntro": "Zacznijmy od Twoich danych. Informacje te pomagają lekarzowi zidentyfikować Twoje dokumenty.",
+    "formIntro": "Proszę odpowiedzieć na następujące pytania dotyczące Twojego zdrowia. Pomaga to zapewnić Twoją bezpieczeństwo podczas procedury.",
+    "signatureTitle": "Prawie gotowe — Twój podpis",
+    "signatureCaptured": "Podpis przechwycony",
+    "signaturePlaceholder": "Podpisz tutaj",
+    "signatureHint": "Użyj palca na urządzeniu mobilnym lub myszy na komputerze",
+    "submittingTitle": "Przesyłanie Twojej zgody",
+    "reviewSubtitle": "Proszę zweryfikować, że wszystko jest poprawne przed przesłaniem.",
+    "reviewEdit": "Edytuj"
   },
   "consentTypes": {
     "BOTOX": "Botox / Toksyna botulinowa",
@@ -861,8 +874,8 @@
     "next": "Dalej",
     "back": "Wstecz",
     "createFirst": "Utwórz pierwszą zgodę",
-    "checklistTitle": "Zacznij z DermaConsent",
-    "stepsComplete": "{done} z {total} kroków ukończonych",
+    "stepsRemaining": "Pozostało {count} kroków",
+    "almostDone": "Prawie gotowe — jeszcze jeden krok!",
     "step_vault": "Ustaw hasło główne",
     "step_logo": "Prześlij logo gabinetu",
     "step_team": "Zaproś pierwszego członka zespołu",
@@ -877,8 +890,7 @@
     "time_team": "~2 min",
     "time_consent": "~1 min",
     "getStarted": "Zacznij",
-    "skipWelcome": "Pomiń na razie",
-    "collapseTitle": "Postęp konfiguracji"
+    "skipWelcome": "Pomiń na razie"
   },
   "metadata": {
     "description": "Cyfrowe formularze zgody zgodne z RODO dla praktyk dermatologicznych"

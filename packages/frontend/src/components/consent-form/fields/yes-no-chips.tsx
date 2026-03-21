@@ -93,7 +93,7 @@ export function YesNoChips({
         <button
           type="button"
           onClick={() => handleGate('none')}
-          className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3.5 text-sm font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3.5 text-sm font-medium transition-all active:scale-[0.97] ${
             gate === 'none'
               ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-400 dark:bg-emerald-950/30 dark:text-emerald-400'
               : 'border-border hover:border-muted-foreground/30 text-muted-foreground'
@@ -105,7 +105,7 @@ export function YesNoChips({
         <button
           type="button"
           onClick={() => handleGate('yes')}
-          className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3.5 text-sm font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3.5 text-sm font-medium transition-all active:scale-[0.97] ${
             gate === 'yes'
               ? 'border-primary bg-primary/5 text-primary'
               : 'border-border hover:border-muted-foreground/30 text-muted-foreground'
@@ -127,7 +127,7 @@ export function YesNoChips({
                   key={key}
                   type="button"
                   onClick={() => toggleChip(key)}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition-all ${
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition-all active:scale-[0.97] ${
                     isActive
                       ? 'border-primary bg-primary/10 text-primary font-medium'
                       : 'border-border text-muted-foreground hover:border-primary/30 hover:bg-muted'
