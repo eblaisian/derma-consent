@@ -5,9 +5,9 @@ export default withMermaid(
   defineConfig({
     title: 'DermaConsent',
     description: 'Zero-knowledge consent management for dermatology practices',
-    base: '/derma-consent/',
+    base: '/',
 
-    head: [['link', { rel: 'icon', href: '/derma-consent/favicon.svg' }]],
+    head: [['link', { rel: 'icon', href: '/favicon.svg' }]],
 
     ignoreDeadLinks: [
       /localhost/,
