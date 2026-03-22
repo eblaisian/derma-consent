@@ -461,21 +461,37 @@ export class PdfService {
 
       case 'checkbox-group':
       case 'yes-no-chips': {
-        if (typeof rawValue !== 'string') return '—';
-        if (rawValue === 'none' || rawValue === '') return 'Keine';
-        const items = rawValue.split(',').map((v: string) => {
-          const key = v.trim();
+        // Handle both array (from real form) and comma-separated string (from test data)
+        let keys: string[];
+        if (Array.isArray(rawValue)) {
+          keys = rawValue.map(String).filter(Boolean);
+        } else if (typeof rawValue === 'string') {
+          if (rawValue === 'none' || rawValue === '') return 'Keine';
+          keys = rawValue.split(',').map((v: string) => v.trim()).filter(Boolean);
+        } else {
+          return '—';
+        }
+        if (keys.length === 0) return 'Keine';
+        const items = keys.map((key: string) => {
+          if (key === 'none' || key === 'noneOfAbove') return null;
           const label = t(deMessages, `medicalOptions.${key}`);
           return label !== `medicalOptions.${key}` ? label : key;
-        });
-        return items.join(', ');
+        }).filter(Boolean);
+        return items.length > 0 ? items.join(', ') : 'Keine';
       }
 
       case 'condition-grid': {
-        if (typeof rawValue !== 'string') return '—';
-        if (rawValue === 'noneOfAbove' || rawValue === '') return 'Keine Vorerkrankungen';
-        const conditions = rawValue.split(',').map((v: string) => {
-          const key = v.trim();
+        let condKeys: string[];
+        if (Array.isArray(rawValue)) {
+          condKeys = rawValue.map(String).filter(Boolean);
+        } else if (typeof rawValue === 'string') {
+          if (rawValue === 'noneOfAbove' || rawValue === '') return 'Keine Vorerkrankungen';
+          condKeys = rawValue.split(',').map((v: string) => v.trim()).filter(Boolean);
+        } else {
+          return '—';
+        }
+        if (condKeys.length === 0 || (condKeys.length === 1 && condKeys[0] === 'noneOfAbove')) return 'Keine Vorerkrankungen';
+        const conditions = condKeys.map((key: string) => {
           if (key.startsWith('notes:')) return `Anmerkung: ${key.slice(6)}`;
           if (key === 'noneOfAbove') return null;
           const label = t(deMessages, `medicalOptions.${key}`);
@@ -491,6 +507,7 @@ export class PdfService {
       }
 
       case 'medication-tags':
+        if (Array.isArray(rawValue)) return rawValue.filter(Boolean).join(', ') || 'Keine';
         return typeof rawValue === 'string' && rawValue.length > 0 ? rawValue : 'Keine';
 
       case 'text':
