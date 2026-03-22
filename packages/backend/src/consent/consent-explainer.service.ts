@@ -2,10 +2,12 @@ import {
   Injectable,
   Logger,
   ServiceUnavailableException,
+  ForbiddenException,
   Optional,
 } from '@nestjs/common';
 import { AiService } from '../ai/ai.service';
 import { AuditService } from '../audit/audit.service';
+import { UsageMeterService } from '../usage/usage-meter.service';
 import { ConsentService } from './consent.service';
 
 const SUPPORTED_LOCALES = ['de', 'en', 'es', 'fr', 'ar', 'tr', 'pl', 'ru'];
@@ -57,6 +59,7 @@ export class ConsentExplainerService {
   constructor(
     private readonly ai: AiService,
     private readonly consentService: ConsentService,
+    private readonly usageMeter: UsageMeterService,
     @Optional() private readonly auditService?: AuditService,
   ) {}
 
@@ -64,7 +67,7 @@ export class ConsentExplainerService {
     token: string,
     locale: string,
     mode: 'full' | 'summary' = 'full',
-  ): Promise<{ explanation: string; cached: boolean }> {
+  ): Promise<{ explanation: string; cached: boolean; unavailable?: boolean }> {
     const safeLocale = SUPPORTED_LOCALES.includes(locale) ? locale : 'de';
 
     const consent = await this.consentService.findByToken(token);
@@ -110,6 +113,17 @@ export class ConsentExplainerService {
         ? 'Give a very brief 2-3 sentence summary so the patient quickly understands what this is about.'
         : 'Please explain this in plain language so the patient understands what they are agreeing to.',
     ].join('\n');
+
+    // Check AI quota before making the API call (only uncached calls consume quota)
+    try {
+      await this.usageMeter.checkAndIncrement(consent.practiceId, 'AI_EXPLAINER');
+    } catch (err) {
+      if (err instanceof ForbiddenException) {
+        this.logger.warn(`AI explainer quota exceeded for practice ${consent.practiceId}`);
+        return { explanation: '', cached: false, unavailable: true };
+      }
+      throw err;
+    }
 
     const explanation = await this.ai.chat(
       [

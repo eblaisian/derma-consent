@@ -30,6 +30,7 @@ import { NotificationModule } from './notifications/notification.module';
 import { CommunicationsModule } from './communications/communications.module';
 import { ContactModule } from './contact/contact.module';
 import { StorageModule } from './storage/storage.module';
+import { UsageModule } from './usage/usage.module';
 import { ScheduledTasksService } from './common/scheduled-tasks.service';
 
 @Module({
@@ -77,6 +78,7 @@ import { ScheduledTasksService } from './common/scheduled-tasks.service';
     StorageModule,
     AuditModule,
     BillingModule,
+    UsageModule,
     PatientModule,
     SettingsModule,
     AnalyticsModule,

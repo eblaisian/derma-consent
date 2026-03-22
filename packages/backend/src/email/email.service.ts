@@ -7,6 +7,7 @@ import { subscriptionTemplate, getSubscriptionSubject } from './templates/subscr
 import { passwordResetTemplate, getPasswordResetSubject } from './templates/password-reset.template';
 import { emailVerificationTemplate, getEmailVerificationSubject } from './templates/email-verification.template';
 import { consentReminderTemplate, getConsentReminderSubject } from './templates/consent-reminder.template';
+import { usageAlertTemplate, getUsageAlertSubject } from './templates/usage-alert.template';
 import { baseLayout, stripHtmlToText } from './templates/base-layout';
 import type { EmailLocale } from './templates/types';
 import type { IEmailTransport } from './transports';
@@ -135,6 +136,21 @@ export class EmailService {
       subject: getConsentReminderSubject(practiceName, locale),
       html: consentReminderTemplate(practiceName, consentLink, locale, brandColor),
       fromNameOverride: `${practiceName} via DermaConsent`,
+    });
+  }
+
+  async sendUsageAlert(
+    to: string,
+    resource: string,
+    percentUsed: number,
+    used: number,
+    limit: number,
+    locale: EmailLocale = 'de',
+  ) {
+    await this.send({
+      to,
+      subject: getUsageAlertSubject(resource, percentUsed, locale),
+      html: usageAlertTemplate(resource, percentUsed, used, limit, locale),
     });
   }
 

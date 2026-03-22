@@ -50,6 +50,11 @@ export enum ErrorCode {
   // ── Practice ──────────────────────────────────────
   PRACTICE_NOT_FOUND = 'PRACTICE_NOT_FOUND',
 
+  // ── Usage / Quotas ───────────────────────────────
+  QUOTA_EXCEEDED = 'QUOTA_EXCEEDED',
+  SMS_QUOTA_EXCEEDED = 'SMS_QUOTA_EXCEEDED',
+  STORAGE_QUOTA_EXCEEDED = 'STORAGE_QUOTA_EXCEEDED',
+
   // ── Billing / Subscription ────────────────────────
   NO_SUBSCRIPTION_FOUND = 'NO_SUBSCRIPTION_FOUND',
   INVALID_PRICE_ID = 'INVALID_PRICE_ID',

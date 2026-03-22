@@ -93,6 +93,13 @@ enum SubscriptionStatus {
   EXPIRED
 }
 
+enum UsageResource {
+  SMS
+  EMAIL
+  AI_EXPLAINER
+  STORAGE_BYTES
+}
+
 // ── Models ──
 
 model Practice {
@@ -119,6 +126,8 @@ model Practice {
   treatmentPlans     TreatmentPlan[]
   treatmentTemplates TreatmentTemplate[]
   notificationLogs   NotificationLog[]
+  usageLedger        UsageLedger[]
+  usageAlerts        UsageAlert[]
 
   @@map("practices")
 }
@@ -191,6 +200,7 @@ model Subscription {
   stripeSubscriptionId String?            @map("stripe_subscription_id")
   cancelAtPeriodEnd    Boolean            @default(false) @map("cancel_at_period_end")
   trialEndsAt          DateTime?          @map("trial_ends_at")
+  currentPeriodStart   DateTime?          @map("current_period_start")
   currentPeriodEnd     DateTime?          @map("current_period_end")
   createdAt            DateTime           @default(now()) @map("created_at")
   updatedAt            DateTime           @updatedAt @map("updated_at")
@@ -426,4 +436,38 @@ model NotificationLog {
   @@index([status, createdAt])
   @@index([templateKey])
   @@map("notification_logs")
+}
+
+// ── Usage Metering ──
+
+model UsageLedger {
+  id         String        @id @default(uuid())
+  practiceId String        @map("practice_id")
+  resource   UsageResource
+  periodKey  String        @map("period_key") // "2025-03" or "STRIPE-sub_xxx-2025-03-01"
+  count      BigInt        @default(0)
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @updatedAt @map("updated_at")
+
+  practice Practice @relation(fields: [practiceId], references: [id])
+
+  @@unique([practiceId, resource, periodKey])
+  @@index([practiceId, periodKey])
+  @@index([periodKey, resource])
+  @@map("usage_ledger")
+}
+
+model UsageAlert {
+  id         String        @id @default(uuid())
+  practiceId String        @map("practice_id")
+  resource   UsageResource
+  periodKey  String        @map("period_key")
+  threshold  Int           // e.g. 80 (percent)
+  sentAt     DateTime      @default(now()) @map("sent_at")
+
+  practice Practice @relation(fields: [practiceId], references: [id])
+
+  @@unique([practiceId, resource, periodKey, threshold])
+  @@index([practiceId, periodKey])
+  @@map("usage_alerts")
 }

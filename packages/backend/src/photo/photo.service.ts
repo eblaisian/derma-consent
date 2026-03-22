@@ -32,7 +32,7 @@ export class PhotoService {
     }
 
     const path = `encrypted-photos/${practiceId}/${dto.patientId}/${randomUUID()}.enc`;
-    const storagePath = await this.storage.upload(path, fileBuffer, 'application/octet-stream');
+    const storagePath = await this.storage.uploadWithQuotaCheck(path, fileBuffer, 'application/octet-stream', practiceId);
 
     let photo;
     try {

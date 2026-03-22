@@ -12,6 +12,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlatformAdminGuard } from '../auth/platform-admin.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
+import { UsageMeterService } from '../usage/usage-meter.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { PracticesQueryDto, OverrideSubscriptionDto } from './dto/admin.dto';
 
@@ -21,6 +22,7 @@ export class AdminPracticesController {
   constructor(
     private readonly prisma: PrismaService,
     private readonly auditService: AuditService,
+    private readonly usageMeter: UsageMeterService,
   ) {}
 
   @Get()
@@ -185,5 +187,21 @@ export class AdminPracticesController {
     });
 
     return subscription;
+  }
+
+  @Get(':id/usage')
+  async getUsage(@Param('id') id: string) {
+    const summary = await this.usageMeter.getUsageSummary(id);
+
+    // Get active alerts for this period
+    const alerts = await this.prisma.usageAlert.findMany({
+      where: { practiceId: id, periodKey: summary.periodKey },
+      orderBy: { sentAt: 'desc' },
+    });
+
+    return {
+      ...summary,
+      alerts,
+    };
   }
 }

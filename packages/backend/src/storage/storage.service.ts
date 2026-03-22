@@ -1,5 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, ForbiddenException, Optional } from '@nestjs/common';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
+import { UsageMeterService } from '../usage/usage-meter.service';
+import { ErrorCode } from '../common/error-codes';
 import type { IStorageProvider, StorageAcl } from './storage-provider.interface';
 import { SpacesProvider } from './providers/spaces.provider';
 import { LocalFsProvider } from './providers/local-fs.provider';
@@ -10,7 +12,10 @@ export class StorageService {
   private provider: IStorageProvider | null = null;
   private lastInitAttempt = 0;
 
-  constructor(private readonly platformConfig: PlatformConfigService) {}
+  constructor(
+    private readonly platformConfig: PlatformConfigService,
+    @Optional() private readonly usageMeter?: UsageMeterService,
+  ) {}
 
   private async getProvider(): Promise<IStorageProvider> {
     if (this.provider && Date.now() - this.lastInitAttempt < 60_000) {
@@ -44,6 +49,28 @@ export class StorageService {
   async upload(path: string, data: Buffer, contentType: string, options?: { upsert?: boolean; acl?: StorageAcl }): Promise<string> {
     const provider = await this.getProvider();
     return provider.upload({ path, data, contentType, upsert: options?.upsert, acl: options?.acl });
+  }
+
+  /**
+   * Upload with storage quota check. Checks practice quota before uploading.
+   * Throws ForbiddenException if storage quota would be exceeded.
+   */
+  async uploadWithQuotaCheck(
+    path: string,
+    data: Buffer,
+    contentType: string,
+    practiceId: string,
+    options?: { upsert?: boolean; acl?: StorageAcl },
+  ): Promise<string> {
+    if (this.usageMeter) {
+      await this.usageMeter.checkAndIncrement(
+        practiceId,
+        'STORAGE_BYTES',
+        data.byteLength,
+        ErrorCode.STORAGE_QUOTA_EXCEEDED,
+      );
+    }
+    return this.upload(path, data, contentType, options);
   }
 
   async download(path: string): Promise<Buffer> {

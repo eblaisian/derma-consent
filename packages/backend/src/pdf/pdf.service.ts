@@ -141,9 +141,9 @@ export class PdfService {
     doc.end();
     const pdfBuffer = await pdfComplete;
 
-    // Upload to storage
+    // Upload to storage (quota-checked — all uploads count against practice storage)
     const storagePath = `consent-pdfs/${consent.practiceId}/${consent.id}.pdf`;
-    await this.storage.upload(storagePath, pdfBuffer, 'application/pdf', { upsert: true });
+    await this.storage.uploadWithQuotaCheck(storagePath, pdfBuffer, 'application/pdf', consent.practiceId, { upsert: true });
 
     // Compute hash of the final PDF for tamper detection
     const pdfHash = crypto.createHash('sha256').update(pdfBuffer).digest('hex');

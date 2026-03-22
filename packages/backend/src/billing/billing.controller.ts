@@ -12,6 +12,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
+import { UsageMeterService } from '../usage/usage-meter.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Controller('api/billing')
@@ -19,6 +20,7 @@ export class BillingController {
   constructor(
     private readonly billingService: BillingService,
     private readonly platformConfig: PlatformConfigService,
+    private readonly usageMeter: UsageMeterService,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -47,25 +49,30 @@ export class BillingController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   async getUsage(@CurrentUser() user: CurrentUserPayload) {
-    const subscription = await this.billingService.getSubscription(user.practiceId!);
-    const plan = subscription.plan;
+    const summary = await this.usageMeter.getUsageSummary(user.practiceId!);
 
-    const limitKey = `plans.${plan === 'FREE_TRIAL' ? 'freeTrialLimit' : plan === 'STARTER' ? 'starterLimit' : plan === 'PROFESSIONAL' ? 'professionalLimit' : 'enterpriseLimit'}`;
-    const limitValue = parseInt((await this.platformConfig.get(limitKey)) || '-1', 10);
-
+    // Also include consent form count (existing feature, separate from resource quotas)
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const used = await this.prisma.consentForm.count({
+    const consentsUsed = await this.prisma.consentForm.count({
       where: {
         practiceId: user.practiceId!,
         createdAt: { gte: monthStart },
       },
     });
 
+    const limitKey = `plans.${summary.plan === 'FREE_TRIAL' ? 'freeTrialLimit' : summary.plan === 'STARTER' ? 'starterLimit' : summary.plan === 'PROFESSIONAL' ? 'professionalLimit' : 'enterpriseLimit'}`;
+    const consentLimit = parseInt((await this.platformConfig.get(limitKey)) || '-1', 10);
+
     return {
-      used,
-      limit: limitValue > 0 ? limitValue : null,
-      plan,
+      plan: summary.plan,
+      periodKey: summary.periodKey,
+      daysUntilReset: summary.daysUntilReset,
+      resources: summary.resources,
+      consents: {
+        used: consentsUsed,
+        limit: consentLimit > 0 ? consentLimit : null,
+      },
     };
   }
 

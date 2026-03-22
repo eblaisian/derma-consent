@@ -85,7 +85,7 @@ export class SettingsController {
 
     // Sanitized path — never use user-supplied filenames
     const path = `practice-assets/logos/${user.practiceId}/${Date.now()}.${ext}`;
-    const storagePath = await this.storage.upload(path, file.buffer, file.mimetype, { acl: 'public-read' });
+    const storagePath = await this.storage.uploadWithQuotaCheck(path, file.buffer, file.mimetype, user.practiceId!, { acl: 'public-read' });
 
     // Store the raw storage path — resolve to public URL at read time
     return this.settingsService.updateLogo(user.practiceId!, storagePath);

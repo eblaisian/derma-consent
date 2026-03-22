@@ -205,6 +205,12 @@ export class BillingService {
             ? new Date(sub.billing_cycle_anchor * 1000 + 30 * 24 * 60 * 60 * 1000)
             : null;
 
+        const periodStart = (sub as any).current_period_start
+          ? new Date((sub as any).current_period_start * 1000)
+          : sub.billing_cycle_anchor
+            ? new Date(sub.billing_cycle_anchor * 1000)
+            : null;
+
         const trialEnd = sub.trial_end
           ? new Date(sub.trial_end * 1000)
           : null;
@@ -216,6 +222,7 @@ export class BillingService {
             status: this.mapStripeStatus(sub.status),
             plan,
             cancelAtPeriodEnd: sub.cancel_at_period_end ?? false,
+            ...(periodStart && { currentPeriodStart: periodStart }),
             ...(periodEnd && { currentPeriodEnd: periodEnd }),
             ...(trialEnd && { trialEndsAt: trialEnd }),
           },

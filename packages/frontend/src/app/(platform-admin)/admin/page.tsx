@@ -8,6 +8,11 @@ import {
   Users,
   FileSignature,
   CreditCard,
+  MessageSquare,
+  Mail,
+  Brain,
+  HardDrive,
+  AlertTriangle,
 } from 'lucide-react';
 
 interface DashboardData {
@@ -27,12 +32,51 @@ interface DashboardData {
   }>;
 }
 
+interface PlatformUsage {
+  period: string;
+  platformTotals: Record<string, number>;
+  topConsumers: Record<string, Array<{
+    practiceId: string;
+    practiceName: string;
+    count: number;
+  }>>;
+  practicesNearLimitCount: number;
+}
+
+const RESOURCE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  SMS: MessageSquare,
+  EMAIL: Mail,
+  AI_EXPLAINER: Brain,
+  STORAGE_BYTES: HardDrive,
+};
+
+const RESOURCE_LABELS: Record<string, string> = {
+  SMS: 'SMS',
+  EMAIL: 'Email',
+  AI_EXPLAINER: 'AI Explainer',
+  STORAGE_BYTES: 'Storage',
+};
+
+function formatValue(resource: string, value: number): string {
+  if (resource === 'STORAGE_BYTES') {
+    if (value >= 1073741824) return `${(value / 1073741824).toFixed(1)} GB`;
+    if (value >= 1048576) return `${Math.round(value / 1048576)} MB`;
+    return `${value} B`;
+  }
+  return value.toLocaleString();
+}
+
 export default function AdminDashboardPage() {
   const t = useTranslations('admin');
   const format = useFormatter();
   const authFetch = useAuthFetch();
   const { data, isLoading, error, mutate } = useSWR<DashboardData>(
     '/api/admin/dashboard',
+    (url: string) => authFetch(url),
+  );
+
+  const { data: usageData } = useSWR<PlatformUsage>(
+    '/api/admin/dashboard/usage',
     (url: string) => authFetch(url),
   );
 
@@ -127,6 +171,52 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Platform Resource Usage */}
+      {usageData && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">{t('platformUsage')}</h2>
+            {usageData.practicesNearLimitCount > 0 && (
+              <div className="flex items-center gap-1.5 text-sm text-yellow-600">
+                <AlertTriangle className="size-4" />
+                <span>{t('practicesNearLimit', { count: usageData.practicesNearLimitCount })}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {(['SMS', 'EMAIL', 'AI_EXPLAINER', 'STORAGE_BYTES'] as const).map((resource) => {
+              const Icon = RESOURCE_ICONS[resource];
+              const total = usageData.platformTotals[resource] ?? 0;
+              const consumers = usageData.topConsumers[resource] ?? [];
+
+              return (
+                <div key={resource} className="rounded-lg border bg-card p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Icon className="size-4 text-muted-foreground" />
+                      <span className="text-sm font-medium">{RESOURCE_LABELS[resource]}</span>
+                    </div>
+                    <span className="text-lg font-bold tabular-nums">{formatValue(resource, total)}</span>
+                  </div>
+                  {consumers.length > 0 && (
+                    <div className="space-y-1 border-t pt-2">
+                      <p className="text-xs text-muted-foreground mb-1">{t('topConsumers')}</p>
+                      {consumers.slice(0, 3).map((c) => (
+                        <div key={c.practiceId} className="flex justify-between text-xs">
+                          <span className="truncate max-w-[140px]">{c.practiceName}</span>
+                          <span className="font-medium tabular-nums">{formatValue(resource, c.count)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Recent Signups */}
       <div className="rounded-lg border bg-card">

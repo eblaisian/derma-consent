@@ -65,6 +65,24 @@ const DEFAULTS: Record<string, string> = {
   'notifications.inviteEnabled': 'true',
   'notifications.welcomeEnabled': 'true',
   'notifications.subscriptionAlertsEnabled': 'true',
+  // Usage quotas per plan (-1 = unlimited)
+  'usage.sms.freeTrialLimit': '20',
+  'usage.sms.starterLimit': '100',
+  'usage.sms.professionalLimit': '300',
+  'usage.sms.enterpriseLimit': '2000',
+  'usage.email.freeTrialLimit': '200',
+  'usage.email.starterLimit': '1000',
+  'usage.email.professionalLimit': '5000',
+  'usage.email.enterpriseLimit': '-1',
+  'usage.aiExplainer.freeTrialLimit': '50',
+  'usage.aiExplainer.starterLimit': '200',
+  'usage.aiExplainer.professionalLimit': '500',
+  'usage.aiExplainer.enterpriseLimit': '-1',
+  'usage.storageBytes.freeTrialLimit': '1073741824',      // 1 GB
+  'usage.storageBytes.starterLimit': '5368709120',         // 5 GB
+  'usage.storageBytes.professionalLimit': '21474836480',   // 20 GB
+  'usage.storageBytes.enterpriseLimit': '107374182400',    // 100 GB
+  'usage.alertThresholdPercent': '80',
 };
 
 // Which keys are secrets
@@ -118,6 +136,24 @@ const CONFIG_METADATA: Record<string, { category: string; description: string; i
   'notifications.inviteEnabled': { category: 'notifications', description: 'Send team invite emails', isSecret: false },
   'notifications.welcomeEnabled': { category: 'notifications', description: 'Send welcome emails on registration', isSecret: false },
   'notifications.subscriptionAlertsEnabled': { category: 'notifications', description: 'Send trial expiry and payment failure alerts', isSecret: false },
+  // Usage quotas
+  'usage.sms.freeTrialLimit': { category: 'usage', description: 'Free Trial monthly SMS limit', isSecret: false },
+  'usage.sms.starterLimit': { category: 'usage', description: 'Starter monthly SMS limit', isSecret: false },
+  'usage.sms.professionalLimit': { category: 'usage', description: 'Professional monthly SMS limit', isSecret: false },
+  'usage.sms.enterpriseLimit': { category: 'usage', description: 'Enterprise monthly SMS limit (safety cap)', isSecret: false },
+  'usage.email.freeTrialLimit': { category: 'usage', description: 'Free Trial monthly email limit', isSecret: false },
+  'usage.email.starterLimit': { category: 'usage', description: 'Starter monthly email limit', isSecret: false },
+  'usage.email.professionalLimit': { category: 'usage', description: 'Professional monthly email limit', isSecret: false },
+  'usage.email.enterpriseLimit': { category: 'usage', description: 'Enterprise monthly email limit (-1 = unlimited)', isSecret: false },
+  'usage.aiExplainer.freeTrialLimit': { category: 'usage', description: 'Free Trial monthly AI explainer call limit', isSecret: false },
+  'usage.aiExplainer.starterLimit': { category: 'usage', description: 'Starter monthly AI explainer call limit', isSecret: false },
+  'usage.aiExplainer.professionalLimit': { category: 'usage', description: 'Professional monthly AI explainer call limit', isSecret: false },
+  'usage.aiExplainer.enterpriseLimit': { category: 'usage', description: 'Enterprise monthly AI explainer call limit (-1 = unlimited)', isSecret: false },
+  'usage.storageBytes.freeTrialLimit': { category: 'usage', description: 'Free Trial storage limit in bytes (1 GB)', isSecret: false },
+  'usage.storageBytes.starterLimit': { category: 'usage', description: 'Starter storage limit in bytes (5 GB)', isSecret: false },
+  'usage.storageBytes.professionalLimit': { category: 'usage', description: 'Professional storage limit in bytes (20 GB)', isSecret: false },
+  'usage.storageBytes.enterpriseLimit': { category: 'usage', description: 'Enterprise storage limit in bytes (100 GB)', isSecret: false },
+  'usage.alertThresholdPercent': { category: 'usage', description: 'Usage alert threshold percentage (default 80)', isSecret: false },
 };
 
 const CACHE_TTL_MS = 60_000; // 60 seconds

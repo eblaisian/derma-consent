@@ -15,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import {
   CheckCircle2, CreditCard, FileText, ArrowUpRight, AlertTriangle, Clock, XCircle,
+  MessageSquare, Mail, Brain, HardDrive,
 } from 'lucide-react';
 import { PRICING } from '@/lib/pricing';
 
@@ -33,10 +34,77 @@ interface Plans {
   professional: { monthly: string | null; yearly: string | null };
 }
 
-interface Usage {
+interface ResourceUsage {
   used: number;
   limit: number | null;
+}
+
+interface Usage {
   plan: string;
+  periodKey: string;
+  daysUntilReset: number;
+  resources: {
+    SMS: ResourceUsage;
+    EMAIL: ResourceUsage;
+    AI_EXPLAINER: ResourceUsage;
+    STORAGE_BYTES: ResourceUsage;
+  };
+  consents: {
+    used: number;
+    limit: number | null;
+  };
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes >= 1073741824) return `${(bytes / 1073741824).toFixed(1)} GB`;
+  if (bytes >= 1048576) return `${Math.round(bytes / 1048576)} MB`;
+  return `${bytes} B`;
+}
+
+function ResourceRow({ label, icon: Icon, used, limit, isStorage }: {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  used: number;
+  limit: number | null;
+  isStorage?: boolean;
+}) {
+  const t = useTranslations('billing');
+  const percent = limit ? Math.min(100, Math.round((used / limit) * 100)) : 0;
+  const isNearLimit = limit ? percent >= 80 : false;
+  const isAtLimit = limit ? used >= limit : false;
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Icon className="size-3.5" />
+          <span>{label}</span>
+        </div>
+        <div className="flex items-center gap-1.5 tabular-nums">
+          <span className="font-medium text-foreground">
+            {isStorage ? formatBytes(used) : used}
+          </span>
+          {limit !== null ? (
+            <span className="text-muted-foreground">
+              / {isStorage ? formatBytes(limit) : limit}
+            </span>
+          ) : (
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{t('unlimited')}</Badge>
+          )}
+        </div>
+      </div>
+      {limit !== null && (
+        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all ${
+              isAtLimit ? 'bg-destructive' : isNearLimit ? 'bg-yellow-500' : 'bg-primary'
+            }`}
+            style={{ width: `${percent}%` }}
+          />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function BillingPage() {
@@ -111,9 +179,13 @@ export default function BillingPage() {
   // Show "Manage payments" for any state where user has a Stripe customer (can update payment method, reactivate, etc.)
   const showManagePayments = hasStripeCustomer && (subscription?.status === 'ACTIVE' || isPastDue);
 
-  const usagePercent = usage?.limit ? Math.min(100, Math.round((usage.used / usage.limit) * 100)) : 0;
-  const isNearLimit = usage?.limit ? usage.used >= usage.limit * 0.8 : false;
-  const isAtLimit = usage?.limit ? usage.used >= usage.limit : false;
+  // Check if any resource has quota issues (for the banner)
+  const hasQuotaWarning = usage?.resources && Object.values(usage.resources).some(
+    (r) => r.limit !== null && r.used >= r.limit * 0.8,
+  );
+  const hasQuotaExceeded = usage?.resources && Object.values(usage.resources).some(
+    (r) => r.limit !== null && r.used >= r.limit,
+  );
 
   return (
     <div className="space-y-8">
@@ -224,45 +296,78 @@ export default function BillingPage() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">{t('usageTitle')}</CardTitle>
-              <FileText className="size-4 text-muted-foreground" />
+              {usage && (
+                <span className="text-xs text-muted-foreground">
+                  {t('daysUntilReset', { days: usage.daysUntilReset })}
+                </span>
+              )}
             </div>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             {!usage ? (
-              <Skeleton className="h-8 w-40" />
-            ) : usage.limit ? (
-              <>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-semibold tabular-nums">{usage.used}</span>
-                  <span className="text-sm text-muted-foreground">/ {usage.limit} {t('consentsThisMonth')}</span>
-                </div>
-                <div className="space-y-1.5">
-                  <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all ${
-                        isAtLimit ? 'bg-destructive' : isNearLimit ? 'bg-yellow-500' : 'bg-primary'
-                      }`}
-                      style={{ width: `${usagePercent}%` }}
-                    />
-                  </div>
-                  {isAtLimit && (
-                    <p className="text-xs text-destructive font-medium">{t('limitReached')}</p>
-                  )}
-                  {isNearLimit && !isAtLimit && (
-                    <p className="text-xs text-yellow-600">{t('nearLimit')}</p>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-semibold tabular-nums">{usage.used}</span>
-                <span className="text-sm text-muted-foreground">{t('consentsThisMonth')}</span>
-                <Badge variant="secondary" className="ml-2 text-xs">{t('unlimited')}</Badge>
+              <div className="space-y-3">
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-full" />
               </div>
+            ) : (
+              <>
+                <ResourceRow
+                  label={t('resourceConsents')}
+                  icon={FileText}
+                  used={usage.consents.used}
+                  limit={usage.consents.limit}
+                />
+                <ResourceRow
+                  label={t('resourceSms')}
+                  icon={MessageSquare}
+                  used={usage.resources.SMS.used}
+                  limit={usage.resources.SMS.limit}
+                />
+                <ResourceRow
+                  label={t('resourceEmail')}
+                  icon={Mail}
+                  used={usage.resources.EMAIL.used}
+                  limit={usage.resources.EMAIL.limit}
+                />
+                <ResourceRow
+                  label={t('resourceAiExplainer')}
+                  icon={Brain}
+                  used={usage.resources.AI_EXPLAINER.used}
+                  limit={usage.resources.AI_EXPLAINER.limit}
+                />
+                <ResourceRow
+                  label={t('resourceStorage')}
+                  icon={HardDrive}
+                  used={usage.resources.STORAGE_BYTES.used}
+                  limit={usage.resources.STORAGE_BYTES.limit}
+                  isStorage
+                />
+              </>
             )}
           </CardContent>
         </Card>
       </div>
+
+      {/* Quota warning/exceeded banner */}
+      {hasQuotaExceeded && (
+        <div className="flex items-center gap-3 rounded-lg border border-destructive/50 bg-destructive/5 p-4">
+          <AlertTriangle className="size-5 text-destructive shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-destructive">{t('quotaExceededTitle')}</p>
+            <p className="text-sm text-muted-foreground">{t('quotaExceededDescription')}</p>
+          </div>
+        </div>
+      )}
+      {hasQuotaWarning && !hasQuotaExceeded && (
+        <div className="flex items-center gap-3 rounded-lg border border-yellow-500/50 bg-yellow-50 dark:bg-yellow-500/5 p-4">
+          <AlertTriangle className="size-5 text-yellow-600 shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-yellow-800 dark:text-yellow-500">{t('quotaNearLimitTitle')}</p>
+            <p className="text-sm text-muted-foreground">{t('quotaNearLimitDescription')}</p>
+          </div>
+        </div>
+      )}
 
       {/* Plan selection — show for upgrade, resubscribe, or initial selection */}
       {showPlanSelection && (

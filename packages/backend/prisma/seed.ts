@@ -480,6 +480,8 @@ async function main() {
   // Clean platform admin user
   await prisma.user.deleteMany({ where: { email: 'admin@dermaconsent.de' } });
   await prisma.invite.deleteMany(where);
+  await prisma.usageAlert.deleteMany(where);
+  await prisma.usageLedger.deleteMany(where);
   await prisma.practice.deleteMany({ where: { id: { in: practiceIds } } });
   // Clean platform config
   await prisma.platformConfig.deleteMany({});
@@ -557,6 +559,7 @@ async function main() {
       status: SubscriptionStatus.ACTIVE,
       stripeCustomerId: 'cus_seed_mueller_001',
       stripeSubscriptionId: 'sub_seed_mueller_001',
+      currentPeriodStart: daysAgo(1),
       currentPeriodEnd: daysFromNow(30),
       createdAt: daysAgo(365),
     },
@@ -569,10 +572,60 @@ async function main() {
       status: SubscriptionStatus.ACTIVE,
       stripeCustomerId: 'cus_seed_schmidt_001',
       stripeSubscriptionId: 'sub_seed_schmidt_001',
+      currentPeriodStart: daysAgo(15),
       currentPeriodEnd: daysFromNow(15),
       createdAt: daysAgo(200),
     },
   });
+
+  // ── Step 6b: Seed usage ledger data ──
+  console.log('Creating usage ledger data...');
+
+  // Period keys must match what UsageMeterService.resolvePeriodKey() will generate.
+  // Since seed subscriptions have stripeSubscriptionId + active status + currentPeriodStart/End,
+  // the service resolves Stripe-aligned keys: STRIPE-{subId}-{currentPeriodStart.toISODate()}
+  const p1PeriodStart = daysAgo(1).toISOString().split('T')[0];
+  const p1PeriodKey = `STRIPE-sub_seed_mueller_001-${p1PeriodStart}`;
+  const p2PeriodStart = daysAgo(15).toISOString().split('T')[0];
+  const p2PeriodKey = `STRIPE-sub_seed_schmidt_001-${p2PeriodStart}`;
+
+  // Practice 1 (Professional) — moderate usage
+  const practice1Resources = [
+    { resource: 'SMS' as const, count: 67 },
+    { resource: 'EMAIL' as const, count: 180 },
+    { resource: 'AI_EXPLAINER' as const, count: 15 },
+    { resource: 'STORAGE_BYTES' as const, count: 2147483648 }, // ~2 GB
+  ];
+
+  for (const r of practice1Resources) {
+    await prisma.usageLedger.create({
+      data: {
+        practiceId: PRACTICE_1_ID,
+        resource: r.resource,
+        periodKey: p1PeriodKey,
+        count: r.count,
+      },
+    });
+  }
+
+  // Practice 2 (Starter) — near SMS limit to demo warning state
+  const practice2Resources = [
+    { resource: 'SMS' as const, count: 85 },   // 85/100 — near limit
+    { resource: 'EMAIL' as const, count: 412 },
+    { resource: 'AI_EXPLAINER' as const, count: 180 }, // 180/200 — near limit
+    { resource: 'STORAGE_BYTES' as const, count: 4294967296 }, // ~4 GB of 5 GB
+  ];
+
+  for (const r of practice2Resources) {
+    await prisma.usageLedger.create({
+      data: {
+        practiceId: PRACTICE_2_ID,
+        resource: r.resource,
+        periodKey: p2PeriodKey,
+        count: r.count,
+      },
+    });
+  }
 
   // ── Step 7: Create practice settings ──
   console.log('Creating practice settings...');

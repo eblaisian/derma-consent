@@ -7,7 +7,7 @@ import useSWR from 'swr';
 import { useAuthFetch } from '@/lib/auth-fetch';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Mail, Brain, HardDrive, AlertTriangle } from 'lucide-react';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 
 interface PracticeDetail {
@@ -41,7 +41,36 @@ interface PracticeDetail {
 
 const PLANS = ['FREE_TRIAL', 'STARTER', 'PROFESSIONAL', 'ENTERPRISE'];
 
-type Tab = 'overview' | 'users' | 'consents' | 'subscription';
+type Tab = 'overview' | 'users' | 'consents' | 'subscription' | 'usage';
+
+interface PracticeUsage {
+  plan: string;
+  periodKey: string;
+  daysUntilReset: number;
+  resources: Record<string, { used: number; limit: number | null }>;
+  alerts: Array<{
+    id: string;
+    resource: string;
+    threshold: number;
+    sentAt: string;
+  }>;
+}
+
+const USAGE_RESOURCE_META: Record<string, { icon: React.ComponentType<{ className?: string }>; label: string }> = {
+  SMS: { icon: MessageSquare, label: 'SMS' },
+  EMAIL: { icon: Mail, label: 'Email' },
+  AI_EXPLAINER: { icon: Brain, label: 'AI Explainer' },
+  STORAGE_BYTES: { icon: HardDrive, label: 'Storage' },
+};
+
+function formatUsageValue(resource: string, value: number): string {
+  if (resource === 'STORAGE_BYTES') {
+    if (value >= 1073741824) return `${(value / 1073741824).toFixed(1)} GB`;
+    if (value >= 1048576) return `${Math.round(value / 1048576)} MB`;
+    return `${value} B`;
+  }
+  return value.toLocaleString();
+}
 
 export default function PracticeDetailPage() {
   const t = useTranslations('admin');
@@ -54,6 +83,11 @@ export default function PracticeDetailPage() {
 
   const { data: practice, isLoading, error, mutate } = useSWR<PracticeDetail>(
     `/api/admin/practices/${id}`,
+    (url: string) => authFetch(url),
+  );
+
+  const { data: usageData } = useSWR<PracticeUsage>(
+    tab === 'usage' ? `/api/admin/practices/${id}/usage` : null,
     (url: string) => authFetch(url),
   );
 
@@ -126,6 +160,7 @@ export default function PracticeDetailPage() {
     { key: 'users', label: t('users') },
     { key: 'consents', label: t('consents') },
     { key: 'subscription', label: t('subscription') },
+    { key: 'usage', label: t('usageTab') },
   ];
 
   return (
@@ -288,6 +323,82 @@ export default function PracticeDetailPage() {
             </>
           ) : (
             <p className="text-muted-foreground">{t('noSubscriptionFound')}</p>
+          )}
+        </div>
+      )}
+
+      {tab === 'usage' && (
+        <div className="space-y-4">
+          {!usageData ? (
+            <div className="flex items-center justify-center py-10">
+              <div className="size-6 animate-spin rounded-full border-4 border-violet-500 border-t-transparent" />
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                <span>{t('currentPeriod')}: {usageData.periodKey}</span>
+                <span>{t('daysUntilReset', { days: usageData.daysUntilReset })}</span>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                {Object.entries(usageData.resources).map(([resource, data]) => {
+                  const meta = USAGE_RESOURCE_META[resource];
+                  if (!meta) return null;
+                  const Icon = meta.icon;
+                  const percent = data.limit ? Math.min(100, Math.round((data.used / data.limit) * 100)) : 0;
+                  const isNear = data.limit ? percent >= 80 : false;
+                  const isAt = data.limit ? data.used >= data.limit : false;
+
+                  return (
+                    <div key={resource} className="rounded-lg border bg-card p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Icon className="size-4 text-muted-foreground" />
+                          <span className="text-sm font-medium">{meta.label}</span>
+                        </div>
+                        <span className="text-sm tabular-nums">
+                          <span className="font-semibold">{formatUsageValue(resource, data.used)}</span>
+                          {data.limit !== null ? (
+                            <span className="text-muted-foreground"> / {formatUsageValue(resource, data.limit)}</span>
+                          ) : (
+                            <span className="ml-1.5 text-xs bg-muted px-1.5 py-0.5 rounded">{t('unlimited')}</span>
+                          )}
+                        </span>
+                      </div>
+                      {data.limit !== null && (
+                        <div className="space-y-1">
+                          <div className="h-2 rounded-full bg-muted overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all ${
+                                isAt ? 'bg-red-500' : isNear ? 'bg-yellow-500' : 'bg-violet-500'
+                              }`}
+                              style={{ width: `${percent}%` }}
+                            />
+                          </div>
+                          <p className="text-xs text-muted-foreground text-right">{percent}%</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {usageData.alerts.length > 0 && (
+                <div className="rounded-lg border border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950 p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <AlertTriangle className="size-4 text-yellow-600" />
+                    <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-300">{t('usageAlerts')}</h3>
+                  </div>
+                  <div className="space-y-1">
+                    {usageData.alerts.map((alert) => (
+                      <p key={alert.id} className="text-sm text-yellow-700 dark:text-yellow-400">
+                        {USAGE_RESOURCE_META[alert.resource]?.label ?? alert.resource} — {alert.threshold}% {t('alertThreshold')}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}

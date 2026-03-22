@@ -1,8 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
 import { SmsService } from '../sms/sms.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
+import { UsageMeterService } from '../usage/usage-meter.service';
+import { ErrorCode } from '../common/error-codes';
 import type { SendNotificationOptions, NotificationLocale } from './notification.types';
 import type { EmailLocale } from '../email/templates/types';
 
@@ -15,6 +17,7 @@ export class NotificationService {
     private readonly emailService: EmailService,
     private readonly smsService: SmsService,
     private readonly platformConfig: PlatformConfigService,
+    private readonly usageMeter: UsageMeterService,
   ) {}
 
   /**
@@ -105,6 +108,13 @@ export class NotificationService {
       locale,
     });
 
+    // Meter email usage (never block — email is the fallback channel)
+    if (opts.practiceId) {
+      await this.usageMeter.increment(opts.practiceId, 'EMAIL').catch((err) => {
+        this.logger.error(`Failed to meter email usage: ${err}`);
+      });
+    }
+
     try {
       let brandColor = opts.brandColor;
       if (!brandColor && opts.practiceId) {
@@ -136,6 +146,10 @@ export class NotificationService {
     channel: 'sms' | 'whatsapp';
     link: string;
     practiceName: string;
+    fallbackEmail?: string;
+    expiryDays?: number;
+    locale?: string;
+    brandColor?: string;
   }): Promise<void> {
     if (!(await this.isEnabled('consentLink'))) return;
 
@@ -146,6 +160,35 @@ export class NotificationService {
         this.logger.warn('WhatsApp delivery requested but feature is disabled — skipping');
         return;
       }
+    }
+
+    // Check SMS quota before sending
+    try {
+      await this.usageMeter.checkAndIncrement(
+        opts.practiceId,
+        'SMS',
+        1,
+        ErrorCode.SMS_QUOTA_EXCEEDED,
+      );
+    } catch (err) {
+      if (err instanceof ForbiddenException) {
+        this.logger.warn(`SMS quota exceeded for practice ${opts.practiceId} — falling back to email`);
+        if (opts.fallbackEmail) {
+          await this.sendConsentLink({
+            practiceId: opts.practiceId,
+            recipientEmail: opts.fallbackEmail,
+            practiceName: opts.practiceName,
+            consentLink: opts.link,
+            expiryDays: opts.expiryDays ?? 7,
+            locale: opts.locale,
+            brandColor: opts.brandColor,
+          });
+        } else {
+          this.logger.error(`SMS quota exceeded and no fallback email available for practice ${opts.practiceId}`);
+        }
+        return;
+      }
+      throw err;
     }
 
     const logId = await this.logSend({
@@ -185,6 +228,12 @@ export class NotificationService {
       locale,
       metadata: { role: opts.role },
     });
+
+    if (opts.practiceId) {
+      await this.usageMeter.increment(opts.practiceId, 'EMAIL').catch((err) => {
+        this.logger.error(`Failed to meter email usage: ${err}`);
+      });
+    }
 
     try {
       await this.emailService.sendInvite(
@@ -305,6 +354,12 @@ export class NotificationService {
       metadata: { type: opts.type },
     });
 
+    if (opts.practiceId) {
+      await this.usageMeter.increment(opts.practiceId, 'EMAIL').catch((err) => {
+        this.logger.error(`Failed to meter email usage: ${err}`);
+      });
+    }
+
     try {
       await this.emailService.sendSubscriptionNotice(
         opts.recipientEmail,
@@ -339,6 +394,12 @@ export class NotificationService {
       templateKey: 'consent_reminder',
       locale,
     });
+
+    if (opts.practiceId) {
+      await this.usageMeter.increment(opts.practiceId, 'EMAIL').catch((err) => {
+        this.logger.error(`Failed to meter email usage: ${err}`);
+      });
+    }
 
     try {
       let brandColor = opts.brandColor;
@@ -387,6 +448,31 @@ export class NotificationService {
     }
 
     const locale = await this.resolveLocale(opts.locale, opts.userId);
+
+    // Gate SMS/WhatsApp with quota check
+    if ((opts.channel === 'sms' || opts.channel === 'whatsapp') && opts.recipientPhone) {
+      try {
+        await this.usageMeter.checkAndIncrement(
+          opts.practiceId,
+          'SMS',
+          1,
+          ErrorCode.SMS_QUOTA_EXCEEDED,
+        );
+      } catch (err) {
+        if (err instanceof ForbiddenException) {
+          this.logger.warn(`SMS quota exceeded for practice ${opts.practiceId} — custom message not sent`);
+          return;
+        }
+        throw err;
+      }
+    }
+
+    // Meter email sends (never block — email is the fallback channel)
+    if (opts.channel === 'email' && opts.recipientEmail && opts.practiceId) {
+      await this.usageMeter.increment(opts.practiceId, 'EMAIL').catch((err) => {
+        this.logger.error(`Failed to meter email usage: ${err}`);
+      });
+    }
 
     const logId = await this.logSend({
       practiceId: opts.practiceId,

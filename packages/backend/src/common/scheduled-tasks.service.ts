@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationService } from '../notifications/notification.service';
+import { UsageAlertService } from '../usage/usage-alert.service';
 import { ConsentStatus } from '@prisma/client';
 
 @Injectable()
@@ -11,6 +12,7 @@ export class ScheduledTasksService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
+    private readonly usageAlertService: UsageAlertService,
   ) {}
 
   @Cron(CronExpression.EVERY_HOUR)
@@ -134,6 +136,34 @@ export class ScheduledTasksService {
 
     if (result.count > 0) {
       this.logger.log(`Cleaned up ${result.count} notification log(s) older than 90 days`);
+    }
+  }
+
+  /** Check usage quotas for all active practices and send alert emails at 80% */
+  @Cron('0 8 * * *')
+  async checkUsageAlerts() {
+    const practices = await this.prisma.practice.findMany({
+      where: {
+        isSuspended: false,
+        subscription: {
+          status: { in: ['ACTIVE', 'TRIALING', 'PAST_DUE'] },
+        },
+      },
+      select: { id: true },
+    });
+
+    let alertsSent = 0;
+    for (const practice of practices) {
+      try {
+        await this.usageAlertService.checkAndSendAlerts(practice.id);
+        alertsSent++;
+      } catch (err) {
+        this.logger.error(`Failed to check usage alerts for practice ${practice.id}: ${err}`);
+      }
+    }
+
+    if (practices.length > 0) {
+      this.logger.log(`Checked usage alerts for ${practices.length} practice(s)`);
     }
   }
 }
