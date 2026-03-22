@@ -21,11 +21,10 @@ import {
 import { toast } from 'sonner';
 import { VaultUnlockBanner } from '@/components/vault/vault-unlock-banner';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Trash2, ArrowLeft, Upload, Plus, Columns2, FileSignature, Eye, Link as LinkIcon, Ban, FileText, Download, Loader2 } from 'lucide-react';
-import { usePdfGeneration } from '@/hooks/use-pdf-generation';
+import { Trash2, ArrowLeft, Upload, Plus, Columns2, FileSignature, Link as LinkIcon, Ban } from 'lucide-react';
+import { ConsentDetailModal } from '@/components/dashboard/consent-detail-modal';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { StatusBadge } from '@/components/ui/status-badge';
-import { DecryptedFormViewer } from '@/components/dashboard/decrypted-form-viewer';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -81,8 +80,7 @@ export default function PatientDetailPage() {
   const isClinical = userRole === 'ADMIN' || userRole === 'ARZT';
   const isAdmin = userRole === 'ADMIN';
   const { isUnlocked, decryptForm, requestUnlock } = useVault();
-  const { generatePdf, downloadPdf, isGenerating } = usePdfGeneration();
-  const [generatingConsentId, setGeneratingConsentId] = useState<string | null>(null);
+  const [selectedConsent, setSelectedConsent] = useState<PatientDetail['consentForms'][number] | null>(null);
 
   const [uploadOpen, setUploadOpen] = useState(false);
   const [comparisonOpen, setComparisonOpen] = useState(false);
@@ -91,7 +89,6 @@ export default function PatientDetailPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<TreatmentTemplateSummary | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [viewConsentToken, setViewConsentToken] = useState<string | null>(null);
   const [revokeConsentToken, setRevokeConsentToken] = useState<string | null>(null);
   const [isRevoking, setIsRevoking] = useState(false);
   const [decryptedName, setDecryptedName] = useState<string | null>(null);
@@ -170,11 +167,13 @@ export default function PatientDetailPage() {
     toast.success(tTable('linkCopied'));
   };
 
-  const handleViewConsent = (token: string) => {
-    if (isUnlocked) {
-      setViewConsentToken(token);
+  const handleConsentClick = (consent: PatientDetail['consentForms'][number]) => {
+    const hasData = ['SIGNED', 'PAID', 'COMPLETED'].includes(consent.status);
+    if (hasData) {
+      if (isUnlocked) setSelectedConsent(consent);
+      else requestUnlock(() => setSelectedConsent(consent));
     } else {
-      requestUnlock(() => setViewConsentToken(token));
+      setSelectedConsent(consent);
     }
   };
 
@@ -389,23 +388,30 @@ export default function PatientDetailPage() {
             </TableHeader>
             <TableBody>
               {patient.consentForms.map((consent) => (
-                <TableRow key={consent.id} className="hover:bg-muted/30 transition-colors">
+                <TableRow
+                  key={consent.id}
+                  className="hover:bg-muted/30 transition-colors cursor-pointer"
+                  onClick={() => handleConsentClick(consent)}
+                >
                   <TableCell className="font-medium">
                     {tTypes.has(consent.type as keyof IntlMessages['consentTypes'])
                       ? tTypes(consent.type as keyof IntlMessages['consentTypes'])
                       : consent.type}
                   </TableCell>
                   <TableCell>
-                    <StatusBadge
-                      status={consent.status as import('@/lib/types').ConsentStatus}
-                      label={tStatus.has(consent.status as keyof IntlMessages['consentStatus']) ? tStatus(consent.status as keyof IntlMessages['consentStatus']) : undefined}
-                    />
+                    <div className="flex items-center gap-1.5">
+                      <StatusBadge
+                        status={consent.status as import('@/lib/types').ConsentStatus}
+                        label={tStatus.has(consent.status as keyof IntlMessages['consentStatus']) ? tStatus(consent.status as keyof IntlMessages['consentStatus']) : undefined}
+                      />
+                      {consent.hasPdf && <FileSignature className="size-3 text-muted-foreground/60" />}
+                    </div>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {format.dateTime(new Date(consent.createdAt), { dateStyle: 'medium' })}
                   </TableCell>
                   <TableCell className="text-end">
-                    <div className="flex justify-end gap-1">
+                    <div className="flex justify-end gap-1" onClick={(e) => e.stopPropagation()}>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button variant="ghost" size="icon-xs" onClick={() => handleCopyConsentLink(consent.token)} aria-label={tTable('link')}>
@@ -415,64 +421,11 @@ export default function PatientDetailPage() {
                         <TooltipContent>{tTable('link')}</TooltipContent>
                       </Tooltip>
 
-                      {hasDecryptableData(consent.status) && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon-xs" onClick={() => handleViewConsent(consent.token)} aria-label={tTable('decrypt')}>
-                              <Eye className="size-3.5" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>{tTable('decrypt')}</TooltipContent>
-                        </Tooltip>
-                      )}
-
-                      {hasDecryptableData(consent.status) && (
-                        consent.hasPdf ? (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon-xs" onClick={() => downloadPdf(consent.id)} aria-label={tTable('downloadPdf')}>
-                                <Download className="size-3.5" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>{tTable('downloadPdf')}</TooltipContent>
-                          </Tooltip>
-                        ) : (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon-xs"
-                                disabled={generatingConsentId === consent.id && isGenerating}
-                                onClick={async () => {
-                                  setGeneratingConsentId(consent.id);
-                                  const success = await generatePdf(consent as unknown as import('@/lib/types').ConsentFormSummary);
-                                  setGeneratingConsentId(null);
-                                  if (success) {
-                                    toast.success(tTable('pdfGenerated'));
-                                    mutatePatient();
-                                  } else {
-                                    toast.error(tTable('pdfError'));
-                                  }
-                                }}
-                                aria-label={tTable('generatePdf')}
-                              >
-                                {generatingConsentId === consent.id && isGenerating ? (
-                                  <Loader2 className="size-3.5 animate-spin" />
-                                ) : (
-                                  <FileText className="size-3.5" />
-                                )}
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>{tTable('generatePdf')}</TooltipContent>
-                          </Tooltip>
-                        )
-                      )}
-
                       {isClinical && canRevoke(consent.status) && (
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon-xs" className="text-destructive hover:text-destructive" onClick={() => setRevokeConsentToken(consent.token)} aria-label={tTable('revoke')}>
-                              <Ban className="size-3.5" />
+                            <Button variant="ghost" size="icon-xs" className="text-muted-foreground/60 hover:text-destructive" onClick={() => setRevokeConsentToken(consent.token)} aria-label={tTable('revoke')}>
+                              <Ban className="size-3" />
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>{tTable('revoke')}</TooltipContent>
@@ -509,11 +462,11 @@ export default function PatientDetailPage() {
             loading={isRevoking}
           />
 
-          {viewConsentToken && (
-            <DecryptedFormViewer
-              token={viewConsentToken}
-              onClose={() => setViewConsentToken(null)}
-              patientName={decryptedName ?? undefined}
+          {selectedConsent && (
+            <ConsentDetailModal
+              consent={selectedConsent as unknown as import('@/lib/types').ConsentFormSummary}
+              onClose={() => setSelectedConsent(null)}
+              onRefresh={() => mutatePatient()}
               patientId={id}
             />
           )}
