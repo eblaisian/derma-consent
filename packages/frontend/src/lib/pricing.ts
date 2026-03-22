@@ -63,3 +63,16 @@ export const PLAN_QUOTAS = {
 } as const;
 
 export type PlanKey = keyof typeof PLAN_QUOTAS;
+
+/**
+ * Premium AI features gated to PROFESSIONAL and ENTERPRISE only.
+ * Enforced in: packages/backend/src/communications/ai-status.controller.ts
+ * Frontend gate: packages/frontend/src/components/premium-feature-gate.tsx
+ *
+ * FREE_TRIAL and STARTER users see a locked card with upgrade CTA.
+ */
+export const PREMIUM_AI_FEATURES = [
+  'communications', // AI-drafted messages + multi-channel sending
+  'aftercare',      // AI-generated post-treatment care instructions
+  'analyticsInsights', // AI-powered practice insights
+] as const;
