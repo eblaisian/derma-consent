@@ -85,15 +85,34 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
     })
       .then((data) => {
         if (cancelled) return;
-        const d = data as Record<string, unknown>;
-        setDecryptedData(d);
-        const patientEmail = (d.email || d.emailAddress || d.patientEmail || '') as string;
-        if (patientEmail && !sendEmail) setSendEmail(patientEmail);
+        setDecryptedData(data as Record<string, unknown>);
       })
       .catch(() => { if (!cancelled) setDecryptError(t('fetchError')); })
       .finally(() => { if (!cancelled) setIsDecrypting(false); });
     return () => { cancelled = true; };
   }, [consentData, isUnlocked, decryptedData, decryptError, noFormData, t]);
+
+  // Pre-fill patient email by decrypting encryptedEmail from patient record
+  useEffect(() => {
+    if (sendEmail || !isUnlocked || !consent.patient?.encryptedEmail) return;
+    // Also pre-fill from previous send
+    if (consent.pdfSentTo) { setSendEmail(consent.pdfSentTo); return; }
+
+    let cancelled = false;
+    try {
+      const parsed = JSON.parse(consent.patient.encryptedEmail);
+      if (parsed.encryptedSessionKey && parsed.iv && parsed.ciphertext) {
+        decryptFormRef.current(parsed)
+          .then((email) => {
+            if (!cancelled && typeof email === 'string' && email.includes('@')) {
+              setSendEmail(email);
+            }
+          })
+          .catch(() => { /* email decryption failed — leave empty */ });
+      }
+    } catch { /* not valid JSON — skip */ }
+    return () => { cancelled = true; };
+  }, [isUnlocked, consent.patient?.encryptedEmail, consent.pdfSentTo, sendEmail]);
 
   const consentType = consentData?.type as ConsentType | undefined;
   const fields = consentType ? getFormFields(consentType) : [];
@@ -263,21 +282,20 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
           {decryptedData && (
             <>
               {/* Q&A Table */}
-              <div className="rounded-lg border border-border/50 overflow-hidden">
-                {fields.map((field, i) => {
-                  const value = decryptedData[field.name];
-                  if (value === undefined && !field.required) return null;
-                  return (
-                    <div
-                      key={field.name}
-                      className={`flex items-baseline gap-4 px-3 py-2 ${i % 2 === 0 ? 'bg-muted/30' : ''}`}
-                    >
-                      <span className="text-xs text-muted-foreground w-2/5 shrink-0">{resolveFieldLabel(field.labelKey)}</span>
-                      <span className="text-sm">{resolveOptionValue(value)}</span>
-                    </div>
-                  );
-                })}
-              </div>
+              <table className="w-full text-sm">
+                <tbody>
+                  {fields.map((field, i) => {
+                    const value = decryptedData[field.name];
+                    if (value === undefined && !field.required) return null;
+                    return (
+                      <tr key={field.name} className={i % 2 === 0 ? 'bg-muted/25' : ''}>
+                        <td className="text-xs text-muted-foreground py-2 pl-3 pr-4 w-2/5 align-top whitespace-nowrap">{resolveFieldLabel(field.labelKey)}</td>
+                        <td className="py-2 pr-3 align-top">{resolveOptionValue(value)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
 
               {/* Signature */}
               {typeof decryptedData.signatureData === 'string' && (

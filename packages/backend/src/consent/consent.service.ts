@@ -285,7 +285,7 @@ export class ConsentService {
           pdfSentAt: true,
           pdfSentTo: true,
           patient: {
-            select: { id: true, encryptedName: true, lookupHash: true },
+            select: { id: true, encryptedName: true, encryptedEmail: true, lookupHash: true },
           },
         },
       }),

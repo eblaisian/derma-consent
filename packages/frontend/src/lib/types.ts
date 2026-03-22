@@ -53,7 +53,7 @@ export interface ConsentFormSummary {
   pdfSentAt: string | null;
   pdfSentTo: string | null;
   noShowRisk: NoShowRisk | null;
-  patient: { id: string; encryptedName: string; lookupHash: string } | null;
+  patient: { id: string; encryptedName: string; encryptedEmail: string | null; lookupHash: string } | null;
 }
 
 // --- Photos ---
