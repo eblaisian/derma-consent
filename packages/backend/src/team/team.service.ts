@@ -8,16 +8,25 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 import { NotificationService } from '../notifications/notification.service';
+import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { ConfigService } from '@nestjs/config';
 import { InviteDto, ChangeRoleDto } from './team.dto';
-import { UserRole } from '@prisma/client';
+import { UserRole, SubscriptionPlan } from '@prisma/client';
 import { ErrorCode, errorPayload } from '../common/error-codes';
+
+const PLAN_TEAM_LIMIT_KEY: Record<SubscriptionPlan, string> = {
+  FREE_TRIAL: 'team.freeTrialLimit',
+  STARTER: 'team.starterLimit',
+  PROFESSIONAL: 'team.professionalLimit',
+  ENTERPRISE: 'team.enterpriseLimit',
+};
 
 @Injectable()
 export class TeamService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
+    private readonly platformConfig: PlatformConfigService,
     private readonly configService: ConfigService,
     @Optional() private readonly auditService?: AuditService,
   ) {}
@@ -38,6 +47,9 @@ export class TeamService {
   }
 
   async createInvite(practiceId: string, dto: InviteDto, userId?: string) {
+    // Enforce team member limit per plan
+    await this.enforceTeamMemberLimit(practiceId);
+
     // Check if user already in practice
     const existing = await this.prisma.user.findUnique({
       where: { email: dto.email },
@@ -327,6 +339,34 @@ export class TeamService {
     });
 
     return { success: true };
+  }
+
+  private async enforceTeamMemberLimit(practiceId: string): Promise<void> {
+    const subscription = await this.prisma.subscription.findUnique({
+      where: { practiceId },
+      select: { plan: true },
+    });
+
+    const plan = subscription?.plan ?? 'FREE_TRIAL';
+    const limitKey = PLAN_TEAM_LIMIT_KEY[plan];
+    const limitValue = parseInt((await this.platformConfig.get(limitKey)) || '-1', 10);
+
+    if (limitValue <= 0) return; // -1 = unlimited
+
+    // Count current members + pending invites
+    const [memberCount, pendingInviteCount] = await Promise.all([
+      this.prisma.user.count({ where: { practiceId } }),
+      this.prisma.invite.count({ where: { practiceId, status: 'PENDING' } }),
+    ]);
+
+    if (memberCount + pendingInviteCount >= limitValue) {
+      throw new ForbiddenException(
+        errorPayload(
+          ErrorCode.TEAM_MEMBER_LIMIT_REACHED,
+          `Team member limit (${limitValue}) reached for ${plan} plan`,
+        ),
+      );
+    }
   }
 
   async revokeInvite(practiceId: string, inviteId: string, userId?: string) {

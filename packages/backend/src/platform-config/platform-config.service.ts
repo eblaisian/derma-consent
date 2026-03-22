@@ -83,6 +83,11 @@ const DEFAULTS: Record<string, string> = {
   'usage.storageBytes.professionalLimit': '21474836480',   // 20 GB
   'usage.storageBytes.enterpriseLimit': '107374182400',    // 100 GB
   'usage.alertThresholdPercent': '80',
+  // Team member limits per plan (-1 = unlimited)
+  'team.freeTrialLimit': '2',
+  'team.starterLimit': '3',
+  'team.professionalLimit': '-1',
+  'team.enterpriseLimit': '-1',
 };
 
 // Which keys are secrets
@@ -154,6 +159,11 @@ const CONFIG_METADATA: Record<string, { category: string; description: string; i
   'usage.storageBytes.professionalLimit': { category: 'usage', description: 'Professional storage limit in bytes (20 GB)', isSecret: false },
   'usage.storageBytes.enterpriseLimit': { category: 'usage', description: 'Enterprise storage limit in bytes (100 GB)', isSecret: false },
   'usage.alertThresholdPercent': { category: 'usage', description: 'Usage alert threshold percentage (default 80)', isSecret: false },
+  // Team member limits
+  'team.freeTrialLimit': { category: 'team', description: 'Free Trial team member limit', isSecret: false },
+  'team.starterLimit': { category: 'team', description: 'Starter team member limit', isSecret: false },
+  'team.professionalLimit': { category: 'team', description: 'Professional team member limit (-1 = unlimited)', isSecret: false },
+  'team.enterpriseLimit': { category: 'team', description: 'Enterprise team member limit (-1 = unlimited)', isSecret: false },
 };
 
 const CACHE_TTL_MS = 60_000; // 60 seconds
