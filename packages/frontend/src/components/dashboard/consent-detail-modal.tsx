@@ -309,33 +309,34 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
               )}
 
               {/* ── Actions ── */}
-              <div className="flex items-center gap-2 border-t border-border/50 pt-3">
-                {localHasPdf ? (
-                  <>
-                    <Button onClick={handleDownloadPdf} variant="outline" size="sm">
-                      <Download className="size-3.5 mr-1.5" />
-                      {tTable('downloadPdf')}
-                    </Button>
-                    <Button onClick={() => setShowSendDialog(true)} variant="outline" size="sm">
-                      <Send className="size-3.5 mr-1.5" />
-                      {t('tabSend')}
-                    </Button>
-                  </>
-                ) : (
-                  <Button onClick={handleGeneratePdf} disabled={isGenerating} size="sm">
-                    {isGenerating ? (
-                      <><Loader2 className="size-3.5 mr-1.5 animate-spin" />{tTable('generatingPdf')}</>
-                    ) : (
-                      <><FileText className="size-3.5 mr-1.5" />{tTable('generatePdf')}</>
-                    )}
-                  </Button>
-                )}
-
+              <div className="border-t border-border/50 pt-3 space-y-2">
                 {consent.pdfSentAt && (
-                  <span className="text-xs text-muted-foreground ml-auto">
+                  <p className="text-xs text-muted-foreground">
                     {t('lastSent')}: {consent.pdfSentTo}
-                  </span>
+                  </p>
                 )}
+                <div className="flex items-center gap-2">
+                  {localHasPdf ? (
+                    <>
+                      <Button onClick={handleDownloadPdf} variant="outline" size="sm">
+                        <Download className="size-3.5 mr-1.5" />
+                        {tTable('downloadPdf')}
+                      </Button>
+                      <Button onClick={() => setShowSendDialog(true)} variant="outline" size="sm">
+                        <Send className="size-3.5 mr-1.5" />
+                        {t('tabSend')}
+                      </Button>
+                    </>
+                  ) : (
+                    <Button onClick={handleGeneratePdf} disabled={isGenerating} size="sm">
+                      {isGenerating ? (
+                        <><Loader2 className="size-3.5 mr-1.5 animate-spin" />{tTable('generatingPdf')}</>
+                      ) : (
+                        <><FileText className="size-3.5 mr-1.5" />{tTable('generatePdf')}</>
+                      )}
+                    </Button>
+                  )}
+                </div>
               </div>
             </>
           )}
