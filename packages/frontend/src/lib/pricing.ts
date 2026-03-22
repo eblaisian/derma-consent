@@ -72,7 +72,7 @@ export type PlanKey = keyof typeof PLAN_QUOTAS;
  * FREE_TRIAL and STARTER users see a locked card with upgrade CTA.
  */
 export const PREMIUM_AI_FEATURES = [
-  'communications', // AI-drafted messages + multi-channel sending
-  'aftercare',      // AI-generated post-treatment care instructions
-  'analyticsInsights', // AI-powered practice insights
+  'communications', // AI-assisted messages & aftercare plans (Professional+)
+  'aftercare',      // AI-assisted post-treatment care instructions (Professional+)
+  'analyticsInsights', // AI highlights trends & opportunities (Professional+)
 ] as const;
