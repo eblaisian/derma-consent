@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import { API_URL, fetcher } from '@/lib/api';
 import { useVault } from '@/hooks/use-vault';
 import { useAuthFetch } from '@/lib/auth-fetch';
-import { useSession } from 'next-auth/react';
 import { usePdfGeneration } from '@/hooks/use-pdf-generation';
 import { getFormFields, type ConsentType } from '@/components/consent-form/form-fields';
 import type { ConsentFormSummary } from '@/lib/types';
@@ -45,7 +44,6 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
   const tTable = useTranslations('consentTable');
   const { decryptForm, isUnlocked } = useVault();
   const { generatePdf, downloadPdf, isGenerating } = usePdfGeneration();
-  const { data: session } = useSession();
   const authFetch = useAuthFetch();
   const decryptFormRef = useRef(decryptForm);
   useEffect(() => { decryptFormRef.current = decryptForm; }, [decryptForm]);
@@ -53,7 +51,6 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
   const [decryptedData, setDecryptedData] = useState<Record<string, unknown> | null>(null);
   const [decryptError, setDecryptError] = useState<string | null>(null);
   const [isDecrypting, setIsDecrypting] = useState(false);
-  const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
   const [localHasPdf, setLocalHasPdf] = useState(consent.hasPdf);
   const [sendEmail, setSendEmail] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -94,29 +91,6 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
       .finally(() => { if (!cancelled) setIsDecrypting(false); });
     return () => { cancelled = true; };
   }, [consentData, isUnlocked, decryptedData, decryptError, noFormData, t]);
-
-  // Load PDF blob for preview
-  useEffect(() => {
-    if (!localHasPdf || !session?.accessToken) return;
-    let cancelled = false;
-
-    fetch(`${API_URL}/api/consent/${consent.id}/pdf`, {
-      headers: { Authorization: `Bearer ${session.accessToken}` },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to load PDF');
-        return res.blob();
-      })
-      .then((blob) => {
-        if (!cancelled) setPdfBlobUrl(URL.createObjectURL(blob));
-      })
-      .catch(() => { /* PDF not available */ });
-
-    return () => {
-      cancelled = true;
-      if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl);
-    };
-  }, [localHasPdf, consent.id, session?.accessToken]);
 
   const consentType = consentData?.type as ConsentType | undefined;
   const fields = consentType ? getFormFields(consentType) : [];
@@ -183,7 +157,7 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl h-[80vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-2xl h-[75vh] max-h-[700px] overflow-hidden flex flex-col">
         {/* Header — Issue #1 fix: date prominently shown */}
         <DialogHeader className="pb-0">
           <div className="flex items-center gap-2.5">
@@ -218,16 +192,12 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
         )}
 
         <Tabs defaultValue={hasDecryptableData ? 'form' : 'info'} className="flex-1 flex flex-col min-h-0">
-          <TabsList variant="line" className="w-full justify-start border-b shrink-0">
+          <TabsList className="w-full justify-start shrink-0">
             {hasDecryptableData ? (
               <>
                 <TabsTrigger value="form">
                   <FileText className="size-3.5 mr-1.5" />
                   {t('tabForm')}
-                </TabsTrigger>
-                <TabsTrigger value="pdf">
-                  <Download className="size-3.5 mr-1.5" />
-                  {t('tabPdf')}
                 </TabsTrigger>
                 <TabsTrigger value="send">
                   <Send className="size-3.5 mr-1.5" />
@@ -347,53 +317,24 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
                   )}
                 </div>
               )}
-            </TabsContent>
-          )}
 
-          {/* Tab: PDF Document — Issue #1 fix: use object tag instead of iframe to avoid CSP */}
-          {hasDecryptableData && (
-            <TabsContent value="pdf" className="flex-1 overflow-hidden px-1 py-3 flex flex-col">
-              {localHasPdf && pdfBlobUrl ? (
-                <div className="flex flex-col flex-1 gap-2 min-h-0">
-                  <object
-                    data={pdfBlobUrl}
-                    type="application/pdf"
-                    className="w-full flex-1 min-h-0 rounded-lg border bg-muted/20"
-                  >
-                    <div className="flex flex-col items-center justify-center h-full gap-3 text-center py-12">
-                      <FileText className="size-10 text-muted-foreground/30" />
-                      <p className="text-sm text-muted-foreground">{t('pdfFallback')}</p>
-                      <Button onClick={handleDownloadPdf} variant="outline" size="sm">
-                        <Download className="size-3.5 mr-1.5" />
-                        {tTable('downloadPdf')}
-                      </Button>
-                    </div>
-                  </object>
-                  <div className="shrink-0 pt-1">
+              {/* PDF actions — pinned at bottom of form tab */}
+              {decryptedData && (
+                <div className="shrink-0 flex items-center gap-2 pt-3 mt-auto border-t border-border/50">
+                  {localHasPdf ? (
                     <Button onClick={handleDownloadPdf} variant="outline" size="sm">
                       <Download className="size-3.5 mr-1.5" />
                       {tTable('downloadPdf')}
                     </Button>
-                  </div>
-                </div>
-              ) : localHasPdf && !pdfBlobUrl ? (
-                <div className="flex-1 flex items-center justify-center">
-                  <Loader2 className="size-5 animate-spin text-muted-foreground" />
-                </div>
-              ) : (
-                <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center">
-                  <FileText className="size-10 text-muted-foreground/30" />
-                  <div>
-                    <p className="text-sm font-medium">{t('noPdf')}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{t('noPdfDescription')}</p>
-                  </div>
-                  <Button onClick={handleGeneratePdf} disabled={isGenerating} size="sm">
-                    {isGenerating ? (
-                      <><Loader2 className="size-3.5 mr-1.5 animate-spin" />{tTable('generatingPdf')}</>
-                    ) : (
-                      <><FileText className="size-3.5 mr-1.5" />{tTable('generatePdf')}</>
-                    )}
-                  </Button>
+                  ) : (
+                    <Button onClick={handleGeneratePdf} disabled={isGenerating} size="sm">
+                      {isGenerating ? (
+                        <><Loader2 className="size-3.5 mr-1.5 animate-spin" />{tTable('generatingPdf')}</>
+                      ) : (
+                        <><FileText className="size-3.5 mr-1.5" />{tTable('generatePdf')}</>
+                      )}
+                    </Button>
+                  )}
                 </div>
               )}
             </TabsContent>
