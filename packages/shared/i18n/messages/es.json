@@ -1587,6 +1587,19 @@
     "sending": "Enviando...",
     "sendSuccess": "Correo enviado correctamente",
     "sendError": "Error al enviar el correo",
-    "lastSent": "Último envío"
+    "lastSent": "Último envío",
+    "pdfFallback": "No se puede mostrar la vista previa del PDF. Descargue el documento.",
+    "sendPreview": "El paciente recibirá un correo electrónico con un enlace para verificar su consentimiento de {type} del {date}.",
+    "viewPatient": "Ver paciente",
+    "tabInfo": "Info",
+    "decrypting": "Descifrando datos...",
+    "pendingTitle": "Formulario pendiente",
+    "consentLink": "Enlace de consentimiento",
+    "expiresOn": "Válido hasta",
+    "expiredTitle": "Consentimiento expirado",
+    "expiredNotice": "Este consentimiento expiró el {date}. Cree uno nuevo para el paciente.",
+    "revokedTitle": "Consentimiento revocado",
+    "revokedNotice": "Este consentimiento fue revocado según el Art. 7(3) del RGPD.",
+    "noneValue": "Ninguno"
   }
 }

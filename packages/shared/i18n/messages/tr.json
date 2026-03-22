@@ -1587,6 +1587,19 @@
     "sending": "Gönderiliyor...",
     "sendSuccess": "E-posta başarıyla gönderildi",
     "sendError": "E-posta gönderilemedi",
-    "lastSent": "Son gönderim"
+    "lastSent": "Son gönderim",
+    "pdfFallback": "PDF önizlemesi görüntülenemiyor. Belgeyi indirin.",
+    "sendPreview": "Hasta, {date} tarihli {type} onamını doğrulamak için bir bağlantı içeren bir e-posta alacaktır.",
+    "viewPatient": "Hastayı görüntüle",
+    "tabInfo": "Bilgi",
+    "decrypting": "Veriler çözülüyor...",
+    "pendingTitle": "Form beklemede",
+    "consentLink": "Onam bağlantısı",
+    "expiresOn": "Geçerlilik tarihi",
+    "expiredTitle": "Onam süresi doldu",
+    "expiredNotice": "Bu onamın süresi {date} tarihinde doldu. Hasta için yeni bir onam oluşturun.",
+    "revokedTitle": "Onam iptal edildi",
+    "revokedNotice": "Bu onam KVKK Madde 7(3) uyarınca iptal edilmiştir.",
+    "noneValue": "Yok"
   }
 }

@@ -1587,6 +1587,19 @@
     "sending": "Wysyłanie...",
     "sendSuccess": "E-mail wysłany pomyślnie",
     "sendError": "Nie udało się wysłać e-maila",
-    "lastSent": "Ostatnio wysłano"
+    "lastSent": "Ostatnio wysłano",
+    "pdfFallback": "Podgląd PDF nie może być wyświetlony. Pobierz dokument.",
+    "sendPreview": "Pacjent otrzyma e-mail z linkiem do weryfikacji zgody {type} z dnia {date}.",
+    "viewPatient": "Zobacz pacjenta",
+    "tabInfo": "Info",
+    "decrypting": "Odszyfrowywanie danych...",
+    "pendingTitle": "Formularz oczekuje",
+    "consentLink": "Link do zgody",
+    "expiresOn": "Ważne do",
+    "expiredTitle": "Zgoda wygasła",
+    "expiredNotice": "Ta zgoda wygasła {date}. Utwórz nową zgodę dla pacjenta.",
+    "revokedTitle": "Zgoda cofnięta",
+    "revokedNotice": "Ta zgoda została cofnięta zgodnie z Art. 7(3) RODO.",
+    "noneValue": "Brak"
   }
 }
