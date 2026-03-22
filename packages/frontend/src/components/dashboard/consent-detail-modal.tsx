@@ -210,8 +210,8 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
         {/* ── Scrollable body ── */}
         <div className="flex-1 overflow-y-auto min-h-0 -mx-6 px-6 space-y-5 pb-4">
 
-          {/* Loading */}
-          {isLoading && (
+          {/* Loading — only show if no data yet */}
+          {isLoading && !decryptedData && !noFormData && (
             <div className="flex flex-col items-center justify-center py-16 gap-2">
               <Loader2 className="size-5 animate-spin text-muted-foreground" />
               <p className="text-xs text-muted-foreground">{t('decrypting')}</p>
