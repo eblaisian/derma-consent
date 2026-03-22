@@ -565,7 +565,7 @@ export default function Home() {
                   <Link href="/register">{t('startTrial')}</Link>
                 </Button>
                 <ul className="space-y-3 text-sm">
-                  {(['starterF1', 'starterF2', 'starterF3', 'starterF4', 'starterF5'] as const).map((key) => (
+                  {(['starterF1', 'starterF2', 'starterF3', 'starterF4', 'starterF5', 'starterF6', 'starterF7'] as const).map((key) => (
                     <li key={key} className="flex items-start gap-3">
                       <Check className="h-4 w-4 text-success mt-0.5 shrink-0" />
                       <span className="text-muted-foreground">{t(key)}</span>
@@ -591,7 +591,7 @@ export default function Home() {
                   <Link href="/register">{t('startTrial')}</Link>
                 </Button>
                 <ul className="space-y-3 text-sm">
-                  {(['proF1', 'proF2', 'proF3', 'proF4', 'proF5', 'proF6'] as const).map((key) => (
+                  {(['proF1', 'proF2', 'proF3', 'proF4', 'proF5', 'proF6', 'proF7'] as const).map((key) => (
                     <li key={key} className="flex items-start gap-3">
                       <Check className="h-4 w-4 text-success mt-0.5 shrink-0" />
                       <span className="text-muted-foreground">{t(key)}</span>
@@ -615,7 +615,7 @@ export default function Home() {
                   </Link>
                 </Button>
                 <ul className="space-y-3 text-sm">
-                  {(['entF1', 'entF2', 'entF3', 'entF4', 'entF5'] as const).map((key) => (
+                  {(['entF1', 'entF2', 'entF3', 'entF4', 'entF5', 'entF6'] as const).map((key) => (
                     <li key={key} className="flex items-start gap-3">
                       <Check className="h-4 w-4 text-success mt-0.5 shrink-0" />
                       <span className="text-muted-foreground">{t(key)}</span>

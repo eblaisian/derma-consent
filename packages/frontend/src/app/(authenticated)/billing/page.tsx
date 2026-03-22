@@ -397,8 +397,8 @@ export default function BillingPage() {
 
           <div className="grid gap-4 md:grid-cols-3 items-stretch">
             {([
-              { plan: 'STARTER', price: billingInterval === 'monthly' ? PRICING.starter.monthly : PRICING.starter.yearly, interval: billingInterval, features: ['starterFeature1', 'starterFeature2', 'starterFeature3'] as const, priceId: starterPriceId, highlighted: false },
-              { plan: 'PROFESSIONAL', price: billingInterval === 'monthly' ? PRICING.professional.monthly : PRICING.professional.yearly, interval: billingInterval, features: ['professionalFeature1', 'professionalFeature2', 'professionalFeature3', 'professionalFeature4'] as const, priceId: professionalPriceId, highlighted: true },
+              { plan: 'STARTER', price: billingInterval === 'monthly' ? PRICING.starter.monthly : PRICING.starter.yearly, interval: billingInterval, features: ['starterFeature1', 'starterFeature2', 'starterFeature3', 'starterFeature4', 'starterFeature5'] as const, priceId: starterPriceId, highlighted: false },
+              { plan: 'PROFESSIONAL', price: billingInterval === 'monthly' ? PRICING.professional.monthly : PRICING.professional.yearly, interval: billingInterval, features: ['professionalFeature1', 'professionalFeature2', 'professionalFeature3', 'professionalFeature4', 'professionalFeature5'] as const, priceId: professionalPriceId, highlighted: true },
               { plan: 'ENTERPRISE', price: null, interval: billingInterval, features: ['enterpriseFeature1', 'enterpriseFeature2', 'enterpriseFeature3', 'enterpriseFeature4'] as const, priceId: null, highlighted: false },
             ] as const).map((tier) => {
               const isCurrent = subscription?.plan === tier.plan && !isInactive;
