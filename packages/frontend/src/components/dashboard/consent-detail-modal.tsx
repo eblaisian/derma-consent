@@ -285,15 +285,15 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
           {decryptedData && (
             <>
               {/* Q&A Table */}
-              <table className="w-full text-sm">
+              <table className="w-full text-[13px] border-separate border-spacing-0">
                 <tbody>
                   {fields.map((field, i) => {
                     const value = decryptedData[field.name];
                     if (value === undefined && !field.required) return null;
                     return (
                       <tr key={field.name} className={i % 2 === 0 ? 'bg-muted/25' : ''}>
-                        <td className="text-xs text-muted-foreground py-2 pl-3 pr-6 w-2/5 align-top">{resolveFieldLabel(field.labelKey)}</td>
-                        <td className="py-2 pr-3 align-top">{resolveOptionValue(value)}</td>
+                        <td className="text-muted-foreground py-2.5 pl-3 pr-6 w-[38%] align-baseline font-medium">{resolveFieldLabel(field.labelKey)}</td>
+                        <td className="py-2.5 pr-3 align-baseline">{resolveOptionValue(value)}</td>
                       </tr>
                     );
                   })}
