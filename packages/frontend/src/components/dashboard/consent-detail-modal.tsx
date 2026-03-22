@@ -281,10 +281,10 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
 
               {/* Signature */}
               {typeof decryptedData.signatureData === 'string' && (
-                <div>
-                  <Label className="text-xs text-muted-foreground mb-1.5 block">{t('signature')}</Label>
-                  <div className="rounded-lg bg-muted/20 p-3">
-                    <img src={decryptedData.signatureData as string} alt="Signature" className="max-h-24 mx-auto" />
+                <div className="pt-1">
+                  <Label className="text-xs text-muted-foreground mb-1 block">{t('signature')}</Label>
+                  <div className="rounded-lg bg-muted/20 px-3 py-2 max-h-28 overflow-hidden flex items-center justify-center">
+                    <img src={decryptedData.signatureData as string} alt="Signature" className="max-h-20 max-w-full object-contain" />
                   </div>
                 </div>
               )}
@@ -326,7 +326,7 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
                         placeholder="patient@example.com"
                       />
                     </div>
-                    <Button onClick={handleSendCopy} disabled={isSending || !sendEmail} size="sm" className="shrink-0">
+                    <Button onClick={handleSendCopy} disabled={isSending || !sendEmail} variant="outline" size="sm" className="shrink-0">
                       {isSending ? (
                         <Loader2 className="size-3.5 animate-spin" />
                       ) : (
