@@ -44,7 +44,7 @@ export function usePdfGeneration() {
           },
         });
 
-        if (!res.ok) throw new Error('Download failed');
+        if (!res.ok) throw new Error(`Download failed: ${res.status} ${res.statusText}`);
 
         const blob = await res.blob();
         const disposition = res.headers.get('Content-Disposition');
@@ -95,6 +95,7 @@ export function usePdfGeneration() {
         return true;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'PDF generation failed';
+        console.error('[usePdfGeneration] Generate failed:', message, err);
         setState({ isGenerating: false, error: message });
         return false;
       }
