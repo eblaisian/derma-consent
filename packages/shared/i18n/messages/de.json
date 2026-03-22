@@ -1591,6 +1591,8 @@
     "sending": "Wird gesendet...",
     "sendSuccess": "E-Mail erfolgreich gesendet",
     "sendError": "Fehler beim Senden der E-Mail",
-    "lastSent": "Zuletzt gesendet"
+    "lastSent": "Zuletzt gesendet",
+    "pdfFallback": "Vorschau nicht sichtbar?",
+    "sendPreview": "Der Patient erhält eine E-Mail mit einem Link zur Verifizierung der {type}-Einwilligung vom {date}."
   }
 }

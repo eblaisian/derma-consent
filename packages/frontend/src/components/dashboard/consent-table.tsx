@@ -181,10 +181,15 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
                 )}
               </TableCell>
               <TableCell>
-                <StatusBadge
-                  status={consent.status}
-                  label={tStatus.has(consent.status) ? tStatus(consent.status) : undefined}
-                />
+                <div className="flex items-center gap-1.5">
+                  <StatusBadge
+                    status={consent.status}
+                    label={tStatus.has(consent.status) ? tStatus(consent.status) : undefined}
+                  />
+                  {consent.hasPdf && (
+                    <FileSignature className="size-3 text-muted-foreground/60" />
+                  )}
+                </div>
               </TableCell>
               <TableCell>
                 {consent.noShowRisk && <NoShowRiskBadge risk={consent.noShowRisk} />}

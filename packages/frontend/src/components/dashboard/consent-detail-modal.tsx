@@ -23,9 +23,10 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { EncryptionBadge } from '@/components/ui/encryption-badge';
+import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { User, Download, FileText, Loader2, Send } from 'lucide-react';
+import { User, Download, FileText, Loader2, Send, Calendar } from 'lucide-react';
 
 interface ConsentDetailModalProps {
   consent: ConsentFormSummary;
@@ -174,7 +175,7 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientName, p
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <div className="flex items-center gap-3">
             <DialogTitle className="text-lg">
@@ -185,7 +186,19 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientName, p
               label={tStatus.has(consent.status as keyof IntlMessages['consentStatus']) ? tStatus(consent.status as keyof IntlMessages['consentStatus']) : undefined}
             />
           </div>
-          <DialogDescription className="flex items-center gap-2">
+          <DialogDescription className="flex items-center gap-3 text-xs">
+            {consent.signatureTimestamp && (
+              <span className="inline-flex items-center gap-1">
+                <Calendar className="size-3" />
+                {new Date(consent.signatureTimestamp).toLocaleDateString('de-DE', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+            )}
+            {!consent.signatureTimestamp && (
+              <span className="inline-flex items-center gap-1">
+                <Calendar className="size-3" />
+                {new Date(consent.createdAt).toLocaleDateString('de-DE', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+            )}
             <EncryptionBadge />
           </DialogDescription>
         </DialogHeader>
@@ -268,13 +281,21 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientName, p
               <div className="space-y-3">
                 <iframe
                   src={pdfBlobUrl}
-                  className="w-full h-[50vh] rounded-lg border"
+                  className="w-full h-[55vh] rounded-lg border bg-muted/20"
                   title="PDF Preview"
                 />
-                <Button onClick={handleDownloadPdf} variant="outline" size="sm">
-                  <Download className="size-3.5 mr-1.5" />
-                  {tTable('downloadPdf')}
-                </Button>
+                <div className="flex items-center justify-between">
+                  <Button onClick={handleDownloadPdf} variant="outline" size="sm">
+                    <Download className="size-3.5 mr-1.5" />
+                    {tTable('downloadPdf')}
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    {t('pdfFallback')}{' '}
+                    <button onClick={handleDownloadPdf} className="underline underline-offset-2 hover:text-foreground">
+                      {tTable('downloadPdf')}
+                    </button>
+                  </p>
+                </div>
               </div>
             ) : localHasPdf && !pdfBlobUrl ? (
               <div className="flex items-center justify-center py-8">
@@ -313,15 +334,24 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientName, p
                   <div>
                     <p className="text-sm text-muted-foreground mb-3">{t('sendDescription')}</p>
                   </div>
+                  {/* Send preview context */}
+                  <div className="rounded-lg border border-border/50 bg-muted/30 px-3 py-2.5 text-xs text-muted-foreground">
+                    {t('sendPreview', {
+                      type: consentType && tTypes.has(consentType) ? tTypes(consentType) : consent.type,
+                      date: consent.signatureTimestamp
+                        ? new Date(consent.signatureTimestamp).toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })
+                        : new Date(consent.createdAt).toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' }),
+                    })}
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="send-email" className="text-sm">{t('recipientEmail')}</Label>
-                    <input
+                    <Input
                       id="send-email"
                       type="email"
                       value={sendEmail}
                       onChange={(e) => setSendEmail(e.target.value)}
                       placeholder="patient@example.com"
-                      className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     />
                   </div>
                   <Button onClick={handleSendCopy} disabled={isSending || !sendEmail} size="sm">
@@ -332,10 +362,13 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientName, p
                     )}
                   </Button>
                   {consent.pdfSentAt && (
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {t('lastSent')}: {new Date(consent.pdfSentAt).toLocaleString()}
-                      {consent.pdfSentTo && ` → ${consent.pdfSentTo}`}
-                    </p>
+                    <div className="mt-3 pt-3 border-t border-border/50">
+                      <p className="text-xs font-medium text-muted-foreground mb-1">{t('lastSent')}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(consent.pdfSentAt).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })}
+                        {consent.pdfSentTo && <span className="ml-1">→ {consent.pdfSentTo}</span>}
+                      </p>
+                    </div>
                   )}
                 </div>
               )}

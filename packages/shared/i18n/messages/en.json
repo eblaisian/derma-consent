@@ -1591,6 +1591,8 @@
     "sending": "Sending...",
     "sendSuccess": "Email sent successfully",
     "sendError": "Failed to send email",
-    "lastSent": "Last sent"
+    "lastSent": "Last sent",
+    "pdfFallback": "Can't see the preview?",
+    "sendPreview": "The patient will receive an email with a link to verify their {type} consent from {date}."
   }
 }
