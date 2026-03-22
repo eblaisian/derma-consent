@@ -1592,7 +1592,17 @@
     "sendSuccess": "E-Mail erfolgreich gesendet",
     "sendError": "Fehler beim Senden der E-Mail",
     "lastSent": "Zuletzt gesendet",
-    "pdfFallback": "Vorschau nicht sichtbar?",
-    "sendPreview": "Der Patient erhält eine E-Mail mit einem Link zur Verifizierung der {type}-Einwilligung vom {date}."
+    "pdfFallback": "PDF-Vorschau kann nicht angezeigt werden. Laden Sie das Dokument herunter.",
+    "sendPreview": "Der Patient erhält eine E-Mail mit einem Link zur Verifizierung der {type}-Einwilligung vom {date}.",
+    "viewPatient": "Patient anzeigen",
+    "tabInfo": "Info",
+    "decrypting": "Daten werden entschlüsselt...",
+    "pendingTitle": "Formular ausstehend",
+    "consentLink": "Einwilligungs-Link",
+    "expiresOn": "Gültig bis",
+    "expiredTitle": "Einwilligung abgelaufen",
+    "expiredNotice": "Diese Einwilligung ist am {date} abgelaufen. Erstellen Sie eine neue Einwilligung für den Patienten.",
+    "revokedTitle": "Einwilligung widerrufen",
+    "revokedNotice": "Diese Einwilligung wurde gemäß DSGVO Art. 7(3) widerrufen."
   }
 }

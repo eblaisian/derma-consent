@@ -26,7 +26,7 @@ import { toast } from 'sonner';
 import { ConsentDetailModal } from './consent-detail-modal';
 import { NoShowRiskBadge } from './no-show-risk-badge';
 import Link from 'next/link';
-import { FileSignature, Link as LinkIcon, Ban, User, ChevronRight } from 'lucide-react';
+import { FileSignature, Link as LinkIcon, Ban, User } from 'lucide-react';
 
 interface ConsentTableProps {
   consents: ConsentFormSummary[];
@@ -228,18 +228,16 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
                         <Button
                           variant="ghost"
                           size="icon-xs"
-                          className="text-destructive hover:text-destructive"
+                          className="text-muted-foreground/60 hover:text-destructive"
                           onClick={() => setRevokeToken(consent.token)}
                           aria-label={t('revoke')}
                         >
-                          <Ban className="size-3.5" />
+                          <Ban className="size-3" />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>{t('revoke')}</TooltipContent>
                     </Tooltip>
                   )}
-
-                  <ChevronRight className="size-3.5 text-muted-foreground/50 ml-1" />
                 </div>
               </TableCell>
             </TableRow>
@@ -264,7 +262,6 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
           consent={selectedConsent}
           onClose={() => setSelectedConsent(null)}
           onRefresh={onRefresh}
-          patientName={selectedConsent.patient ? undefined : undefined}
           patientId={selectedConsent.patient?.id}
         />
       )}

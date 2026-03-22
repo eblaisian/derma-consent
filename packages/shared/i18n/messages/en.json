@@ -1592,7 +1592,17 @@
     "sendSuccess": "Email sent successfully",
     "sendError": "Failed to send email",
     "lastSent": "Last sent",
-    "pdfFallback": "Can't see the preview?",
-    "sendPreview": "The patient will receive an email with a link to verify their {type} consent from {date}."
+    "pdfFallback": "PDF preview cannot be displayed. Download the document instead.",
+    "sendPreview": "The patient will receive an email with a link to verify their {type} consent from {date}.",
+    "viewPatient": "View patient",
+    "tabInfo": "Info",
+    "decrypting": "Decrypting data...",
+    "pendingTitle": "Form pending",
+    "consentLink": "Consent link",
+    "expiresOn": "Expires on",
+    "expiredTitle": "Consent expired",
+    "expiredNotice": "This consent expired on {date}. Create a new consent for the patient.",
+    "revokedTitle": "Consent revoked",
+    "revokedNotice": "This consent was revoked per GDPR Art. 7(3)."
   }
 }
