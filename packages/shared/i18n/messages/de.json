@@ -1603,6 +1603,7 @@
     "expiredTitle": "Einwilligung abgelaufen",
     "expiredNotice": "Diese Einwilligung ist am {date} abgelaufen. Erstellen Sie eine neue Einwilligung für den Patienten.",
     "revokedTitle": "Einwilligung widerrufen",
-    "revokedNotice": "Diese Einwilligung wurde gemäß DSGVO Art. 7(3) widerrufen."
+    "revokedNotice": "Diese Einwilligung wurde gemäß DSGVO Art. 7(3) widerrufen.",
+    "noneValue": "Keine"
   }
 }

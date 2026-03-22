@@ -128,15 +128,18 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
   };
 
   const resolveOptionValue = (value: unknown): string => {
-    if (value === null || value === undefined) return '—';
+    if (value === null || value === undefined || value === '') return '—';
     if (typeof value === 'boolean') return value ? tConsent('yes') : tConsent('no');
+    // Handle "none" / "noneOfAbove" — common sentinel values from the form
+    if (value === 'none' || value === 'noneOfAbove') return t('noneValue');
     if (Array.isArray(value)) {
       return value.map((v) => {
         const key = String(v);
+        if (key === 'none' || key === 'noneOfAbove') return null;
         return tOptions.has(key as keyof IntlMessages['medicalOptions'])
           ? tOptions(key as keyof IntlMessages['medicalOptions'])
           : key;
-      }).join(', ');
+      }).filter(Boolean).join(', ') || t('noneValue');
     }
     const strVal = String(value);
     return tOptions.has(strVal as keyof IntlMessages['medicalOptions'])
@@ -180,7 +183,7 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-3xl h-[80vh] overflow-hidden flex flex-col">
         {/* Header — Issue #1 fix: date prominently shown */}
         <DialogHeader className="pb-0">
           <div className="flex items-center gap-2.5">
@@ -201,15 +204,17 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
           </DialogDescription>
         </DialogHeader>
 
-        {/* Patient link — Issue #4 fix: show "View patient" instead of UUID */}
+        {/* Patient link — inline, minimal */}
         {patientId && (
-          <div className="flex items-center gap-2 rounded-lg bg-muted/40 px-3 py-1.5 -mt-1">
-            <User className="size-3.5 text-muted-foreground" />
-            <Link href={`/patients/${patientId}`} onClick={onClose} className="text-sm text-primary hover:underline underline-offset-4 inline-flex items-center gap-1">
-              {t('viewPatient')}
-              <ExternalLink className="size-3" />
-            </Link>
-          </div>
+          <Link
+            href={`/patients/${patientId}`}
+            onClick={onClose}
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors -mt-1"
+          >
+            <User className="size-3" />
+            {t('viewPatient')}
+            <ExternalLink className="size-2.5" />
+          </Link>
         )}
 
         <Tabs defaultValue={hasDecryptableData ? 'form' : 'info'} className="flex-1 flex flex-col min-h-0">
@@ -292,12 +297,12 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
 
           {/* Tab: Form Data */}
           {hasDecryptableData && (
-            <TabsContent value="form" className="flex-1 overflow-y-auto px-1 py-3">
+            <TabsContent value="form" className="flex-1 overflow-y-auto px-1 py-3 flex flex-col">
               {fetchError && <p className="text-sm text-destructive">{t('fetchError')}</p>}
               {decryptError && <p className="text-sm text-destructive">{decryptError}</p>}
 
               {isLoading && (
-                <div className="flex flex-col items-center justify-center py-12 gap-2">
+                <div className="flex-1 flex flex-col items-center justify-center gap-2">
                   <Loader2 className="size-5 animate-spin text-muted-foreground" />
                   <p className="text-xs text-muted-foreground">{t('decrypting')}</p>
                 </div>
@@ -309,30 +314,36 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
               )}
 
               {decryptedData && (
-                <div className="space-y-3">
-                  {fields.map((field) => {
-                    const value = decryptedData[field.name];
-                    if (value === undefined && !field.required) return null;
-                    return (
-                      <div key={field.name}>
-                        <Label className="text-xs text-muted-foreground">{resolveFieldLabel(field.labelKey)}</Label>
-                        <p className="text-sm mt-0.5">{resolveOptionValue(value)}</p>
-                      </div>
-                    );
-                  })}
+                <div className="space-y-1">
+                  {/* Structured field list with alternating backgrounds */}
+                  <div className="rounded-lg border border-border/50 overflow-hidden">
+                    {fields.map((field, i) => {
+                      const value = decryptedData[field.name];
+                      if (value === undefined && !field.required) return null;
+                      return (
+                        <div
+                          key={field.name}
+                          className={`flex items-baseline gap-4 px-3 py-2 ${i % 2 === 0 ? 'bg-muted/30' : ''}`}
+                        >
+                          <span className="text-xs text-muted-foreground w-2/5 shrink-0">{resolveFieldLabel(field.labelKey)}</span>
+                          <span className="text-sm">{resolveOptionValue(value)}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
 
+                  {/* Signature — soft background, no harsh border */}
                   {typeof decryptedData.signatureData === 'string' && (
-                    <>
-                      <Separator />
-                      <div>
-                        <Label className="text-xs text-muted-foreground">{t('signature')}</Label>
+                    <div className="mt-3">
+                      <Label className="text-xs text-muted-foreground mb-1.5 block">{t('signature')}</Label>
+                      <div className="rounded-lg bg-muted/20 p-3">
                         <img
                           src={decryptedData.signatureData as string}
                           alt="Signature"
-                          className="mt-1 border rounded max-h-32"
+                          className="max-h-24 mx-auto"
                         />
                       </div>
-                    </>
+                    </div>
                   )}
                 </div>
               )}
@@ -341,17 +352,16 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
 
           {/* Tab: PDF Document — Issue #1 fix: use object tag instead of iframe to avoid CSP */}
           {hasDecryptableData && (
-            <TabsContent value="pdf" className="flex-1 overflow-y-auto px-1 py-3">
+            <TabsContent value="pdf" className="flex-1 overflow-hidden px-1 py-3 flex flex-col">
               {localHasPdf && pdfBlobUrl ? (
-                <div className="space-y-3">
+                <div className="flex flex-col flex-1 gap-2 min-h-0">
                   <object
                     data={pdfBlobUrl}
                     type="application/pdf"
-                    className="w-full h-[55vh] rounded-lg border bg-muted/20"
+                    className="w-full flex-1 min-h-0 rounded-lg border bg-muted/20"
                   >
-                    {/* Fallback if object tag doesn't work either */}
-                    <div className="flex flex-col items-center justify-center h-[55vh] gap-3 text-center">
-                      <FileText className="size-10 text-muted-foreground/50" />
+                    <div className="flex flex-col items-center justify-center h-full gap-3 text-center py-12">
+                      <FileText className="size-10 text-muted-foreground/30" />
                       <p className="text-sm text-muted-foreground">{t('pdfFallback')}</p>
                       <Button onClick={handleDownloadPdf} variant="outline" size="sm">
                         <Download className="size-3.5 mr-1.5" />
@@ -359,7 +369,7 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
                       </Button>
                     </div>
                   </object>
-                  <div className="flex items-center justify-between">
+                  <div className="shrink-0 pt-1">
                     <Button onClick={handleDownloadPdf} variant="outline" size="sm">
                       <Download className="size-3.5 mr-1.5" />
                       {tTable('downloadPdf')}
@@ -367,11 +377,11 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
                   </div>
                 </div>
               ) : localHasPdf && !pdfBlobUrl ? (
-                <div className="flex items-center justify-center py-12">
+                <div className="flex-1 flex items-center justify-center">
                   <Loader2 className="size-5 animate-spin text-muted-foreground" />
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-12 gap-4 text-center">
+                <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center">
                   <FileText className="size-10 text-muted-foreground/30" />
                   <div>
                     <p className="text-sm font-medium">{t('noPdf')}</p>
@@ -391,9 +401,9 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
 
           {/* Tab: Send to Patient */}
           {hasDecryptableData && (
-            <TabsContent value="send" className="flex-1 overflow-y-auto px-1 py-3">
+            <TabsContent value="send" className="flex-1 overflow-y-auto px-1 py-3 flex flex-col">
               {!localHasPdf ? (
-                <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
+                <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center">
                   <Send className="size-10 text-muted-foreground/30" />
                   <p className="text-sm text-muted-foreground">{t('sendRequiresPdf')}</p>
                 </div>

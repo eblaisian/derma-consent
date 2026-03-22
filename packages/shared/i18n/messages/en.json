@@ -1603,6 +1603,7 @@
     "expiredTitle": "Consent expired",
     "expiredNotice": "This consent expired on {date}. Create a new consent for the patient.",
     "revokedTitle": "Consent revoked",
-    "revokedNotice": "This consent was revoked per GDPR Art. 7(3)."
+    "revokedNotice": "This consent was revoked per GDPR Art. 7(3).",
+    "noneValue": "None"
   }
 }
