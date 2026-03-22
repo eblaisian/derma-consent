@@ -650,7 +650,7 @@ export default function Home() {
                       <ArrowRight className="ms-2 h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button size="lg" variant="outline" className="h-12 px-8 text-base border-white/60 text-base bg-primary-foreground" asChild>
+                  <Button size="lg" variant="outline" className="h-12 px-8 text-base border-white/40 bg-transparent text-white hover:bg-white/10 hover:border-white/60 hover:text-white" asChild>
                     <Link href="/contact">
                       {t('kontakt')}
                     </Link>
