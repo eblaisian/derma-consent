@@ -3,6 +3,7 @@ WORKDIR /app
 RUN corepack enable pnpm
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY packages/backend/ ./packages/backend/
+COPY packages/shared/ ./packages/shared/
 RUN pnpm install --frozen-lockfile
 WORKDIR /app/packages/backend
 RUN pnpm prisma generate
@@ -21,6 +22,7 @@ COPY --from=build /app/packages/backend/node_modules ./node_modules
 COPY --from=build /app/packages/backend/dist ./dist
 COPY --from=build /app/packages/backend/prisma ./prisma
 COPY --from=build /app/packages/backend/package.json ./package.json
+COPY --from=build /app/packages/shared /app/packages/shared
 
 USER nestjs
 
