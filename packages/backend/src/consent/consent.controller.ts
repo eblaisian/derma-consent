@@ -162,7 +162,7 @@ export class ConsentController {
   ) {
     const consent = await this.prisma.consentForm.findFirst({
       where: { id, practiceId: user.practiceId! },
-      select: { id: true, status: true, type: true, locale: true, pdfStoragePath: true, signatureTimestamp: true, practice: { select: { name: true, dsgvoContact: true }, include: { settings: true } } },
+      select: { id: true, status: true, type: true, locale: true, pdfStoragePath: true, signatureTimestamp: true, practice: { select: { name: true, dsgvoContact: true, settings: { select: { brandColor: true } } } } },
     });
 
     if (!consent) {
@@ -185,7 +185,7 @@ export class ConsentController {
 
     const treatmentType = consent.type;
     const practiceName = consent.practice.name;
-    const brandColor = (consent.practice as { settings?: { brandColor?: string | null } }).settings?.brandColor || undefined;
+    const brandColor = consent.practice.settings?.brandColor || undefined;
 
     const html = consentCompletedTemplate(practiceName, treatmentType, verifyUrl, locale as import('../email/templates/types').EmailLocale, brandColor);
     const subject = getConsentCompletedSubject(practiceName, locale as import('../email/templates/types').EmailLocale);

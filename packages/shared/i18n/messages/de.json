@@ -1605,5 +1605,12 @@
     "revokedTitle": "Einwilligung widerrufen",
     "revokedNotice": "Diese Einwilligung wurde gemäß DSGVO Art. 7(3) widerrufen.",
     "noneValue": "Keine"
+  },
+  "sendDialog": {
+    "title": "Nachricht senden",
+    "description": "Senden Sie eine Nachricht an den Patienten per E-Mail.",
+    "emailLabel": "E-Mail-Adresse",
+    "cancel": "Abbrechen",
+    "send": "Senden"
   }
 }

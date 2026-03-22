@@ -1605,5 +1605,12 @@
     "revokedTitle": "Consent revoked",
     "revokedNotice": "This consent was revoked per GDPR Art. 7(3).",
     "noneValue": "None"
+  },
+  "sendDialog": {
+    "title": "Send message",
+    "description": "Send a message to the patient via email.",
+    "emailLabel": "Email address",
+    "cancel": "Cancel",
+    "send": "Send"
   }
 }

@@ -1601,5 +1601,12 @@
     "revokedTitle": "Onam iptal edildi",
     "revokedNotice": "Bu onam KVKK Madde 7(3) uyarınca iptal edilmiştir.",
     "noneValue": "Yok"
+  },
+  "sendDialog": {
+    "title": "Mesaj gönder",
+    "description": "Hastaya e-posta ile mesaj gönderin.",
+    "emailLabel": "E-posta adresi",
+    "cancel": "İptal",
+    "send": "Gönder"
   }
 }

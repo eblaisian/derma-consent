@@ -1601,5 +1601,12 @@
     "revokedTitle": "Zgoda cofnięta",
     "revokedNotice": "Ta zgoda została cofnięta zgodnie z Art. 7(3) RODO.",
     "noneValue": "Brak"
+  },
+  "sendDialog": {
+    "title": "Wyślij wiadomość",
+    "description": "Wyślij wiadomość do pacjenta e-mailem.",
+    "emailLabel": "Adres e-mail",
+    "cancel": "Anuluj",
+    "send": "Wyślij"
   }
 }

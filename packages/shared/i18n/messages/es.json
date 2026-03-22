@@ -1601,5 +1601,12 @@
     "revokedTitle": "Consentimiento revocado",
     "revokedNotice": "Este consentimiento fue revocado según el Art. 7(3) del RGPD.",
     "noneValue": "Ninguno"
+  },
+  "sendDialog": {
+    "title": "Enviar mensaje",
+    "description": "Envíe un mensaje al paciente por correo electrónico.",
+    "emailLabel": "Dirección de correo electrónico",
+    "cancel": "Cancelar",
+    "send": "Enviar"
   }
 }

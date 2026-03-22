@@ -22,6 +22,7 @@ import { Input } from '@/components/ui/input';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { SendMessageDialog } from '@/components/shared/send-message-dialog';
 import { User, Download, FileText, Loader2, Send, Calendar, ExternalLink, Clock } from 'lucide-react';
 
 interface ConsentDetailModalProps {
@@ -52,6 +53,7 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
   const [sendEmail, setSendEmail] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [noFormData, setNoFormData] = useState(false);
+  const [showSendDialog, setShowSendDialog] = useState(false);
 
   const hasDecryptableData = ['SIGNED', 'PAID', 'COMPLETED'].includes(consent.status);
   const consentDate = consent.signatureTimestamp || consent.createdAt;
@@ -157,26 +159,27 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
     downloadPdf(consent.id);
   }, [consent.id, downloadPdf]);
 
-  const handleSendCopy = useCallback(async () => {
-    if (!sendEmail) return;
+  const handleSendCopy = useCallback(async (email: string) => {
     setIsSending(true);
     try {
       await authFetch(`/api/consent/${consent.id}/send-copy`, {
         method: 'POST',
-        body: JSON.stringify({ recipientEmail: sendEmail }),
+        body: JSON.stringify({ recipientEmail: email }),
       });
       toast.success(t('sendSuccess'));
+      setShowSendDialog(false);
       onRefresh();
     } catch {
       toast.error(t('sendError'));
     } finally {
       setIsSending(false);
     }
-  }, [consent.id, sendEmail, authFetch, t, onRefresh]);
+  }, [consent.id, authFetch, t, onRefresh]);
 
   const isLoading = isFetching || isDecrypting;
 
   return (
+    <>
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col gap-0">
         {/* ── Header ── */}
@@ -307,13 +310,19 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
                 </div>
               )}
 
-              {/* ── PDF Actions ── */}
-              <div className="flex items-center gap-2">
+              {/* ── Actions ── */}
+              <div className="flex items-center gap-2 border-t border-border/50 pt-3">
                 {localHasPdf ? (
-                  <Button onClick={handleDownloadPdf} variant="outline" size="sm">
-                    <Download className="size-3.5 mr-1.5" />
-                    {tTable('downloadPdf')}
-                  </Button>
+                  <>
+                    <Button onClick={handleDownloadPdf} variant="outline" size="sm">
+                      <Download className="size-3.5 mr-1.5" />
+                      {tTable('downloadPdf')}
+                    </Button>
+                    <Button onClick={() => setShowSendDialog(true)} variant="outline" size="sm">
+                      <Send className="size-3.5 mr-1.5" />
+                      {t('tabSend')}
+                    </Button>
+                  </>
                 ) : (
                   <Button onClick={handleGeneratePdf} disabled={isGenerating} size="sm">
                     {isGenerating ? (
@@ -323,48 +332,28 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
                     )}
                   </Button>
                 )}
+
+                {consent.pdfSentAt && (
+                  <span className="text-xs text-muted-foreground ml-auto">
+                    {t('lastSent')}: {consent.pdfSentTo}
+                  </span>
+                )}
               </div>
-
-              {/* ── Send to Patient ── */}
-              {localHasPdf && (
-                <div className="border-t border-border/50 pt-4 space-y-3">
-                  <div>
-                    <h4 className="text-sm font-medium">{t('tabSend')}</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">{t('sendDescription')}</p>
-                  </div>
-
-                  <div className="flex items-end gap-2">
-                    <div className="flex-1 space-y-1">
-                      <Label htmlFor="send-email" className="text-xs text-muted-foreground">{t('recipientEmail')}</Label>
-                      <Input
-                        id="send-email"
-                        type="email"
-                        value={sendEmail}
-                        onChange={(e) => setSendEmail(e.target.value)}
-                        placeholder="patient@example.com"
-                      />
-                    </div>
-                    <Button onClick={handleSendCopy} disabled={isSending || !sendEmail} variant="outline" size="sm" className="shrink-0">
-                      {isSending ? (
-                        <Loader2 className="size-3.5 animate-spin" />
-                      ) : (
-                        <><Send className="size-3.5 mr-1.5" />{t('sendButton')}</>
-                      )}
-                    </Button>
-                  </div>
-
-                  {consent.pdfSentAt && (
-                    <p className="text-xs text-muted-foreground">
-                      {t('lastSent')}: {new Date(consent.pdfSentAt).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })}
-                      {consent.pdfSentTo && <span className="ml-1">→ {consent.pdfSentTo}</span>}
-                    </p>
-                  )}
-                </div>
-              )}
             </>
           )}
         </div>
       </DialogContent>
     </Dialog>
+
+    <SendMessageDialog
+      open={showSendDialog}
+      onOpenChange={setShowSendDialog}
+      defaultEmail={sendEmail}
+      title={t('tabSend')}
+      description={t('sendDescription')}
+      loading={isSending}
+      onSend={handleSendCopy}
+    />
+    </>
   );
 }
