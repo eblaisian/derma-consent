@@ -15,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { ClipboardList, Eye, Trash2 } from 'lucide-react';
+import { ClipboardList, Trash2 } from 'lucide-react';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 import { TreatmentSummary } from './treatment-summary';
@@ -84,7 +84,8 @@ export function TreatmentHistory({ plans, onRefresh, patientEmail }: Props) {
         {plans.map((plan) => (
           <div
             key={plan.id}
-            className="flex items-center justify-between border rounded-lg p-3 transition-default hover:bg-muted/30 hover:border-border/80 animate-fade-in-up"
+            className="flex items-center justify-between border rounded-lg p-3 transition-default hover:bg-muted/30 hover:border-border/80 animate-fade-in-up cursor-pointer"
+            onClick={() => handleView(plan)}
           >
             <div className="flex items-center gap-2.5 min-w-0 flex-wrap">
               <Badge variant="outline">{tTypes(plan.type as keyof IntlMessages['consentTypes'])}</Badge>
@@ -97,31 +98,18 @@ export function TreatmentHistory({ plans, onRefresh, patientEmail }: Props) {
                 </Badge>
               )}
             </div>
-            <div className="flex items-center gap-1 shrink-0">
+            <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
               <AftercareDialog treatmentType={plan.type} patientEmail={patientEmail} />
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon-xs"
-                    onClick={() => handleView(plan)}
-                    aria-label={t('viewDetails')}
-                  >
-                    <Eye className="size-3.5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{t('viewDetails')}</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    className="text-destructive hover:text-destructive"
+                    className="text-muted-foreground/60 hover:text-destructive"
                     onClick={() => setDeletingPlanId(plan.id)}
                     aria-label={t('deletePlan')}
                   >
-                    <Trash2 className="size-3.5" />
+                    <Trash2 className="size-3" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>{t('deletePlan')}</TooltipContent>
