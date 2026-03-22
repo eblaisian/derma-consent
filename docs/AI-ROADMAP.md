@@ -1,6 +1,8 @@
 # DermaConsent — AI Roadmap
 
-**Date:** 2026-03-14
+> **Updated 2026-03-22:** Phase 1 and Phase 2 features are ALL SHIPPED (6 of 9 AI features built). LLM provider corrected from OpenAI to Claude/Anthropic. See `STRATEGY-SYNC-AUDIT-2026-03-22.md` for full codebase cross-reference.
+
+**Date:** 2026-03-14 (updated 2026-03-22)
 **Strategic Position:** AI features that radiate from the consent layer — the moment between "form sent" and "form signed" that no competitor owns.
 **Architecture Constraint:** Zero-knowledge encryption. AI features must operate on metadata and templates, never on encrypted patient PII.
 
@@ -57,29 +59,33 @@ Positioning: "The consent platform that makes your practice smarter — without 
 | Before/After Photo Analysis | NO | Encrypted photo bytes | Would break ZK boundary |
 | Full Contraindication Check | Partial | Encrypted patient history | Could work client-side in future |
 
-## Pricing Strategy
+## Pricing Strategy (Staged — decided 2026-03-22)
 
-| Plan | AI Features |
-|---|---|
-| Starter (EUR 79/mo) | Consent Explainer only (patient-facing differentiator) |
-| Professional (EUR 199/mo) | Full AI Suite: no-show scoring, communication templates, aftercare generator, retention flagging, analytics insights |
-| Enterprise (EUR 499/mo) | AI Suite + GOÄ billing suggestions + priority features |
+**Gründerpreis (first 20 practices — current code pricing):**
 
-Alternative: AI Suite as EUR 49/month add-on to any plan. Recommended after 20+ paying practices to understand feature-level demand.
+| Plan | Gründerpreis | After 20 practices | After 50 practices | AI Features |
+|---|---|---|---|---|
+| Starter | **EUR 49/mo** | EUR 79/mo | EUR 79/mo | Consent Explainer (quota-limited) |
+| Professional | **EUR 99/mo** | EUR 179/mo | EUR 199/mo | Full AI Suite: communications, aftercare generator, analytics insights, retention flagging, no-show scoring |
+| Enterprise | **EUR 199/mo** | EUR 399/mo | EUR 499/mo | AI Suite + GOÄ billing suggestions (Phase 3) + priority features |
+
+- Founding members keep their Gründerpreis forever (grandfather clause)
+- 30-day free trial on all plans, no credit card required
+- Premium AI features (communications, aftercare, analyticsInsights) gated to Professional+ in code
 
 ## Implementation Phases
 
-### Phase 1 — Launch (Months 0-2)
+### Phase 1 — Launch (Months 0-2) — COMPLETE
 
-- [x] Consent Explainer (shipped)
-- [ ] No-Show Risk Score
-- [ ] Smart Communication Templates
+- [x] Consent Explainer (shipped — `POST /api/consent/:token/explain`)
+- [x] No-Show Risk Score (shipped — `no-show-risk-badge.tsx` UI component, behavioral signals)
+- [x] Smart Communication Templates (shipped — `communications.module.ts`, AI draft generation + multi-channel send)
 
-### Phase 2 — Growth (Months 2-4)
+### Phase 2 — Growth (Months 2-4) — COMPLETE
 
-- [ ] Aftercare Instructions Generator
-- [ ] Patient Retention Flagging
-- [ ] Analytics Natural Language Insights
+- [x] Aftercare Instructions Generator (shipped — `POST /api/treatment-plans/aftercare`, `aftercare-dialog.tsx`, `aftercare-editor.tsx`)
+- [x] Patient Retention Flagging (shipped — `GET /api/analytics/retention-flags`, `retention-widget.tsx`)
+- [x] Analytics Natural Language Insights (shipped — `GET /api/analytics/insights`, `ai-insights-card.tsx`)
 
 ### Phase 3 — Premium (Months 5-8)
 
@@ -97,7 +103,7 @@ Alternative: AI Suite as EUR 49/month add-on to any plan. Recommended after 20+ 
 All AI features follow this pattern:
 
 1. Backend service in `/src/consent/` or `/src/ai/` module
-2. LLM calls via native `fetch` to OpenAI API (no SDK dependency)
+2. LLM calls via `AiService` to Claude/Anthropic API (no SDK dependency)
 3. API key stored in PlatformConfig (encrypted at rest)
 4. All calls logged to AuditLog with action type
 5. Rate-limited per endpoint

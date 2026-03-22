@@ -4,12 +4,14 @@ Derma Consent uses **Stripe Connect** for billing. Practices are Stripe connecte
 
 ## Subscription Plans
 
-| Plan | Description |
-|------|-------------|
-| **FREE_TRIAL** | 14-day full-feature trial for new practices |
-| **STARTER** | Basic plan for small practices |
-| **PROFESSIONAL** | Advanced features for growing practices |
-| **ENTERPRISE** | Full feature set for multi-location practices |
+| Plan | Gründerpreis (first 20) | Normal Price (after 20) | Target Price (after 50) | Description |
+|------|---|---|---|-------------|
+| **FREE_TRIAL** | Free | Free | Free | 30-day full-feature trial for new practices |
+| **STARTER** | EUR 49/mo | EUR 79/mo | EUR 79/mo | Consent forms + AI explainer + 8 languages + ZK encryption |
+| **PROFESSIONAL** | EUR 99/mo | EUR 179/mo | EUR 199/mo | + Full AI Suite (communications, aftercare, analytics insights, retention) + unlimited consents + unlimited team |
+| **ENTERPRISE** | EUR 199/mo | EUR 399/mo | EUR 499/mo | + GOÄ billing AI + multi-location + priority support |
+
+> **Pricing Strategy (decided 2026-03-22):** Staged "Gründerpreis" approach. Launch at EUR 49/99/199 for first 20 practices. Founding members keep their price forever (grandfather clause). See `docs/AI-PRICING-REEVALUATION-2026-03-22.md` for analysis.
 
 ## Subscription Statuses
 

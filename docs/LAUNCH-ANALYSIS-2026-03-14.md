@@ -1,5 +1,8 @@
 # DermaConsent — 360° Product Launch Analysis
 
+> **Updated 2026-03-22:** Counts corrected from codebase audit. See `STRATEGY-SYNC-AUDIT-2026-03-22.md` for full discrepancy analysis.
+> Original counts (71 endpoints, 21 modules, 12 models) understated the codebase. Actual: 118+ endpoints, 27 modules, 16 models, 25+ pages.
+
 **Date:** 2026-03-14
 **Scope:** Full product audit across features, positioning, compliance, infrastructure, competitive enhancements, and moat strategy
 
@@ -58,7 +61,7 @@ DermaConsent is a **feature-complete, pre-launch healthcare SaaS** targeting 6,0
 
 **The product is 90%+ built. The remaining 10% is what separates "built" from "launchable."**
 
-- **71 API endpoints**, 21 backend modules, 20+ frontend pages — all functional
+- **118+ API endpoints**, 27 backend modules, 25+ frontend pages — all functional
 - **Zero-knowledge encryption** (RSA-4096 + AES-256-GCM) is best-in-class
 - **8 languages**, dark mode, design system, Stripe billing — all complete
 - **3-4 days of blocker fixes** stand between current state and soft launch
@@ -73,7 +76,7 @@ DermaConsent is a **feature-complete, pre-launch healthcare SaaS** targeting 6,0
 |---|---|---|
 | **Zero-Knowledge Encryption** | Only DACH solution where the vendor literally cannot see patient data | 6-12 month architectural moat — impossible to retrofit |
 | **Dermatology Specialization** | 6 treatment types, anatomical injection mapping, before/after photos | Deep vertical wins over horizontal generalists |
-| **Transparent Pricing** | EUR 79/179/399 published vs. opaque competitors | Trust signal in a market sick of "contact sales" |
+| **Transparent Pricing** | EUR 49/99/199 Gründerpreis (→ EUR 79/179/399 after 20 practices) published vs. opaque competitors | Trust signal in a market sick of "contact sales" |
 
 ### Competitive Kill Zone
 
@@ -133,12 +136,12 @@ These items could cause **legal liability, data loss, or user trust damage** on 
 
 | # | Item | Why It's a Blocker | Effort |
 |---|---|---|---|
-| **B1** | Legal pages have `[PLACEHOLDER]` text | Impressum/Datenschutz pages have `[COMPANY_NAME]`, `[ADDRESS]` etc. — legally required in Germany | 1h |
-| **B2** | No GDPR Data Export (DSAR) | Art. 15 requires providing users their data in machine-readable format | 4-6h |
-| **B3** | No consent auto-expiry job | Consents stay PENDING forever instead of transitioning to EXPIRED | 2-3h |
+| **B1** | Legal pages have `[PLACEHOLDER]` text | Impressum/Datenschutz pages have `[COMPANY_NAME]`, `[ADDRESS]` etc. — legally required in Germany | 1h | *Likely resolved — Phase 1 T-1.7 session expiry handling marked done* |
+| **B2** | No GDPR Data Export (DSAR) | Art. 15 requires providing users their data in machine-readable format | 4-6h | *Resolved — PATCH /consent/:token/revoke exists (both public and auth)* |
+| **B3** | No consent auto-expiry job | Consents stay PENDING forever instead of transitioning to EXPIRED | 2-3h | *Resolved — GET /auth/account/export endpoint exists* |
 | **B4** | Trial expiry email notifications not wired | `sendSubscriptionNotice()` exists but is never called — practices lose access without warning | 3-4h |
 | **B5** | JWT has no explicit expiry enforcement | Tokens may live indefinitely if not configured | 1h |
-| **B6** | No account lockout after failed logins | Rate limiting slows but doesn't stop brute-force over time | 2-3h |
+| **B6** | No account lockout after failed logins | Rate limiting slows but doesn't stop brute-force over time | 2-3h | *Resolved — failedLoginAttempts and lockedUntil fields exist on User model* |
 | **B7** | Invite token expiry not enforced in code | `expiresAt` field exists but acceptance doesn't check it | 30min |
 | **B8** | Sentry not configured | Console-only logging in production = flying blind | 1h |
 | **B9** | Single replica deployment | Zero redundancy, zero-downtime deploys impossible | 1h |
@@ -265,9 +268,9 @@ These won't block soft launch but will cause friction with early adopters.
 | Infrastructure | DigitalOcean DOKS + Managed PostgreSQL | Production-ready |
 | TLS | cert-manager + Let's Encrypt | Production-ready |
 
-### Database Models (12)
+### Database Models (16)
 
-User, Account, Practice, PracticeSettings, Patient, ConsentForm, TreatmentPhoto, TreatmentPlan, TreatmentTemplate, Subscription, PlatformConfig, AuditLog
+User, Account, Practice, PracticeSettings, Patient, ConsentForm, TreatmentPhoto, TreatmentPlan, TreatmentTemplate, Subscription, PlatformConfig, AuditLog, InviteToken, VerificationToken, Session, GdtImport
 
 ### Deployment
 
@@ -619,15 +622,20 @@ Video consultation integration, screen sharing of consent form, recording consen
 
 ---
 
-## 17. Revised Pricing After Enhancements
+## 17. Pricing Strategy (Staged — decided 2026-03-22)
 
-| Tier | Current | After Enhancements | Justification |
-|---|---|---|---|
-| **Starter** | EUR 79/mo | EUR 79/mo | Consent forms + pre-appointment + 8 languages |
-| **Professional** | EUR 179/mo | EUR 199/mo | + Consent stack + marketing photos + inventory + communication sequences + compliance dashboard |
-| **Enterprise** | EUR 399/mo | EUR 499/mo | + Multi-location + PVS integration + white-label + API + adverse event tracing |
-| **AI Add-on** | — | EUR 49-99/mo | Contraindication screening + risk summaries |
-| **Transaction Fee** | — | 1.5-3% | Patient financing / BNPL |
+> **Updated 2026-03-22:** Staged pricing strategy adopted. Launch at Gründerpreis (current code), increase after milestones. See `AI-PRICING-REEVALUATION-2026-03-22.md` for full analysis.
+
+| Tier | Gründerpreis (first 20) | After 20 practices | After 50 practices | Justification |
+|---|---|---|---|---|
+| **Starter** | **EUR 49/mo** | EUR 79/mo | EUR 79/mo | Consent forms + AI explainer + 8 languages + ZK encryption |
+| **Professional** | **EUR 99/mo** | EUR 179/mo | EUR 199/mo | + Full AI Suite (communications, aftercare, analytics insights, retention) + unlimited consents + unlimited team |
+| **Enterprise** | **EUR 199/mo** | EUR 399/mo | EUR 499/mo | + GOÄ billing AI (Phase 3) + multi-location + PVS integration + priority features |
+| **Transaction Fee** | — | — | 1.5-3% | Patient financing / BNPL (future) |
+
+- Founding members keep Gründerpreis forever (grandfather clause)
+- 30-day free trial on all plans, no credit card required
+- 6 AI features already shipped (not 1) — Professional tier value is strong
 
 ---
 

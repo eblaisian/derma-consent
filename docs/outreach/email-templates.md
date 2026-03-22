@@ -1,227 +1,257 @@
 # DermaConsent Outreach Emails — Frankfurt Dermatology Practices
 
+> **Updated 2026-03-22** — Added: 30-day free trial CTA, Gründerpreis urgency, AI consent explainer differentiator, outcome-first messaging
 > Strategy: PAS framework (Problem → Agitate → Solution) with practice-specific personalization
 > Send: Tuesday or Wednesday, 11:30–13:00 CET
 > Sequence: 3 emails max (Day 0, Day 3–4, Day 10–14)
-> CTA: Interest-based question (not meeting request) in Email 1
+> CTA: Free trial link (not meeting request) in Email 1
+
+---
+
+## Key Messaging Rules
+
+1. **Lead with the outcome, not the feature.** "2 Stunden weniger Verwaltung pro Tag" beats "Zero-Knowledge-Verschlüsselung"
+2. **Always mention the 30-day free trial.** It's the #1 conversion tool — zero risk for them.
+3. **Mention the Gründerpreis.** "Exklusiv für die ersten 20 Praxen" creates urgency without pressure.
+4. **Mention the AI consent explainer.** Patients understand what they sign — in their own language. No competitor has this.
+5. **Keep it under 100 words.** Doctors scan, they don't read.
 
 ---
 
 ## Email 1: Opener (Day 0)
 
-Each email is ~90 words, personalized to the practice's specific context.
+Each email is ~100 words, personalized to the practice's specific context.
 
 ---
 
 ### 1. Dr. med. Bergit Barthel — Dermatologie im Nordend
 
 **To:** praxis@derma-nordend.de
-**Betreff:** Digitale Einwilligung für Ihre Praxis — kurze Frage
+**Betreff:** Digitale Einwilligung — das fehlende Stück in Ihrem digitalen Workflow
 
 > Sehr geehrte Frau Dr. Barthel,
 >
-> ich sehe, dass Ihre Praxis bereits eine Patienten-App, Online-Rezepte und Telemedizin anbietet — das zeigt, wie konsequent Sie auf digitale Workflows setzen.
+> Ihre Praxis setzt konsequent auf digitale Workflows — Patienten-App, Telemedizin, E-Rezepte. Ein Bereich läuft oft noch auf Papier: die Patienteneinwilligung.
 >
-> Ein Bereich, der in vielen Praxen noch analog läuft, ist die Patienteneinwilligung — mit allen Haftungsrisiken bei unvollständiger Dokumentation.
+> DermaConsent digitalisiert genau das. Patienten erhalten einen Link, füllen die Einwilligung auf dem eigenen Smartphone aus, und eine KI erklärt ihnen den Eingriff verständlich — in 8 Sprachen. Der gesamte Prozess dauert 90 Sekunden statt 10 Minuten. Alle Daten sind Ende-zu-Ende-verschlüsselt — wir sehen sie nie.
 >
-> Ich habe DermaConsent entwickelt: digitale Einwilligungen speziell für die Dermatologie, mit Zero-Knowledge-Verschlüsselung (Patientendaten verlassen Ihre Praxis nur verschlüsselt — wir sehen sie nie), mehrsprachig, AVV sofort verfügbar.
+> Wir bieten den ersten 20 Praxen einen exklusiven Gründerpreis mit 30 Tagen kostenlosem Test — ohne Kreditkarte, ohne Verpflichtung.
 >
-> Wäre das eine sinnvolle Ergänzung zu Ihrem bestehenden digitalen Angebot?
+> Soll ich Ihnen einen Testzugang einrichten?
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 > DermaConsent — https://derma-consent.de
 
-**Personalization hook:** References her existing digital infrastructure (patient app, telehealth, e-prescriptions) and positions DermaConsent as the missing piece.
+**Personalization hook:** References her existing digital infrastructure and positions DermaConsent as the missing piece.
+**CTA:** Concrete next step (test account setup), not a vague "Wäre das interessant?"
 
 ---
 
 ### 2. Dr. med. Heidi Dötterer-Rieg — Gemeinschaftspraxis
 
 **To:** praxis@doetterer-rieg.de
-**Betreff:** Mehrsprachige Einwilligungen für Ihre Gemeinschaftspraxis
+**Betreff:** 8 Sprachen, 90 Sekunden — digitale Einwilligung für Ihre Gemeinschaftspraxis
 
 > Sehr geehrte Frau Dr. Dötterer-Rieg,
 >
-> als Gemeinschaftspraxis mit vier Ärztinnen und einem mehrsprachigen Team (Deutsch, Türkisch, Russisch, Französisch, Spanisch, Englisch) betreuen Sie eine besonders vielfältige Patientengruppe — was die Einwilligungsdokumentation deutlich aufwendiger macht.
+> bei vier Ärztinnen und einem mehrsprachigen Team (Deutsch, Türkisch, Russisch, Französisch, Spanisch, Englisch) ist die Einwilligungsdokumentation besonders aufwendig — verschiedene Sprachen, verschiedene Behandlungen, jedes Mal Papier.
 >
-> DermaConsent ist eine digitale Einwilligungslösung für die Dermatologie, die Formulare automatisch in 8 Sprachen bereitstellt — darunter alle Sprachen Ihres Teams. Patientendaten werden Ende-zu-Ende-verschlüsselt, ein AVV ist sofort verfügbar, und die Einrichtung dauert einen Nachmittag.
+> DermaConsent löst das: Patienten erhalten einen Link, füllen die Einwilligung auf dem Smartphone aus — und eine KI erklärt ihnen den Eingriff verständlich in ihrer Muttersprache. 8 Sprachen, darunter alle Sprachen Ihres Teams. 90 Sekunden statt 10 Minuten pro Patient.
 >
-> Wäre das für Ihre Praxis relevant?
+> Für die ersten 20 Praxen bieten wir einen exklusiven Gründerpreis. 30 Tage kostenlos testen — ohne Kreditkarte.
+>
+> Soll ich Ihnen einen Testzugang einrichten?
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 > DermaConsent — https://derma-consent.de
 
-**Personalization hook:** References the 4-doctor team, multilingual staff, and the direct match to DermaConsent's 8-locale support.
+**Personalization hook:** References the 4-doctor team, multilingual staff, and the direct match to 8-locale support.
 
 ---
 
 ### 3. Dr. med. Arna Shab — Med Aesthet
 
 **To:** info@med-aesthet.de
-**Betreff:** Einwilligungsdokumentation für ästhetische Eingriffe — DSGVO-konform
+**Betreff:** Einwilligungsdokumentation für ästhetische Eingriffe — in 90 Sekunden erledigt
 
 > Sehr geehrter Herr Dr. Shab,
 >
-> bei ästhetischen und Laser-Behandlungen ist eine lückenlose Einwilligungsdokumentation besonders kritisch — sowohl für die Patientensicherheit als auch für den Haftungsschutz Ihrer Praxis.
+> bei ästhetischen und Laser-Behandlungen ist eine lückenlose Einwilligungsdokumentation entscheidend — für die Patientensicherheit und Ihren Haftungsschutz. Aber der Papieraufwand pro Patient kann leicht 10 Minuten dauern.
 >
-> Ich habe DermaConsent entwickelt: eine digitale Einwilligungslösung speziell für die Dermatologie. Patienten füllen Formulare auf dem eigenen Smartphone aus, unterschreiben digital, und alle Daten werden mit Zero-Knowledge-Verschlüsselung gespeichert — DSGVO-konform, revisionssicher, AVV sofort verfügbar.
+> DermaConsent reduziert das auf 90 Sekunden: Patienten füllen die Einwilligung auf dem eigenen Smartphone aus, eine KI erklärt den Eingriff verständlich, und alle Daten werden mit Zero-Knowledge-Verschlüsselung gespeichert — DSGVO-konform, revisionssicher.
 >
-> Wäre das für Ihre Praxis im Westend interessant?
+> Für Ihre Praxis im Westend: 30 Tage kostenlos testen, Gründerpreis für die ersten 20 Praxen.
+>
+> Soll ich Ihnen einen Testzugang einrichten?
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 > DermaConsent — https://derma-consent.de
 
-**Personalization hook:** Emphasizes the heightened liability risk specific to aesthetic/laser procedures. References Westend location.
+**Personalization hook:** Liability risk for aesthetic procedures + Westend location.
 
 ---
 
 ### 4. Dr. Jennewein — Dermatologiezentrum
 
 **To:** info@dermatologiezentrum-frankfurt.de
-**Betreff:** Digitale Patienteneinwilligung für Ihr Dermatologiezentrum
+**Betreff:** 2 Stunden weniger Verwaltung pro Tag — digitale Einwilligung für Ihr Zentrum
 
 > Sehr geehrter Herr Dr. Jennewein,
 >
-> ein Dermatologiezentrum mit dem Leistungsspektrum Ihrer Praxis — von der Hautkrebsvorsorge über operative Eingriffe bis zur Lasertherapie — erzeugt täglich eine erhebliche Menge an Einwilligungsdokumenten. Bei Kassenpatient:innen und Privatpatient:innen parallel steigt der Verwaltungsaufwand zusätzlich.
+> von der Hautkrebsvorsorge über operative Eingriffe bis zur Lasertherapie — Ihr Zentrum verarbeitet täglich dutzende Einwilligungsformulare. Bei Kassen- und Privatpatient:innen parallel wächst der Verwaltungsaufwand schnell.
 >
-> DermaConsent digitalisiert diesen Prozess komplett: Patienten erhalten einen Link, füllen die Einwilligung auf dem Smartphone aus, unterschreiben digital — und alles wird Ende-zu-Ende-verschlüsselt archiviert. DSGVO-konform, AVV inklusive.
+> DermaConsent macht diesen Prozess papierlos: Patienten erhalten einen Link, füllen die Einwilligung auf dem Smartphone aus, und eine KI erklärt ihnen den Eingriff verständlich. 90 Sekunden pro Patient statt 10 Minuten — bei 20 Patient:innen täglich spart das ca. 2 Stunden.
 >
-> Wäre ein kurzer Austausch dazu für Sie interessant?
+> 30 Tage kostenlos testen. Gründerpreis für die ersten 20 Praxen.
+>
+> Soll ich Ihnen einen Testzugang einrichten?
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 > DermaConsent — https://derma-consent.de
 
-**Personalization hook:** References the breadth of services (skin cancer, surgery, laser) and the dual-track GKV/PKV patient load.
+**Personalization hook:** Breadth of services, dual GKV/PKV track, high volume = high time savings.
 
 ---
 
 ### 5. Prof. Dr. Ockenfels — Privatärztliches Zentrum OOP
 
 **To:** info@pzf-oop.de
-**Betreff:** Revisionssichere Einwilligungen für Ihre Privatpraxis
+**Betreff:** Revisionssichere digitale Einwilligungen — mit Zero-Knowledge-Verschlüsselung
 
 > Sehr geehrter Herr Prof. Dr. Ockenfels,
 >
-> in einer Privatpraxis mit Schwerpunkt Lasermedizin und Hautkrebschirurgie sind die Anforderungen an die Einwilligungsdokumentation besonders hoch — sowohl medizinrechtlich als auch aus Sicht des Datenschutzes.
+> in einer Privatpraxis mit Schwerpunkt Lasermedizin und Hautkrebschirurgie sind die Anforderungen an die Einwilligungsdokumentation besonders hoch — medizinrechtlich und datenschutzrechtlich.
 >
-> DermaConsent bietet digitale, revisionssichere Patienteneinwilligungen mit Zero-Knowledge-Verschlüsselung: Patientendaten werden auf dem Gerät des Patienten verschlüsselt, bevor sie übertragen werden — Ihre Praxis behält die volle Kontrolle, wir sehen die Daten nie.
+> DermaConsent setzt auf einen einzigartigen Ansatz: Zero-Knowledge-Verschlüsselung. Patientendaten werden auf dem Gerät des Patienten verschlüsselt, bevor sie übertragen werden — wir als Anbieter sehen die Daten nie. Zusätzlich erklärt eine KI dem Patienten den Eingriff in verständlicher Sprache, was die informierte Einwilligung nachweisbar stärkt.
 >
-> Wäre das für Ihr Zentrum relevant?
+> 30 Tage kostenlos testen — Gründerpreis für die ersten 20 Praxen.
+>
+> Soll ich Ihnen einen Testzugang einrichten?
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 > DermaConsent — https://derma-consent.de
 
-**Personalization hook:** Uses "Herr Prof. Dr." (critical for academic titles in Germany). References laser medicine and skin cancer surgery specifically. Emphasizes the technical encryption detail — appeals to an academic/research-oriented physician.
+**Personalization hook:** Academic title, technical encryption detail for research-oriented physician, "informierte Einwilligung" legal angle.
 
 ---
 
 ### 6. Dr. med. Wencke Hofmann — Hautzentrum Nordwest
 
 **To:** praxis@hautzentrum-nordwest.de
-**Betreff:** Digitale Einwilligungen für das Hautzentrum Nordwest
+**Betreff:** Papierlose Einwilligung für das Hautzentrum Nordwest — 30 Tage kostenlos
 
 > Sehr geehrte Frau Dr. Hofmann,
 >
-> als Hautzentrum im Nordwestzentrum mit Kassen-, Privat- und Selbstzahlerpatient:innen verarbeiten Sie täglich eine hohe Zahl an Einwilligungsformularen — ein Aufwand, der mit jeder zusätzlichen Behandlung wächst.
+> als Hautzentrum im Nordwestzentrum mit Kassen-, Privat- und Selbstzahlerpatient:innen verarbeiten Sie täglich eine hohe Zahl an Einwilligungsformularen — ein Aufwand, der mit jeder Behandlung wächst.
 >
-> DermaConsent ersetzt diesen Papierprozess vollständig: Patienten erhalten per Link ein digitales Formular, füllen es selbstständig aus und unterschreiben auf dem eigenen Gerät. Alle Daten werden Ende-zu-Ende-verschlüsselt gespeichert. DSGVO-konform, AVV sofort verfügbar.
+> DermaConsent ersetzt diesen Papierprozess: Patienten erhalten einen Link, füllen die Einwilligung selbstständig aus und unterschreiben digital. Eine KI erklärt den Eingriff in verständlicher Sprache — in 8 Sprachen. Ende-zu-Ende-verschlüsselt, DSGVO-konform.
 >
-> Wäre das für Ihr Zentrum interessant?
+> 30 Tage kostenlos testen. Gründerpreis für die ersten 20 Praxen — danach steigen die Preise.
+>
+> Soll ich Ihnen einen Testzugang einrichten?
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 > DermaConsent — https://derma-consent.de
 
-**Personalization hook:** References the Nordwestzentrum location and the triple patient stream (GKV/PKV/Selbstzahler) that drives high consent volume.
+**Personalization hook:** Nordwestzentrum location, triple patient stream = high consent volume.
 
 ---
 
 ### 7. Dr. med. Kaveh Fattahi — Skin & Aesthetic
 
 **To:** info@fattahi-skin.de
-**Betreff:** Digitale Einwilligung für Ihre Privatpraxis — kurze Frage
+**Betreff:** Mehrsprachige Einwilligungen für Ihre internationale Patientenbasis
 
 > Sehr geehrter Herr Dr. Fattahi,
 >
-> als Privatpraxis für ästhetische Dermatologie und Lasermedizin in Sachsenhausen — mit einem internationalen Patientenstamm — kennen Sie die Herausforderung: Einwilligungsformulare müssen rechtssicher, verständlich und idealerweise mehrsprachig sein.
+> als Privatpraxis in Sachsenhausen mit einem internationalen Patientenstamm kennen Sie die Herausforderung: Einwilligungsformulare müssen rechtssicher, verständlich und mehrsprachig sein — auf Papier kaum machbar.
 >
-> DermaConsent löst genau das: digitale Einwilligungen in 8 Sprachen, mit Zero-Knowledge-Verschlüsselung und digitaler Unterschrift. Patienten füllen alles auf dem eigenen Smartphone aus — kein Papier, keine Medienbrüche.
+> DermaConsent löst das digital: Patienten füllen die Einwilligung auf dem eigenen Smartphone aus — in 8 Sprachen. Eine KI erklärt den Eingriff verständlich in der Muttersprache des Patienten. Alle Daten Ende-zu-Ende-verschlüsselt.
 >
-> Wäre das für Ihre Praxis relevant?
+> 30 Tage kostenlos testen. Exklusiver Gründerpreis für die ersten 20 Praxen.
+>
+> Soll ich Ihnen einen Testzugang einrichten?
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 > DermaConsent — https://derma-consent.de
 
-**Personalization hook:** References the international patient base (English website), Sachsenhausen location, and the multilingual consent challenge.
+**Personalization hook:** International patient base, English website, multilingual consent challenge.
 
 ---
 
 ### 8. Dr. Anne-Mareike Tuchenhagen — Privatpraxis
 
 **To:** kontakt@derma-tuchenhagen.de
-**Betreff:** Einwilligungen für Laser, Ästhetik und Kinderdermatologie — digital und DSGVO-konform
+**Betreff:** Digitale Einwilligung für Laser, Ästhetik und Kinderdermatologie
 
 > Sehr geehrte Frau Dr. Tuchenhagen,
 >
-> Ihre Praxis deckt ein breites Spektrum ab — von der Lasermedizin über ästhetische Eingriffe bis zur Kinder- und Jugenddermatologie. Jeder dieser Bereiche bringt eigene Anforderungen an die Einwilligungsdokumentation mit sich, besonders bei Minderjährigen.
+> Ihre Praxis deckt ein breites Spektrum ab — Lasermedizin, Ästhetik, Kinder- und Jugenddermatologie. Jeder Bereich bringt eigene Anforderungen an die Einwilligungsdokumentation, besonders bei Minderjährigen.
 >
-> DermaConsent bietet digitale, DSGVO-konforme Einwilligungsformulare speziell für die Dermatologie — mit Ende-zu-Ende-Verschlüsselung, digitaler Unterschrift und automatischer Archivierung. Die Einrichtung dauert einen Nachmittag.
+> DermaConsent bietet digitale Einwilligungen speziell für die Dermatologie — mit einer KI, die Patienten den Eingriff in verständlicher Sprache erklärt. Ende-zu-Ende-verschlüsselt, 90 Sekunden statt 10 Minuten pro Patient.
 >
-> Wäre das für Ihre Praxis eine sinnvolle Lösung?
+> 30 Tage kostenlos testen. Gründerpreis für die ersten 20 Praxen.
+>
+> Soll ich Ihnen einen Testzugang einrichten?
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 > DermaConsent — https://derma-consent.de
 
-**Personalization hook:** References the breadth of specializations and specifically calls out the pediatric dermatology angle — consent for minors is a distinct legal challenge.
+**Personalization hook:** Breadth of specializations, pediatric consent challenge.
 
 ---
 
 ### 9. Dr. med. Leonie von Grawert — Dermatologie Grawert
 
 **To:** praxis@dermatologie-grawert.de
-**Betreff:** Digitale Einwilligung für operative und ästhetische Dermatologie
+**Betreff:** Einwilligungen papierlos — auch bei Samstagssprechstunde
 
 > Sehr geehrte Frau Dr. von Grawert,
 >
-> als Praxis mit operativer, klassischer und ästhetischer Dermatologie — inklusive Samstagssprechstunde — haben Sie ein Patientenaufkommen, bei dem papierbasierte Einwilligungen schnell zum Engpass werden.
+> operative, klassische und ästhetische Dermatologie — inklusive Samstagssprechstunde — bedeutet ein hohes Patientenaufkommen. Papierbasierte Einwilligungen werden da schnell zum Engpass.
 >
-> DermaConsent digitalisiert den gesamten Einwilligungsprozess: Patienten erhalten einen Link, füllen das Formular auf dem eigenen Gerät aus und unterschreiben digital. Alle Daten werden mit Zero-Knowledge-Verschlüsselung gespeichert — DSGVO-konform, revisionssicher, AVV inklusive.
+> DermaConsent macht den Prozess papierlos: Patienten erhalten vorab einen Link, füllen die Einwilligung auf dem eigenen Gerät aus, und eine KI erklärt den Eingriff verständlich. 90 Sekunden pro Patient, Ende-zu-Ende-verschlüsselt, DSGVO-konform.
 >
-> Wäre ein kurzer Austausch dazu interessant?
+> 30 Tage kostenlos testen. Exklusiver Gründerpreis für die ersten 20 Praxen.
+>
+> Soll ich Ihnen einen Testzugang einrichten?
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 > DermaConsent — https://derma-consent.de
 
-**Personalization hook:** References the Saturday hours (unusual = high demand = high consent volume) and the operative focus.
+**Personalization hook:** Saturday hours = high demand = consent bottleneck.
 
 ---
 
 ### 10. Dr. Matina Herholz — Hautarztpraxis
 
 **To:** info@topskin.de
-**Betreff:** Patienteneinwilligung digital — für Ihre Praxis in der Biebergasse
+**Betreff:** 90 Sekunden statt 10 Minuten — digitale Einwilligung für Ihre Praxis
 
 > Sehr geehrte Frau Dr. Herholz,
 >
-> eine Hautarztpraxis in bester Innenstadtlage mit einem Leistungsspektrum von der Hautkrebsvorsorge bis zur ästhetischen Laserbehandlung verarbeitet täglich zahlreiche Einwilligungsformulare — oft unter Zeitdruck zwischen den Terminen.
+> eine Hautarztpraxis in der Biebergasse — von Hautkrebsvorsorge bis Laserbehandlung — verarbeitet täglich zahlreiche Einwilligungsformulare. Oft unter Zeitdruck zwischen den Terminen.
 >
-> DermaConsent macht diesen Prozess papierlos: Patienten erhalten vorab einen Link, füllen die Einwilligung selbstständig aus und unterschreiben digital. Ende-zu-Ende-Verschlüsselung, DSGVO-konform, AVV sofort verfügbar. Die Einrichtung dauert einen Nachmittag.
+> DermaConsent macht den Prozess papierlos und schnell: Patienten erhalten vorab einen Link, füllen die Einwilligung selbstständig aus, und eine KI erklärt den Eingriff verständlich. 90 Sekunden pro Patient statt 10 Minuten. Ende-zu-Ende-verschlüsselt, DSGVO-konform.
 >
-> Wäre das für Ihre Praxis interessant?
+> 30 Tage kostenlos testen. Gründerpreis für die ersten 20 Praxen.
+>
+> Soll ich Ihnen einen Testzugang einrichten?
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 > DermaConsent — https://derma-consent.de
 
-**Personalization hook:** References the central Biebergasse location and the mix of medical + aesthetic services. The "topskin.de" domain signals a tech-savvy operator.
+**Personalization hook:** Central Biebergasse location, time pressure between appointments, topskin.de signals tech-savvy.
 
 ---
 
@@ -233,16 +263,19 @@ Each email is ~90 words, personalized to the practice's specific context.
 
 > Sehr geehrte(r) Frau/Herr Dr. [Name],
 >
-> ich hatte Ihnen Anfang der Woche zu DermaConsent geschrieben — der digitalen Einwilligungslösung für Dermatologie-Praxen.
+> ich hatte Ihnen Anfang der Woche zu DermaConsent geschrieben.
 >
-> Ein konkretes Beispiel: Der gesamte Prozess — vom Formularversand bis zur signierten, verschlüsselten Archivierung — dauert unter 90 Sekunden pro Patient. Bei 20 Patient:innen täglich spart das ca. 2 Stunden Verwaltungsaufwand.
+> Ein kurzes Beispiel aus dem System: Patienten erhalten einen Link per SMS oder E-Mail, füllen die Einwilligung auf dem eigenen Gerät aus, und eine KI erklärt ihnen den Eingriff in verständlicher Sprache — in 8 Sprachen. 90 Sekunden statt 10 Minuten pro Patient.
 >
-> Hätten Sie Interesse an einer kurzen 10-minütigen Vorstellung — per Videocall oder gerne auch vor Ort in Frankfurt?
+> Hier können Sie sich selbst ein Bild machen — wie es ein Patient erleben würde:
+> https://derma-consent.de
+>
+> Soll ich Ihnen einen kostenlosen 30-Tage-Testzugang einrichten? Keine Kreditkarte, keine Verpflichtung.
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 
-**Strategy:** New angle (quantified time savings), escalates CTA from interest question to meeting request.
+**Strategy:** Repeat the AI explainer differentiator. Link to the website so they can see the product. Reiterate 30-day free trial with "no credit card" to remove friction.
 
 ---
 
@@ -252,25 +285,43 @@ Each email is ~90 words, personalized to the practice's specific context.
 
 > Sehr geehrte(r) Frau/Herr Dr. [Name],
 >
-> ich möchte nicht aufdringlich sein — nur kurz nachfragen: Ist das Thema digitale Einwilligungen aktuell für Ihre Praxis relevant, oder eher nicht?
+> ich möchte nicht aufdringlich sein — nur kurz nachfragen: Ist das Thema digitale Einwilligungen aktuell relevant für Ihre Praxis?
 >
-> So oder so, vielen Dank für Ihre Zeit.
+> Falls ja: Der Gründerpreis für die ersten 20 Praxen gilt noch, und der 30-Tage-Test ist komplett kostenlos.
+>
+> Falls nein: Kein Problem, vielen Dank für Ihre Zeit.
 >
 > Mit freundlichen Grüßen,
 > Sohaib Faroukh
 
-**Strategy:** The "permission to say no" email. Research shows this pattern gets more replies than any other follow-up because it reduces pressure. Even a "not now" keeps the door open.
+**Strategy:** The "permission to say no" email. Research shows this gets more replies than any other follow-up. Added soft urgency reminder about founding price.
 
 ---
 
 ## Sending Checklist
 
 - [ ] Send on **Tuesday or Wednesday**, between **11:30–13:00 CET** (lunch lull when admin staff check email)
-- [ ] Send from a professional email (not gmail — use your domain if possible)
-- [ ] Include an unsubscribe line at the bottom for UWG §7 compliance: `Falls Sie keine weiteren Nachrichten wünschen, antworten Sie bitte kurz mit "Abbestellen".`
-- [ ] Send the top 3 priority practices first (Dr. Barthel, Dr. Dötterer-Rieg, Dr. Shab)
-- [ ] Wait for results before sending to practices 4–10
-- [ ] Track responses in a simple spreadsheet: Practice | Email 1 sent | Email 2 sent | Email 3 sent | Response | Next step
+- [ ] Send from a professional email (sohaib@derma-consent.de or similar — not Gmail)
+- [ ] Include an unsubscribe line at the bottom: `Falls Sie keine weiteren Nachrichten wünschen, antworten Sie bitte kurz mit "Abbestellen".`
+- [ ] **Send the top 3 priority practices first** (Dr. Barthel, Dr. Dötterer-Rieg, Dr. Shab)
+- [ ] Wait 2-3 days for results before sending to practices 4–10
+- [ ] Track in a spreadsheet: Practice | Email 1 sent | Email 2 sent | Email 3 sent | Response | Next step
+- [ ] Have a reply template ready for when they say "Ja, gerne Testzugang" — set up their trial within 1 hour
+
+## Reply Template: When They Say Yes
+
+> Sehr geehrte(r) Frau/Herr Dr. [Name],
+>
+> vielen Dank für Ihr Interesse! Ich richte Ihren Testzugang sofort ein.
+>
+> Sie erhalten in wenigen Minuten eine E-Mail mit Ihren Zugangsdaten. Die Einrichtung dauert ca. 15 Minuten — ich begleite Sie gerne per Videocall oder bin per E-Mail erreichbar, falls Fragen auftauchen.
+>
+> Ihr Testzugang läuft 30 Tage — alle Funktionen, ohne Einschränkung, ohne Kreditkarte.
+>
+> Ich freue mich auf Ihr Feedback!
+>
+> Mit freundlichen Grüßen,
+> Sohaib Faroukh
 
 ## Legal Note (UWG §7)
 

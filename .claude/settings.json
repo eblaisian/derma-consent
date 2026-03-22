@@ -23,7 +23,8 @@
       "Bash(git branch:*)",
       "Bash(git stash:*)",
       "Bash(git checkout -b:*)",
-      "Bash(gh:*)"
+      "Bash(gh:*)",
+      "Bash(curl -s:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -39,6 +40,17 @@
           {
             "type": "command",
             "command": "osascript -e 'display notification \"Claude Code needs your attention\" with title \"Claude Code\"'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(echo \"$TOOL_INPUT\" | jq -r '.file_path // .filePath // empty'); if [ -n \"$FILE\" ] && echo \"$FILE\" | grep -qE '(crypto\\.ts|use-vault\\.ts)$'; then echo 'BLOCKED: Zero-knowledge encryption file. Requires explicit user approval and security-auditor review. See CLAUDE.md escalation rules.' >&2; exit 2; fi; exit 0"
           }
         ]
       }

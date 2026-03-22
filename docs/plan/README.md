@@ -1,22 +1,7 @@
 # DermaConsent — Execution Plan
 
-> Source of truth for production launch execution. Each task is written as an AI-agent-executable specification.
-> Created: 2026-02-21 | Target launch: 2026-03-21
-
----
-
-## How to Use This Plan
-
-Each phase contains numbered tasks with unique IDs (e.g., `T-0.1`). Each task includes:
-
-- **Goal**: What to achieve (1 sentence)
-- **Context**: Why this matters
-- **Files**: Exact paths to create or modify
-- **Steps**: Ordered implementation instructions
-- **Acceptance Criteria**: How to verify completion
-- **Dependencies**: Which tasks must complete first
-
-**AI agents should execute tasks in ID order within each phase.** Cross-phase dependencies are explicitly noted.
+> Execution tracker for production launch. All phases 0-5 are COMPLETE.
+> Created: 2026-02-21 | Updated: 2026-03-22
 
 ---
 
@@ -119,9 +104,7 @@ packages/backend/src/     — NestJS 11, Prisma 6, PostgreSQL
 packages/frontend/src/    — Next.js 16, React 19, NextAuth 5, TailwindCSS 4
 ```
 
-**Design system**: See `docs/DESIGN_SYSTEM.md` for comprehensive visual specifications (colors, typography, spacing, components, animations).
-
-**Key patterns**: See `docs/plan/phase-*.md` files for exact import paths, naming conventions, and code patterns per task.
+**Design system**: See `docs/DESIGN_SYSTEM.md` for comprehensive visual specifications.
 
 **Test commands**:
 ```bash

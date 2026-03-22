@@ -74,15 +74,25 @@ paths:
 - Emoji as UI icons (use Lucide SVG icons)
 - Generic purple/blue gradient backgrounds
 
-### UI Polish Workflow
-After building any UI, run these skills in order:
-1. /baseline-ui — fix spacing, typography, interaction states
-2. /fix-accessibility — keyboard nav, ARIA, focus management
-3. /fix-motion — animation performance + reduced-motion compliance
+### UI Polish — Mandatory After Every UI Change
 
-### Visual Feedback Loop
-When the dev server is running (localhost:3000), use the Playwright MCP to:
-1. Navigate to the page being built
-2. Take a screenshot
-3. Visually verify the design
-4. Iterate until it looks intentionally designed, not AI-generated
+This is NOT optional. After writing any UI code, automatically:
+
+1. **Visual verification via Playwright** (if dev server running):
+   - Navigate to the affected page at localhost:3000
+   - Take a screenshot → compare against `.claude/ui-references/`
+   - Check: hierarchy, spacing, states, consistency
+   - Fix issues → re-screenshot → iterate until polished
+   - Resize to 375px → verify mobile layout → fix if broken
+
+2. **Anti-slop self-review** — look at your own output and eliminate:
+   - Everything centered with identical padding
+   - Missing hover/focus/active/disabled states
+   - Spinners instead of skeletons for content loading
+   - Empty states that are just "No data"
+   - Hardcoded colors instead of theme tokens
+   - Generic look with no personality or hierarchy
+
+3. **"Would a designer pay for this?"** — if the answer isn't a confident yes, keep iterating
+
+The UI is NOT done until you have Playwright screenshots proving it looks release-ready on both desktop and mobile.
