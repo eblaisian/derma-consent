@@ -285,20 +285,18 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
           {decryptedData && (
             <>
               {/* Q&A Table */}
-              <table className="w-full text-[13px] leading-relaxed rounded-lg border border-border/40 overflow-hidden">
-                <tbody>
-                  {fields.map((field, i) => {
-                    const value = decryptedData[field.name];
-                    if (value === undefined && !field.required) return null;
-                    return (
-                      <tr key={field.name} className={i % 2 === 0 ? 'bg-muted/20' : ''}>
-                        <td className="text-muted-foreground py-2 pl-3 pr-4 w-[35%] align-top font-medium">{resolveFieldLabel(field.labelKey)}</td>
-                        <td className="py-2 pr-3 align-top font-normal">{resolveOptionValue(value)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <div className="divide-y divide-border/40">
+                {fields.map((field) => {
+                  const value = decryptedData[field.name];
+                  if (value === undefined && !field.required) return null;
+                  return (
+                    <div key={field.name} className="flex justify-between gap-6 py-2.5 px-1 text-[13px]">
+                      <span className="text-muted-foreground shrink-0">{resolveFieldLabel(field.labelKey)}</span>
+                      <span className="text-right">{resolveOptionValue(value)}</span>
+                    </div>
+                  );
+                })}
+              </div>
 
               {/* Signature */}
               {typeof decryptedData.signatureData === 'string' && (
