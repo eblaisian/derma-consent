@@ -86,7 +86,14 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
       iv: encrypted.iv,
       ciphertext: encrypted.ciphertext,
     })
-      .then((data) => { if (!cancelled) setDecryptedData(data as Record<string, unknown>); })
+      .then((data) => {
+        if (cancelled) return;
+        const d = data as Record<string, unknown>;
+        setDecryptedData(d);
+        // Pre-fill send email from decrypted patient data
+        const patientEmail = (d.email || d.emailAddress || d.patientEmail || '') as string;
+        if (patientEmail && !sendEmail) setSendEmail(patientEmail);
+      })
       .catch(() => { if (!cancelled) setDecryptError(t('fetchError')); })
       .finally(() => { if (!cancelled) setIsDecrypting(false); });
     return () => { cancelled = true; };
@@ -191,7 +198,7 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
           </Link>
         )}
 
-        <Tabs defaultValue={hasDecryptableData ? 'form' : 'info'} className="flex-1 flex flex-col min-h-0">
+        <Tabs defaultValue={hasDecryptableData ? 'form' : 'info'} className="flex-1 flex flex-col min-h-0 overflow-hidden">
           <TabsList className="w-full justify-start shrink-0">
             {hasDecryptableData ? (
               <>
@@ -214,7 +221,7 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
 
           {/* Issue #5 fix: Useful content for PENDING/EXPIRED consents */}
           {!hasDecryptableData && (
-            <TabsContent value="info" className="flex-1 overflow-y-auto px-1 py-4">
+            <TabsContent value="info" forceMount className="flex-1 overflow-y-auto px-1 py-4 data-[state=inactive]:hidden">
               <div className="space-y-4">
                 {consent.status === 'PENDING' && (
                   <>
@@ -267,7 +274,7 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
 
           {/* Tab: Form Data */}
           {hasDecryptableData && (
-            <TabsContent value="form" className="flex-1 overflow-y-auto px-1 py-3 flex flex-col">
+            <TabsContent value="form" forceMount className="flex-1 overflow-y-auto px-1 py-3 flex flex-col data-[state=inactive]:hidden">
               {fetchError && <p className="text-sm text-destructive">{t('fetchError')}</p>}
               {decryptError && <p className="text-sm text-destructive">{decryptError}</p>}
 
@@ -342,7 +349,7 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
 
           {/* Tab: Send to Patient */}
           {hasDecryptableData && (
-            <TabsContent value="send" className="flex-1 overflow-y-auto px-1 py-3 flex flex-col">
+            <TabsContent value="send" forceMount className="flex-1 overflow-y-auto px-1 py-3 flex flex-col data-[state=inactive]:hidden">
               {!localHasPdf ? (
                 <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center">
                   <Send className="size-10 text-muted-foreground/30" />
