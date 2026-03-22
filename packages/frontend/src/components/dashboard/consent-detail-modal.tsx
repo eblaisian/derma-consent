@@ -292,7 +292,7 @@ export function ConsentDetailModal({ consent, onClose, onRefresh, patientId }: C
                     if (value === undefined && !field.required) return null;
                     return (
                       <tr key={field.name} className={i % 2 === 0 ? 'bg-muted/25' : ''}>
-                        <td className="text-xs text-muted-foreground py-2 pl-3 pr-4 w-2/5 align-top whitespace-nowrap">{resolveFieldLabel(field.labelKey)}</td>
+                        <td className="text-xs text-muted-foreground py-2 pl-3 pr-6 w-2/5 align-top">{resolveFieldLabel(field.labelKey)}</td>
                         <td className="py-2 pr-3 align-top">{resolveOptionValue(value)}</td>
                       </tr>
                     );
