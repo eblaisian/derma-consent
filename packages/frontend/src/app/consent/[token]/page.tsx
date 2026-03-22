@@ -2,7 +2,7 @@
 
 import { use, useCallback, useState } from 'react';
 import useSWR from 'swr';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import { ConsentForm } from '@/components/consent-form/consent-form';
 import type { PatientIdentity } from '@/components/consent-form/consent-form';
@@ -80,6 +80,7 @@ export default function ConsentPage({
 }) {
   const { token } = use(params);
   const t = useTranslations('consent');
+  const locale = useLocale();
   const [submitted, setSubmitted] = useState(false);
   const [stripeUrl, setStripeUrl] = useState<string | null>(null);
 
@@ -147,6 +148,7 @@ export default function ConsentPage({
             comprehensionAnswers: submission.comprehensionAnswers,
           }),
           ...patientFields,
+          locale,
         }),
       });
 

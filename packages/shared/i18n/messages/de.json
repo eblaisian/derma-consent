@@ -472,7 +472,16 @@
     "logoDragHint": "Logo hierher ziehen oder klicken zum Durchsuchen",
     "logoFormatHint": "PNG, JPG oder SVG — Max. 2 MB",
     "logoReplace": "Logo ersetzen",
-    "noChanges": "Keine Änderungen zu speichern"
+    "noChanges": "Keine Änderungen zu speichern",
+    "address": "Adresse",
+    "street": "Straße",
+    "houseNumber": "Hausnummer",
+    "postalCode": "Postleitzahl",
+    "city": "Stadt",
+    "state": "Bundesland",
+    "phone": "Telefon",
+    "practiceEmail": "E-Mail der Praxis",
+    "website": "Website"
   },
   "languages": {
     "title": "Sprache",
@@ -820,7 +829,14 @@
     "allStatuses": "Alle Status",
     "risk": "Risiko",
     "patient": "Patient",
-    "linked": "Verknüpft"
+    "linked": "Verknüpft",
+    "generatePdf": "PDF erstellen",
+    "downloadPdf": "PDF herunterladen",
+    "regeneratePdf": "PDF neu erstellen",
+    "generatingPdf": "PDF wird erstellt...",
+    "pdfGenerated": "PDF erfolgreich erstellt",
+    "pdfError": "Fehler bei der PDF-Erstellung",
+    "regenerateConfirm": "Das vorhandene PDF wird ersetzt. Fortfahren?"
   },
   "newConsent": {
     "button": "Neue Einwilligung",
@@ -1544,5 +1560,37 @@
     "trustZeroKnowledge": "Zero-Knowledge-Verschlüsselung",
     "trustDsgvo": "DSGVO-konform",
     "trustDerma": "Speziell für Dermatologie"
+  },
+  "verify": {
+    "title": "Dokumentenprüfung",
+    "subtitle": "Überprüfen Sie die Echtheit eines Einwilligungsdokuments",
+    "practiceName": "Praxis",
+    "consentType": "Behandlungstyp",
+    "dateSigned": "Datum der Unterzeichnung",
+    "status": "Status",
+    "documentHash": "Dokument-Hash",
+    "verified": "Dokument verifiziert",
+    "notVerified": "Nicht verifiziert",
+    "disclaimer": "Diese Seite dient der Echtheitsprüfung eines medizinischen Einwilligungsdokuments. Es werden keine Patientendaten angezeigt.",
+    "notFound": "Einwilligungsdokument nicht gefunden"
+  },
+  "consentDetail": {
+    "tabForm": "Formulardaten",
+    "tabPdf": "PDF-Dokument",
+    "tabSend": "An Patient senden",
+    "signature": "Unterschrift",
+    "fetchError": "Fehler beim Laden der Daten",
+    "pendingNotice": "Dieses Formular wurde noch nicht vom Patienten ausgefüllt.",
+    "noPdf": "Kein PDF vorhanden",
+    "noPdfDescription": "Erstellen Sie ein PDF, um das Einwilligungsdokument anzuzeigen und herunterzuladen.",
+    "sendComingSoon": "Die Sendefunktion wird in Kürze verfügbar sein.",
+    "sendRequiresPdf": "Ein PDF muss zuerst erstellt werden, bevor es an den Patienten gesendet werden kann.",
+    "sendDescription": "Senden Sie dem Patienten einen sicheren Verifizierungslink per E-Mail. Aus Datenschutzgründen werden keine personenbezogenen Daten in der E-Mail angezeigt.",
+    "recipientEmail": "E-Mail-Adresse des Empfängers",
+    "sendButton": "An Patient senden",
+    "sending": "Wird gesendet...",
+    "sendSuccess": "E-Mail erfolgreich gesendet",
+    "sendError": "Fehler beim Senden der E-Mail",
+    "lastSent": "Zuletzt gesendet"
   }
 }

@@ -472,7 +472,16 @@
     "logoDragHint": "Drag your logo here or click to browse",
     "logoFormatHint": "PNG, JPG or SVG — Max 2 MB",
     "logoReplace": "Replace logo",
-    "noChanges": "No changes to save"
+    "noChanges": "No changes to save",
+    "address": "Address",
+    "street": "Street",
+    "houseNumber": "House number",
+    "postalCode": "Postal code",
+    "city": "City",
+    "state": "State/Region",
+    "phone": "Phone",
+    "practiceEmail": "Practice email",
+    "website": "Website"
   },
   "languages": {
     "title": "Language",
@@ -820,7 +829,14 @@
     "allStatuses": "All statuses",
     "risk": "Risk",
     "patient": "Patient",
-    "linked": "Linked"
+    "linked": "Linked",
+    "generatePdf": "Generate PDF",
+    "downloadPdf": "Download PDF",
+    "regeneratePdf": "Regenerate PDF",
+    "generatingPdf": "Generating PDF...",
+    "pdfGenerated": "PDF generated successfully",
+    "pdfError": "Error generating PDF",
+    "regenerateConfirm": "The existing PDF will be replaced. Continue?"
   },
   "newConsent": {
     "button": "New consent",
@@ -1544,5 +1560,37 @@
     "trustZeroKnowledge": "Zero-knowledge encryption",
     "trustDsgvo": "GDPR compliant",
     "trustDerma": "Built for dermatology"
+  },
+  "verify": {
+    "title": "Document Verification",
+    "subtitle": "Verify the authenticity of a consent document",
+    "practiceName": "Practice",
+    "consentType": "Treatment type",
+    "dateSigned": "Date signed",
+    "status": "Status",
+    "documentHash": "Document hash",
+    "verified": "Document verified",
+    "notVerified": "Not verified",
+    "disclaimer": "This page verifies the authenticity of a medical consent document. No patient data is displayed.",
+    "notFound": "Consent document not found"
+  },
+  "consentDetail": {
+    "tabForm": "Form Data",
+    "tabPdf": "PDF Document",
+    "tabSend": "Send to Patient",
+    "signature": "Signature",
+    "fetchError": "Failed to load data",
+    "pendingNotice": "This form has not yet been completed by the patient.",
+    "noPdf": "No PDF available",
+    "noPdfDescription": "Generate a PDF to view and download the consent document.",
+    "sendComingSoon": "Send functionality will be available soon.",
+    "sendRequiresPdf": "A PDF must be generated first before it can be sent to the patient.",
+    "sendDescription": "Send the patient a secure verification link via email. For privacy reasons, no personal data is displayed in the email.",
+    "recipientEmail": "Recipient email address",
+    "sendButton": "Send to patient",
+    "sending": "Sending...",
+    "sendSuccess": "Email sent successfully",
+    "sendError": "Failed to send email",
+    "lastSent": "Last sent"
   }
 }

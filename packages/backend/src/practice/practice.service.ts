@@ -64,11 +64,21 @@ export class PracticeService {
       throw new NotFoundException(errorPayload(ErrorCode.PRACTICE_NOT_FOUND));
     }
 
+    const { name, dsgvoContact, street, houseNumber, postalCode, city, state, country, phone, practiceEmail, website } = dto;
     return this.prisma.practice.update({
       where: { id: practiceId },
       data: {
-        ...(dto.name && { name: dto.name }),
-        ...(dto.dsgvoContact && { dsgvoContact: dto.dsgvoContact }),
+        ...(name !== undefined && { name }),
+        ...(dsgvoContact !== undefined && { dsgvoContact }),
+        ...(street !== undefined && { street }),
+        ...(houseNumber !== undefined && { houseNumber }),
+        ...(postalCode !== undefined && { postalCode }),
+        ...(city !== undefined && { city }),
+        ...(state !== undefined && { state }),
+        ...(country !== undefined && { country }),
+        ...(phone !== undefined && { phone }),
+        ...(practiceEmail !== undefined && { practiceEmail }),
+        ...(website !== undefined && { website }),
       },
     });
   }

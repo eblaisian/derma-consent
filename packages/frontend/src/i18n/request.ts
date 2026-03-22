@@ -1,6 +1,6 @@
 import { getRequestConfig } from 'next-intl/server';
 import { cookies, headers } from 'next/headers';
-import { defaultLocale, locales, LOCALE_COOKIE, type Locale } from './config';
+import { defaultLocale, locales, LOCALE_COOKIE, type Locale } from '@derma-consent/shared';
 
 export default getRequestConfig(async () => {
   const cookieStore = await cookies();
@@ -11,7 +11,7 @@ export default getRequestConfig(async () => {
   if (cookieLocale && locales.includes(cookieLocale)) {
     return {
       locale: cookieLocale,
-      messages: (await import(`./messages/${cookieLocale}.json`)).default,
+      messages: (await import(`@derma-consent/shared/i18n/messages/${cookieLocale}.json`)).default,
     };
   }
 
@@ -26,6 +26,6 @@ export default getRequestConfig(async () => {
 
   return {
     locale,
-    messages: (await import(`./messages/${locale}.json`)).default,
+    messages: (await import(`@derma-consent/shared/i18n/messages/${locale}.json`)).default,
   };
 });

@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 import { NotificationService } from '../notifications/notification.service';
-import { PdfService } from '../pdf/pdf.service';
 import { PlatformConfigService } from '../platform-config/platform-config.service';
 import { CreateConsentDto, SubmitConsentDto } from './consent.dto';
 import { StorageService } from '../storage/storage.service';
@@ -19,7 +18,6 @@ export class ConsentService {
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
     private readonly notificationService: NotificationService,
-    private readonly pdfService: PdfService,
     private readonly platformConfig: PlatformConfigService,
     private readonly storage: StorageService,
     @Optional() private readonly auditService?: AuditService,
@@ -189,6 +187,7 @@ export class ConsentService {
         signatureUserAgent: userAgent,
         ...(dto.comprehensionScore !== undefined && { comprehensionScore: dto.comprehensionScore }),
         ...(dto.comprehensionAnswers && { comprehensionAnswers: dto.comprehensionAnswers as object }),
+        ...(dto.locale && { locale: dto.locale }),
       },
       select: {
         id: true,
@@ -220,20 +219,8 @@ export class ConsentService {
       this.logger.error(`Patient upsert failed for consent ${updated.id}: ${err instanceof Error ? err.message : err}`);
     }
 
-    // Generate PDF immediately if no payment is required
-    const practice = await this.prisma.practice.findUnique({
-      where: { id: updated.practiceId },
-      select: { stripeConnectId: true },
-    });
-
-    const hasPayment = !!practice?.stripeConnectId;
-    if (!hasPayment) {
-      // No payment flow — generate PDF and complete immediately
-      this.pdfService.generateConsentPdf(updated.id).catch((err) => {
-        this.logger.error(`PDF generation failed for ${updated.id}: ${err.message}`);
-      });
-    }
-    // If payment is required, PDF generation happens after Stripe webhook
+    // PDF generation is now user-initiated from the dashboard (requires vault unlock)
+    // Consent stays in SIGNED until practice user explicitly generates the PDF
 
     return updated;
   }
@@ -294,6 +281,9 @@ export class ConsentService {
           expiresAt: true,
           createdAt: true,
           signatureTimestamp: true,
+          pdfStoragePath: true,
+          pdfSentAt: true,
+          pdfSentTo: true,
           patient: {
             select: { id: true, encryptedName: true, lookupHash: true },
           },
@@ -302,8 +292,11 @@ export class ConsentService {
       this.prisma.consentForm.count({ where: { practiceId } }),
     ]);
 
-    const enrichedItems = items.map((item) => ({
+    const enrichedItems = items.map(({ pdfStoragePath, pdfSentAt, pdfSentTo, ...item }) => ({
       ...item,
+      hasPdf: !!pdfStoragePath,
+      pdfSentAt: pdfSentAt?.toISOString() || null,
+      pdfSentTo: pdfSentTo || null,
       noShowRisk: (item.status === ConsentStatus.PENDING
         ? computeNoShowRisk({ type: item.type, createdAt: item.createdAt, expiresAt: item.expiresAt })
         : null) as NoShowRisk | null,

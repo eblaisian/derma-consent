@@ -1,0 +1,13 @@
+{
+  "name": "@derma-consent/shared",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./server": "./server.ts",
+    "./i18n/config": "./i18n/config.ts",
+    "./i18n/messages/*": "./i18n/messages/*"
+  }
+}

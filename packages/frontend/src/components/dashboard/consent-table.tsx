@@ -23,11 +23,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { toast } from 'sonner';
-import { DecryptedFormViewer } from './decrypted-form-viewer';
+import { ConsentDetailModal } from './consent-detail-modal';
 import { NoShowRiskBadge } from './no-show-risk-badge';
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
-import { FileSignature, Link as LinkIcon, Eye, Ban, User } from 'lucide-react';
+import { FileSignature, Link as LinkIcon, Ban, User, ChevronRight } from 'lucide-react';
 
 interface ConsentTableProps {
   consents: ConsentFormSummary[];
@@ -46,7 +45,7 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
   const { isUnlocked: isVaultUnlocked, requestUnlock } = useVault();
   const [revokeToken, setRevokeToken] = useState<string | null>(null);
   const [isRevoking, setIsRevoking] = useState(false);
-  const [decryptToken, setDecryptToken] = useState<string | null>(null);
+  const [selectedConsent, setSelectedConsent] = useState<ConsentFormSummary | null>(null);
   const [internalFilter, setInternalFilter] = useState<string>('ALL');
   const statusFilter = externalFilter ?? internalFilter;
   const setStatusFilter = onStatusFilterChange ?? setInternalFilter;
@@ -81,6 +80,18 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
 
   const hasDecryptableData = (status: ConsentStatus) =>
     status === 'SIGNED' || status === 'PAID' || status === 'COMPLETED';
+
+  const handleRowClick = (consent: ConsentFormSummary) => {
+    if (hasDecryptableData(consent.status)) {
+      if (isVaultUnlocked) {
+        setSelectedConsent(consent);
+      } else {
+        requestUnlock(() => setSelectedConsent(consent));
+      }
+    } else {
+      setSelectedConsent(consent);
+    }
+  };
 
   const formatRelativeDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -147,13 +158,21 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
         </TableHeader>
         <TableBody className="stagger-children">
           {filteredConsents.map((consent) => (
-            <TableRow key={consent.id} className="border-border/50 transition-colors duration-150 hover:bg-muted/30 animate-fade-in-up">
+            <TableRow
+              key={consent.id}
+              className="border-border/50 transition-colors duration-150 hover:bg-muted/30 animate-fade-in-up cursor-pointer"
+              onClick={() => handleRowClick(consent)}
+            >
               <TableCell className="font-medium">
                 {tTypes.has(consent.type as ConsentType) ? tTypes(consent.type as ConsentType) : consent.type}
               </TableCell>
               <TableCell>
                 {consent.patient ? (
-                  <Link href={`/patients/${consent.patient.id}`} className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline underline-offset-4">
+                  <Link
+                    href={`/patients/${consent.patient.id}`}
+                    className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline underline-offset-4"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <User className="size-3.5" />
                     {t('linked')}
                   </Link>
@@ -183,7 +202,7 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
                 {format.dateTime(new Date(consent.expiresAt), { dateStyle: 'medium', timeZone: 'Europe/Berlin' })}
               </TableCell>
               <TableCell className="text-end">
-                <div className="flex justify-end gap-1">
+                <div className="flex justify-end gap-1" onClick={(e) => e.stopPropagation()}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
@@ -197,28 +216,6 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
                     </TooltipTrigger>
                     <TooltipContent>{t('link')}</TooltipContent>
                   </Tooltip>
-
-                  {hasDecryptableData(consent.status) && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon-xs"
-                          onClick={() => {
-                            if (isVaultUnlocked) {
-                              setDecryptToken(consent.token);
-                            } else {
-                              requestUnlock(() => setDecryptToken(consent.token));
-                            }
-                          }}
-                          aria-label={t('decrypt')}
-                        >
-                          <Eye className="size-3.5" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>{t('decrypt')}</TooltipContent>
-                    </Tooltip>
-                  )}
 
                   {canRevoke(consent.status) && (
                     <Tooltip>
@@ -236,6 +233,8 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
                       <TooltipContent>{t('revoke')}</TooltipContent>
                     </Tooltip>
                   )}
+
+                  <ChevronRight className="size-3.5 text-muted-foreground/50 ml-1" />
                 </div>
               </TableCell>
             </TableRow>
@@ -255,10 +254,13 @@ export function ConsentTable({ consents, onRefresh, onCreateConsent, statusFilte
         loading={isRevoking}
       />
 
-      {decryptToken && (
-        <DecryptedFormViewer
-          token={decryptToken}
-          onClose={() => setDecryptToken(null)}
+      {selectedConsent && (
+        <ConsentDetailModal
+          consent={selectedConsent}
+          onClose={() => setSelectedConsent(null)}
+          onRefresh={onRefresh}
+          patientName={selectedConsent.patient ? undefined : undefined}
+          patientId={selectedConsent.patient?.id}
         />
       )}
     </>

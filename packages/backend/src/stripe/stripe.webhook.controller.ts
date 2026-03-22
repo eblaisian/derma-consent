@@ -11,7 +11,6 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { StripeService } from './stripe.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { ErrorCode, errorPayload } from '../common/error-codes';
-import { PdfService } from '../pdf/pdf.service';
 import { ConsentStatus } from '@prisma/client';
 
 @Controller('api/stripe')
@@ -22,7 +21,6 @@ export class StripeWebhookController {
   constructor(
     private readonly stripeService: StripeService,
     private readonly prisma: PrismaService,
-    private readonly pdfService: PdfService,
   ) {}
 
   @Post('webhook')
@@ -77,11 +75,7 @@ export class StripeWebhookController {
         });
 
         this.logger.log(`Consent ${consentId} marked as PAID (amount: ${paymentAmountCents})`);
-
-        // Async PDF generation
-        this.pdfService.generateConsentPdf(consentId).catch((err) => {
-          this.logger.error(`PDF generation failed for ${consentId}: ${err.message}`);
-        });
+        // PDF generation is now user-initiated from the dashboard (requires vault unlock)
         break;
       }
       case 'charge.refunded': {

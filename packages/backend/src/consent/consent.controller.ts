@@ -6,10 +6,17 @@ import {
   Param,
   Query,
   Body,
+  Res,
   UseGuards,
+  BadRequestException,
+  NotFoundException,
+  StreamableFile,
+  Header,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { ConsentService } from './consent.service';
-import { CreateConsentDto } from './consent.dto';
+import { CreateConsentDto, SendConsentCopyDto } from './consent.dto';
+import { GeneratePdfDto } from '../pdf/pdf.dto';
 import { NotificationService } from '../notifications/notification.service';
 import { PdfService } from '../pdf/pdf.service';
 import { AuditService } from '../audit/audit.service';
@@ -19,6 +26,9 @@ import { SubscriptionGuard } from '../billing/subscription.guard';
 import { Roles } from '../auth/roles.decorator';
 import { CurrentUser, CurrentUserPayload } from '../auth/current-user.decorator';
 import { PaginationDto } from '../common/pagination.dto';
+import { ErrorCode, errorPayload } from '../common/error-codes';
+import { ConsentStatus } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Controller('api/consent')
 @UseGuards(JwtAuthGuard, RolesGuard, SubscriptionGuard)
@@ -28,6 +38,7 @@ export class ConsentController {
     private readonly notificationService: NotificationService,
     private readonly pdfService: PdfService,
     private readonly auditService: AuditService,
+    private readonly prisma: PrismaService,
   ) {}
 
   @Post()
@@ -67,13 +78,64 @@ export class ConsentController {
     );
   }
 
+  @Post(':id/generate-pdf')
+  @Roles('ADMIN', 'ARZT')
+  async generatePdf(
+    @Param('id') id: string,
+    @Body() dto: GeneratePdfDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    // Verify consent belongs to this practice and is in a valid state
+    const consent = await this.prisma.consentForm.findFirst({
+      where: { id, practiceId: user.practiceId! },
+      select: { id: true, status: true },
+    });
+
+    if (!consent) {
+      throw new NotFoundException(errorPayload(ErrorCode.CONSENT_NOT_FOUND));
+    }
+
+    const validStatuses: ConsentStatus[] = [
+      ConsentStatus.SIGNED,
+      ConsentStatus.PAID,
+      ConsentStatus.COMPLETED,
+    ];
+    if (!validStatuses.includes(consent.status)) {
+      throw new BadRequestException(
+        errorPayload(ErrorCode.PDF_GENERATION_FAILED, `Cannot generate PDF for consent in ${consent.status} status`),
+      );
+    }
+
+    await this.pdfService.generateConsentPdf(id, dto, user.userId);
+
+    await this.auditService.log({
+      practiceId: user.practiceId!,
+      userId: user.userId,
+      action: 'PDF_GENERATED',
+      entityType: 'ConsentForm',
+      entityId: id,
+    });
+
+    // Auto-send to patient if email provided
+    if (dto.patientEmail) {
+      try {
+        await this.sendCopy(id, { recipientEmail: dto.patientEmail, locale: dto.locale }, user);
+      } catch {
+        // Non-blocking — PDF was generated successfully, email send is best-effort
+      }
+    }
+
+    return { success: true };
+  }
+
   @Get(':id/pdf')
   @Roles('ADMIN', 'ARZT')
   async downloadPdf(
     @Param('id') id: string,
     @CurrentUser() user: CurrentUserPayload,
+    @Res() res: Response,
   ) {
-    const result = await this.pdfService.downloadPdf(id, user.practiceId!);
+    const { buffer, filename } = await this.pdfService.downloadPdf(id, user.practiceId!);
 
     await this.auditService.log({
       practiceId: user.practiceId!,
@@ -83,7 +145,79 @@ export class ConsentController {
       entityId: id,
     });
 
-    return result;
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Length': buffer.length,
+    });
+    res.end(buffer);
+  }
+
+  @Post(':id/send-copy')
+  @Roles('ADMIN', 'ARZT')
+  async sendCopy(
+    @Param('id') id: string,
+    @Body() dto: SendConsentCopyDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    const consent = await this.prisma.consentForm.findFirst({
+      where: { id, practiceId: user.practiceId! },
+      select: { id: true, status: true, type: true, locale: true, pdfStoragePath: true, signatureTimestamp: true, practice: { select: { name: true, dsgvoContact: true }, include: { settings: true } } },
+    });
+
+    if (!consent) {
+      throw new NotFoundException(errorPayload(ErrorCode.CONSENT_NOT_FOUND));
+    }
+
+    if (consent.status !== ConsentStatus.COMPLETED || !consent.pdfStoragePath) {
+      throw new BadRequestException(
+        errorPayload(ErrorCode.PDF_NOT_FOUND, 'PDF must be generated before sending'),
+      );
+    }
+
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const verifyUrl = `${frontendUrl}/verify/${consent.id}`;
+    const locale = (dto.locale || consent.locale || 'de') as import('@derma-consent/shared').Locale;
+
+    // Import and use the email template
+    const { consentCompletedTemplate, getConsentCompletedSubject } = await import('../email/templates/consent-completed.template');
+    const { stripHtmlToText } = await import('../email/templates/base-layout');
+
+    const treatmentType = consent.type;
+    const practiceName = consent.practice.name;
+    const brandColor = (consent.practice as { settings?: { brandColor?: string | null } }).settings?.brandColor || undefined;
+
+    const html = consentCompletedTemplate(practiceName, treatmentType, verifyUrl, locale as import('../email/templates/types').EmailLocale, brandColor);
+    const subject = getConsentCompletedSubject(practiceName, locale as import('../email/templates/types').EmailLocale);
+
+    // Send via notification service
+    await this.notificationService.sendCustomMessage({
+      practiceId: user.practiceId!,
+      channel: 'email',
+      recipientEmail: dto.recipientEmail,
+      subject,
+      message: html,
+      isHtml: true,
+      userId: user.userId,
+      locale,
+    });
+
+    // Update consent with send info
+    await this.prisma.consentForm.update({
+      where: { id },
+      data: { pdfSentAt: new Date(), pdfSentTo: dto.recipientEmail },
+    });
+
+    await this.auditService.log({
+      practiceId: user.practiceId!,
+      userId: user.userId,
+      action: 'CONSENT_COPY_SENT',
+      entityType: 'ConsentForm',
+      entityId: id,
+      metadata: { recipientEmail: dto.recipientEmail },
+    });
+
+    return { success: true, sentAt: new Date() };
   }
 
   @Patch(':token/revoke')

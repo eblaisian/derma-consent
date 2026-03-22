@@ -75,6 +75,7 @@ export enum ErrorCode {
 
   // ── PDF ───────────────────────────────────────────
   PDF_NOT_FOUND = 'PDF_NOT_FOUND',
+  PDF_GENERATION_FAILED = 'PDF_GENERATION_FAILED',
 
   // ── Settings ──────────────────────────────────────
   SETTINGS_NOT_FOUND = 'SETTINGS_NOT_FOUND',

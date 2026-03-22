@@ -1,4 +1,4 @@
-import type messages from './messages/de.json';
+import type messages from '@derma-consent/shared/i18n/messages/de.json';
 
 type Messages = typeof messages;
 

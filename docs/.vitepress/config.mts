@@ -46,6 +46,7 @@ export default withMermaid(
               { text: 'Getting Started', link: '/guide/getting-started' },
               { text: 'Architecture', link: '/guide/architecture' },
               { text: 'Key Concepts', link: '/guide/key-concepts' },
+              { text: 'Consent Documents', link: '/guide/consent-documents' },
             ],
           },
         ],

@@ -49,6 +49,10 @@ export class SubmitConsentDto {
   @IsArray()
   comprehensionAnswers?: Array<{ questionId: string; selectedIndex: number; correct: boolean }>;
 
+  @IsOptional()
+  @IsString()
+  locale?: string;
+
   // Patient auto-creation fields (computed client-side from the personal details step)
   @IsOptional()
   @IsString()
@@ -69,6 +73,15 @@ export class SubmitConsentDto {
   @IsString()
   @MaxLength(10000)
   encryptedPatientEmail?: string;
+}
+
+export class SendConsentCopyDto {
+  @IsEmail()
+  recipientEmail!: string;
+
+  @IsOptional()
+  @IsString()
+  locale?: string;
 }
 
 export class RevokeConsentDto {

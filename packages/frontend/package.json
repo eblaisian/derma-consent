@@ -11,6 +11,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@derma-consent/shared": "workspace:*",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@sentry/nextjs": "^10.39.0",

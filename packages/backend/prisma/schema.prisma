@@ -53,7 +53,9 @@ enum AuditAction {
   LOGIN_FAILED
   ACCOUNT_LOCKED
   CONSENT_EXPLAINER_REQUESTED
+  PDF_GENERATED
   PDF_DOWNLOADED
+  CONSENT_COPY_SENT
   ADMIN_EMAIL_SENT
 }
 
@@ -110,6 +112,15 @@ model Practice {
   publicKey        Json     @map("public_key") // JWK format
   encryptedPrivKey Json     @map("encrypted_priv_key") // { salt, iv, ciphertext }
   gdtSenderId      String   @default("DERMACONSENT") @map("gdt_sender_id")
+  street           String?  @map("street")
+  houseNumber      String?  @map("house_number")
+  postalCode       String?  @map("postal_code")
+  city             String?  @map("city")
+  state            String?  @map("state")
+  country          String   @default("DE") @map("country")
+  phone            String?  @map("phone")
+  practiceEmail    String?  @map("practice_email")
+  website          String?  @map("website")
   isSuspended      Boolean  @default(false) @map("is_suspended")
   suspendedAt      DateTime? @map("suspended_at")
   createdAt        DateTime @default(now()) @map("created_at")
@@ -302,6 +313,9 @@ model ConsentForm {
   comprehensionAnswers  Json?     @map("comprehension_answers")
   pdfStoragePath      String?       @map("pdf_storage_path")
   pdfSignatureHash    String?       @map("pdf_signature_hash")
+  locale              String        @default("de") @map("locale")
+  pdfSentAt           DateTime?     @map("pdf_sent_at")
+  pdfSentTo           String?       @map("pdf_sent_to")
   expiresAt           DateTime      @map("expires_at")
   revokedAt           DateTime?     @map("revoked_at")
   createdAt           DateTime      @default(now()) @map("created_at")

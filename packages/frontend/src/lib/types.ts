@@ -26,6 +26,15 @@ export interface Practice {
     ciphertext: string;
   };
   gdtSenderId: string;
+  street: string | null;
+  houseNumber: string | null;
+  postalCode: string | null;
+  city: string | null;
+  state: string | null;
+  country: string;
+  phone: string | null;
+  practiceEmail: string | null;
+  website: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -40,6 +49,9 @@ export interface ConsentFormSummary {
   expiresAt: string;
   createdAt: string;
   signatureTimestamp: string | null;
+  hasPdf: boolean;
+  pdfSentAt: string | null;
+  pdfSentTo: string | null;
   noShowRisk: NoShowRisk | null;
   patient: { id: string; encryptedName: string; lookupHash: string } | null;
 }

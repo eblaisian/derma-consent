@@ -472,7 +472,16 @@
     "logoDragHint": "اسحب شعارك هنا أو انقر للاستعراض",
     "logoFormatHint": "PNG، JPG أو SVG — بحد أقصى 2 ميجا",
     "logoReplace": "استبدال الشعار",
-    "noChanges": "لا توجد تغييرات للحفظ"
+    "noChanges": "لا توجد تغييرات للحفظ",
+    "address": "العنوان",
+    "street": "الشارع",
+    "houseNumber": "رقم المبنى",
+    "postalCode": "الرمز البريدي",
+    "city": "المدينة",
+    "state": "المنطقة",
+    "phone": "الهاتف",
+    "practiceEmail": "البريد الإلكتروني للعيادة",
+    "website": "الموقع الإلكتروني"
   },
   "languages": {
     "title": "اللغة",
@@ -818,7 +827,14 @@
     "allStatuses": "جميع الحالات",
     "risk": "المخاطر",
     "patient": "المريض",
-    "linked": "مرتبط"
+    "linked": "مرتبط",
+    "generatePdf": "إنشاء PDF",
+    "downloadPdf": "تحميل PDF",
+    "regeneratePdf": "إعادة إنشاء PDF",
+    "generatingPdf": "جارٍ إنشاء PDF...",
+    "pdfGenerated": "تم إنشاء PDF بنجاح",
+    "pdfError": "خطأ في إنشاء PDF",
+    "regenerateConfirm": "سيتم استبدال ملف PDF الحالي. هل تريد المتابعة؟"
   },
   "newConsent": {
     "button": "موافقة جديدة",
@@ -1540,5 +1556,37 @@
     "trustZeroKnowledge": "تشفير المعرفة الصفرية",
     "trustDsgvo": "متوافق مع GDPR",
     "trustDerma": "مصمم لطب الجلدية"
+  },
+  "verify": {
+    "title": "التحقق من المستند",
+    "subtitle": "تحقق من صحة مستند الموافقة",
+    "practiceName": "العيادة",
+    "consentType": "نوع العلاج",
+    "dateSigned": "تاريخ التوقيع",
+    "status": "الحالة",
+    "documentHash": "بصمة المستند",
+    "verified": "تم التحقق من المستند",
+    "notVerified": "غير موثق",
+    "disclaimer": "تتحقق هذه الصفحة من صحة مستند الموافقة الطبية. لا يتم عرض أي بيانات للمريض.",
+    "notFound": "مستند الموافقة غير موجود"
+  },
+  "consentDetail": {
+    "tabForm": "بيانات النموذج",
+    "tabPdf": "مستند PDF",
+    "tabSend": "إرسال إلى المريض",
+    "signature": "التوقيع",
+    "fetchError": "فشل تحميل البيانات",
+    "pendingNotice": "لم يتم إكمال هذا النموذج من قبل المريض بعد.",
+    "noPdf": "لا يوجد ملف PDF",
+    "noPdfDescription": "قم بإنشاء ملف PDF لعرض وتنزيل مستند الموافقة.",
+    "sendComingSoon": "ستكون وظيفة الإرسال متاحة قريبًا.",
+    "sendRequiresPdf": "يجب إنشاء ملف PDF أولاً قبل إرساله إلى المريض.",
+    "sendDescription": "أرسل للمريض رابط تحقق آمن عبر البريد الإلكتروني. لأسباب تتعلق بالخصوصية، لا تُعرض أي بيانات شخصية في البريد الإلكتروني.",
+    "recipientEmail": "عنوان البريد الإلكتروني للمستلم",
+    "sendButton": "إرسال إلى المريض",
+    "sending": "جارٍ الإرسال...",
+    "sendSuccess": "تم إرسال البريد الإلكتروني بنجاح",
+    "sendError": "فشل إرسال البريد الإلكتروني",
+    "lastSent": "آخر إرسال"
   }
 }

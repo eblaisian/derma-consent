@@ -41,6 +41,14 @@ export default function SettingsPage() {
 
   const [practiceName, setPracticeName] = useState('');
   const [dsgvoContact, setDsgvoContact] = useState('');
+  const [street, setStreet] = useState('');
+  const [houseNumber, setHouseNumber] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [practicePhone, setPracticePhone] = useState('');
+  const [practiceEmail, setPracticeEmail] = useState('');
+  const [practiceWebsite, setPracticeWebsite] = useState('');
   const [expiry, setExpiry] = useState(7);
   const [brandColor, setBrandColor] = useState('');
   const [enabledTypes, setEnabledTypes] = useState<string[]>([]);
@@ -52,7 +60,10 @@ export default function SettingsPage() {
   const [isDragging, setIsDragging] = useState(false);
 
   // Track original values for dirty-state detection
-  const [originalPractice, setOriginalPractice] = useState({ name: '', dsgvoContact: '' });
+  const [originalPractice, setOriginalPractice] = useState({
+    name: '', dsgvoContact: '', street: '', houseNumber: '', postalCode: '',
+    city: '', state: '', phone: '', email: '', website: '',
+  });
   const [originalConsent, setOriginalConsent] = useState({ expiry: 7, brandColor: '' });
   const [originalTypes, setOriginalTypes] = useState<string[]>([]);
   const [originalVideos, setOriginalVideos] = useState<Record<string, string>>({});
@@ -61,7 +72,21 @@ export default function SettingsPage() {
     if (practice) {
       setPracticeName(practice.name);
       setDsgvoContact(practice.dsgvoContact);
-      setOriginalPractice({ name: practice.name, dsgvoContact: practice.dsgvoContact });
+      setStreet(practice.street || '');
+      setHouseNumber(practice.houseNumber || '');
+      setPostalCode(practice.postalCode || '');
+      setCity(practice.city || '');
+      setState(practice.state || '');
+      setPracticePhone(practice.phone || '');
+      setPracticeEmail(practice.practiceEmail || '');
+      setPracticeWebsite(practice.website || '');
+      setOriginalPractice({
+        name: practice.name, dsgvoContact: practice.dsgvoContact,
+        street: practice.street || '', houseNumber: practice.houseNumber || '',
+        postalCode: practice.postalCode || '', city: practice.city || '',
+        state: practice.state || '', phone: practice.phone || '',
+        email: practice.practiceEmail || '', website: practice.website || '',
+      });
     }
     if (settings) {
       setExpiry(settings.defaultConsentExpiry);
@@ -74,7 +99,12 @@ export default function SettingsPage() {
     }
   }, [practice, settings]);
 
-  const isPracticeDirty = practiceName !== originalPractice.name || dsgvoContact !== originalPractice.dsgvoContact;
+  const isPracticeDirty =
+    practiceName !== originalPractice.name || dsgvoContact !== originalPractice.dsgvoContact ||
+    street !== originalPractice.street || houseNumber !== originalPractice.houseNumber ||
+    postalCode !== originalPractice.postalCode || city !== originalPractice.city ||
+    state !== originalPractice.state || practicePhone !== originalPractice.phone ||
+    practiceEmail !== originalPractice.email || practiceWebsite !== originalPractice.website;
   const isConsentDirty = expiry !== originalConsent.expiry || brandColor !== originalConsent.brandColor;
   const isTypesDirty = JSON.stringify([...enabledTypes].sort()) !== JSON.stringify([...originalTypes].sort());
   const isVideosDirty = JSON.stringify(educationVideos) !== JSON.stringify(originalVideos);
@@ -87,6 +117,14 @@ export default function SettingsPage() {
         body: JSON.stringify({
           name: practiceName || undefined,
           dsgvoContact: dsgvoContact || undefined,
+          street: street || undefined,
+          houseNumber: houseNumber || undefined,
+          postalCode: postalCode || undefined,
+          city: city || undefined,
+          state: state || undefined,
+          phone: practicePhone || undefined,
+          practiceEmail: practiceEmail || undefined,
+          website: practiceWebsite || undefined,
         }),
       });
       mutatePractice();
@@ -213,6 +251,50 @@ export default function SettingsPage() {
               <Label>{t('dsgvoContact')}</Label>
               <Input type="email" value={dsgvoContact} onChange={(e) => setDsgvoContact(e.target.value)} />
             </div>
+
+            {/* Practice Address */}
+            <div className="pt-4 border-t border-border/50 mt-2">
+              <h4 className="text-sm font-medium mb-3">{t('address')}</h4>
+              <div className="grid grid-cols-[1fr_120px] gap-3">
+                <div className="space-y-1">
+                  <Label className="text-xs">{t('street')}</Label>
+                  <Input value={street} onChange={(e) => setStreet(e.target.value)} placeholder="Kurfürstendamm" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">{t('houseNumber')}</Label>
+                  <Input value={houseNumber} onChange={(e) => setHouseNumber(e.target.value)} placeholder="42" />
+                </div>
+              </div>
+              <div className="grid grid-cols-[120px_1fr_1fr] gap-3 mt-3">
+                <div className="space-y-1">
+                  <Label className="text-xs">{t('postalCode')}</Label>
+                  <Input value={postalCode} onChange={(e) => setPostalCode(e.target.value)} placeholder="10719" maxLength={5} />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">{t('city')}</Label>
+                  <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Berlin" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">{t('state')}</Label>
+                  <Input value={state} onChange={(e) => setState(e.target.value)} placeholder="Berlin" />
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-3 mt-3">
+                <div className="space-y-1">
+                  <Label className="text-xs">{t('phone')}</Label>
+                  <Input value={practicePhone} onChange={(e) => setPracticePhone(e.target.value)} placeholder="+49 30 1234567" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">{t('practiceEmail')}</Label>
+                  <Input type="email" value={practiceEmail} onChange={(e) => setPracticeEmail(e.target.value)} placeholder="info@praxis.de" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">{t('website')}</Label>
+                  <Input value={practiceWebsite} onChange={(e) => setPracticeWebsite(e.target.value)} placeholder="https://praxis.de" />
+                </div>
+              </div>
+            </div>
+
             <div className="flex items-center gap-3 pt-2">
               <Button onClick={handleSavePractice} disabled={isSavingPractice || !isPracticeDirty}>
                 {isSavingPractice ? t('saving') : t('savePracticeInfo')}

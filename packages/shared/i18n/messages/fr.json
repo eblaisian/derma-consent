@@ -472,7 +472,16 @@
     "logoDragHint": "Glissez votre logo ici ou cliquez pour parcourir",
     "logoFormatHint": "PNG, JPG ou SVG — Max 2 Mo",
     "logoReplace": "Remplacer le logo",
-    "noChanges": "Aucune modification à enregistrer"
+    "noChanges": "Aucune modification à enregistrer",
+    "address": "Adresse",
+    "street": "Rue",
+    "houseNumber": "Numéro",
+    "postalCode": "Code postal",
+    "city": "Ville",
+    "state": "Région",
+    "phone": "Téléphone",
+    "practiceEmail": "E-mail du cabinet",
+    "website": "Site web"
   },
   "languages": {
     "title": "Langue",
@@ -818,7 +827,14 @@
     "allStatuses": "Tous les statuts",
     "risk": "Risque",
     "patient": "Patient",
-    "linked": "Lié"
+    "linked": "Lié",
+    "generatePdf": "Générer le PDF",
+    "downloadPdf": "Télécharger le PDF",
+    "regeneratePdf": "Régénérer le PDF",
+    "generatingPdf": "Génération du PDF...",
+    "pdfGenerated": "PDF généré avec succès",
+    "pdfError": "Erreur lors de la génération du PDF",
+    "regenerateConfirm": "Le PDF existant sera remplacé. Continuer ?"
   },
   "newConsent": {
     "button": "Nouveau consentement",
@@ -1540,5 +1556,37 @@
     "trustZeroKnowledge": "Chiffrement à connaissance nulle",
     "trustDsgvo": "Conforme au RGPD",
     "trustDerma": "Conçu pour la dermatologie"
+  },
+  "verify": {
+    "title": "Vérification du document",
+    "subtitle": "Vérifiez l'authenticité d'un document de consentement",
+    "practiceName": "Cabinet",
+    "consentType": "Type de traitement",
+    "dateSigned": "Date de signature",
+    "status": "Statut",
+    "documentHash": "Hash du document",
+    "verified": "Document vérifié",
+    "notVerified": "Non vérifié",
+    "disclaimer": "Cette page vérifie l'authenticité d'un document de consentement médical. Aucune donnée patient n'est affichée.",
+    "notFound": "Document de consentement introuvable"
+  },
+  "consentDetail": {
+    "tabForm": "Données du formulaire",
+    "tabPdf": "Document PDF",
+    "tabSend": "Envoyer au patient",
+    "signature": "Signature",
+    "fetchError": "Échec du chargement des données",
+    "pendingNotice": "Ce formulaire n'a pas encore été rempli par le patient.",
+    "noPdf": "Aucun PDF disponible",
+    "noPdfDescription": "Générez un PDF pour afficher et télécharger le document de consentement.",
+    "sendComingSoon": "La fonction d'envoi sera bientôt disponible.",
+    "sendRequiresPdf": "Un PDF doit d'abord être généré avant de pouvoir être envoyé au patient.",
+    "sendDescription": "Envoyez au patient un lien de vérification sécurisé par e-mail. Pour des raisons de confidentialité, aucune donnée personnelle n'est affichée dans l'e-mail.",
+    "recipientEmail": "Adresse e-mail du destinataire",
+    "sendButton": "Envoyer au patient",
+    "sending": "Envoi en cours...",
+    "sendSuccess": "E-mail envoyé avec succès",
+    "sendError": "Échec de l'envoi de l'e-mail",
+    "lastSent": "Dernier envoi"
   }
 }

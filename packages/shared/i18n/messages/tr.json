@@ -472,7 +472,16 @@
     "logoDragHint": "Logonuzu buraya sürükleyin veya göz atmak için tıklayın",
     "logoFormatHint": "PNG, JPG veya SVG — Maks. 2 MB",
     "logoReplace": "Logoyu değiştir",
-    "noChanges": "Kaydedilecek değişiklik yok"
+    "noChanges": "Kaydedilecek değişiklik yok",
+    "address": "Adres",
+    "street": "Sokak",
+    "houseNumber": "Bina numarası",
+    "postalCode": "Posta kodu",
+    "city": "Şehir",
+    "state": "İl/Bölge",
+    "phone": "Telefon",
+    "practiceEmail": "Klinik e-postası",
+    "website": "Web sitesi"
   },
   "languages": {
     "title": "Dil",
@@ -818,7 +827,14 @@
     "allStatuses": "Tüm durumlar",
     "risk": "Risk",
     "patient": "Hasta",
-    "linked": "Bağlı"
+    "linked": "Bağlı",
+    "generatePdf": "PDF oluştur",
+    "downloadPdf": "PDF indir",
+    "regeneratePdf": "PDF yeniden oluştur",
+    "generatingPdf": "PDF oluşturuluyor...",
+    "pdfGenerated": "PDF başarıyla oluşturuldu",
+    "pdfError": "PDF oluşturulurken hata oluştu",
+    "regenerateConfirm": "Mevcut PDF değiştirilecek. Devam edilsin mi?"
   },
   "newConsent": {
     "button": "Yeni onam",
@@ -1540,5 +1556,37 @@
     "trustZeroKnowledge": "Sıfır bilgi şifrelemesi",
     "trustDsgvo": "KVKK uyumlu",
     "trustDerma": "Dermatoloji için tasarlandı"
+  },
+  "verify": {
+    "title": "Belge Doğrulama",
+    "subtitle": "Bir onam belgesinin gerçekliğini doğrulayın",
+    "practiceName": "Klinik",
+    "consentType": "Tedavi türü",
+    "dateSigned": "İmza tarihi",
+    "status": "Durum",
+    "documentHash": "Belge özeti",
+    "verified": "Belge doğrulandı",
+    "notVerified": "Doğrulanmadı",
+    "disclaimer": "Bu sayfa tıbbi onam belgesinin gerçekliğini doğrular. Hasta verileri görüntülenmez.",
+    "notFound": "Onam belgesi bulunamadı"
+  },
+  "consentDetail": {
+    "tabForm": "Form Verileri",
+    "tabPdf": "PDF Belgesi",
+    "tabSend": "Hastaya Gönder",
+    "signature": "İmza",
+    "fetchError": "Veriler yüklenemedi",
+    "pendingNotice": "Bu form henüz hasta tarafından doldurulmadı.",
+    "noPdf": "PDF mevcut değil",
+    "noPdfDescription": "Onam belgesini görüntülemek ve indirmek için bir PDF oluşturun.",
+    "sendComingSoon": "Gönderme işlevi yakında kullanılabilir olacak.",
+    "sendRequiresPdf": "Hastaya gönderilebilmesi için önce bir PDF oluşturulmalıdır.",
+    "sendDescription": "Hastaya e-posta ile güvenli bir doğrulama bağlantısı gönderin. Gizlilik nedeniyle e-postada kişisel veri görüntülenmez.",
+    "recipientEmail": "Alıcı e-posta adresi",
+    "sendButton": "Hastaya gönder",
+    "sending": "Gönderiliyor...",
+    "sendSuccess": "E-posta başarıyla gönderildi",
+    "sendError": "E-posta gönderilemedi",
+    "lastSent": "Son gönderim"
   }
 }

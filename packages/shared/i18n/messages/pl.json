@@ -472,7 +472,16 @@
     "logoDragHint": "Przeciągnij logo lub kliknij, aby przeglądać",
     "logoFormatHint": "PNG, JPG lub SVG — Maks. 2 MB",
     "logoReplace": "Zmień logo",
-    "noChanges": "Brak zmian do zapisania"
+    "noChanges": "Brak zmian do zapisania",
+    "address": "Adres",
+    "street": "Ulica",
+    "houseNumber": "Numer domu",
+    "postalCode": "Kod pocztowy",
+    "city": "Miasto",
+    "state": "Województwo/Region",
+    "phone": "Telefon",
+    "practiceEmail": "E-mail gabinetu",
+    "website": "Strona internetowa"
   },
   "languages": {
     "title": "Język",
@@ -818,7 +827,14 @@
     "allStatuses": "Wszystkie statusy",
     "risk": "Ryzyko",
     "patient": "Pacjent",
-    "linked": "Powiązany"
+    "linked": "Powiązany",
+    "generatePdf": "Generuj PDF",
+    "downloadPdf": "Pobierz PDF",
+    "regeneratePdf": "Wygeneruj ponownie PDF",
+    "generatingPdf": "Generowanie PDF...",
+    "pdfGenerated": "PDF wygenerowany pomyślnie",
+    "pdfError": "Błąd podczas generowania PDF",
+    "regenerateConfirm": "Istniejący PDF zostanie zastąpiony. Kontynuować?"
   },
   "newConsent": {
     "button": "Nowa zgoda",
@@ -1540,5 +1556,37 @@
     "trustZeroKnowledge": "Szyfrowanie zerowej wiedzy",
     "trustDsgvo": "Zgodność z RODO",
     "trustDerma": "Stworzone dla dermatologii"
+  },
+  "verify": {
+    "title": "Weryfikacja dokumentu",
+    "subtitle": "Zweryfikuj autentyczność dokumentu zgody",
+    "practiceName": "Gabinet",
+    "consentType": "Rodzaj zabiegu",
+    "dateSigned": "Data podpisu",
+    "status": "Status",
+    "documentHash": "Hash dokumentu",
+    "verified": "Dokument zweryfikowany",
+    "notVerified": "Niezweryfikowany",
+    "disclaimer": "Ta strona weryfikuje autentyczność medycznego dokumentu zgody. Dane pacjenta nie są wyświetlane.",
+    "notFound": "Nie znaleziono dokumentu zgody"
+  },
+  "consentDetail": {
+    "tabForm": "Dane formularza",
+    "tabPdf": "Dokument PDF",
+    "tabSend": "Wyślij do pacjenta",
+    "signature": "Podpis",
+    "fetchError": "Nie udało się załadować danych",
+    "pendingNotice": "Ten formularz nie został jeszcze wypełniony przez pacjenta.",
+    "noPdf": "Brak dostępnego pliku PDF",
+    "noPdfDescription": "Wygeneruj plik PDF, aby wyświetlić i pobrać dokument zgody.",
+    "sendComingSoon": "Funkcja wysyłania będzie wkrótce dostępna.",
+    "sendRequiresPdf": "Przed wysłaniem do pacjenta należy najpierw wygenerować plik PDF.",
+    "sendDescription": "Wyślij pacjentowi bezpieczny link weryfikacyjny e-mailem. Ze względu na prywatność w wiadomości e-mail nie są wyświetlane żadne dane osobowe.",
+    "recipientEmail": "Adres e-mail odbiorcy",
+    "sendButton": "Wyślij do pacjenta",
+    "sending": "Wysyłanie...",
+    "sendSuccess": "E-mail wysłany pomyślnie",
+    "sendError": "Nie udało się wysłać e-maila",
+    "lastSent": "Ostatnio wysłano"
   }
 }

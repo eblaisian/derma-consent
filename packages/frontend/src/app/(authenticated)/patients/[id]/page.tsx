@@ -21,7 +21,8 @@ import {
 import { toast } from 'sonner';
 import { VaultUnlockBanner } from '@/components/vault/vault-unlock-banner';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Trash2, ArrowLeft, Upload, Plus, Columns2, FileSignature, Eye, Link as LinkIcon, Ban } from 'lucide-react';
+import { Trash2, ArrowLeft, Upload, Plus, Columns2, FileSignature, Eye, Link as LinkIcon, Ban, FileText, Download, Loader2 } from 'lucide-react';
+import { usePdfGeneration } from '@/hooks/use-pdf-generation';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { DecryptedFormViewer } from '@/components/dashboard/decrypted-form-viewer';
@@ -52,6 +53,7 @@ interface PatientDetail {
     createdAt: string;
     signatureTimestamp: string | null;
     expiresAt: string;
+    hasPdf: boolean;
   }>;
 }
 
@@ -79,6 +81,8 @@ export default function PatientDetailPage() {
   const isClinical = userRole === 'ADMIN' || userRole === 'ARZT';
   const isAdmin = userRole === 'ADMIN';
   const { isUnlocked, decryptForm, requestUnlock } = useVault();
+  const { generatePdf, downloadPdf, isGenerating } = usePdfGeneration();
+  const [generatingConsentId, setGeneratingConsentId] = useState<string | null>(null);
 
   const [uploadOpen, setUploadOpen] = useState(false);
   const [comparisonOpen, setComparisonOpen] = useState(false);
@@ -420,6 +424,48 @@ export default function PatientDetailPage() {
                           </TooltipTrigger>
                           <TooltipContent>{tTable('decrypt')}</TooltipContent>
                         </Tooltip>
+                      )}
+
+                      {hasDecryptableData(consent.status) && (
+                        consent.hasPdf ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon-xs" onClick={() => downloadPdf(consent.id)} aria-label={tTable('downloadPdf')}>
+                                <Download className="size-3.5" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>{tTable('downloadPdf')}</TooltipContent>
+                          </Tooltip>
+                        ) : (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon-xs"
+                                disabled={generatingConsentId === consent.id && isGenerating}
+                                onClick={async () => {
+                                  setGeneratingConsentId(consent.id);
+                                  const success = await generatePdf(consent as unknown as import('@/lib/types').ConsentFormSummary);
+                                  setGeneratingConsentId(null);
+                                  if (success) {
+                                    toast.success(tTable('pdfGenerated'));
+                                    mutatePatient();
+                                  } else {
+                                    toast.error(tTable('pdfError'));
+                                  }
+                                }}
+                                aria-label={tTable('generatePdf')}
+                              >
+                                {generatingConsentId === consent.id && isGenerating ? (
+                                  <Loader2 className="size-3.5 animate-spin" />
+                                ) : (
+                                  <FileText className="size-3.5" />
+                                )}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>{tTable('generatePdf')}</TooltipContent>
+                          </Tooltip>
+                        )
                       )}
 
                       {isClinical && canRevoke(consent.status) && (

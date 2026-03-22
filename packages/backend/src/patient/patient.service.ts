@@ -50,6 +50,7 @@ export class PatientService {
             createdAt: true,
             signatureTimestamp: true,
             expiresAt: true,
+            pdfStoragePath: true,
           },
         },
       },
@@ -59,7 +60,13 @@ export class PatientService {
       throw new NotFoundException(errorPayload(ErrorCode.PATIENT_NOT_FOUND));
     }
 
-    return patient;
+    return {
+      ...patient,
+      consentForms: patient.consentForms.map(({ pdfStoragePath, ...cf }) => ({
+        ...cf,
+        hasPdf: !!pdfStoragePath,
+      })),
+    };
   }
 
   async create(practiceId: string, dto: CreatePatientDto) {
@@ -98,6 +105,7 @@ export class PatientService {
             status: true,
             createdAt: true,
             signatureTimestamp: true,
+            pdfStoragePath: true,
           },
         },
       },
@@ -107,7 +115,13 @@ export class PatientService {
       throw new NotFoundException(errorPayload(ErrorCode.PATIENT_NOT_FOUND));
     }
 
-    return patient;
+    return {
+      ...patient,
+      consentForms: patient.consentForms.map(({ pdfStoragePath, ...cf }) => ({
+        ...cf,
+        hasPdf: !!pdfStoragePath,
+      })),
+    };
   }
 
   async delete(practiceId: string, id: string) {
