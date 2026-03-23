@@ -146,7 +146,9 @@
     "hidePassword": "Скрыть пароль",
     "privacyPrefix": "Входя в систему, вы соглашаетесь с нашей",
     "privacyLink": "политикой конфиденциальности",
-    "comingSoon": "Скоро"
+    "comingSoon": "Скоро",
+    "accountLocked": "Аккаунт заблокирован. Повторите попытку через {minutes} мин.",
+    "accountLockedTemporary": "Слишком много неудачных попыток. Аккаунт заблокирован на {minutes} мин."
   },
   "forgotPassword": {
     "title": "Забыли пароль",

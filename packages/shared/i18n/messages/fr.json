@@ -146,7 +146,9 @@
     "hidePassword": "Masquer le mot de passe",
     "privacyPrefix": "En vous connectant, vous acceptez notre",
     "privacyLink": "politique de confidentialité",
-    "comingSoon": "Bientôt disponible"
+    "comingSoon": "Bientôt disponible",
+    "accountLocked": "Compte verrouillé. Réessayez dans {minutes} minute(s).",
+    "accountLockedTemporary": "Trop de tentatives. Compte verrouillé pendant {minutes} minutes."
   },
   "forgotPassword": {
     "title": "Mot de passe oublié",

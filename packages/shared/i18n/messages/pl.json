@@ -146,7 +146,9 @@
     "hidePassword": "Ukryj hasło",
     "privacyPrefix": "Logując się, zgadzasz się na naszą",
     "privacyLink": "politykę prywatności",
-    "comingSoon": "Wkrótce"
+    "comingSoon": "Wkrótce",
+    "accountLocked": "Konto zablokowane. Spróbuj ponownie za {minutes} minut.",
+    "accountLockedTemporary": "Zbyt wiele nieudanych prób. Konto zablokowane na {minutes} minut."
   },
   "forgotPassword": {
     "title": "Zapomniałeś hasła",

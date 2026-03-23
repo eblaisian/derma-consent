@@ -146,7 +146,9 @@
     "hidePassword": "Passwort verbergen",
     "privacyPrefix": "Mit der Anmeldung stimmen Sie unserer",
     "privacyLink": "Datenschutzerklärung zu",
-    "comingSoon": "Demnächst verfügbar"
+    "comingSoon": "Demnächst verfügbar",
+    "accountLocked": "Konto gesperrt. Versuchen Sie es in {minutes} Minute(n) erneut.",
+    "accountLockedTemporary": "Zu viele Fehlversuche. Konto für {minutes} Minuten gesperrt."
   },
   "forgotPassword": {
     "title": "Passwort vergessen",

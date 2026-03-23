@@ -146,7 +146,9 @@
     "hidePassword": "إخفاء كلمة المرور",
     "privacyPrefix": "بتسجيل الدخول، أنت توافق على",
     "privacyLink": "سياسة الخصوصية",
-    "comingSoon": "قريباً"
+    "comingSoon": "قريباً",
+    "accountLocked": "الحساب مقفل. حاول مرة أخرى بعد {minutes} دقيقة.",
+    "accountLockedTemporary": "محاولات كثيرة جداً. الحساب مقفل لمدة {minutes} دقيقة."
   },
   "forgotPassword": {
     "title": "نسيت كلمة المرور",

@@ -146,7 +146,9 @@
     "hidePassword": "Hide password",
     "privacyPrefix": "By signing in you agree to our",
     "privacyLink": "privacy policy",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "accountLocked": "Account is locked. Try again in {minutes} minute(s).",
+    "accountLockedTemporary": "Too many failed attempts. Account locked for {minutes} minutes."
   },
   "forgotPassword": {
     "title": "Forgot password",

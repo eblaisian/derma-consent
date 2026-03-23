@@ -146,7 +146,9 @@
     "hidePassword": "Ocultar contraseña",
     "privacyPrefix": "Al iniciar sesión acepta nuestra",
     "privacyLink": "política de privacidad",
-    "comingSoon": "Próximamente"
+    "comingSoon": "Próximamente",
+    "accountLocked": "Cuenta bloqueada. Inténtelo de nuevo en {minutes} minuto(s).",
+    "accountLockedTemporary": "Demasiados intentos fallidos. Cuenta bloqueada durante {minutes} minutos."
   },
   "forgotPassword": {
     "title": "Olvidó su contraseña",

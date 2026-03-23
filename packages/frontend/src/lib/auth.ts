@@ -21,6 +21,14 @@ class TwoFactorRequiredError extends CredentialsSignin {
   }
 }
 
+class AccountLockedError extends CredentialsSignin {
+  code: string;
+  constructor(errorCode: string, minutes: string) {
+    super();
+    this.code = `${errorCode}:${minutes}`;
+  }
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 // Only register providers whose credentials are actually configured
@@ -94,7 +102,20 @@ providers.push(
           password: credentials.password,
         }),
       });
-      if (!res.ok) return null;
+      if (!res.ok) {
+        // Parse backend error to propagate specific error codes (e.g. account locked)
+        try {
+          const err = await res.json();
+          const code = err?.errorCode || err?.message?.errorCode;
+          const detail = err?.message?.message || err?.detail;
+          if (code === 'ACCOUNT_LOCKED' || code === 'ACCOUNT_LOCKED_TEMPORARY') {
+            throw new AccountLockedError(code, detail || '15');
+          }
+        } catch (e) {
+          if (e instanceof AccountLockedError) throw e;
+        }
+        return null;
+      }
       const data = await res.json();
 
       // If email is not verified, throw a CredentialsSignin with custom code

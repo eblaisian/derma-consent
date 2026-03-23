@@ -70,6 +70,12 @@ export function LoginForm({ enabledProviders }: Props) {
           setTempToken(token);
           setTwoFactorStep(true);
           setError('');
+        } else if (errorCode.includes('ACCOUNT_LOCKED_TEMPORARY')) {
+          const minutes = errorCode.split('ACCOUNT_LOCKED_TEMPORARY:')[1] || '15';
+          setError(t('accountLockedTemporary', { minutes }));
+        } else if (errorCode.includes('ACCOUNT_LOCKED')) {
+          const minutes = errorCode.split('ACCOUNT_LOCKED:')[1] || '15';
+          setError(t('accountLocked', { minutes }));
         } else {
           setError(t('invalidCredentials'));
         }

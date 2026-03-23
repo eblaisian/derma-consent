@@ -146,7 +146,9 @@
     "hidePassword": "Şifreyi gizle",
     "privacyPrefix": "Giriş yaparak kabul etmiş olursunuz",
     "privacyLink": "gizlilik politikamızı",
-    "comingSoon": "Yakında"
+    "comingSoon": "Yakında",
+    "accountLocked": "Hesap kilitlendi. {minutes} dakika sonra tekrar deneyin.",
+    "accountLockedTemporary": "Çok fazla başarısız deneme. Hesap {minutes} dakika kilitlendi."
   },
   "forgotPassword": {
     "title": "Şifremi unuttum",
