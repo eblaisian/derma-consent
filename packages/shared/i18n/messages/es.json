@@ -1307,6 +1307,7 @@
     "checks": "Verificaciones",
     "whatsappComingSoon": "WhatsApp (próximamente)",
     "emailSender": "Envío de correo",
+    "campaigns": "Campañas",
     "emailSenderDescription": "Redactar y enviar correos HTML directamente desde la plataforma.",
     "emailCompose": "Redactar correo",
     "emailComposeDescription": "Escriba el contenido del correo en formato HTML.",

@@ -1307,6 +1307,7 @@
     "checks": "Kontroller",
     "whatsappComingSoon": "WhatsApp (yakında)",
     "emailSender": "E-posta Gönderici",
+    "campaigns": "Kampanyalar",
     "emailSenderDescription": "Platformdan doğrudan HTML e-postalar oluşturun ve gönderin.",
     "emailCompose": "E-posta Oluştur",
     "emailComposeDescription": "E-posta içeriğinizi HTML formatında yazın.",

@@ -10,7 +10,7 @@ import { consentReminderTemplate, getConsentReminderSubject } from './templates/
 import { usageAlertTemplate, getUsageAlertSubject } from './templates/usage-alert.template';
 import { baseLayout, stripHtmlToText } from './templates/base-layout';
 import type { EmailLocale } from './templates/types';
-import type { IEmailTransport } from './transports';
+import type { IEmailTransport, BatchRecipientResult } from './transports';
 import { ResendTransport } from './transports';
 
 @Injectable()
@@ -23,6 +23,17 @@ export class EmailService {
     const apiKey = await this.platformConfig.get('email.resendApiKey');
     if (!apiKey) return null;
     return new ResendTransport(this.platformConfig);
+  }
+
+  /** Resolve the "From: Name <address>" header from config + optional overrides. */
+  private async resolveFrom(nameOverride?: string, addressOverride?: string): Promise<string> {
+    const name = nameOverride
+      || (await this.platformConfig.get('email.fromName'))
+      || 'DermaConsent';
+    const address = addressOverride
+      || (await this.platformConfig.get('email.fromAddress'))
+      || 'noreply@derma-consent.de';
+    return `${name} <${address}>`;
   }
 
   private async send(opts: {
@@ -41,14 +52,11 @@ export class EmailService {
     }
 
     try {
-      const fromName = opts.fromNameOverride
-        || (await this.platformConfig.get('email.fromName'))
-        || 'DermaConsent';
-      const fromAddress = (await this.platformConfig.get('email.fromAddress')) || 'noreply@derma-consent.de';
+      const from = await this.resolveFrom(opts.fromNameOverride);
       const text = opts.text || stripHtmlToText(opts.html);
 
       await transport.send({
-        from: `${fromName} <${fromAddress}>`,
+        from,
         to: opts.to,
         subject: opts.subject,
         html: opts.html,
@@ -166,10 +174,7 @@ export class EmailService {
       return { sent: 0, failed: 0 };
     }
 
-    const fromName = (await this.platformConfig.get('email.fromName')) || 'DermaConsent';
-    const fromAddress = fromAddressOverride
-      || (await this.platformConfig.get('email.fromAddress'))
-      || 'noreply@derma-consent.de';
+    const from = await this.resolveFrom(undefined, fromAddressOverride);
     const text = stripHtmlToText(html);
 
     let sent = 0;
@@ -177,13 +182,7 @@ export class EmailService {
 
     for (const to of recipients) {
       try {
-        await transport.send({
-          from: `${fromName} <${fromAddress}>`,
-          to,
-          subject,
-          html,
-          text,
-        });
+        await transport.send({ from, to, subject, html, text });
         sent++;
         this.logger.log(`Raw email sent to ${to}: ${subject}`);
       } catch (error) {
@@ -193,6 +192,46 @@ export class EmailService {
     }
 
     return { sent, failed };
+  }
+
+  async sendCampaignBatch(
+    emails: { to: string; subject: string; html: string }[],
+    fromAddressOverride?: string,
+  ): Promise<{ results: { email: string; success: boolean; error?: string }[] }> {
+    const transport = await this.getTransport();
+    if (!transport) {
+      this.logger.log(`[NO-OP] Campaign batch of ${emails.length} emails`);
+      return {
+        results: emails.map((e) => ({
+          email: e.to,
+          success: false,
+          error: 'Email transport not configured',
+        })),
+      };
+    }
+
+    const from = await this.resolveFrom(undefined, fromAddressOverride);
+
+    // Use batch API if available (Resend supports up to 100 per call)
+    if (transport.sendBatch) {
+      const result = await transport.sendBatch(
+        emails.map((e) => ({ from, to: e.to, subject: e.subject, html: e.html, text: stripHtmlToText(e.html) })),
+      );
+      this.logger.log(`Campaign batch: ${result.results.filter((r) => r.success).length}/${emails.length} sent`);
+      return result;
+    }
+
+    // Fallback: sequential send
+    const results: BatchRecipientResult[] = [];
+    for (const e of emails) {
+      try {
+        await transport.send({ from, to: e.to, subject: e.subject, html: e.html, text: stripHtmlToText(e.html) });
+        results.push({ email: e.to, success: true });
+      } catch (error) {
+        results.push({ email: e.to, success: false, error: error instanceof Error ? error.message : 'Unknown' });
+      }
+    }
+    return { results };
   }
 
   async sendCustomMessage(to: string, subject: string, body: string, opts?: {

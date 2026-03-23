@@ -11,20 +11,22 @@ import {
   Shield,
   LogOut,
   Mail,
+  Megaphone,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export interface AdminNavItem {
   href: string;
-  labelKey: 'dashboard' | 'practices' | 'configuration' | 'emailSender';
+  labelKey: 'dashboard' | 'practices' | 'configuration' | 'emailSender' | 'campaigns';
   icon: React.ComponentType<{ className?: string }>;
 }
 
 export const adminNavItems: AdminNavItem[] = [
   { href: '/admin', labelKey: 'dashboard', icon: LayoutDashboard },
   { href: '/admin/practices', labelKey: 'practices', icon: Building2 },
-  { href: '/admin/config', labelKey: 'configuration', icon: Settings },
+  { href: '/admin/campaigns', labelKey: 'campaigns', icon: Megaphone },
   { href: '/admin/email', labelKey: 'emailSender', icon: Mail },
+  { href: '/admin/config', labelKey: 'configuration', icon: Settings },
 ];
 
 export function AdminSidebar() {

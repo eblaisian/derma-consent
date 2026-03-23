@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEnum, IsOptional, IsInt, IsEmail, IsArray, ArrayMinSize, ArrayMaxSize, MaxLength, Min, Max } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsOptional, IsInt, IsEmail, IsArray, ArrayMinSize, ArrayMaxSize, MaxLength, Min, Max, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export enum SubscriptionPlanEnum {
@@ -34,6 +34,34 @@ export class SendAdminEmailDto {
   @IsString()
   @IsNotEmpty()
   html!: string;
+
+  @IsOptional()
+  @IsEmail()
+  fromAddress?: string;
+}
+
+export class CampaignEmailItemDto {
+  @IsEmail()
+  to!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
+  subject!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200_000)
+  html!: string;
+}
+
+export class SendCampaignBatchDto {
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(20)
+  @ValidateNested({ each: true })
+  @Type(() => CampaignEmailItemDto)
+  emails!: CampaignEmailItemDto[];
 
   @IsOptional()
   @IsEmail()

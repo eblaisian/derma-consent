@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-import type { IEmailTransport, SendEmailOptions } from './email-transport.interface';
+import type { IEmailTransport, SendEmailOptions, BatchEmailItem, BatchSendResult } from './email-transport.interface';
 
 type ConfigGetter = { get(key: string): Promise<string | undefined> };
 
@@ -26,6 +26,38 @@ export class ResendTransport implements IEmailTransport {
     if (error) {
       throw new Error(`Resend error: ${error.message}`);
     }
+  }
+
+  async sendBatch(items: BatchEmailItem[]): Promise<BatchSendResult> {
+    const client = await this.getClient();
+    const { data, error } = await client.batch.send(
+      items.map((item) => ({
+        from: item.from,
+        to: item.to,
+        subject: item.subject,
+        html: item.html,
+        text: item.text,
+        replyTo: item.replyTo,
+      })),
+    );
+
+    if (error) {
+      return {
+        results: items.map((item) => ({
+          email: item.to,
+          success: false,
+          error: error.message,
+        })),
+      };
+    }
+
+    return {
+      results: items.map((item, i) => ({
+        email: item.to,
+        success: !!(data?.data?.[i]?.id),
+        error: undefined,
+      })),
+    };
   }
 
   async test(): Promise<{ success: boolean; message: string }> {

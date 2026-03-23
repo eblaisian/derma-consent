@@ -1310,6 +1310,7 @@
     "checks": "Checks",
     "whatsappComingSoon": "WhatsApp (coming soon)",
     "emailSender": "Email Sender",
+    "campaigns": "Campaigns",
     "emailSenderDescription": "Compose and send HTML emails to practices or contacts directly from the platform.",
     "emailCompose": "Compose Email",
     "emailComposeDescription": "Write your email content in HTML format.",
